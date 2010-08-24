@@ -2,8 +2,6 @@ package net.dougqh.jak;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.types.Category2;
-
 final class LocalsImpl implements Locals {
 	private int maxLocals = 0;
 	
@@ -21,25 +19,14 @@ final class LocalsImpl implements Locals {
 		final int slot,
 		final Type type )
 	{
-		if ( isCategory2( type ) ) {
-			if ( slot + 2 > this.maxLocals ) {
-				this.maxLocals = slot + 2;
-			}
-		} else {
-			if ( slot + 1 > this.maxLocals ) {
-				this.maxLocals = slot + 1;
-			}
+		int size = TypeUtils.size( type );
+		if ( slot + size > this.maxLocals ) {
+			this.maxLocals = slot + size;
 		}
 	}
 	
 	@Override
 	public final int maxLocals() {
 		return this.maxLocals;
-	}
-	
-	private static final boolean isCategory2( final Type type ) {
-		return type.equals( long.class ) ||
-			type.equals( double.class ) ||
-			type.equals( Category2.class );
 	}
 }
