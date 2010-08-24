@@ -19,6 +19,8 @@ import net.dougqh.jak.JavaAssembler;
 import net.dougqh.jak.JavaClassWriter;
 import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaCoreCodeWriter;
+import net.dougqh.jak.Locals;
+import net.dougqh.jak.Stack;
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
 import net.dougqh.java.meta.types.JavaTypes;
 import net.dougqh.reflection.Delegate;
@@ -115,7 +117,8 @@ public final class JakRepl {
 			this.restoreRecording();
 		}
 		
-		ReplStack stack = new ReplStack( this.codeWriter.maxStack() );
+		//TODO: set size properly
+		ReplStack stack = new ReplStack( 32 );
 		
 		Class< ? > generatedClass = this.classWriter.load();
 		
@@ -213,6 +216,18 @@ public final class JakRepl {
 		@Override
 		public final JavaCoreCodeWriter monitor( final JavaCoreCodeWriter wrappedWriter ) {
 			return new WriterDelegate( wrappedWriter ).getProxy();
+		}
+		
+		@Override
+		public final Locals monitor( final Locals locals ) {
+			//TODO: wrap locals
+			return locals;
+		}
+		
+		@Override
+		public final Stack monitor( final Stack stack ) {
+			// TODO: wrap stack
+			return stack;
 		}
 	}
 		

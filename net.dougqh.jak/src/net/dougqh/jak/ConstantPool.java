@@ -340,7 +340,7 @@ final class ConstantPool {
 		SignatureTypeVistor visitor = new SignatureTypeVistor();
 		visitor.startArguments();
 		for ( JavaVariable variable : arguments ) {
-			visitor.visit( JavaTypes.getRawType( variable.type() ) );
+			visitor.visit( JavaTypes.getRawType( variable.getType() ) );
 		}
 		visitor.endArguments();
 		visitor.visit( JavaTypes.getRawType( returnType ) );
@@ -370,7 +370,7 @@ final class ConstantPool {
 				new SignatureTypeVistor();
 			genericSigBuilder.startArguments();
 			for ( JavaVariable variable : arguments ) {
-				Type type = variable.type();
+				Type type = variable.getType();
 				genericSigBuilder.visit( type );
 			}
 			genericSigBuilder.endArguments();
@@ -392,7 +392,7 @@ final class ConstantPool {
 			return true;
 		} else {
 			for ( JavaVariable variable : arguments ) {
-				Type type = variable.type();
+				Type type = variable.getType();
 				if ( ! ( type instanceof Class ) ) {
 					return true;
 				}

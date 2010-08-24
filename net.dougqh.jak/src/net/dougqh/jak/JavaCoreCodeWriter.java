@@ -610,14 +610,11 @@ public interface JavaCoreCodeWriter {
 	
 	public abstract JavaCoreCodeWriter handleException( final ExceptionHandler exceptionHandler );
 	
-	@Deprecated /* TODO: Move to new Stack interface */
+	public abstract Stack stack();
+	
+	public abstract Locals locals();
+	
 	public abstract int pos();	
-	
-	@Deprecated /* TODO: Move to new Stack interface */
-	public abstract int maxStack();
-	
-	@Deprecated /* TODO: Move to new Stack interface */
-	public abstract int maxLocals();
 	
 	public abstract class Jump {
 		public abstract Integer pos();

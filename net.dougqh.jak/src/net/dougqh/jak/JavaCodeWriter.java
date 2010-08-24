@@ -1,5 +1,6 @@
 package net.dougqh.jak;
 
+import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -39,10 +40,10 @@ public final class JavaCodeWriter {
 
 		int curArgPos = ( isStatic ? 0 : 1 );
 		for ( JavaVariable var : arguments ) {
-			if ( var.name() != null ) {
-				this.localVars.put( var.name(), curArgPos );
+			if ( var.getName() != null ) {
+				this.localVars.put( var.getName(), curArgPos );
 			}
-			curArgPos += JavaCoreCodeWriterImpl.size( var.type() );
+			curArgPos += JavaCoreCodeWriterImpl.size( var.getType() );
 		}
 
 		this.coreWriter = coreWriter;
@@ -386,7 +387,7 @@ public final class JavaCodeWriter {
 	
 	@WrapOp( Iload.class )
 	public final JavaCodeWriter iload( final String var ) {
-		return this.iload( this.getOrReserveVarSlot( var ) );
+		return this.iload( this.getOrReserveVarSlot( var, int.class ) );
 	}
 
 	@WrapOp( Iload.class )
@@ -436,7 +437,7 @@ public final class JavaCodeWriter {
 
 	@Op( Lload.class )
 	public final JavaCodeWriter lload( final String var ) {
-		return this.lload( this.getOrReserveVar2Slot( var ) );
+		return this.lload( this.getOrReserveVarSlot( var, long.class ) );
 	}
 
 	@WrapOp( Lload.class )
@@ -486,7 +487,7 @@ public final class JavaCodeWriter {
 	
 	@Op( Fload.class )
 	public final JavaCodeWriter fload( final String var ) {
-		return this.fload( this.getOrReserveVarSlot( var ) );
+		return this.fload( this.getOrReserveVarSlot( var, float.class ) );
 	}
 
 	@WrapOp( Fload.class )
@@ -536,7 +537,7 @@ public final class JavaCodeWriter {
 
 	@WrapOp( Dload.class )
 	public final JavaCodeWriter dload( final String var ) {
-		return this.dload( this.getOrReserveVar2Slot( var ) );
+		return this.dload( this.getOrReserveVarSlot( var, double.class ) );
 	}
 
 	@WrapOp( Dload.class )
@@ -586,7 +587,7 @@ public final class JavaCodeWriter {
 
 	@Op( Aload.class )
 	public final JavaCodeWriter aload( final String var ) {
-		return this.aload( this.getOrReserveVar2Slot( var ) );
+		return this.aload( this.getOrReserveVarSlot( var, Reference.class ) );
 	}
 
 	@WrapOp( Aload.class )
@@ -689,7 +690,7 @@ public final class JavaCodeWriter {
 
 	@Op( Istore.class )
 	public final JavaCodeWriter istore( final String var ) {
-		return this.istore(this.getOrReserveVarSlot( var ) );
+		return this.istore(this.getOrReserveVarSlot( var, int.class ) );
 	}
 
 	@WrapOp( Istore.class )
@@ -739,7 +740,7 @@ public final class JavaCodeWriter {
 
 	@WrapOp( Lstore.class )
 	public final JavaCodeWriter lstore( final String var ) {
-		return this.lstore( this.getOrReserveVar2Slot( var ) );
+		return this.lstore( this.getOrReserveVarSlot( var, long.class ) );
 	}
 
 	@WrapOp( Lstore.class )
@@ -789,7 +790,7 @@ public final class JavaCodeWriter {
 
 	@WrapOp( Fstore.class )
 	public final JavaCodeWriter fstore( final String var ) {
-		return this.fstore( this.getOrReserveVarSlot( var ) );
+		return this.fstore( this.getOrReserveVarSlot( var, float.class ) );
 	}
 
 	@WrapOp( Fstore.class )
@@ -839,7 +840,7 @@ public final class JavaCodeWriter {
 
 	@WrapOp( Dstore.class )
 	public final JavaCodeWriter dstore( final String var ) {
-		return this.dstore( this.getOrReserveVar2Slot( var ) );
+		return this.dstore( this.getOrReserveVarSlot( var, double.class ) );
 	}
 
 	@WrapOp( Dstore.class )
@@ -889,7 +890,7 @@ public final class JavaCodeWriter {
 
 	@WrapOp( Astore.class )
 	public final JavaCodeWriter astore( final String var ) {
-		return this.astore( this.getOrReserveVarSlot( var ) );
+		return this.astore( this.getOrReserveVarSlot( var, Reference.class ) );
 	}
 
 	@WrapOp( Astore.class )
@@ -1262,7 +1263,7 @@ public final class JavaCodeWriter {
 
 	@WrapOp( Iinc.class )
 	public final JavaCodeWriter iinc( final String var, final int amount ) {
-		return this.iinc( this.getOrReserveVarSlot( var ), amount );
+		return this.iinc( this.getOrReserveVarSlot( var, int.class ), amount );
 	}
 
 	@WrapOp( Iinc.class )
@@ -2247,14 +2248,6 @@ public final class JavaCodeWriter {
 		return this.labels.containsKey( label );
 	}
 	
-	public final int maxStack() {
-		return this.coreWriter.maxStack();
-	}
-	
-	public final int maxLocals() {
-		return this.coreWriter.maxLocals();
-	}
-	
 	private final ConstantPool constantPool() {
 		return this.typeWriter.constantPool();
 	}
@@ -2297,21 +2290,13 @@ public final class JavaCodeWriter {
 		};
 	}
 
-	private final int getOrReserveVarSlot(final String varName) {
+	private final int getOrReserveVarSlot(
+		final String varName,
+		final Type type )
+	{
 		Integer existingSlot = this.localVars.get( varName );
 		if ( existingSlot == null ) {
-			int newSlot = this.coreWriter.maxLocals();
-			this.localVars.put( varName, newSlot );
-			return newSlot;
-		} else {
-			return existingSlot;
-		}
-	}
-
-	private final int getOrReserveVar2Slot( final String varName ) {
-		Integer existingSlot = this.localVars.get( varName );
-		if (existingSlot == null) {
-			int newSlot = this.coreWriter.maxLocals();
+			int newSlot = this.coreWriter.locals().addLocal( int.class );
 			this.localVars.put( varName, newSlot );
 			return newSlot;
 		} else {

@@ -10,7 +10,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses( {
 	FlagsTest.class,
 	ByteStreamTest.class,
-	JavaCodeWriterTest.class,
 	ConstantPoolTest.class,
 	CodeGenApiTestSuite.class } )
 public final class CodeGenTestSuite {}

@@ -52,7 +52,7 @@ final class FormalArguments implements Iterable< JavaVariable > {
 	final Class< ? >[] getRawClasses() {
 		Class< ? >[] rawClasses = new Class< ? >[ this.arguments.length ];
 		for ( int i = 0; i < this.arguments.length; ++i ) {
-			rawClasses[ i ] = JavaTypes.getRawClass( this.arguments[ i ].type() );
+			rawClasses[ i ] = JavaTypes.getRawClass( this.arguments[ i ].getType() );
 		}
 		return rawClasses;
 	}
@@ -60,7 +60,7 @@ final class FormalArguments implements Iterable< JavaVariable > {
 	final Type[] getTypes() {
 		Type[] types = new Type[ this.arguments.length ];
 		for ( int i = 0; i < this.arguments.length; ++i ) {
-			types[ i ] = this.arguments[ i ].type();
+			types[ i ] = this.arguments[ i ].getType();
 		}
 		return types;
 	}

@@ -23,7 +23,9 @@ final class Methods {
 		final String name,
 		final FormalArguments arguments,
 		final Type[] exceptionTypes,
-		final Object defaultValue )
+		final Object defaultValue,
+		final Locals locals,
+		final Stack stack )
 	{
 		this.finishMethod();
 		++this.count;
@@ -47,12 +49,8 @@ final class Methods {
 		this.methodAttributes.add( new ExceptionsAttribute( this.constantPool, exceptionTypes ) );
 		this.methodAttributes.add( new SignatureAttribute( this.constantPool, returnType, arguments ) );
 		
-		if ( needsCode ) {
-			int argSize =
-				JavaFlagsBuilder.isStatic( flags ) ? 0 : 1 +
-				JavaCoreCodeWriterImpl.size( arguments );
-			
-			CodeAttribute codeAttribute = new CodeAttribute( this.constantPool, argSize );
+		if ( needsCode ) {			
+			CodeAttribute codeAttribute = new CodeAttribute( this.constantPool, locals, stack );
 			this.methodAttributes.add( codeAttribute );
 			return codeAttribute.getCodeWriter();
 		} else {
@@ -149,11 +147,12 @@ final class Methods {
 		
 		CodeAttribute(
 			final ConstantPool constantPool,
-			final int argSize )
+			final Locals locals,
+			final Stack stack )
 		{
 			super( constantPool, ID );
 			
-			this.codeWriter = new JavaCoreCodeWriterImpl( constantPool, argSize );
+			this.codeWriter = new JavaCoreCodeWriterImpl( constantPool, locals, stack );
 		}
 		
 		@Override

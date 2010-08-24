@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 
+import javax.naming.Reference;
+
 import net.dougqh.jak.Attribute.Deferred;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -154,17 +156,29 @@ final class TypeWriter {
 	}
 	
 	final JavaCoreCodeWriter define(
-		final JavaMethodDescriptor methodDescriptor,
+		final JavaMethodDescriptor method,
 		final int additionalFlags,
 		final Object defaultValue )
 	{
+		Locals locals = this.monitor.monitor( new LocalsImpl() );
+		if ( ! method.isStatic() ) {
+			locals.addLocal( Reference.class );
+		}
+		for ( JavaVariable var : method.arguments() ) {
+			locals.addLocal( var.getType() );
+		}
+
+		Stack stack = this.monitor.monitor( new StackImpl() );		
+		
 		JavaCoreCodeWriter writer = this.methods.createMethod(
-			methodDescriptor.flags() | additionalFlags,
-			methodDescriptor.getReturnType(),
-			methodDescriptor.getName(),
-			methodDescriptor.arguments(),
-			methodDescriptor.exceptions(),
-			defaultValue );
+			method.flags() | additionalFlags,
+			method.getReturnType(),
+			method.getName(),
+			method.arguments(),
+			method.exceptions(),
+			defaultValue,
+			locals,
+			stack );
 		
 		return this.monitor.monitor( writer );
 	}

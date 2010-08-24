@@ -16,11 +16,11 @@ public final class JavaVariable {
 		this.name = name;
 	}
 	
-	public final String name() {
+	public final String getName() {
 		return this.name;
 	}
 	
-	public final Type type() {
+	public final Type getType() {
 		return this.type;
 	}
 }
