@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Java Assembler REPL
+Bundle-SymbolicName: net.dougqh.jak.repl
+Bundle-Version: 1.0.0.1
+Bundle-Vendor: Douglas Q Hawkins
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: net.dougqh.jak;bundle-version="1.0.0"

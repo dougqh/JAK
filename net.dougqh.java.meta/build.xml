@@ -1,0 +1,77 @@
+<project name="net.dougqh.java.meta" default="package" basedir=".">
+	<property name="root-src-dir" location="${basedir}" />
+	<property name="lib-dir" location="${basedir}/lib" />
+	
+	<property name="build-dir" location="${basedir}/build" />
+	<property name="classes-dir" location="${build-dir}/classes" />
+	
+	<target name="package" depends="jar, jar-tests" />
+	
+	<target name="compile">
+		<dqh-javac src-dir="src">
+			<path />
+		</dqh-javac>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<dqh-jar
+			file="net.dougqh.java.meta.jar"
+			src-dir="src" />
+	</target>
+	
+	<target name="compile-tests" depends="jar">
+		<dqh-javac src-dir="test-src">
+			<path>
+				<pathelement location="${build-dir}/net.dougqh.java.meta.jar" />
+				<pathelement location="${lib-dir}/junit-4.8.2.jar" />
+			</path>
+		</dqh-javac>
+	</target>
+	
+	<target name="jar-tests" depends="compile-tests">
+		<dqh-jar
+			file="net.dougqh.java.meta.test.jar"
+			src-dir="src"
+			dependencies="net.dougqh.java.meta.jar" />
+	</target>
+	
+	<macrodef name="dqh-javac">
+		<attribute name="src-dir" />
+		<element name="path" />
+		<sequential>
+			<mkdir dir="${classes-dir}/@{src-dir}" />
+			
+			<depend
+				srcdir="${root-src-dir}/@{src-dir}"
+				destdir="${classes-dir}/@{src-dir}">
+				<classpath>
+					<path />
+				</classpath>
+			</depend>
+			
+			<javac
+				srcdir="${root-src-dir}/@{src-dir}"
+				destdir="${classes-dir}/@{src-dir}"
+				debug="true">
+				<classpath>
+					<path />
+				</classpath>
+			</javac>
+		</sequential>
+	</macrodef>
+			
+	<macrodef name="dqh-jar">
+		<attribute name="file" />
+		<attribute name="src-dir" />
+		<attribute name="dependencies" default="" />
+		<sequential>
+			<jar destfile="${build-dir}/@{file}">
+				<fileset dir="${classes-dir}/@{src-dir}" includes="**/*" />
+				<fileset dir="${root-src-dir}/@{src-dir}" includes="**/*" />
+				<manifest>
+					<attribute name="Class-Path" value="@{dependencies}" />
+				</manifest>
+			</jar>	
+		</sequential>
+	</macrodef>
+</project>

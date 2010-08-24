@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Java Meta
+Bundle-SymbolicName: net.dougqh.java.meta
+Bundle-Version: 1.0.0.1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Douglas Q Hawkins
+Require-Bundle: org.junit4;bundle-version="4.5.0";resolution:=optional
+Export-Package: net.dougqh.java.meta.types
