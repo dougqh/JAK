@@ -654,75 +654,55 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl pop() {
-		this.unstack( Category1.class );
+		this.stack.pop();
 		return this.op( POP );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl pop2() {
-		this.unstack( Category2.class );
+		this.stack.pop2();
 		return this.op( POP2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dup() {
-		this.unstack( Category1.class );
-		this.stack( Category1.class );
-		this.stack( Category1.class );
+		this.stack.dup();
 		return this.op( DUP );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dup_x1() {
-		//TODO: Verify this is correct
-//		this.unstack();
-//		this.stack();
-//		this.stack();
+		this.stack.dup_x1();
 		return this.op( DUP_X1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dup_x2() {
-		//TODO: Verify this is correct
-//		this.unstack();
-//		this.stack();
-//		this.stack();
+		this.stack.dup2_x2();
 		return this.op( DUP_X2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dup2() {
-		//TODO: Verify this is correct
-//		this.unstack();
-//		this.stack();
-//		this.stack();
+		this.stack.dup2();
 		return this.op( DUP2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dup2_x1() {
-		//TODO: Verify this is correct
-//		this.unstack();
-//		this.stack();
-//		this.stack();		
+		this.stack.dup2_x1();
 		return this.op( DUP2_X1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dup2_x2() {
-		//TODO: Verify this is correct
-//		this.unstack();
-//		this.stack();
-//		this.stack();
+		this.stack.dup2_x2();
 		return this.op( DUP2_X2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl swap() {
-		this.unstack( Category1.class );
-		this.unstack( Category1.class );
-		this.stack( Category1.class );
-		this.stack( Category1.class );
+		this.stack.swap();
 		return this.op( SWAP );
 	}
 	

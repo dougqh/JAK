@@ -39,21 +39,6 @@ public final class OperationTest extends TestCase {
 		}
 	}
 
-//	private static final boolean isFullyDefined( final Operation operation ) {
-//		return areFullyDefined( operation.getStackOperandTypes() ) &&
-//			areFullyDefined( operation.getStackResultTypes() );
-//	}
-//	
-//	private static final boolean areFullyDefined( final Class< ? >... classes ) {
-//		for ( Class< ? > aClass : classes ) {
-//			//TODO: Revisit handling of branch operations
-//			if ( Types.isPlaceholderClass( aClass ) ) {
-//				return false;
-//			}
-//		}
-//		return true;
-//	}
-
 	private final Operation operation;
 	private final Method method;
 	
@@ -143,22 +128,87 @@ public final class OperationTest extends TestCase {
 		}
 	}
 	
-	private static final class CheckedStack implements Stack {
+	private static abstract class TestStack implements Stack {
+		protected final Stack stack;
+		
+		TestStack( final Stack stack ) {
+			this.stack = stack;
+		}
+		
+		@Override
+		public void push( final Type type ) {
+			fail();
+		}
+		
+		@Override
+		public void pop( final Type type ) {
+			fail();
+		}
+		
+		@Override
+		public void pop() {
+			fail();
+		}
+		
+		@Override
+		public void pop2() {
+			fail();
+		}
+		
+		@Override
+		public void swap() {
+			fail();
+		}
+		
+		@Override
+		public void dup() {
+			fail();
+		}
+		
+		@Override
+		public void dup_x1() {
+			fail();
+		}
+		
+		@Override
+		public void dup2() {
+			fail();
+		}
+		
+		@Override
+		public void dup2_x1() {
+			fail();
+		}
+		
+		@Override
+		public void dup2_x2() {
+			fail();
+		}
+		
+		@Override
+		public void dup_x2() {
+			fail();
+		}
+		
+		@Override
+		public final int maxStack() {
+			return this.stack.maxStack();
+		}
+	}
+	
+	private static final class CheckedStack extends TestStack {
 		private final ListIterator< Class< ? > > operandIter;
 		private final ListIterator< Class< ? > > resultIter;
 		
-		private final Stack stack;
-		
 		CheckedStack( final Operation operation, final Stack stack ) {
+			super( stack );
+			
 			List< Class< ? > > operandTypes = Arrays.asList( operation.getStackOperandTypes() );
 			this.operandIter = operandTypes.listIterator( operandTypes.size() );
 			
 			List< Class< ? > > resultTypes = Arrays.asList( operation.getStackResultTypes() );
 			this.resultIter = resultTypes.listIterator();
-			
-			this.stack = stack;
 		}
-		
 		
 		@Override
 		public final void pop( final Type type ) {
@@ -174,11 +224,6 @@ public final class OperationTest extends TestCase {
 			assertEquals( expectedType, type );
 			
 			this.stack.push( type );
-		}
-		
-		@Override
-		public final int maxStack() {
-			return this.stack.maxStack();
 		}
 	}
 }

@@ -17,14 +17,66 @@ final class StackImpl implements Stack {
 	
 	@Override
 	public final void push( final Type type ) {
-		this.curStack += Types.size( type );
-		if ( this.curStack > this.maxStack ) {
-			this.maxStack = this.curStack;
-		}
+		this.push( Types.size( type ) );
 	}
 	
 	@Override
 	public final void pop( final Type type ) {
-		this.curStack -= Types.size( type );
+		this.pop( Types.size( type ) );
+	}
+	
+	@Override
+	public final void pop() {
+		this.pop( 1 );
+	}
+	
+	@Override
+	public final void pop2() {
+		this.pop( 2 );
+	}
+	
+	@Override
+	public final void swap() {
+	}
+	
+	@Override
+	public final void dup() {
+		this.push( 1 );
+	}
+	
+	@Override
+	public final void dup_x1() {
+		this.push( 1 );
+	}
+	
+	@Override
+	public final void dup_x2() {
+		this.push( 1 );
+	}
+	
+	@Override
+	public final void dup2() {
+		this.push( 2 );
+	}
+	
+	@Override
+	public final void dup2_x1() {
+		this.push( 2 );
+	}
+	
+	@Override
+	public final void dup2_x2() {
+		this.push( 2 );
+	}
+	
+	private final void push( final int size ) {
+		this.curStack += size;
+		if ( this.curStack > this.maxStack ) {
+			this.maxStack = this.curStack;
+		}		
+	}
+	
+	private final void pop( final int size ) {
+		this.curStack -= size;
 	}
 }

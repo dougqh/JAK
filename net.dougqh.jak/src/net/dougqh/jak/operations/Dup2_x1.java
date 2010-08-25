@@ -31,6 +31,11 @@ public final class Dup2_x1 extends Operation {
 	public final int getCode() {
 		return CODE;
 	}
+
+	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
 	
 	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
