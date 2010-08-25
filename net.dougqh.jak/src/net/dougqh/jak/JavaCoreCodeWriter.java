@@ -87,7 +87,7 @@ public interface JavaCoreCodeWriter {
 	@Op( Lload.class )
 	public abstract JavaCoreCodeWriter lload( final int slot );
 
-	@Op( Lload_1.class )
+	@Op( Lload_0.class )
 	public abstract JavaCoreCodeWriter lload_0();
 
 	@Op( Lload_1.class )
@@ -198,7 +198,7 @@ public interface JavaCoreCodeWriter {
 	@Op( Lstore_3.class )
 	public abstract JavaCoreCodeWriter lstore_3();
 
-	@Op( Fastore.class )
+	@Op( Fstore.class )
 	public abstract JavaCoreCodeWriter fstore( final int slot );
 
 	@Op( Fstore_0.class )

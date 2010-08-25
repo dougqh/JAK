@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
 import net.dougqh.jak.JavaMethodDescriptor;
-import net.dougqh.jak.Operation;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.ArgList;
 import net.dougqh.jak.types.Reference;

@@ -1,7 +1,6 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Operation;
 
 public final class Dload_2 extends Operation {
 	public static final String ID = "dload_2";

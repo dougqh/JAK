@@ -1,7 +1,6 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Operation;
 import net.dougqh.jak.types.Category1;
 
 public final class Pop extends Operation {

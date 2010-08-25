@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import net.dougqh.jak.JavaCoreCodeWriter.ExceptionHandler;
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
-import net.dougqh.jak.annotations.ArtificialOp;
+import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.operations.*;
@@ -55,7 +55,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=Class.class )
+	@SyntheticOp( stackResultTypes=Class.class )
 	public final JavaCodeWriter aconst( final Class< ? > aClass ) {
 		if ( aClass.equals( void.class ) ) {
 			return this.getstatic(
@@ -104,7 +104,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=boolean.class )
+	@SyntheticOp( stackResultTypes=boolean.class )
 	public final JavaCodeWriter iconst( final boolean value ) {
 		if ( value ) {
 			return this.iconst_1();
@@ -113,7 +113,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@ArtificialOp( stackResultTypes=byte.class )
+	@SyntheticOp( stackResultTypes=byte.class )
 	public final JavaCodeWriter iconst( final byte value ) {
 		switch ( value ) {
 			case -1:
@@ -142,7 +142,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@ArtificialOp( stackResultTypes=short.class )
+	@SyntheticOp( stackResultTypes=short.class )
 	public final JavaCodeWriter iconst( final short value ) {
 		switch ( value ) {
 			case -1:
@@ -171,12 +171,12 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@ArtificialOp( stackResultTypes=char.class )
+	@SyntheticOp( stackResultTypes=char.class )
 	public final JavaCodeWriter iconst( final char value ) {
 		return this.iconst( (int)value );
 	}
 
-	@ArtificialOp( stackResultTypes=int.class )
+	@SyntheticOp( stackResultTypes=int.class )
 	public final JavaCodeWriter iconst( final int value ) {
 		if ( value == -1 ) {
 			return this.iconst_m1();
@@ -243,7 +243,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=long.class )
+	@SyntheticOp( stackResultTypes=long.class )
 	public final JavaCodeWriter lconst( final long value ) {
 		if ( value == 0 ) {
 			return this.lconst_0();
@@ -268,7 +268,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=float.class )
+	@SyntheticOp( stackResultTypes=float.class )
 	public final JavaCodeWriter fconst( final float value ) {
 		if ( value == 0F ) {
 			return this.fconst_0();
@@ -299,7 +299,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=double.class )
+	@SyntheticOp( stackResultTypes=double.class )
 	public final JavaCodeWriter dconst( final double value ) {
 		if ( value == 0D ) {
 			return this.dconst_0();
@@ -1681,7 +1681,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@ArtificialOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
+	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
 	public final JavaCodeWriter invoke(
 		final Type targetType,
 		final String methodName,
@@ -1691,7 +1691,7 @@ public final class JavaCodeWriter {
 	}
 
 
-	@ArtificialOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
+	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
 	public final JavaCodeWriter invoke(
 		final Type targetType,
 		final JavaMethodSignature signature )
@@ -1713,7 +1713,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@ArtificialOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
+	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
 	public final JavaCodeWriter invoke( final Method method ) {
 		if ( isInterface( method ) ) {
 			return this.invokeinterface( method );
@@ -1946,7 +1946,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackOperandTypes=boolean[].class )
+	@SyntheticOp( stackOperandTypes=boolean[].class )
 	public final JavaCodeWriter barray( final boolean... array ) {
 		this.iconst( array.length ).newarray( boolean.class );
 
@@ -1963,7 +1963,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackOperandTypes=boolean[].class )
+	@SyntheticOp( stackOperandTypes=boolean[].class )
 	public final JavaCodeWriter barray( final byte... array ) {
 		this.iconst( array.length ).newarray( byte.class );
 
@@ -1980,7 +1980,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=char[].class )
+	@SyntheticOp( stackResultTypes=char[].class )
 	public final JavaCodeWriter carray( final char... array ) {
 		this.iconst( array.length ).newarray( char.class );
 
@@ -1997,7 +1997,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=short[].class )
+	@SyntheticOp( stackResultTypes=short[].class )
 	public final JavaCodeWriter sarray( final short... array ) {
 		this.iconst( array.length ).newarray( short.class );
 
@@ -2014,7 +2014,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=int[].class )
+	@SyntheticOp( stackResultTypes=int[].class )
 	public final JavaCodeWriter iarray( final int... array ) {
 		this.iconst( array.length ).newarray( int.class );
 
@@ -2031,7 +2031,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=float[].class )
+	@SyntheticOp( stackResultTypes=float[].class )
 	public final JavaCodeWriter farray( final float... array ) {
 		this.iconst( array.length ).newarray( float.class );
 
@@ -2049,7 +2049,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=long[].class )
+	@SyntheticOp( stackResultTypes=long[].class )
 	public final JavaCodeWriter larray( final long... array ) {
 		this.iconst( array.length ).newarray( long.class );
 
@@ -2066,7 +2066,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@ArtificialOp( stackResultTypes=double[].class )
+	@SyntheticOp( stackResultTypes=double[].class )
 	public final JavaCodeWriter darray( final double... array ) {
 		this.iconst( array.length ).newarray( double.class );
 
@@ -2161,7 +2161,7 @@ public final class JavaCodeWriter {
 		return null;
 	}
 
-	@ArtificialOp( stackOperandTypes=boolean.class, stackResultTypes=boolean.class )
+	@SyntheticOp( stackOperandTypes=boolean.class, stackResultTypes=boolean.class )
 	public final JavaCodeWriter inot() {
 		this.coreWriter.ifeq( this.jumpRelative( +7 ) ).
 			iconst_0().
@@ -2196,7 +2196,7 @@ public final class JavaCodeWriter {
 			JavaAssembler.method( primitiveClass, methodName ) );
 	}
 
-	@ArtificialOp
+	@SyntheticOp
 	public final JavaCodeWriter label( final String labelName ) {
 		this.labels.put( labelName, this.coreWriter.pos() );
 		return this;

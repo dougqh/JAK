@@ -1,6 +1,6 @@
 package net.dougqh.jak;
 
-import static net.dougqh.jak.Operation.*;
+import static net.dougqh.jak.operations.Operation.*;
 
 import java.lang.ref.Reference;
 import java.lang.reflect.Type;
@@ -361,7 +361,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	public final JavaCoreCodeWriterImpl laload() {
 		this.unstack( long[].class );
 		this.unstack( int.class );
-		this.stack( int.class );
+		this.stack( long.class );
 		return this.op( LALOAD );
 	}
 	
@@ -667,8 +667,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	@Override
 	public final JavaCoreCodeWriterImpl dup() {
 		this.unstack( Category1.class );
-		this.stack( Category2.class );
-		this.stack( Category2.class );
+		this.stack( Category1.class );
+		this.stack( Category1.class );
 		return this.op( DUP );
 	}
 	

@@ -1,7 +1,6 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Operation;
 
 public final class Istore_3 extends Operation {
 	public static final String ID = "istore_3";
@@ -30,7 +29,7 @@ public final class Istore_3 extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackOperandTypes() {
-		return new Class< ? >[] { long.class };
+		return new Class< ? >[] { int.class };
 	}
 	
 	@Override

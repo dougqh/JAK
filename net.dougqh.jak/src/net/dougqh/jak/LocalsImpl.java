@@ -2,6 +2,8 @@ package net.dougqh.jak;
 
 import java.lang.reflect.Type;
 
+import net.dougqh.jak.types.Types;
+
 final class LocalsImpl implements Locals {
 	private int maxLocals = 0;
 	
@@ -19,7 +21,7 @@ final class LocalsImpl implements Locals {
 		final int slot,
 		final Type type )
 	{
-		int size = TypeUtils.size( type );
+		int size = Types.size( type );
 		if ( slot + size > this.maxLocals ) {
 			this.maxLocals = slot + size;
 		}

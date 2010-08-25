@@ -1,4 +1,6 @@
-package net.dougqh.jak;
+package net.dougqh.jak.operations;
+
+import net.dougqh.jak.JavaCoreCodeWriter;
 
 
 public abstract class Operation {

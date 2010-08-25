@@ -11,5 +11,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	FlagsTest.class,
 	ByteStreamTest.class,
 	ConstantPoolTest.class,
+	OperationTest.class,
 	CodeGenApiTestSuite.class } )
 public final class CodeGenTestSuite {}

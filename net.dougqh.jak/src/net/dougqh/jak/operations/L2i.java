@@ -1,7 +1,6 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Operation;
 
 public final class L2i extends Operation {
 	public static final String ID = "l2i";
@@ -35,7 +34,7 @@ public final class L2i extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackResultTypes() {
-		return new Class< ? >[] { float.class };
+		return new Class< ? >[] { int.class };
 	}
 	
 	@Override

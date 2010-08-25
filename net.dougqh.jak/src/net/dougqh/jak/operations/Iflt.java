@@ -2,7 +2,6 @@ package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
-import net.dougqh.jak.Operation;
 
 public final class Iflt extends Operation {
 	public static final String ID = "iflt";

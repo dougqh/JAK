@@ -212,7 +212,7 @@ public final class JakRepl {
 		return method.getName().equals( command ) && isWritingMethod( method );
 	}
 	
-	private final class ReplMonitor implements JakMonitor {
+	private final class ReplMonitor extends JakMonitor {
 		@Override
 		public final JavaCoreCodeWriter monitor( final JavaCoreCodeWriter wrappedWriter ) {
 			return new WriterDelegate( wrappedWriter ).getProxy();

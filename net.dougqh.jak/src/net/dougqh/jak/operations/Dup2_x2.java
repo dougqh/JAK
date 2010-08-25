@@ -1,7 +1,7 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Operation;
+import net.dougqh.jak.types.Category2;
 
 public final class Dup2_x2 extends Operation {
 	public static final String ID = "dup2_x2";
@@ -62,14 +62,14 @@ public final class Dup2_x2 extends Operation {
 //		
 	@Override
 	public final Class< ? >[] getStackOperandTypes() {
-		//TODO: Finish implementing this
-		return null;
+		//TODO: Finish implementing this - currently incorrect
+		return new Class< ? >[] { Category2.class };
 	}
 	
 	@Override
 	public final Class< ? >[] getStackResultTypes() {
-		//TODO: Finish implementing this
-		return null;
+		//TODO: Finish implementing this - currently incorrect
+		return new Class< ? >[] { Category2.class };
 	}
 	
 	@Override

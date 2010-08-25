@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.dougqh.jak.Operation;
+import net.dougqh.jak.operations.Operation;
 
 @Documented
 @Target( ElementType.METHOD )

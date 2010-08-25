@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target( ElementType.METHOD )
 @Retention( RetentionPolicy.RUNTIME )
-public @interface ArtificialOp {
+public @interface SyntheticOp {
 	public abstract String id() default "";
 	
 	public abstract Class< ? >[] stackOperandTypes() default {};

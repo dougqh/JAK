@@ -1,7 +1,6 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Operation;
 import net.dougqh.jak.types.Reference;
 
 public final class Multianewarray extends Operation {
@@ -40,12 +39,13 @@ public final class Multianewarray extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackOperandTypes() {
-		//TODO: Fill-out appropriately
-		return null;
+		//TODO - finish implementing this
+		return new Class< ? >[] { int.class };
 	}
 	
 	@Override
 	public final Class< ? >[] getStackResultTypes() {
+		//TODO - finish implementing this
 		return new Class< ? >[] { Reference[].class };
 	}
 	
