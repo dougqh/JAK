@@ -1,7 +1,6 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.types.Reference;
 
 public final class Athrow extends Operation {
 	public static final String ID = "athrow";
@@ -30,7 +29,7 @@ public final class Athrow extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackOperandTypes() {
-		return new Class< ? >[] { Reference.class };
+		return new Class< ? >[] { Throwable.class };
 	}
 	
 	@Override

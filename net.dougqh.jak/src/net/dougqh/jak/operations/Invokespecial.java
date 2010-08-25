@@ -38,6 +38,11 @@ public final class Invokespecial extends Operation {
 	}
 	
 	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
+
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return new Class< ? >[] { Type.class, JavaMethodDescriptor.class };
 	}

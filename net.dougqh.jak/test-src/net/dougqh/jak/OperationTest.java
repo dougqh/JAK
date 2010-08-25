@@ -8,7 +8,8 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
@@ -16,14 +17,13 @@ import junit.framework.TestSuite;
 import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.operations.Operation;
 import net.dougqh.jak.operations.Operations;
-import net.dougqh.jak.types.Types;
 
 public final class OperationTest extends TestCase {
 	public static final TestSuite suite() {
 		TestSuite suite = new TestSuite();
 		for ( Method method : JavaCoreCodeWriter.class.getDeclaredMethods() ) {
 			Operation testOperation = createTestOperation( method );
-			if ( ( testOperation != null ) && isFullyDefined( testOperation ) ) {
+			if ( ( testOperation != null ) && ! testOperation.isPolymorphic() ) {
 				suite.addTest( new OperationTest( testOperation, method ) );
 			}
 		}
@@ -38,21 +38,21 @@ public final class OperationTest extends TestCase {
 			return Operations.getPrototype( opAnnotation.value() );
 		}
 	}
-	
-	private static final boolean isFullyDefined( final Operation operation ) {
-		return areFullyDefined( operation.getStackOperandTypes() ) &&
-			areFullyDefined( operation.getStackResultTypes() );
-	}
-	
-	private static final boolean areFullyDefined( final Class< ? >... classes ) {
-		for ( Class< ? > aClass : classes ) {
-			//TODO: Revisit handling of branch operations
-			if ( Types.isPlaceholderClass( aClass ) ) {
-				return false;
-			}
-		}
-		return true;
-	}
+
+//	private static final boolean isFullyDefined( final Operation operation ) {
+//		return areFullyDefined( operation.getStackOperandTypes() ) &&
+//			areFullyDefined( operation.getStackResultTypes() );
+//	}
+//	
+//	private static final boolean areFullyDefined( final Class< ? >... classes ) {
+//		for ( Class< ? > aClass : classes ) {
+//			//TODO: Revisit handling of branch operations
+//			if ( Types.isPlaceholderClass( aClass ) ) {
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
 
 	private final Operation operation;
 	private final Method method;
@@ -144,23 +144,25 @@ public final class OperationTest extends TestCase {
 	}
 	
 	private static final class CheckedStack implements Stack {
-		private final Iterator< Class< ? > > operandIter;
-		private final Iterator< Class< ? > > resultIter;
+		private final ListIterator< Class< ? > > operandIter;
+		private final ListIterator< Class< ? > > resultIter;
 		
 		private final Stack stack;
 		
 		CheckedStack( final Operation operation, final Stack stack ) {
-			this.operandIter = Arrays.asList( operation.getStackOperandTypes() ).iterator();
-			this.resultIter = Arrays.asList( operation.getStackResultTypes() ).iterator();
+			List< Class< ? > > operandTypes = Arrays.asList( operation.getStackOperandTypes() );
+			this.operandIter = operandTypes.listIterator( operandTypes.size() );
+			
+			List< Class< ? > > resultTypes = Arrays.asList( operation.getStackResultTypes() );
+			this.resultIter = resultTypes.listIterator();
 			
 			this.stack = stack;
 		}
 		
+		
 		@Override
 		public final void pop( final Type type ) {
-			//TODO: Flip this to remove last - and then fix the 
-			//order of the stack calls in JavaCoreCodeWriter
-			Type expectedType = this.operandIter.next();
+			Type expectedType = this.operandIter.previous();
 			assertEquals( expectedType, type );
 			
 			this.stack.pop( type );

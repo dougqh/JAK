@@ -26,6 +26,11 @@ public final class Getstatic extends Operation {
 	}
 	
 	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
+	
+	@Override
 	public final String getId() {
 		return ID;
 	}

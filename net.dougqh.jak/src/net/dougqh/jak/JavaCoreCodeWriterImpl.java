@@ -2,7 +2,6 @@ package net.dougqh.jak;
 
 import static net.dougqh.jak.operations.Operation.*;
 
-import java.lang.ref.Reference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +9,7 @@ import java.util.Iterator;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Category1;
 import net.dougqh.jak.types.Category2;
+import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {	
@@ -313,7 +313,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	@Override
 	public final JavaCoreCodeWriterImpl aload( final int slot ) {
 		this.local( slot, Reference.class );
-		this.unstack( Reference.class );
+		this.stack( Reference.class );
 		return this.op( ALOAD ).u1( slot );
 	}
 	
@@ -351,64 +351,64 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iaload() {
-		this.unstack( int[].class );
 		this.unstack( int.class );
+		this.unstack( int[].class );
 		this.stack( int.class );
 		return this.op( IALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl laload() {
-		this.unstack( long[].class );
 		this.unstack( int.class );
+		this.unstack( long[].class );
 		this.stack( long.class );
 		return this.op( LALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl faload() {
-		this.unstack( float[].class );
 		this.unstack( int.class );
+		this.unstack( float[].class );
 		this.stack( float.class );
 		return this.op( FALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl daload() {
-		this.unstack( double[].class );
 		this.unstack( int.class );
+		this.unstack( double[].class );
 		this.stack( double.class );
 		return this.op( DALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aaload() {
-		this.unstack( Reference[].class );
 		this.unstack( int.class );
+		this.unstack( Reference[].class );
 		this.stack( Reference.class );
 		return this.op( AALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl baload() {
-		this.unstack( byte[].class );
 		this.unstack( int.class );
+		this.unstack( byte[].class );
 		this.stack( byte.class );
 		return this.op( BALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl caload() {
-		this.unstack( char[].class );
 		this.unstack( int.class );
+		this.unstack( char[].class );
 		this.stack( char.class );
 		return this.op( CALOAD );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl saload() {
-		this.unstack( short[].class );
 		this.unstack( int.class );
+		this.unstack( short[].class );
 		this.stack( short.class );
 		return this.op( SALOAD );
 	}
@@ -590,65 +590,65 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iastore() {
+		this.unstack( int.class );
+		this.unstack( int.class );
 		this.unstack( int[].class );
-		this.unstack( int.class );
-		this.unstack( int.class );
 		return this.op( IASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lastore() {
-		this.unstack( long[].class );
-		this.unstack( int.class );
 		this.unstack( long.class );
+		this.unstack( int.class );
+		this.unstack( long[].class );
 		return this.op( LASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fastore() {
-		this.unstack( float[].class );
-		this.unstack( int.class );
 		this.unstack( float.class );
+		this.unstack( int.class );
+		this.unstack( float[].class );
 		return this.op( FASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dastore() {
-		this.unstack( double[].class );
-		this.unstack( int.class );
 		this.unstack( double.class );
+		this.unstack( int.class );
+		this.unstack( double[].class );
 		return this.op( DASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aastore() {
-		this.unstack( Reference[].class );
+		this.unstack( Reference.class );
 		this.unstack( int.class );
-		this.stack( Reference.class );
+		this.unstack( Reference[].class );
 		return this.op( AASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl bastore() {
-		this.unstack( byte[].class );
-		this.unstack( int.class );
 		this.unstack( byte.class );
+		this.unstack( int.class );
+		this.unstack( byte[].class );
 		return this.op( BASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl castore() {
-		this.unstack( char[].class );
-		this.unstack( int.class );
 		this.unstack( char.class );
+		this.unstack( int.class );
+		this.unstack( char[].class );
 		return this.op( CASTORE );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl sastore() {
-		this.unstack( short[].class );
-		this.unstack( int.class );
 		this.unstack( short.class );
+		this.unstack( int.class );
+		this.unstack( short[].class );
 		return this.op( SASTORE );
 	}
 	
@@ -924,8 +924,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lshl() {
-		this.unstack( long.class );
 		this.unstack( int.class );
+		this.unstack( long.class );
 		this.stack( long.class );
 		return this.op( LSHL );
 	}
@@ -940,8 +940,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lshr() {
-		this.unstack( long.class );
 		this.unstack( int.class );
+		this.unstack( long.class );
 		this.stack( long.class );		
 		return this.op( LSHR );
 	}
@@ -956,8 +956,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lushr() {
-		this.unstack( long.class );
 		this.unstack( int.class );
+		this.unstack( long.class );
 		this.stack( long.class );
 		return this.op( LUSHR );
 	}
@@ -1276,8 +1276,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
-		this.unstack( targetType ); //this
 		this.unstack( method.arguments() );
+		this.unstack( targetType ); //this
 		this.stack( method.getReturnType() );
 		
 		return this.op( INVOKEVIRTUAL ).u2(
@@ -1293,8 +1293,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
-		this.unstack( targetType ); //this
 		this.unstack( method.arguments() );
+		this.unstack( targetType ); //this
 		this.stack( method.getReturnType() );		
 		
 		return this.op( INVOKEINTERFACE ).u2(
@@ -1312,8 +1312,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
-		this.unstack( targetType ); //this
 		this.unstack( method.arguments() );
+		this.unstack( targetType ); //this
 		this.stack( method.getReturnType() );
 		
 		return this.op( INVOKESPECIAL ).u2(
@@ -1395,7 +1395,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl athrow() {
-		this.unstack( Exception.class );
+		this.unstack( Throwable.class );
 		return this.op( ATHROW );
 	}
 	
@@ -1586,8 +1586,9 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	}
 	
 	private final void unstack( final FormalArguments args ) {
-		for ( JavaVariable var : args ) {
-			this.unstack( var.getType() );
+		Type[] types = args.getTypes();
+		for ( int i = types.length - 1; i >= 0; --i ) {
+			this.unstack( types[ i ] );
 		}
 	}
 	

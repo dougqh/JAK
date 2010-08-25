@@ -28,6 +28,11 @@ public final class Anewarray extends Operation {
 	}
 	
 	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return new Class< ? >[] { Class.class };
 	}

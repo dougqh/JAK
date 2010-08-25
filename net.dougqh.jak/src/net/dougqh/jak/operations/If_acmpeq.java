@@ -35,7 +35,7 @@ public final class If_acmpeq extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackOperandTypes() {
-		return new Class< ? > [] { Reference.class };
+		return new Class< ? > [] { Reference.class, Reference.class };
 	}
 	
 	@Override

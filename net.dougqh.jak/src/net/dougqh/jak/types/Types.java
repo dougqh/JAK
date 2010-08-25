@@ -22,17 +22,4 @@ public final class Types {
 			type.equals( double.class ) ||
 			type.equals( Category2.class );
 	}
-	
-	public static final boolean isPlaceholderClass( final Class< ? > aClass ) {
-		if ( aClass.isArray() ) {
-			return isPlaceholderClass( aClass.getComponentType() );
-		} else {
-			return
-				aClass.equals( Any.class ) ||
-				aClass.equals( Reference.class ) ||
-				aClass.equals( ArgList.class ) ||
-				aClass.equals( Category1.class ) ||
-				aClass.equals( Category2.class );
-		}
-	}	
 }

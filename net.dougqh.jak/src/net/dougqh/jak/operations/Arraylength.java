@@ -1,7 +1,7 @@
 package net.dougqh.jak.operations;
 
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.types.Reference;
+import net.dougqh.jak.types.Any;
 
 public final class Arraylength extends Operation {
 	public static final String ID = "arraylength";
@@ -24,13 +24,18 @@ public final class Arraylength extends Operation {
 	}
 	
 	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}
 	
 	@Override
 	public final Class< ? >[] getStackOperandTypes() {
-		return new Class< ? >[] { Reference[].class };
+		return new Class< ? >[] { Any[].class };
 	}
 	
 	@Override

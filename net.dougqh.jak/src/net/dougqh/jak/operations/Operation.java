@@ -271,6 +271,10 @@ public abstract class Operation {
 	
 	public abstract int getCode();
 	
+	public boolean isPolymorphic() {
+		return false;
+	}
+	
 	public abstract Class< ? >[] getCodeOperandTypes();
 	
 	public abstract Class< ? >[] getStackOperandTypes();

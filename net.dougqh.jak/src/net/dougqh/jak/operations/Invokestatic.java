@@ -35,6 +35,11 @@ public final class Invokestatic extends Operation {
 	public final int getCode() {
 		return CODE;
 	}
+		
+	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
 	
 	@Override
 	public final Class< ? >[] getCodeOperandTypes() {

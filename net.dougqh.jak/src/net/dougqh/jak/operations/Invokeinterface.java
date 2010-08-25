@@ -36,7 +36,12 @@ public final class Invokeinterface extends Operation {
 	public final int getCode() {
 		return CODE;
 	}
-	
+		
+	@Override
+	public final boolean isPolymorphic() {
+		return true;
+	}
+		
 	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return new Class< ? >[] { Type.class, JavaMethodDescriptor.class };
