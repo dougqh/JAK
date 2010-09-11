@@ -59,7 +59,8 @@ public final class OperationTest extends TestCase {
 			class_( "Test" ).typeDescriptor(),
 			0 );
 		
-		typeWriter.monitor( new ExpectationMonitor( this.operation, this.method ) );
+		ExpectationMonitor monitor = new ExpectationMonitor( this.operation, this.method );
+		typeWriter.monitor( monitor );
 		
 		JavaCoreCodeWriter coreWriter = typeWriter.define(
 			static_().method( void.class, "main" ),
@@ -75,11 +76,15 @@ public final class OperationTest extends TestCase {
 				throw e;
 			}
 		}
+		
+		monitor.assertDone();
 	}
 	
 	private static final class ExpectationMonitor extends JakMonitor {
 		private final Operation operation;
 		private final Method expectedMethod;
+		
+		private CheckedStack checkedStack;
 		
 		ExpectationMonitor(
 			final Operation operation,
@@ -99,7 +104,12 @@ public final class OperationTest extends TestCase {
 		
 		@Override
 		public final Stack monitor( final Stack stack ) {
-			return new CheckedStack( this.operation, stack );
+			this.checkedStack = new CheckedStack( this.operation, stack );
+			return this.checkedStack;
+		}
+		
+		final void assertDone() {
+			this.checkedStack.assertDone();
 		}
 	}
 	
@@ -224,6 +234,11 @@ public final class OperationTest extends TestCase {
 			assertEquals( expectedType, type );
 			
 			this.stack.push( type );
+		}
+		
+		final void assertDone() {
+			assertFalse( "Mismatched stack operands", this.operandIter.hasPrevious() );
+			assertFalse( "Mismatched stack results", this.resultIter.hasNext() );
 		}
 	}
 }
