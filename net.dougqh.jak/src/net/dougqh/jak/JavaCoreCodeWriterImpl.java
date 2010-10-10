@@ -1955,7 +1955,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	}
 	
 	private final void stack( final Type type ) {
-		this.stack.push( type );
+		this.stack.stack( type );
 	}
 	
 	private final void unstack( final FormalArguments args ) {
@@ -1967,7 +1967,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	private final void unstack( final Type type ) {
 		if ( ! type.equals( void.class ) ) {
-			this.stack.pop( type );
+			this.stack.unstack( type );
 		}
 	}
 	

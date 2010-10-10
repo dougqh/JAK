@@ -9,8 +9,8 @@ import java.util.HashMap;
 
 import net.dougqh.jak.JavaCoreCodeWriter.ExceptionHandler;
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
-import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.Op;
+import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.operations.*;
 import net.dougqh.jak.types.Any;
@@ -47,6 +47,10 @@ public final class JavaCodeWriter {
 		}
 
 		this.coreWriter = coreWriter;
+	}
+	
+	public final JavaCoreCodeWriter coreWriter() {
+		return this.coreWriter;
 	}
 
 	@Op( Nop.class )

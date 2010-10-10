@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test-src"/>
+	<classpathentry kind="var" path="AGITAR_MOCK_OBJECTS"/>
+	<classpathentry kind="var" path="AGITAR_TEST_LIB"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

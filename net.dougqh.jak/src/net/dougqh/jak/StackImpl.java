@@ -16,12 +16,12 @@ final class StackImpl implements Stack {
 	}
 	
 	@Override
-	public final void push( final Type type ) {
+	public final void stack( final Type type ) {
 		this.push( Types.size( type ) );
 	}
 	
 	@Override
-	public final void pop( final Type type ) {
+	public final void unstack( final Type type ) {
 		this.pop( Types.size( type ) );
 	}
 	

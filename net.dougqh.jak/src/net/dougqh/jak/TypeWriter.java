@@ -30,7 +30,7 @@ final class TypeWriter {
 	private final int parentClassNameIndex;
 	
 	private InnerClassesAttribute innerClasses = null;
-	private JakMonitor monitor = new NullJakMonitor();
+	private JakMonitor monitor = JakMonitor.NULL;
 	
 	TypeWriter(
 		final TypeWriterGroup writerGroup,

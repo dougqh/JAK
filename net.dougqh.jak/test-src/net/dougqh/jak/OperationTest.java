@@ -146,12 +146,12 @@ public final class OperationTest extends TestCase {
 		}
 		
 		@Override
-		public void push( final Type type ) {
+		public void stack( final Type type ) {
 			fail();
 		}
 		
 		@Override
-		public void pop( final Type type ) {
+		public void unstack( final Type type ) {
 			fail();
 		}
 		
@@ -221,19 +221,19 @@ public final class OperationTest extends TestCase {
 		}
 		
 		@Override
-		public final void pop( final Type type ) {
+		public final void unstack( final Type type ) {
 			Type expectedType = this.operandIter.previous();
 			assertEquals( expectedType, type );
 			
-			this.stack.pop( type );
+			this.stack.unstack( type );
 		}
 		
 		@Override
-		public final void push( final Type type ) {
+		public final void stack( final Type type ) {
 			Type expectedType = this.resultIter.next();
 			assertEquals( expectedType, type );
 			
-			this.stack.push( type );
+			this.stack.stack( type );
 		}
 		
 		final void assertDone() {

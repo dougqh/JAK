@@ -1,6 +1,8 @@
 package net.dougqh.jak;
 
 public abstract class JakMonitor {
+	static final JakMonitor NULL = new JakMonitor() {};
+	
 	public JavaCoreCodeWriter monitor( final JavaCoreCodeWriter wrappedWriter ) {
 		return wrappedWriter;
 	}
