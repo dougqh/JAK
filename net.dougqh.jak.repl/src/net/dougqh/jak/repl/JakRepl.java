@@ -45,6 +45,8 @@ public final class JakRepl {
 	static final JavaMethodDescriptor MAIN_METHOD = 
 		public_().static_().final_().method( void.class, "main" );
 	
+	private static final String RESET = "reset";
+	private static final String LIST = "list";
 	private static final String EXIT = "exit";
 	
 	private final ReplRecorder recorder;
@@ -145,21 +147,36 @@ public final class JakRepl {
 	}
 	
 	private final void processCommand( final String command ) throws IOException {
-		Method method = findMethod( command );
-		if ( method == null ) {
-			this.console.printError( "Unknown command: " + command );
+		if ( command.equals( RESET ) ) {
+			this.resetProgram();
+		} else if ( command.equals( LIST ) ) {
+			this.listProgram();
 		} else {
-			try {
-				method.invoke( this.codeWriter );
-			} catch ( IllegalArgumentException e ) {
-				throw new IllegalStateException( e );
-			} catch ( IllegalAccessException e ) {
-				throw new IllegalStateException( e );
-			} catch ( InvocationTargetException e ) {
-				throw new IllegalStateException( e );
+			Method method = findMethod( command );
+			if ( method == null ) {
+				this.console.printError( "Unknown command: " + command );
+			} else {
+				try {
+					method.invoke( this.codeWriter );
+				} catch ( IllegalArgumentException e ) {
+					this.console.printError( "Invalid arguments" );
+					this.printUsage( method );
+				} catch ( IllegalAccessException e ) {
+					throw new IllegalStateException( e );
+				} catch ( InvocationTargetException e ) {
+					throw new IllegalStateException( e );
+				}
+				this.runProgram();
 			}
-			this.runProgram();
 		}
+	}
+	
+	private final void resetProgram() throws IOException {
+		this.recorder.reset();
+	}
+	
+	private final void listProgram() throws IOException {
+		this.recorder.list( this.console );
 	}
 	
 	private final void runProgram() throws IOException {
@@ -244,16 +261,11 @@ public final class JakRepl {
 
 	private static final Method findMethod( final String command ) {
 		for ( Method method : JavaCodeWriter.class.getMethods() ) {
-			if ( isMatch ( method, command ) ) {
+			if ( isMatch( method, command ) ) {
 				return method;
 			}
 		}
 		return null;
-	}
-	
-	private static final boolean isWritingMethod( final Method method ) {
-		return method.getDeclaringClass().equals( JavaCodeWriter.class ) &&
-			method.getReturnType().equals( JavaCodeWriter.class );
 	}
 	
 	private static final boolean isMatch(
@@ -261,5 +273,20 @@ public final class JakRepl {
 		final String command )
 	{
 		return method.getName().equals( command ) && isWritingMethod( method );
+	}
+	
+	private static final boolean isWritingMethod( final Method method ) {
+		return method.getDeclaringClass().equals( JavaCodeWriter.class ) &&
+			method.getReturnType().equals( JavaCodeWriter.class );
+	}	
+	
+	private final void printUsage( final Method method ) {
+		this.console.append( "Usage: " );
+		this.console.append( method.getName() );
+		for ( Class< ? > type : method.getParameterTypes() ) {
+			this.console.append( ' ' );
+			this.console.append( type.getSimpleName() ); 
+		}
+		this.console.endl();
 	}
 }

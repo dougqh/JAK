@@ -15,6 +15,11 @@ final class ReplRecorder {
 		return this.methods.size();
 	}
 	
+	final void reset() {
+		this.methods.clear();
+		this.args.clear();
+	}
+	
 	final void record( final Method method, final Object[] args ) {
 		this.methods.add( method );
 		this.args.add( args );
@@ -36,6 +41,22 @@ final class ReplRecorder {
 				throw new IllegalStateException( e );
 			} catch ( InvocationTargetException e ) {
 				throw new IllegalStateException( e );
+			}
+		}
+	}
+	
+	final void list( final ReplConsole console ) {
+		Iterator< Method > methodIter = this.methods.iterator();
+		Iterator< Object[] > argsIter = this.args.iterator();
+		
+		while ( methodIter.hasNext() ) {
+			Method method = methodIter.next();
+			Object[] args = argsIter.next();
+			
+			if ( args.length != 0 ) {
+				console.append( method.getName() ).todo().endl();
+			} else {
+				console.append( method.getName() ).endl();
 			}
 		}
 	}

@@ -109,6 +109,12 @@ final class ReplConsole {
 		return this.append( ' ' ).append( jump.toString() );
 	}
 	
+	final ReplConsole todo() {
+		//TODO: Remove when all output is handled
+		this.append( " TDOO" );
+		return this;
+	}
+	
 	final ReplConsole todo( final Class< ? > aClass ) {
 		//TODO: Replace this for field and method signatures
 		this.append( " TODO " + aClass.getSimpleName() );
