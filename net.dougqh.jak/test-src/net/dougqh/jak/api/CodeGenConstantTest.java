@@ -18,8 +18,7 @@ public final class CodeGenConstantTest {
 		
 		classWriter.defineDefaultConstructor();
 		
-		classWriter.define(
-			public_().final_().method( boolean.class, "get" ) ).
+		classWriter.define( public_().final_().method( boolean.class, "get" ) ).
 			iconst( value ).
 			ireturn();
 		
@@ -39,8 +38,7 @@ public final class CodeGenConstantTest {
 		
 		classWriter.defineDefaultConstructor();
 		
-		classWriter.define(
-			public_().final_().method( char.class, "get" ) ).
+		classWriter.define( public_().final_().method( char.class, "get" ) ).
 			iconst( value ).
 			ireturn();
 		
