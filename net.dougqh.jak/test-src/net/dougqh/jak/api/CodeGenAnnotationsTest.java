@@ -1,6 +1,7 @@
 package net.dougqh.jak.api;
 
 import static net.dougqh.jak.JavaAssembler.*;
+import static net.dougqh.jak.matchers.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
@@ -16,10 +17,10 @@ public final class CodeGenAnnotationsTest {
 		annotationWriter.define( field( String.class, "value" ) );
 		
 		Class< ? > annotationClass = annotationWriter.load();
-		assertTrue( annotationClass.isAnnotation() );
+		assertThat( annotationClass.isAnnotation(), is( true ) );
 		
 		Method valueMethod = getMethod( annotationClass, "value" );
-		assertEquals( String.class, valueMethod.getReturnType() );
+		assertThat( valueMethod.getReturnType(), is( String.class ) );
 	}
 	
 	private static final Method getMethod(

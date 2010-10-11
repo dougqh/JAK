@@ -7,6 +7,7 @@ import net.dougqh.java.meta.types.JavaTypes;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static net.dougqh.jak.matchers.Matchers.*;
 
 public final class ConstantPoolTest {
 	public final @Test void objectTypeNameSignature() {
@@ -14,6 +15,8 @@ public final class ConstantPoolTest {
 			void.class,
 			FormalArguments.instance( JavaTypes.objectTypeName( "UserDto" ) ) );
 		
-		assertEquals( "(LUserDto;)V", signature );
+		assertThat(
+			signature,
+			is( "(LUserDto;)V" ) );
 	}
 }

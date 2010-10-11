@@ -18,6 +18,9 @@ import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.operations.Operation;
 import net.dougqh.jak.operations.Operations;
 
+import static org.junit.Assert.*;
+import static net.dougqh.jak.matchers.Matchers.*;
+
 public final class OperationTest extends TestCase {
 	public static final TestSuite suite() {
 		TestSuite suite = new TestSuite();
@@ -132,7 +135,7 @@ public final class OperationTest extends TestCase {
 			final Object[] args )
 			throws Throwable
 		{
-			assertEquals( this.expectedMethod, method );
+			assertThat( method, is( this.expectedMethod ) );
 			
 			return method.invoke( this.wrappedWriter, args );
 		}
@@ -223,7 +226,7 @@ public final class OperationTest extends TestCase {
 		@Override
 		public final void unstack( final Type type ) {
 			Type expectedType = this.operandIter.previous();
-			assertEquals( expectedType, type );
+			assertThat( type, is( expectedType ) );
 			
 			this.stack.unstack( type );
 		}
@@ -231,14 +234,18 @@ public final class OperationTest extends TestCase {
 		@Override
 		public final void stack( final Type type ) {
 			Type expectedType = this.resultIter.next();
-			assertEquals( expectedType, type );
+			assertThat( type, is( expectedType ) );
 			
 			this.stack.stack( type );
 		}
 		
 		final void assertDone() {
-			assertFalse( "Mismatched stack operands", this.operandIter.hasPrevious() );
-			assertFalse( "Mismatched stack results", this.resultIter.hasNext() );
+			assertThat(
+				"Mismatched stack operands",
+				this.operandIter.hasPrevious(), is( false ) );
+			assertThat(
+				"Mismatched stack results",
+				this.resultIter.hasNext(), is( false ) );
 		}
 	}
 }

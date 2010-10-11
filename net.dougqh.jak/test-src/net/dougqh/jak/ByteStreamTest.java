@@ -1,6 +1,7 @@
 package net.dougqh.jak;
 
 import static org.junit.Assert.*;
+import static net.dougqh.jak.matchers.Matchers.*;
 
 import net.dougqh.jak.Byte2Slot;
 import net.dougqh.jak.ByteStream;
@@ -16,17 +17,17 @@ public final class ByteStreamTest {
 		
 		slot.u2( 0xfeba );
 		
-		assertArrayEquals(
-			new byte[] { (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe },
-			byteStream.toByteArray() );
+		assertThat(
+			byteStream.toByteArray(),
+			is( new byte[] { (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe } ) );
 	}
 	
 	public final @Test void magic() {
 		ByteStream byteStream = new ByteStream( 32 );
 		byteStream.u2( 0xcafe ).u2( 0xbabe );
 		
-		assertArrayEquals(
-			new byte[] { (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe },
-			byteStream.toByteArray() );
+		assertThat(
+			byteStream.toByteArray(),
+			is( new byte[] { (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe } ) );
 	}
 }

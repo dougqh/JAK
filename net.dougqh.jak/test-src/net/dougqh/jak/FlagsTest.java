@@ -2,33 +2,34 @@ package net.dougqh.jak;
 
 import static net.dougqh.jak.JavaAssembler.*;
 import static org.junit.Assert.*;
+import static net.dougqh.jak.matchers.Matchers.*;
 
 import org.junit.Test;
 
 public final class FlagsTest {
 	public final @Test void flags() {
-		assertEquals(
+		assertThat(
 			final_().private_(),
-			private_().final_() );
+			is( private_().final_() ) );
 		
-		assertEquals(
+		assertThat(
 			abstract_().protected_(),
-			protected_().abstract_() );
+			is( protected_().abstract_() ) );
 		
-		assertEquals(
+		assertThat(
 			native_().public_(),
-			public_().native_() );
+			is( public_().native_() ) );
 		
-		assertEquals(
+		assertThat(
 			transient_().volatile_(),
-			volatile_().transient_() );
+			is( volatile_().transient_() ) );
 		
-		assertEquals(
+		assertThat(
 			varargs().strictfp_(),
-			strictfp_().varargs() );
+			is( strictfp_().varargs() ) );
 		
-		assertEquals(
+		assertThat(
 			synchronized_().final_(),
-			final_().synchronized_() );
+			is( final_().synchronized_() ) );
 	}
 }
