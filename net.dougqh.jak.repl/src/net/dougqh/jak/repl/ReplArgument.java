@@ -10,7 +10,7 @@ enum ReplArgument {
 		public final Object parse( final String argString ) {
 			if ( argString.equals( "true" ) ) {
 				return true;
-			} else if ( argString.equals( "fasle" ) ) {
+			} else if ( argString.equals( "false" ) ) {
 				return false;
 			} else {
 				throw new IllegalArgumentException();
@@ -23,9 +23,25 @@ enum ReplArgument {
 			try {
 				return Byte.parseByte( argString );
 			} catch ( NumberFormatException e ) {
-				throw new IllegalStateException( e );
+				throw new IllegalArgumentException( e );
 			}
 		}
+	},
+	CHAR( char.class ) {
+		@Override
+		public final Object parse( final String argString ) {
+			//TODO: Implement this proper escaping support
+			if ( argString.charAt( 0 ) != '\'' ) {
+				throw new IllegalArgumentException();
+			}
+			if ( argString.charAt( argString.length() - 1 ) != '\'' ) {
+				throw new IllegalArgumentException();
+			}
+			if ( argString.length() != 3 ) {
+				throw new IllegalArgumentException();
+			}
+			return argString.charAt( 1 );
+		}		
 	},
 	SHORT( short.class ) {
 		@Override
@@ -33,7 +49,7 @@ enum ReplArgument {
 			try {
 				return Short.parseShort( argString );
 			} catch ( NumberFormatException e ) {
-				throw new IllegalStateException( e );
+				throw new IllegalArgumentException( e );
 			}
 		}		
 	},
@@ -43,7 +59,7 @@ enum ReplArgument {
 			try {
 				return Integer.parseInt( argString );
 			} catch ( NumberFormatException e ) {
-				throw new IllegalStateException( e );
+				throw new IllegalArgumentException( e );
 			}
 		}	
 	},
@@ -53,7 +69,7 @@ enum ReplArgument {
 			try {
 				return Float.parseFloat( argString );
 			} catch ( NumberFormatException e ) {
-				throw new IllegalStateException( e );
+				throw new IllegalArgumentException( e );
 			}
 		}	
 	},
@@ -63,7 +79,7 @@ enum ReplArgument {
 			try {
 				return Long.parseLong( argString );
 			} catch ( NumberFormatException e ) {
-				throw new IllegalStateException( e );
+				throw new IllegalArgumentException( e );
 			}
 		}		
 	},
@@ -73,9 +89,42 @@ enum ReplArgument {
 			try {
 				return Double.parseDouble( argString );
 			} catch ( NumberFormatException e ) {
-				throw new IllegalStateException( e );
+				throw new IllegalArgumentException( e );
 			}
 		}		
+	},
+	STRING_LITERAL( CharSequence.class ) {
+		@Override
+		public final Object parse( final String argString ) {
+			//TODO: Implement this proper escaping support
+			if ( argString.charAt( 0 ) != '"' ) {
+				throw new IllegalArgumentException();
+			}
+			if ( argString.charAt( argString.length() - 1 ) != '"' ) {
+				throw new IllegalArgumentException();
+			}
+			return argString.substring( 1, argString.length() - 1 );
+		}
+	},
+	TYPE_LITERAL( Type.class ) {
+		@Override
+		public final Object parse( final String argString ) {
+			try {
+				return Class.forName( argString );
+			} catch ( ClassNotFoundException e ) {
+				throw new IllegalArgumentException();
+			}
+		}
+	},
+	CLASS_LITERAL( Class.class ) {
+		@Override
+		public final Object parse( final String argString ) {
+			try {
+				return Class.forName( argString );
+			} catch ( ClassNotFoundException e ) {
+				throw new IllegalArgumentException();
+			}
+		}
 	};
 	
 	public static final ReplArgument instance( final Type type ) {
@@ -98,7 +147,7 @@ enum ReplArgument {
 	}
 	
 	public final String getTypeName() {
-		return JavaTypes.getRawClassName( this.type );
+		return ReplUtils.getDisplayName( this.type );
 	}
 	
 	public abstract Object parse( final String argString );

@@ -8,6 +8,13 @@ final class ReplUtils {
 	private ReplUtils() {}
 	
 	public static final String getDisplayName( final Type type ) {
-		return JavaTypes.getRawClassName( type );
+		if ( type.equals( CharSequence.class ) ) {
+			return "String";
+		} else if ( type instanceof Class ) {
+			Class< ? > aClass = (Class< ? >)type;
+			return aClass.getSimpleName();
+		} else {
+			return JavaTypes.getRawClassName( type );
+		}
 	}
 }

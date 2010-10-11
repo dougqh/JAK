@@ -97,7 +97,15 @@ public final class ReplState {
 			
 			console.printColumns(
 				ReplUtils.getDisplayName( type ),
-				element.toString() );
+				toString( element ) );
+		}
+	}
+	
+	private static final String toString( final Object value ) {
+		if ( value == null ) {
+			return "null";
+		} else {
+			return value.toString();
 		}
 	}
 }

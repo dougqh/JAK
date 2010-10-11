@@ -8,5 +8,6 @@ Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0";visibility:=reexport
  org.junit4;bundle-version="4.5.0"
 Bundle-Vendor: Douglas Q Hawkins
 Export-Package: net.dougqh.jak,
+ net.dougqh.jak.annotations,
  net.dougqh.jak.operations,
  net.dougqh.jak.types

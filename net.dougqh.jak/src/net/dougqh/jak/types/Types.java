@@ -27,7 +27,7 @@ public final class Types {
 			return ! type.equals( Category1.class ) &&
 				! type.equals( Category2.class );
 		} else {
-			return true;
+			return false;
 		}
 	}
 	

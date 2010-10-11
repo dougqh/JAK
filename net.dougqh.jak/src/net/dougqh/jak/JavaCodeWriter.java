@@ -1,6 +1,5 @@
 package net.dougqh.jak;
 
-import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -15,6 +14,8 @@ import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.operations.*;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.ArgList;
+import net.dougqh.jak.types.Primitive;
+import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
 public final class JavaCodeWriter {
@@ -2175,6 +2176,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
+	@SyntheticOp( stackOperandTypes=Primitive.class, stackResultTypes=Reference.class )
 	public final JavaCodeWriter box( final Class< ? > primitiveClass ) {
 		if ( JavaTypes.isObjectType( primitiveClass ) ) {
 			return this;
@@ -2187,6 +2189,7 @@ public final class JavaCodeWriter {
 			JavaAssembler.method( boxClass, "valueOf", primitiveClass ) );
 	}
 
+	@SyntheticOp( stackOperandTypes=Reference.class, stackResultTypes=Primitive.class )
 	public final JavaCodeWriter unbox( final Type boxClass ) {
 		if (JavaTypes.isPrimitiveType( boxClass ) ) {
 			return this;
@@ -2215,6 +2218,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
+	@SyntheticOp( id="catch" )
 	public final JavaCodeWriter catch_(
 		final String startLabel,
 		final String endLabel,
@@ -2229,6 +2233,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
+	@SyntheticOp( id="exception" )
 	public final JavaCodeWriter exception(
 		final String startLabel,
 		final String endLabel,

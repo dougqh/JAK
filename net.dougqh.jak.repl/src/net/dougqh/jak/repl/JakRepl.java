@@ -11,10 +11,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 import jline.Completor;
-
 import net.dougqh.jak.JavaClassWriter;
 import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaCoreCodeWriter;
@@ -170,7 +169,8 @@ public final class JakRepl {
 	private final void resetProgram() throws IOException {
 		this.recorder.reset();
 		//DQH - 10-10-2010 - Need to reinitialize the current writer 
-		//because will already contain code replayed from the recorder.
+		//because the current writer will already contain code replayed 
+		//from the recorder.
 		this.initNewWriter();
 		
 		this.console.clear();
@@ -188,19 +188,32 @@ public final class JakRepl {
 		String methodName = commandParts[ 0 ];
 		String[] argStrings = Arrays.copyOfRange( commandParts, 1, commandParts.length );
 		
-		ReplMethod method = ReplMethod.find( methodName );
-		if ( method == null ) {
+		Set< ReplMethod > methods = ReplMethod.find( methodName );
+		if ( methods.isEmpty() ) {
 			this.console.printError( "Unknown command: " + command );
 			this.console.complete( methodName );
 		} else {
-			try {
-				Object[] args = method.parseArguments( argStrings );
-				method.invoke( this.codeWriter, args );
-			} catch ( IllegalArgumentException e ) {
-				this.console.printError( "Invalid arguments" );
-				this.printUsage( method );
+			//DQH - 10-11-2010 - Pretty ugly, loop over matching methods 
+			//until an implementations that has matching arguments is found.
+			//If no match is found, then print out usage.
+			boolean foundMatch = false;
+			for ( ReplMethod method : methods ) {
+				try {
+					Object[] args = method.parseArguments( argStrings );
+					method.invoke( this.codeWriter, args );
+					this.runProgram();
+
+					foundMatch = true;
+					break;
+				} catch ( IllegalArgumentException e ) {
+				}				
 			}
-			this.runProgram();
+			if ( ! foundMatch ) {
+				this.console.printError( "Invalid arguments" );
+				for ( ReplMethod method : methods ) {
+					this.printUsage( method );
+				}
+			}
 		}		
 	}
 	
