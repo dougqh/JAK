@@ -92,9 +92,12 @@ public final class ReplState {
 
 	final void print( final ReplConsole console ) throws IOException {
 		for ( int i = this.nextPos - 1; i >= 0; --i ) {
+			Type type = this.types[ i ];
 			Object element = this.values[ i ];
 			
-			console.append( element.toString() ).endl();
+			console.printColumns(
+				ReplUtils.getDisplayName( type ),
+				element.toString() );
 		}
 	}
 }

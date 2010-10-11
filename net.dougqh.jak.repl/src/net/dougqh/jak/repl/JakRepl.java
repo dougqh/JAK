@@ -3,7 +3,6 @@ package net.dougqh.jak.repl;
 import static net.dougqh.jak.JavaAssembler.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;

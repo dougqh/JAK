@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
 import net.dougqh.java.meta.types.JavaTypes;
@@ -29,14 +30,12 @@ final class ReplConsole {
 	final void uninstall() {
 		ConsoleReaderInputStream.restoreIn();
 	}
-	
-	final void printError( final String error ) throws IOException {
-		this.reader.printString( error );
-		this.reader.printNewline();
-	}
-	
+
 	final ReplConsole clear() {
 		try {
+			//DQH - 10-10-2010 - Not using ConsoleReader.clearScreen 
+			//because it does not work as desired when the REPL is run 
+			//inside of Eclipse.
 			for ( int i = 0; i < 40; ++i ) {
 				this.reader.printNewline();
 			}
@@ -59,6 +58,21 @@ final class ReplConsole {
 		
 		return this;
 	}
+	
+	final ReplConsole printColumns( final String... columns ) {
+		try {
+			this.reader.printColumns( Arrays.asList( columns ) );
+		} catch ( IOException e ) {
+			throw new IllegalStateException( e );
+		}
+		return this;
+	}
+	
+	final void printError( final String error ) throws IOException {
+		this.reader.printString( error );
+		this.reader.printNewline();
+	}
+	
 
 	final ReplConsole op( final String code ) {
 		return this.append( code );
