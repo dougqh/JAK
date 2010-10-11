@@ -2,16 +2,18 @@ package net.dougqh.jak.repl;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import net.dougqh.jak.JavaCoreCodeWriter.Jump;
-import net.dougqh.java.meta.types.JavaTypes;
-
+import jline.CandidateListCompletionHandler;
+import jline.Completor;
 import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;
+import net.dougqh.jak.JavaCoreCodeWriter.Jump;
+import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplConsole {
 	private final ConsoleReader reader;
@@ -21,14 +23,44 @@ final class ReplConsole {
 
 		this.reader = new ConsoleReader();
 		this.reader.setHistory( new History( tempFile ) );
+		this.reader.setCompletionHandler( new CandidateListCompletionHandler() );
 	}
 	
-	final void install() {
+	final ReplConsole addCompletor( final Completor completor ) {
+		this.reader.addCompletor( completor );
+		return this;
+	}
+	
+	final ReplConsole install() {
 		ConsoleReaderInputStream.setIn( this.reader );
+		return this;
 	}
 	
-	final void uninstall() {
+	final ReplConsole uninstall() {
 		ConsoleReaderInputStream.restoreIn();
+		return this;
+	}
+	
+	final void complete( final String buffer ) throws IOException {
+		this.reader.getCursorBuffer().clearBuffer();
+		this.reader.getCursorBuffer().write( buffer );
+		try {
+			Method completeMethod = ConsoleReader.class.getDeclaredMethod( "complete" );
+			completeMethod.setAccessible( true );
+			completeMethod.invoke( this.reader );
+		} catch ( NoSuchMethodException e ) {
+			throw new IllegalStateException( e );
+		} catch ( SecurityException e ) {
+			throw new IllegalStateException( e );
+		} catch ( IllegalArgumentException e ) {
+			throw new IllegalStateException( e );
+		} catch ( IllegalAccessException e ) {
+			throw new IllegalStateException( e );
+		} catch ( InvocationTargetException e ) {
+			throw new IllegalStateException( e );
+		} finally {
+			this.reader.getCursorBuffer().clearBuffer();
+		}
 	}
 
 	final ReplConsole clear() {

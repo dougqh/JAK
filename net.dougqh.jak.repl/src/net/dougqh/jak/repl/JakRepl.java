@@ -9,6 +9,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import jline.Completor;
 
 import net.dougqh.jak.JavaClassWriter;
 import net.dougqh.jak.JavaCodeWriter;
@@ -46,8 +51,9 @@ public final class JakRepl {
 	
 	private static final String RESET = "reset";
 	private static final String LIST = "list";
+	private static final String CLEAR = "clear";
 	private static final String EXIT = "exit";
-	
+		
 	private final ReplRecorder recorder;
 	private final ReplConsole console;
 	
@@ -61,7 +67,7 @@ public final class JakRepl {
 	
 	public JakRepl() throws IOException {
 		this.recorder = new ReplRecorder();
-		this.console = new ReplConsole();
+		this.console = new ReplConsole().addCompletor( new ReplCompletor() );
 		
 		this.initNewWriter();
 	}
@@ -150,24 +156,15 @@ public final class JakRepl {
 			this.resetProgram();
 		} else if ( command.equals( LIST ) ) {
 			this.listProgram();
+		} else if ( command.equals( CLEAR ) ) {
+			this.clearConsole();
 		} else {
-			Method method = findMethod( command );
-			if ( method == null ) {
-				this.console.printError( "Unknown command: " + command );
-			} else {
-				try {
-					method.invoke( this.codeWriter );
-				} catch ( IllegalArgumentException e ) {
-					this.console.printError( "Invalid arguments" );
-					this.printUsage( method );
-				} catch ( IllegalAccessException e ) {
-					throw new IllegalStateException( e );
-				} catch ( InvocationTargetException e ) {
-					throw new IllegalStateException( e );
-				}
-				this.runProgram();
-			}
+			this.invokeMethod( command );
 		}
+	}
+	
+	private final void clearConsole() throws IOException {
+		this.console.clear();
 	}
 	
 	private final void resetProgram() throws IOException {
@@ -181,6 +178,30 @@ public final class JakRepl {
 	
 	private final void listProgram() throws IOException {
 		this.recorder.list( this.console );
+	}
+	
+	private final void invokeMethod( final String command )
+		throws IOException
+	{
+		String[] commandParts = command.split( " " );
+
+		String methodName = commandParts[ 0 ];
+		String[] argStrings = Arrays.copyOfRange( commandParts, 1, commandParts.length );
+		
+		ReplMethod method = ReplMethod.find( methodName );
+		if ( method == null ) {
+			this.console.printError( "Unknown command: " + command );
+			this.console.complete( methodName );
+		} else {
+			try {
+				Object[] args = method.parseArguments( argStrings );
+				method.invoke( this.codeWriter, args );
+			} catch ( IllegalArgumentException e ) {
+				this.console.printError( "Invalid arguments" );
+				this.printUsage( method );
+			}
+			this.runProgram();
+		}		
 	}
 	
 	private final void runProgram() throws IOException {
@@ -261,36 +282,28 @@ public final class JakRepl {
 	
 	private static final boolean isExit( final String command ) {
 		return EXIT.equals( command );
-	}
-
-	private static final Method findMethod( final String command ) {
-		for ( Method method : JavaCodeWriter.class.getMethods() ) {
-			if ( isMatch( method, command ) ) {
-				return method;
-			}
-		}
-		return null;
-	}
-	
-	private static final boolean isMatch(
-		final Method method,
-		final String command )
-	{
-		return method.getName().equals( command ) && isWritingMethod( method );
-	}
-	
-	private static final boolean isWritingMethod( final Method method ) {
-		return method.getDeclaringClass().equals( JavaCodeWriter.class ) &&
-			method.getReturnType().equals( JavaCodeWriter.class );
 	}	
 	
-	private final void printUsage( final Method method ) {
+	private final void printUsage( final ReplMethod method ) {
 		this.console.append( "Usage: " );
 		this.console.append( method.getName() );
-		for ( Class< ? > type : method.getParameterTypes() ) {
+		for ( ReplArgument argument : method.getArguments() ) {
 			this.console.append( ' ' );
-			this.console.append( type.getSimpleName() ); 
+			this.console.append( argument.getTypeName() ); 
 		}
 		this.console.endl();
+	}
+	
+	private final class ReplCompletor implements Completor {
+		@SuppressWarnings( { "unchecked", "rawtypes" } ) 
+		@Override
+		public final int complete(
+			final String buffer,
+			final int cursor,
+			final List candidates )
+		{
+			candidates.addAll( ReplMethod.findLike( buffer ) );
+			return cursor;
+		}
 	}
 }
