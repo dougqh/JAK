@@ -173,6 +173,11 @@ public final class JakRepl {
 	
 	private final void resetProgram() throws IOException {
 		this.recorder.reset();
+		//DQH - 10-10-2010 - Need to reinitialize the current writer 
+		//because will already contain code replayed from the recorder.
+		this.initNewWriter();
+		
+		this.console.clear();
 	}
 	
 	private final void listProgram() throws IOException {

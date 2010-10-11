@@ -35,8 +35,19 @@ final class ReplConsole {
 		this.reader.printNewline();
 	}
 	
+	final ReplConsole clear() {
+		try {
+			for ( int i = 0; i < 40; ++i ) {
+				this.reader.printNewline();
+			}
+		} catch ( IOException e ) {
+			throw new IllegalStateException( e );
+		}
+		return this;
+	}
+	
 	final String readCommand() throws IOException {
-		return this.reader.readLine( ">", '\0' );
+		return this.reader.readLine( "=>", '\0' );
 	}
 	
 	final ReplConsole print( final Method interfaceMethod, final Object[] args ) {
