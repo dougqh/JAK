@@ -92,6 +92,17 @@ final class ReplConsole {
 		return this;
 	}
 	
+	final ReplConsole printUsage( final String command, final Class< ? >... argTypes ) {
+		this.append( "Usage: " );
+		this.append( command );
+		for ( Class< ? > argType : argTypes ) {
+			this.append( ' ' );
+			this.append( ReplFormatter.getDisplayName( argType ) );
+		}
+		this.endl();
+		return this;
+	}
+	
 	final ReplConsole print( final Method interfaceMethod, final Object[] args ) {
 		this.op( getNameOf( interfaceMethod ) );
 		for ( Object arg: args ) {
@@ -131,6 +142,10 @@ final class ReplConsole {
 			throw new IllegalStateException( e );
 		}
 		return this;
+	}
+	
+	final ReplConsole append( final OnOff onOff ) {
+		return this.append( onOff.toString() );
 	}
 	
 	final ReplConsole append( final String str ) {

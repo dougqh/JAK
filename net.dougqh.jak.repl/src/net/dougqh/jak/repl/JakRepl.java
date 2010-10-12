@@ -66,6 +66,7 @@ public final class JakRepl {
 		ResetCommand.INSTANCE,
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
+		EchoCommand.INSTANCE,
 		LiteralCommand.INSTANCE );
 	
 	public JakRepl() throws IOException {
@@ -81,6 +82,10 @@ public final class JakRepl {
 	
 	final boolean echo() {
 		return this.echo;
+	}
+	
+	final void echo( final boolean isOn ) {
+		this.echo = isOn;
 	}
 	
 	final Type thisType() {

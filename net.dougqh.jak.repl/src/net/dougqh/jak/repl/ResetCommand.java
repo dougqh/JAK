@@ -2,17 +2,14 @@ package net.dougqh.jak.repl;
 
 import java.io.IOException;
 
-final class ResetCommand extends ReplCommand {
+final class ResetCommand extends FixedIdCommand {
 	static final String ID = "reset";
 	static final ResetCommand INSTANCE = new ResetCommand();
 	
-	private ResetCommand() {}
-	
-	@Override
-	final boolean matches( final String command ) {
-		return command.equals( ID );
+	private ResetCommand() {
+		super( ID );
 	}
-	
+
 	@Override
 	final void run(
 		final JakRepl repl,
