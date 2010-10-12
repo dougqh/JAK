@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.dougqh.jak.types.Any;
-import net.dougqh.jak.types.Category1;
-import net.dougqh.jak.types.Category2;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -204,29 +202,29 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	}
 	
 	@Override
-	public final JavaCoreCodeWriterImpl ldc( final int index ) {
+	public final JavaCoreCodeWriterImpl ldc( final ConstantEntry entry ) {
 		try {
-			return this.op( LDC ).u1( index );
+			return this.op( LDC ).u1( entry );
 		} finally {
-			this.stack( Category1.class );			
+			this.stack( entry.type() );			
 		}
 	}
 	
 	@Override
-	public final JavaCoreCodeWriterImpl ldc_w( final int index ) {
+	public final JavaCoreCodeWriterImpl ldc_w( final ConstantEntry entry ) {
 		try {
-			return this.op( LDC_W ).u2( index );
+			return this.op( LDC_W ).u2( entry );
 		} finally {
-			this.stack( Category1.class );	
+			this.stack( entry.type() );	
 		}
 	}
 	
 	@Override
-	public final JavaCoreCodeWriterImpl ldc2_w( final int index ) {
+	public final JavaCoreCodeWriterImpl ldc2_w( final ConstantEntry entry ) {
 		try {
-			return this.op( LDC2_W ).u2( index );
+			return this.op( LDC2_W ).u2( entry );
 		} finally {
-			this.stack( Category2.class );
+			this.stack( entry.type() );
 		}
 	}
 	
@@ -1978,6 +1976,11 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	private final JavaCoreCodeWriterImpl u1( final int value ) {
 		this.codeOut.u1( value );
+		return this;
+	}
+
+	private final JavaCoreCodeWriterImpl u1( final ConstantEntry entry ) {
+		this.codeOut.u1( entry );
 		return this;
 	}
 	

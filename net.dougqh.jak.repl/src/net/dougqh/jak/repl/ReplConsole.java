@@ -114,19 +114,7 @@ final class ReplConsole {
 	}
 	
 	private final ReplConsole operand( final Object operand ) {
-		if ( operand instanceof Byte ) {
-			return this.operand( ((Byte)operand).byteValue() );
-		} else if ( operand instanceof Short ) {
-			return this.operand( ((Short)operand).shortValue() );
-		} else if ( operand instanceof Integer ) {
-			return this.operand( ((Integer)operand).intValue() );
-		} else if ( operand instanceof Type ) {
-			return this.operand( (Type)operand );
-		} else if ( operand instanceof Jump ) {
-			return this.operand( (Jump)operand );
-		} else {
-			return this.todo( operand.getClass() );
-		}
+		return this.append( ' ' ).append( ReplFormatter.format( operand ) );
 	}
 	
 	final ReplConsole append( final char ch ) {
@@ -145,28 +133,6 @@ final class ReplConsole {
 			throw new IllegalStateException( e );
 		}
 		return this;
-	}
-	
-	final ReplConsole operand( final byte operand ) {
-		//TODO: Verify correctness
-		return this.append( ' ' ).append( Byte.toString( operand ) );
-	}
-	
-	final ReplConsole operand( final short operand ) {
-		return this.append( ' ' ).append( Short.toString( operand ) );
-	}
-	
-	final ReplConsole operand( final int operand ) {
-		return this.append( ' ' ).append( Integer.toString( operand ) );
-	}
-	
-	final ReplConsole operand( final Type operand ) {
-		return this.append( ' ' ).append( JavaTypes.getRawClassName( operand ) );
-	}
-	
-	final ReplConsole operand( final Jump jump ) {
-		//TODO: Implement better
-		return this.append( ' ' ).append( jump.toString() );
 	}
 	
 	final ReplConsole todo() {

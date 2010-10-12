@@ -61,13 +61,13 @@ public interface JavaCoreCodeWriter {
 	public abstract JavaCoreCodeWriter sipush( final short value );
 
 	@Op( Ldc.class )
-	public abstract JavaCoreCodeWriter ldc( final int index );
+	public abstract JavaCoreCodeWriter ldc( final ConstantEntry index );
 	
 	@Op( Ldc_w.class )
-	public abstract JavaCoreCodeWriter ldc_w( final int index );
+	public abstract JavaCoreCodeWriter ldc_w( final ConstantEntry index );
 	
 	@Op( Ldc2_w.class )
-	public abstract JavaCoreCodeWriter ldc2_w( final int index );
+	public abstract JavaCoreCodeWriter ldc2_w( final ConstantEntry index );
 
 	@Op( Iload.class )
 	public abstract JavaCoreCodeWriter iload( final int slot );

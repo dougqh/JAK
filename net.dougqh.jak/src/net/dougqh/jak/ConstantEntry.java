@@ -1,9 +1,20 @@
 package net.dougqh.jak;
 
+import net.dougqh.jak.types.Category1;
+import net.dougqh.jak.types.Category2;
+
 public final class ConstantEntry {
 	private final int index;
 	private final Class< ? > type;
 	private final Object value;
+	
+	public static final ConstantEntry category1( final int index ) {
+		return new ConstantEntry( index, Category1.class, null );
+	}
+	
+	public static final ConstantEntry category2( final int index ) {
+		return new ConstantEntry( index, Category2.class, null );
+	}
 	
 	ConstantEntry(
 		final int index,

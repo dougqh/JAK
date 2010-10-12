@@ -369,24 +369,24 @@ public final class JavaCodeWriter {
 	}
 
 	final JavaCodeWriter ldc_( final ConstantEntry entry ) {
-		this.coreWriter.ldc( entry.index() );
+		this.coreWriter.ldc( entry );
 		return this;
 	}
 
 	final JavaCodeWriter ldc_w( final ConstantEntry entry ) {
-		this.coreWriter.ldc_w( entry.index() );
+		this.coreWriter.ldc_w( entry );
 		return this;
 	}
 
 	@WrapOp( value=Ldc2_w.class, stackResultTypes=long.class )
 	public final JavaCodeWriter ldc2_w( final long value ) {
-		this.coreWriter.ldc2_w( this.constantPool().addLongConstant( value ).index() );
+		this.coreWriter.ldc2_w( this.constantPool().addLongConstant( value ) );
 		return this;
 	}
 
 	@WrapOp( value=Ldc2_w.class, stackResultTypes=double.class )
 	public final JavaCodeWriter ldc2_w( final double value ) {
-		this.coreWriter.ldc2_w( this.constantPool().addDoubleConstant( value ).index() );
+		this.coreWriter.ldc2_w( this.constantPool().addDoubleConstant( value ) );
 		return this;
 	}
 	

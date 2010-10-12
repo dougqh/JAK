@@ -96,7 +96,7 @@ public final class ReplState {
 			Object element = this.values[ i ];
 			
 			console.printColumns(
-				ReplUtils.getDisplayName( type ),
+				ReplFormatter.getDisplayName( type ),
 				toString( element ) );
 		}
 	}

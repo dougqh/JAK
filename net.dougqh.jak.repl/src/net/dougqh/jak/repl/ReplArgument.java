@@ -145,7 +145,7 @@ enum ReplArgument {
 				return arg;
 			}
 		}
-		throw new IllegalStateException( "Unsupported type: " + ReplUtils.getDisplayName( type ) );
+		throw new IllegalStateException( "Unsupported type: " + ReplFormatter.getDisplayName( type ) );
 	}
 	
 	public static final char CHAR_QUOTE = '\'';
@@ -164,7 +164,7 @@ enum ReplArgument {
 	}
 	
 	public final String getTypeName() {
-		return ReplUtils.getDisplayName( this.type );
+		return ReplFormatter.getDisplayName( this.type );
 	}
 	
 	public abstract Object parse( final String argString );

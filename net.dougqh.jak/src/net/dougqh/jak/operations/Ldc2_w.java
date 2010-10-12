@@ -1,5 +1,6 @@
 package net.dougqh.jak.operations;
 
+import net.dougqh.jak.ConstantEntry;
 import net.dougqh.jak.JavaCoreCodeWriter;
 import net.dougqh.jak.types.Category2;
 
@@ -44,6 +45,6 @@ public final class Ldc2_w extends Operation {
 	
 	@Override
 	public final void write( final JavaCoreCodeWriter writer ) {
-		writer.ldc2_w( this.constantPoolRef );
+		writer.ldc2_w( ConstantEntry.category2( this.constantPoolRef ) );
 	}
 }

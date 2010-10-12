@@ -19,6 +19,10 @@ final class ByteStream {
 		return this.write( byte1 );
 	}
 	
+	final ByteStream u1( final ConstantEntry entry ) {
+		return this.u1( entry.index() );
+	}
+	
 	final ByteStream u1( final int byte1 ) {
 		return this.write( (byte)byte1 );
 	}
