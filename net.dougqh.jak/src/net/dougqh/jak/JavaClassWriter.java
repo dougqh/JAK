@@ -221,7 +221,7 @@ public final class JavaClassWriter implements JavaExtendedTypeWriter {
 		this.typeWriter.monitor( monitor );
 	}
 	
-	protected final TypeWriter typeWriter() {
+	final TypeWriter typeWriter() {
 		return this.typeWriter;
 	}
 }

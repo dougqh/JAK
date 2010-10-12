@@ -188,7 +188,7 @@ public final class JavaInterfaceWriter implements JavaExtendedTypeWriter {
 		return this.typeWriter.getBytes();
 	}	
 	
-	protected final TypeWriter typeWriter() {
+	final TypeWriter typeWriter() {
 		return this.typeWriter;
 	}
 }

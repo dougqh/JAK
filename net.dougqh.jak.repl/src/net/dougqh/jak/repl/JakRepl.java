@@ -103,15 +103,6 @@ public final class JakRepl {
 		--this.suppressionCount;
 	}
 	
-	final void replay( final JavaCoreCodeWriter writer ) {
-		this.startReplay();
-		try {
-			this.recorder.replay( writer );
-		} finally {
-			this.endReplay();
-		}
-	}
-	
 	final void startReplay() {
 		this.suppressRecording();
 		this.isReplaying = true;
@@ -342,7 +333,13 @@ public final class JakRepl {
 		//JavaCodeWriter during replay which did not produce the desired 
 		//results.
 		this.codeWriter = this.classWriter.define( MAIN_METHOD );
-		this.replay( this.codeWriter.coreWriter() );
+		
+		this.startReplay();
+		try {
+			this.recorder.replay( this.classWriter, this.codeWriter );
+		} finally {
+			this.endReplay();
+		}
 	}
 	
 	private static final boolean isExit( final String command ) {

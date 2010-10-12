@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 
 import jline.CandidateListCompletionHandler;
@@ -12,11 +11,9 @@ import jline.Completor;
 import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;
-import net.dougqh.jak.JavaCoreCodeWriter.Jump;
 import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.operations.Operation;
 import net.dougqh.jak.operations.Operations;
-import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplConsole {
 	private final ConsoleReader reader;
@@ -107,7 +104,6 @@ final class ReplConsole {
 		this.reader.printString( error );
 		this.reader.printNewline();
 	}
-	
 
 	final ReplConsole op( final String code ) {
 		return this.append( code );

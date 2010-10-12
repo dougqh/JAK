@@ -188,7 +188,7 @@ public final class JavaAnnotationWriter implements JavaTypeWriter {
 		return this.typeWriter.getBytes();
 	}	
 	
-	protected final TypeWriter typeWriter() {
+	final TypeWriter typeWriter() {
 		return this.typeWriter;
 	}
 }
