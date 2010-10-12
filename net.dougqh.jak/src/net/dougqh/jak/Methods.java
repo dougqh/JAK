@@ -30,12 +30,12 @@ final class Methods {
 		this.finishMethod();
 		++this.count;
 		
-		int nameIndex = this.constantPool.addUtf8( name );
-		int descriptorIndex = this.constantPool.addMethodDescriptor(
+		ConstantEntry nameEntry = this.constantPool.addUtf8( name );
+		ConstantEntry descriptorEntry = this.constantPool.addMethodDescriptor(
 			returnType,
 			arguments );
 		
-		this.out.u2( flags ).u2( nameIndex ).u2( descriptorIndex );
+		this.out.u2( flags ).u2( nameEntry ).u2( descriptorEntry );
 		
 		boolean needsCode =
 			! JavaFlagsBuilder.isAbstract( flags ) &&
@@ -112,7 +112,7 @@ final class Methods {
 	private static final class SignatureAttribute extends FixedLengthAttribute {
 		static final String ID = "Signature";
 		
-		private final Integer index;
+		private final ConstantEntry entry;
 		
 		SignatureAttribute(
 			final ConstantPool constantPool,
@@ -121,19 +121,19 @@ final class Methods {
 		{
 			super( constantPool, ID, 2 );
 			
-			this.index = this.constantPool.addGenericMethodDescriptor(
+			this.entry = this.constantPool.addGenericMethodDescriptor(
 				returnType,
 				args );
 		}
 		
 		@Override
 		final boolean isEmpty() {
-			return ( this.index == null );
+			return ( this.entry == null );
 		}
 		
 		@Override
 		final void writeBody( final ByteStream out ) {
-			out.u2( this.index );
+			out.u2( this.entry );
 		}
 	}
 	

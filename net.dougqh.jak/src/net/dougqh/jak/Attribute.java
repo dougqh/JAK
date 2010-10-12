@@ -17,8 +17,8 @@ abstract class Attribute {
 	abstract boolean isEmpty();
 	
 	final void writeHeader( final ByteStream out ) {
-		int nameIndex = this.constantPool.addUtf8( this.name );	
-		out.u2( nameIndex ).u4( this.length() );
+		ConstantEntry nameEntry = this.constantPool.addUtf8( this.name );	
+		out.u2( nameEntry ).u4( this.length() );
 	}
 	
 	abstract void writeBody( final ByteStream out );

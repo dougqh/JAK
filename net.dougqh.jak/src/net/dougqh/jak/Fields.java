@@ -68,7 +68,7 @@ final class Fields {
 	private static final class SignatureAttribute extends FixedLengthAttribute {
 		static final String ID = "Signature";
 		
-		private final Integer index;
+		private final ConstantEntry entry;
 		
 		SignatureAttribute(
 			final ConstantPool constantPool,
@@ -76,17 +76,17 @@ final class Fields {
 		{
 			super( constantPool, ID, 2 );
 			
-			this.index = this.constantPool.addGenericFieldDescriptor( type );
+			this.entry = this.constantPool.addGenericFieldDescriptor( type );
 		}
 		
 		@Override
 		final boolean isEmpty() {
-			return ( this.index == null );
+			return ( this.entry == null );
 		}
 		
 		@Override
 		final void writeBody( final ByteStream out ) {
-			out.u2( this.index );
+			out.u2( this.entry );
 		}
 	}
 }

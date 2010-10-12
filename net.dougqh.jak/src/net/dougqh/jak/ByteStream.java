@@ -23,6 +23,10 @@ final class ByteStream {
 		return this.write( (byte)byte1 );
 	}
 	
+	final ByteStream u2( final ConstantEntry entry ) {
+		return this.u2( entry.index() );
+	}
+	
 	final ByteStream u2( final int num ) {
 		this.shortBuffer().put( (short)num );
 		return this;

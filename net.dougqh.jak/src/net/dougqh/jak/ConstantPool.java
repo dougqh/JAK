@@ -3,6 +3,7 @@ package net.dougqh.jak;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
+import net.dougqh.jak.types.Utf8;
 import net.dougqh.java.meta.types.JavaTypeVisitor;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -44,7 +45,7 @@ final class ConstantPool {
 		
 	ConstantPool() {}
 	
-	final int addConstant(
+	final ConstantEntry addConstant(
 		final Type targetType,
 		final Object value )
 	{
@@ -71,81 +72,87 @@ final class ConstantPool {
 		}
 	}
 	
-	final int addBooleanConstant( final boolean value ) {
+	final ConstantEntry addBooleanConstant( final boolean value ) {
 		return this.addIntegerConstant( value ? 1 : 0 );
 	}
 			
-	final int addByteConstant( final Number value ) {
+	final ConstantEntry addByteConstant( final Number value ) {
 		return this.addIntegerConstant( value.byteValue() );
 	}
 	
-	final int addCharConstant( final char value ) {
+	final ConstantEntry addCharConstant( final char value ) {
 		return this.addIntegerConstant( (int)value );
 	}
 	
-	final int addShortConstant( final Number value ) {
+	final ConstantEntry addShortConstant( final Number value ) {
 		return this.addIntegerConstant( value );
 	}
 	
-	final int addIntegerConstant( final Number value ) {
+	final ConstantEntry addIntegerConstant( final Number value ) {
 		int intValue = value.intValue();
 		
 		Integer existingIndex = this.integers.get( intValue );
 		if ( existingIndex != null ) {
-			return existingIndex;
+			return new ConstantEntry( existingIndex, int.class, intValue );
 		} else {
 			int newIndex = this.nextIndex();
 			this.out.u1( INTEGER ).u4( intValue );
 			this.integers.put( intValue, newIndex );
-			return newIndex;
+			return new ConstantEntry( newIndex, int.class, intValue );
 		}
 	}
 	
-	final int addLongConstant( final Number value ) {
+	final ConstantEntry addLongConstant( final Number value ) {
 		//TODO: More efficient handling of the repeated value
+		long longValue = value.longValue();
+		
 		int newIndex = this.nextIndex2();
-		this.out.u1( LONG ).u8( value.longValue() );
-		return newIndex;
+		this.out.u1( LONG ).u8( longValue );
+		return new ConstantEntry( newIndex, long.class, longValue );
 	}
 	
-	final int addFloatConstant( final Number value ) {
+	final ConstantEntry addFloatConstant( final Number value ) {
 		//TODO: More efficient handling of the repeated value
+		float floatValue = value.floatValue();
+		
 		int newIndex = this.nextIndex();
-		this.out.u1( FLOAT ).u4( value.floatValue() );
-		return newIndex;
+		this.out.u1( FLOAT ).u4( floatValue );
+		return new ConstantEntry( newIndex, float.class, floatValue );
 	}
 	
-	final int addDoubleConstant( final Number value ) {
+	final ConstantEntry addDoubleConstant( final Number value ) {
 		//TODO: More efficient handling of the repeated value
+		double doubleValue = value.doubleValue();
+		
 		int newIndex = this.nextIndex2();
-		this.out.u1( DOUBLE ).u8( value.doubleValue() );
-		return newIndex;
+		this.out.u1( DOUBLE ).u8( doubleValue );
+		return new ConstantEntry( newIndex, double.class, doubleValue );
 	}
 	
-	final int addStringConstant( final CharSequence value ) {
+	final ConstantEntry addStringConstant( final CharSequence value ) {
 		String stringValue = value.toString();
 		
 		Integer existingIndex = this.strings.get( stringValue );
 		if ( existingIndex != null ) {
-			return existingIndex;
+			return new ConstantEntry( existingIndex, String.class, stringValue );
 		} else {
-			int utf8Index = this.addUtf8( stringValue );
+			ConstantEntry utf8Entry = this.addUtf8( stringValue );
 			int newIndex = this.nextIndex();
-			this.out.u1( STRING ).u2( utf8Index );
+			this.out.u1( STRING ).u2( utf8Entry );
 			this.strings.put( stringValue, newIndex );
-			return newIndex;
+			return new ConstantEntry( newIndex, String.class, stringValue );
 		}
 	}
 	
-	final int addClassInfo( final Type type ) {
+	final ConstantEntry addClassInfo( final Type type ) {
 		return this.addClassInfo( JavaTypes.getRawClassName( type ) );
 	}
 	
-	final int addFieldDescriptor( final Type type ) {
+	final ConstantEntry addFieldDescriptor( final Type type ) {
 		return this.addUtf8( getFieldSignature( type ) );
 	}
 	
-	final Integer addGenericFieldDescriptor( final Type type ) {
+	final ConstantEntry addGenericFieldDescriptor( final Type type ) {
 		String genericSignature = getGenericFieldSignature( type );
 		if ( genericSignature == null ) {
 			return null;
@@ -154,14 +161,14 @@ final class ConstantPool {
 		}
 	}
 	
-	final int addMethodDescriptor( 
+	final ConstantEntry addMethodDescriptor( 
 		final Type returnType,
 		final FormalArguments arguments )
 	{
 		return this.addUtf8( getMethodSignature( returnType, arguments ) );
 	}
 	
-	final Integer addGenericMethodDescriptor(
+	final ConstantEntry addGenericMethodDescriptor(
 		final Type returnType,
 		final FormalArguments arguments )
 	{
@@ -173,7 +180,7 @@ final class ConstantPool {
 		}
 	}
 	
-	final Integer addGenericClassDescriptor(
+	final ConstantEntry addGenericClassDescriptor(
 		final Type parentType,
 		final Type[] interfaceTypes )
 	{
@@ -185,135 +192,136 @@ final class ConstantPool {
 		}
 	}
 	
-	final int addFieldReference(
+	final ConstantEntry addFieldReference(
 		final Type targetType,
 		final Type fieldClass,
 		final String fieldName )
 	{
-		int classIndex = this.addClassInfo( targetType );
-		int nameAndTypeIndex = this.addNameAndType(
+		ConstantEntry classEntry = this.addClassInfo( targetType );
+		ConstantEntry nameAndTypeEntry = this.addNameAndType(
 			fieldClass,
 			fieldName );
 		
 		return this.addReference(
 			FIELD_REF,
-			classIndex,
-			nameAndTypeIndex );
+			classEntry,
+			nameAndTypeEntry );
 	}
 	
-	final int addMethodReference(
+	final ConstantEntry addMethodReference(
 		final Type targetType,
 		final Type returnType,
 		final String methodName,
 		final FormalArguments arguments )
 	{
-		int classIndex = this.addClassInfo( targetType );
-		int nameAndTypeIndex = this.addNameAndType(
+		ConstantEntry classEntry = this.addClassInfo( targetType );
+		ConstantEntry nameAndTypeEntry = this.addNameAndType(
 			returnType,
 			methodName,
 			arguments );
 		
 		return this.addReference(
 			METHOD_REF,
-			classIndex,
-			nameAndTypeIndex );
+			classEntry,
+			nameAndTypeEntry );
 	}
 	
-	final int addInterfaceMethodReference(
+	final ConstantEntry addInterfaceMethodReference(
 		final Type targetType,
 		final Type returnType,
 		final String methodName,
 		final FormalArguments arguments )
 	{
-		int classIndex = this.addClassInfo( targetType );
-		int nameAndTypeIndex = this.addNameAndType(
+		ConstantEntry classEntry = this.addClassInfo( targetType );
+		ConstantEntry nameAndTypeEntry = this.addNameAndType(
 			returnType,
 			methodName,
 			arguments );
 		
 		return this.addReference(
 			INTERFACE_METHOD_REF,
-			classIndex,
-			nameAndTypeIndex );
+			classEntry,
+			nameAndTypeEntry );
 	}
 	
-	private final int addReference(
+	private final ConstantEntry addReference(
 		final byte refType,
-		final int classIndex,
-		final int nameAndTypeIndex )
+		final ConstantEntry classEntry,
+		final ConstantEntry nameAndTypeEntry )
 	{
-		int key = key( classIndex, nameAndTypeIndex );
+		//TODO: Fill-in type information and value in ConstantEntry in a meaningful fashion
+		int key = key( classEntry, nameAndTypeEntry );
 		Integer existingIndex = this.references.get( key );
 		if ( existingIndex != null ) {
-			return existingIndex;
+			return new ConstantEntry( existingIndex, Void.class, null );
 		} else {
 			int newIndex = this.nextIndex();
-			this.out.u1( refType ).u2( classIndex ).u2( nameAndTypeIndex );
+			this.out.u1( refType ).u2( classEntry ).u2( nameAndTypeEntry );
 			this.references.put( key, newIndex );
-			return newIndex;
+			return new ConstantEntry( newIndex, Void.class, null );
 		}		
 	}
 	
-	final int addNameAndType(
+	final ConstantEntry addNameAndType(
 		final Type fieldClass,
 		final String fieldName )
 	{
-		int nameIndex = this.addUtf8( fieldName );
-		int typeIndex = this.addUtf8( getFieldSignature( fieldClass ) );
+		ConstantEntry nameEntry = this.addUtf8( fieldName );
+		ConstantEntry typeEntry = this.addUtf8( getFieldSignature( fieldClass ) );
 		
-		return this.addNameAndType( nameIndex, typeIndex );
+		return this.addNameAndType( nameEntry, typeEntry );
 	}
 	
-	final int addNameAndType(
+	final ConstantEntry addNameAndType(
 		final Type returnType,
 		final String methodName,
 		final FormalArguments arguments )
 	{
-		int nameIndex = this.addUtf8( methodName );
-		int typeIndex = this.addUtf8( getMethodSignature( returnType, arguments ) );
+		ConstantEntry nameEntry = this.addUtf8( methodName );
+		ConstantEntry typeEntry = this.addUtf8( getMethodSignature( returnType, arguments ) );
 		
-		return this.addNameAndType( nameIndex, typeIndex );
+		return this.addNameAndType( nameEntry, typeEntry );
 	}
 	
-	final int addNameAndType(
-		final int nameIndex,
-		final int typeIndex )
+	final ConstantEntry addNameAndType(
+		final ConstantEntry nameEntry,
+		final ConstantEntry typeEntry )
 	{
-		int key = key( nameIndex, typeIndex );
-		
+		//TODO: Fill-in type information and value in ConstantEntry in a meaningful fashion
+		int key = key( nameEntry, typeEntry );
 		Integer existingIndex = this.nameAndTypes.get( key );
 		if ( existingIndex != null ) {
-			return existingIndex;
+			return new ConstantEntry( existingIndex, Void.class, null );
 		} else {
 			int newIndex = this.nextIndex();
-			this.out.u1( NAME_AND_TYPE ).u2( nameIndex ).u2( typeIndex );
+			this.out.u1( NAME_AND_TYPE ).u2( nameEntry ).u2( typeEntry );
 			this.nameAndTypes.put( key, newIndex );
-			return newIndex;
+			return new ConstantEntry( newIndex, Void.class, null );
 		}
 	}
 		
-	final int addClassInfo( final String value ) {
+	final ConstantEntry addClassInfo( final String value ) {
 		Integer existingIndex = this.classes.get( value );
 		if ( existingIndex != null ) {
-			return existingIndex;
+			return new ConstantEntry( existingIndex, Class.class, value );
 		} else {
-			int nameIndex = this.addUtf8( value.replace( '.', '/' ) );
+			ConstantEntry nameEntry = this.addUtf8( value.replace( '.', '/' ) );
 			int newIndex = this.nextIndex();
-			this.out.u1( CLASS ).u2( nameIndex );
+			this.out.u1( CLASS ).u2( nameEntry );
 			this.classes.put( value, newIndex );
-			return newIndex;
+			return new ConstantEntry( newIndex, Class.class, value );
 		}
 	}
 	
-	final int addUtf8( final String value ) {
+	final ConstantEntry addUtf8( final String value ) {
 		Integer existingIndex = this.utf8s.get( value );
 		if ( existingIndex != null ) {
-			return existingIndex;
+			return new ConstantEntry( existingIndex, Utf8.class, value );
 		} else {
 			int newIndex = this.nextIndex();
 			this.out.u1( UTF8 ).utf8( value );			
 			this.utf8s.put( value, newIndex );
-			return newIndex;
+			return new ConstantEntry( newIndex, Utf8.class, value );
 		}
 	}
 	
@@ -440,6 +448,13 @@ final class ConstantPool {
 	static final boolean isGenericFieldSignature( final Type type ) {
 		Type resolvedType = JavaTypes.resolve( type );
 		return ! ( resolvedType instanceof Class );
+	}
+	
+	private static final int key(
+		final ConstantEntry entry1,
+		final ConstantEntry entry0 )
+	{
+		return key( entry1.index(), entry0.index() );
 	}
 
 	private static final int key(

@@ -1986,6 +1986,11 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		return this;
 	}
 	
+	private final JavaCoreCodeWriterImpl u2( final ConstantEntry entry ) {
+		this.codeOut.u2( entry );
+		return this;
+	}
+	
 	static final int size( final FormalArguments arguments ) {
 		int size = 0;
 		for ( JavaVariable variable : arguments ) {
@@ -2032,11 +2037,11 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 		out.u2( this.handlers.size() );
 		for ( ExceptionHandler handler : this.handlers ) {
-			int exceptionIndex =  this.constantPool.addClassInfo( handler.throwableClass() );
+			ConstantEntry exceptionEntry =  this.constantPool.addClassInfo( handler.throwableClass() );
 			out.u2( handler.startPos() ).
 				u2( handler.endPos() ).
 				u2( handler.handlerPos() ).
-				u2( exceptionIndex );
+				u2( exceptionEntry );
 		}
 		
 		Attributes.writeEmpty( out );

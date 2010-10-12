@@ -359,34 +359,34 @@ public final class JavaCodeWriter {
 		return this.smartLdc( this.constantPool().addStringConstant( value ) );
 	}
 
-	final JavaCodeWriter smartLdc( final int index ) {
-		if ( isSingleByte( index ) ) {
-			this.ldc_( index );
+	final JavaCodeWriter smartLdc( final ConstantEntry entry ) {
+		if ( isSingleByte( entry ) ) {
+			this.ldc_( entry );
 		} else {
-			this.ldc_w( index );
+			this.ldc_w( entry );
 		}
 		return this;
 	}
 
-	final JavaCodeWriter ldc_( final int index ) {
-		this.coreWriter.ldc( index );
+	final JavaCodeWriter ldc_( final ConstantEntry entry ) {
+		this.coreWriter.ldc( entry.index() );
 		return this;
 	}
 
-	final JavaCodeWriter ldc_w( final int index ) {
-		this.coreWriter.ldc_w( index );
+	final JavaCodeWriter ldc_w( final ConstantEntry entry ) {
+		this.coreWriter.ldc_w( entry.index() );
 		return this;
 	}
 
 	@WrapOp( value=Ldc2_w.class, stackResultTypes=long.class )
 	public final JavaCodeWriter ldc2_w( final long value ) {
-		this.coreWriter.ldc2_w( this.constantPool().addLongConstant( value ) );
+		this.coreWriter.ldc2_w( this.constantPool().addLongConstant( value ).index() );
 		return this;
 	}
 
 	@WrapOp( value=Ldc2_w.class, stackResultTypes=double.class )
 	public final JavaCodeWriter ldc2_w( final double value ) {
-		this.coreWriter.ldc2_w( this.constantPool().addDoubleConstant( value ) );
+		this.coreWriter.ldc2_w( this.constantPool().addDoubleConstant( value ).index() );
 		return this;
 	}
 	
@@ -2311,6 +2311,10 @@ public final class JavaCodeWriter {
 		} else {
 			return existingSlot;
 		}
+	}
+	
+	private static final boolean isSingleByte( final ConstantEntry entry ) {
+		return isSingleByte( entry.index() );
 	}
 
 	private static final boolean isSingleByte( final int value ) {

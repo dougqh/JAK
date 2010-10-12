@@ -26,8 +26,8 @@ final class TypeWriter {
 	private final Methods methods;
 	private final Attributes attributes;
 	
-	private final int classNameIndex;
-	private final int parentClassNameIndex;
+	private final ConstantEntry classNameEntry;
+	private final ConstantEntry parentClassNameEntry;
 	
 	private InnerClassesAttribute innerClasses = null;
 	private JakMonitor monitor = JakMonitor.NULL;
@@ -44,8 +44,8 @@ final class TypeWriter {
 		this.parentType = typeDescriptor.parentType();
 
 		this.constantPool = new ConstantPool();
-		this.classNameIndex = this.constantPool.addClassInfo( this.className );
-		this.parentClassNameIndex = this.constantPool.addClassInfo( this.parentType );
+		this.classNameEntry = this.constantPool.addClassInfo( this.className );
+		this.parentClassNameEntry = this.constantPool.addClassInfo( this.parentType );
 		
 		if ( this.version.getSuperFlag() ) {
 			this.flags = typeDescriptor.flags() | additionalFlags | JavaFlagsBuilder.SUPER;
@@ -201,8 +201,8 @@ final class TypeWriter {
 		out.u2( this.version.getMinor() ).u2( this.version.getMajor() );
 		this.constantPool.write( out );
 		out.u2( this.flags );
-		out.u2( this.classNameIndex );
-		out.u2( this.parentClassNameIndex );
+		out.u2( this.classNameEntry );
+		out.u2( this.parentClassNameEntry );
 		this.interfaces.write( out );
 		this.fields.write( out );
 		this.methods.write( out );
@@ -312,7 +312,7 @@ final class TypeWriter {
 	private static final class SignatureAttribute extends FixedLengthAttribute {
 		static final String ID = "Signature";
 		
-		private final Integer index;
+		private final ConstantEntry entry;
 		
 		SignatureAttribute(
 			final ConstantPool constantPool,
@@ -321,19 +321,19 @@ final class TypeWriter {
 		{
 			super( constantPool, ID, 2 );
 			
-			this.index = this.constantPool.addGenericClassDescriptor(
+			this.entry = this.constantPool.addGenericClassDescriptor(
 				parentType,
 				interfaceTypes );
 		}
 		
 		@Override
 		final boolean isEmpty() {
-			return ( this.index == null );
+			return ( this.entry == null );
 		}
 		
 		@Override
 		final void writeBody( final ByteStream out ) {
-			out.u2( this.index );
+			out.u2( this.entry );
 		}
 	}
 	
@@ -368,7 +368,7 @@ final class TypeWriter {
 			++this.count;
 
 			this.out.u2( this.constantPool.addClassInfo( innerTypeDescriptor.name() ) );
-			this.out.u2( TypeWriter.this.classNameIndex );
+			this.out.u2( TypeWriter.this.classNameEntry );
 			this.out.u2( this.constantPool.addUtf8( innerTypeDescriptor.name() ) );
 			this.out.u2( innerTypeDescriptor.flags() );
 		}
@@ -376,7 +376,7 @@ final class TypeWriter {
 		private final void addOuterClass( final TypeWriter outerWriter ) {
 			++this.count;
 			
-			this.out.u2( TypeWriter.this.classNameIndex );
+			this.out.u2( TypeWriter.this.classNameEntry );
 			this.out.u2( this.constantPool.addClassInfo( outerWriter.className ) );
 			this.out.u2( this.constantPool.addUtf8( TypeWriter.this.simpleName() ) );
 			this.out.u2( TypeWriter.this.flags );
