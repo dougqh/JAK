@@ -157,6 +157,8 @@ public final class JakRepl {
 			this.listProgram();
 		} else if ( command.equals( CLEAR ) ) {
 			this.clearConsole();
+		} else if ( isLiteral( command ) ) {
+			this.literal( command );
 		} else {
 			this.invokeMethod( command );
 		}
@@ -178,6 +180,56 @@ public final class JakRepl {
 	
 	private final void listProgram() throws IOException {
 		this.recorder.list( this.console );
+	}
+	
+	private static final boolean isLiteral( final String command ) {
+		char firstChar = command.charAt( 0 );
+		return ( firstChar == '-' ) ||
+			( firstChar == ReplArgument.CHAR_QUOTE ) ||
+			( firstChar == ReplArgument.STRING_QUOTE ) ||
+			Character.isDigit( firstChar ) ||
+			isBooleanLiteral( command );
+	}
+
+	private static final boolean isBooleanLiteral( final String command ) {
+		return ReplArgument.TRUE.equals( command ) ||
+			ReplArgument.FALSE.equals( command );
+	}
+	
+	private final void literal( final String command ) throws IOException {
+		try {
+			char firstChar = command.charAt( 0 );
+			if ( firstChar == ReplArgument.CHAR_QUOTE ) {
+				Character literal = (Character)ReplArgument.CHAR.parse( command );
+				this.codeWriter.iconst( literal );
+			} else if ( firstChar == ReplArgument.STRING_QUOTE ) {
+				String literal = (String)ReplArgument.STRING_LITERAL.parse( command );
+				this.codeWriter.ldc( literal );
+			} else if ( isBooleanLiteral( command ) ) {
+				Boolean literal = (Boolean)ReplArgument.BOOLEAN.parse( command );
+				this.codeWriter.iconst( literal );
+			} else {
+				Class< ? > type = ReplArgument.typeQualifier( command );
+				if ( type == null ) {
+					Integer value = (Integer)ReplArgument.INT.parse( command );
+					this.codeWriter.iconst( value );
+				} else if ( type.equals( float.class ) ) {
+					Float value = (Float)ReplArgument.FLOAT.parse( command );
+					this.codeWriter.fconst( value );
+				} else if ( type.equals( long.class ) ) {
+					Long value = (Long)ReplArgument.LONG.parse( command );
+					this.codeWriter.lconst( value );
+				} else if ( type.equals( double.class ) ) {
+					Double value = (Double)ReplArgument.DOUBLE.parse( command );
+					this.codeWriter.dconst( value );
+				} else {
+					throw new IllegalStateException();
+				}
+			}
+			this.runProgram();
+		} catch ( IllegalArgumentException e ) {
+			this.console.printError( "Invalid literal" );
+		}
 	}
 	
 	private final void invokeMethod( final String command )

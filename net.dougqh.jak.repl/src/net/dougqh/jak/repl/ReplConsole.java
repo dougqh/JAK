@@ -13,6 +13,9 @@ import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
+import net.dougqh.jak.annotations.Op;
+import net.dougqh.jak.operations.Operation;
+import net.dougqh.jak.operations.Operations;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplConsole {
@@ -82,7 +85,7 @@ final class ReplConsole {
 	}
 	
 	final ReplConsole print( final Method interfaceMethod, final Object[] args ) {
-		this.op( interfaceMethod.getName() );
+		this.op( getNameOf( interfaceMethod ) );
 		for ( Object arg: args ) {
 			this.operand( arg );
 		}
@@ -168,7 +171,7 @@ final class ReplConsole {
 	
 	final ReplConsole todo() {
 		//TODO: Remove when all output is handled
-		this.append( " TDOO" );
+		this.append( " TODO" );
 		return this;
 	}
 	
@@ -187,5 +190,11 @@ final class ReplConsole {
 		} catch ( IOException e ) {
 			throw new IllegalStateException( e );
 		}
+	}
+	
+	private static final String getNameOf( final Method method ) {
+		Op op = method.getAnnotation( Op.class );
+		Operation operation = Operations.getPrototype( op.value() );
+		return operation.getId();
 	}
 }

@@ -61,7 +61,7 @@ final class ReplMethod {
 	}
 	
 	public final String getName() {
-		return this.method.getName();
+		return this.name;
 	}
 	
 	public final ReplArgument[] getArguments() {

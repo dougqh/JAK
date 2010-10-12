@@ -54,7 +54,7 @@ final class ReplRecorder {
 			Object[] args = argsIter.next();
 			
 			if ( args.length != 0 ) {
-				console.append( method.getName() ).todo().endl();
+				console.print( method, args );
 			} else {
 				console.append( method.getName() ).endl();
 			}
