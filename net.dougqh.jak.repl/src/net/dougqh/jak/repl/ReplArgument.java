@@ -152,7 +152,6 @@ enum ReplArgument {
 	public static final char STRING_QUOTE = '"';
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
-	
 	private final Type type;
 	
 	ReplArgument( final Type type ) {

@@ -81,6 +81,17 @@ final class ReplConsole {
 		return this.reader.readLine( "=>", '\0' );
 	}
 	
+	final ReplConsole printUsage( final ReplMethod method ) {
+		this.append( "Usage: " );
+		this.append( method.getName() );
+		for ( ReplArgument argument : method.getArguments() ) {
+			this.append( ' ' );
+			this.append( argument.getTypeName() ); 
+		}
+		this.endl();
+		return this;
+	}
+	
 	final ReplConsole print( final Method interfaceMethod, final Object[] args ) {
 		this.op( getNameOf( interfaceMethod ) );
 		for ( Object arg: args ) {
@@ -128,18 +139,6 @@ final class ReplConsole {
 		} catch ( IOException e ) {
 			throw new IllegalStateException( e );
 		}
-		return this;
-	}
-	
-	final ReplConsole todo() {
-		//TODO: Remove when all output is handled
-		this.append( " TODO" );
-		return this;
-	}
-	
-	final ReplConsole todo( final Class< ? > aClass ) {
-		//TODO: Replace this for field and method signatures
-		this.append( " TODO " + aClass.getSimpleName() );
 		return this;
 	}
 	
