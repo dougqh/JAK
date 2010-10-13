@@ -23,6 +23,11 @@ public final class Irem extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return REM;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

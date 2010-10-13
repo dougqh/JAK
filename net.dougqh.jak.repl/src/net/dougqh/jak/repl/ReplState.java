@@ -25,7 +25,15 @@ public final class ReplState {
 	}
 	
 	public final Type topType() {
-		return this.types[ this.nextPos - 1 ];
+		return this.topType( 0 );
+	}
+	
+	public final Type topType( final int pos ) {
+		if ( this.nextPos <= pos ) {
+			return null;
+		} else {
+			return this.types[ this.nextPos - 1 - pos ];
+		}
 	}
 	
 	public final Object topValue() {

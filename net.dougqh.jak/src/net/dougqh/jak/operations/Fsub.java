@@ -23,6 +23,11 @@ public final class Fsub extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return SUB;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

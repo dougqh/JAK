@@ -23,6 +23,11 @@ public final class Ddiv extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return DIV;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

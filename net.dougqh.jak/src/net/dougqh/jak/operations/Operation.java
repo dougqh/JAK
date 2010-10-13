@@ -265,11 +265,27 @@ public abstract class Operation {
 	protected static final Class< ? >[] NO_ARGS = {};
 	protected static final Class< ? >[] NO_RESULTS = {};
 	
+	public static final String ADD = "+";
+	public static final String SUB = "-";
+	public static final String MUL = "*";
+	public static final String DIV = "/";
+	public static final String REM = "%";
+	public static final String AND = "&";
+	public static final String OR = "|";
+	public static final String XOR = "^";
+	public static final String LEFT_SHIFT = "<<";
+	public static final String RIGHT_SHIFT = ">>";
+	public static final String UNSIGNED_RIGHT_SHIFT = ">>>";
+	
 	protected Operation() {}
 	
 	public abstract String getId();
 	
 	public abstract int getCode();
+	
+	public String getOperator() {
+		return null;
+	}
 	
 	public boolean isPolymorphic() {
 		return false;

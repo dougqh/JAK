@@ -23,6 +23,11 @@ public final class Lushr extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return UNSIGNED_RIGHT_SHIFT;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

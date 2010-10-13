@@ -23,6 +23,11 @@ public final class Imul extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return MUL;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

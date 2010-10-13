@@ -23,6 +23,11 @@ public final class Lshl extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return LEFT_SHIFT;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

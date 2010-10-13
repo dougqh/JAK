@@ -23,6 +23,11 @@ public final class Ishr extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return RIGHT_SHIFT;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

@@ -1,29 +1,66 @@
 package net.dougqh.jak.repl;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import net.dougqh.jak.JavaCodeWriter;
+import net.dougqh.jak.JavaMethodSignature;
 import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.operations.Operation;
 import net.dougqh.jak.operations.Operations;
+import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplMethod {
-	public static final Set< ReplMethod > find( final String name ) {
+	private static final List< ReplMethod > allMethods = gatherMethods();
+	
+	private static final List< ReplMethod > gatherMethods() {
+		Method[] methods = JavaCodeWriter.class.getMethods();
+		
+		ArrayList< ReplMethod > replMethods = new ArrayList< ReplMethod >( methods.length );
+		for ( Method method : methods ) {
+			if ( include( method ) ) {
+				try {
+					replMethods.add( new ReplMethod( method ) );
+				} catch ( Throwable t ) {
+					System.err.println( method.getName() );
+					t.printStackTrace();
+					return Collections.emptyList();
+				}
+			}
+		}
+		replMethods.trimToSize();
+		
+		return Collections.unmodifiableList( replMethods );
+	}
+	
+	public static final Set< ReplMethod > findByOperator( final String operator ) {
 		HashSet< ReplMethod > matchingMethods = new HashSet< ReplMethod >( 4 );
 		
-		for ( Method method : JavaCodeWriter.class.getMethods() ) {
-			if ( isWritingMethod( method ) ) {
-				if ( getNameOf( method ).equals( name ) ) {
-					matchingMethods.add( new ReplMethod( method ) );
-				}
+		for ( ReplMethod replMethod : allMethods ) {
+			if ( operator.equals( replMethod.getOperator() ) ) {
+				matchingMethods.add( replMethod );
+			}
+		}
+		return Collections.unmodifiableSet( matchingMethods );
+	}
+	
+	public static final Set< ReplMethod > findByName( final String name ) {
+		HashSet< ReplMethod > matchingMethods = new HashSet< ReplMethod >( 4 );
+		
+		for ( ReplMethod method : allMethods ) {
+			if ( method.getName().equals( name ) ) {
+				matchingMethods.add( method );
 			}
 		}
 		return Collections.unmodifiableSet( matchingMethods );
@@ -34,7 +71,7 @@ final class ReplMethod {
 		
 		ArrayList< String > matchingNames = new ArrayList< String >( methods.length );
 		for ( Method method : JavaCodeWriter.class.getMethods() ) {
-			if ( isWritingMethod( method ) ) {
+			if ( include( method ) ) {
 				String methodName = getNameOf( method );
 				if ( methodName.startsWith( prefix ) ) {
 					matchingNames.add( methodName );
@@ -62,6 +99,35 @@ final class ReplMethod {
 	
 	public final String getName() {
 		return this.name;
+	}
+	
+	public final boolean matchesStackTypes( final JakRepl repl ) {
+		Operation operation = getOperationOf( this.method );
+		
+		List< Class< ? > > expectedTypes = Arrays.asList( operation.getStackOperandTypes() );
+		
+		int offset = 0;
+		for ( ListIterator< Class< ? > > expectedIter = expectedTypes.listIterator( expectedTypes.size() );
+			expectedIter.hasPrevious();
+			++offset )
+		{
+			Class< ? > expectedType = expectedIter.previous();
+			Type actualType = repl.topType( offset );
+			
+			if ( ! expectedType.equals( actualType ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public final String getOperator() {
+		Operation operation = getOperationOf( this.method );
+		if ( operation != null ) {
+			return operation.getOperator();
+		} else {
+			return null;
+		}
 	}
 	
 	public final ReplArgument[] getArguments() {
@@ -94,17 +160,60 @@ final class ReplMethod {
 		}		
 	}
 	
+	private static final boolean include( final Method method ) {
+		if ( ! isWritingMethod( method ) ) {
+			return false;
+		}
+		Class< ? >[] argTypes = method.getParameterTypes();
+		if ( containsArrayType( argTypes ) ) {
+			return false;
+		}
+		if ( contains( argTypes, Method.class ) ) {
+			return false;
+		}
+		if ( contains( argTypes, Field.class ) ) {
+			return false;
+		}
+		if ( contains( argTypes, JavaMethodSignature.class ) ) {
+			return false;
+		}
+		return true;
+	}
+	
+	private static final boolean containsArrayType( final Type[] types ) {
+		for ( Type curType : types ) {
+			if ( JavaTypes.isArrayType( curType ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static final boolean contains( final Type[] types, final Type type ) {
+		for ( Type curType : types ) {
+			if ( curType.equals( type ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private static final boolean isWritingMethod( final Method method ) {
 		return method.getDeclaringClass().equals( JavaCodeWriter.class ) &&
 			method.getReturnType().equals( JavaCodeWriter.class );
 	}
 	
 	private static final String getNameOf( final Method method ) {
-		SyntheticOp synthOp = method.getAnnotation( SyntheticOp.class );
-		if ( synthOp != null ) {
-			return synthOp.id().isEmpty() ? method.getName() : synthOp.id();
+		Operation operation = getOperationOf( method );
+		if ( operation != null ) {
+			return operation.getId();
+		} else {
+			SyntheticOp synthOp = method.getAnnotation( SyntheticOp.class );
+			if ( synthOp != null ) {
+				return synthOp.id().isEmpty() ? method.getName() : synthOp.id();
+			}
+			throw new IllegalStateException();
 		}
-		return getOperationOf( method ).getId();
 	}
 	
 	private static final Operation getOperationOf( final Method method ) {
@@ -116,6 +225,6 @@ final class ReplMethod {
 		if ( wrapOp != null ) {
 			return Operations.getPrototype( wrapOp.value() );
 		}
-		throw new IllegalStateException();
+		return null;
 	}
 }

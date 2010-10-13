@@ -23,6 +23,11 @@ public final class Fadd extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return ADD;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

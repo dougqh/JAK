@@ -23,6 +23,11 @@ public final class Lxor extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return XOR;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

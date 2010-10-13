@@ -23,6 +23,11 @@ public final class Fmul extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return MUL;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

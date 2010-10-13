@@ -1695,7 +1695,6 @@ public final class JavaCodeWriter {
 		return this.invoke( targetType, JavaAssembler.method( methodName, args ) );
 	}
 
-
 	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
 	public final JavaCodeWriter invoke(
 		final Type targetType,

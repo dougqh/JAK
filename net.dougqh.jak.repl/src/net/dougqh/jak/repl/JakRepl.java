@@ -11,14 +11,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import jline.Completor;
 import net.dougqh.jak.JavaClassWriter;
 import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
-
 
 public final class JakRepl {
 	public static void main( final String[] args ) throws IOException {
@@ -57,6 +55,7 @@ public final class JakRepl {
 	
 	private boolean echo = true;
 	
+	private ReplState prevState = null;
 	private JavaClassWriter classWriter = null;
 	private JavaCodeWriter codeWriter = null;
 	
@@ -67,7 +66,8 @@ public final class JakRepl {
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
 		EchoCommand.INSTANCE,
-		LiteralCommand.INSTANCE );
+		LiteralCommand.INSTANCE,
+		OperatorCommand.INSTANCE );
 	
 	public JakRepl() throws IOException {
 		this.recorder = new ReplRecorder();
@@ -90,6 +90,14 @@ public final class JakRepl {
 	
 	final Type thisType() {
 		return this.classWriter.thisType();
+	}
+	
+	final Type topType( final int offset ) {
+		if ( this.prevState == null ) {
+			return null;
+		} else {
+			return this.prevState.topType( offset );
+		}
 	}
 	
 	final ReplRecorder recorder() {
@@ -237,6 +245,7 @@ public final class JakRepl {
 		}
 		
 		state.print( this.console );
+		this.prevState = state;
 		
 		this.initNewWriter();
 	}

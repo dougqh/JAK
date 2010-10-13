@@ -2,6 +2,10 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
+import net.dougqh.jak.JavaFieldDescriptor;
+import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.java.meta.types.JavaTypes;
+
 enum ReplArgument {
 	BOOLEAN( boolean.class ) {
 		@Override
@@ -137,6 +141,20 @@ enum ReplArgument {
 				throw new IllegalArgumentException();
 			}
 		}
+	},
+	FIELD( JavaFieldDescriptor.class ) {
+		@Override
+		public final Object parse( final String argString ) {
+			//TODO: Implement this
+			throw new UnsupportedOperationException();
+		}		
+	},
+	METHOD( JavaMethodDescriptor.class ) {
+		@Override
+		public final Object parse( final String argString ) {
+			//TODO: Implement this
+			throw new UnsupportedOperationException();
+		}
 	};
 	
 	public static final ReplArgument instance( final Type type ) {
@@ -159,7 +177,10 @@ enum ReplArgument {
 	}
 	
 	public final boolean matches( final Type type ) {
-		return this.type.equals( type );
+		Class< ? > thisType = JavaTypes.getRawClass( this.type );
+		Class< ? > thatType = JavaTypes.getRawClass( type );
+		
+		return thisType.isAssignableFrom( thatType );
 	}
 	
 	public final String getTypeName() {

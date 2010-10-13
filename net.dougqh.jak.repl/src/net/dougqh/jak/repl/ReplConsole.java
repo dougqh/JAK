@@ -81,6 +81,13 @@ final class ReplConsole {
 		return this.reader.readLine( "=>", '\0' );
 	}
 	
+	final ReplConsole printUsage( final Iterable< ReplMethod > methods ) {
+		for ( ReplMethod method : methods ) {
+			this.printUsage( method );
+		}
+		return this;
+	}
+	
 	final ReplConsole printUsage( final ReplMethod method ) {
 		this.append( "Usage: " );
 		this.append( method.getName() );

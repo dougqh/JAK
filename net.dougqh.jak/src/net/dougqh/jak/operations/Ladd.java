@@ -23,6 +23,11 @@ public final class Ladd extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return ADD;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

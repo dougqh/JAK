@@ -23,6 +23,11 @@ public final class Ior extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return OR;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

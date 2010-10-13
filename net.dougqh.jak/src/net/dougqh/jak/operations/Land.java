@@ -23,6 +23,11 @@ public final class Land extends Operation {
 	}
 	
 	@Override
+	public final String getOperator() {
+		return AND;
+	}
+	
+	@Override
 	public final Class< ? >[] getCodeOperandTypes() {
 		return NO_ARGS;
 	}

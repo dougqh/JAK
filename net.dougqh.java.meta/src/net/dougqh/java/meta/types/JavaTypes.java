@@ -19,6 +19,17 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.AbstractTypeVisitor6;
 
 public final class JavaTypes {
+	public static final boolean isArrayType( final Type type ) {
+		if ( type instanceof Class< ? > ) {
+			Class< ? > aClass = (Class< ? >)type;
+			return aClass.isArray();
+		} else if ( type instanceof GenericArrayType ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public static final boolean isObjectType( final Type type ) {
 		Type resolvedType = resolve( type );
 		

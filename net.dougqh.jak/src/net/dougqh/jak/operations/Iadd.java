@@ -21,6 +21,10 @@ public final class Iadd extends Operation {
 	public final int getCode() {
 		return CODE;
 	}
+	@Override
+	public final String getOperator() {
+		return ADD;
+	}
 	
 	@Override
 	public final Class< ? >[] getCodeOperandTypes() {

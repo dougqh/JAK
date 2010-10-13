@@ -20,7 +20,7 @@ final class MethodCommand extends ReplCommand {
 		final String... argStrings )
 		throws IOException
 	{
-		Set< ReplMethod > methods = ReplMethod.find( methodName );
+		Set< ReplMethod > methods = ReplMethod.findByName( methodName );
 		if ( methods.isEmpty() ) {
 			repl.console().printError( "Unknown command: " + methodName );
 			if ( argStrings.length == 0 ) {
@@ -44,9 +44,7 @@ final class MethodCommand extends ReplCommand {
 			}
 			if ( ! foundMatch ) {
 				repl.console().printError( "Invalid arguments" );
-				for ( ReplMethod method : methods ) {
-					repl.console().printUsage( method );
-				}
+				repl.console().printUsage( methods );
 			}
 		}		
 	}
