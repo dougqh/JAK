@@ -66,7 +66,8 @@ public final class JakRepl {
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
 		EchoCommand.INSTANCE,
-		LiteralCommand.INSTANCE,
+		ExpressionCommand.INSTANCE,
+		StringLiteralCommand.INSTANCE,
 		OperatorCommand.INSTANCE );
 	
 	public JakRepl() throws IOException {
@@ -170,9 +171,9 @@ public final class JakRepl {
 		
 		ReplCommand replCommand = findCommand( command );
 		if ( replCommand.disableArgumentParsing() ) {
-			replCommand.run( this, fullCommand, new String[] {} );
+			replCommand.run( this, fullCommand, ReplCommand.NO_ARGS, false );
 		} else {
-			replCommand.run( this, command, args );
+			replCommand.run( this, command, args, false );
 		}
 	}
 	

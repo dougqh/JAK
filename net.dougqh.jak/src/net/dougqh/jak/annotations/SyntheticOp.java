@@ -15,4 +15,6 @@ public @interface SyntheticOp {
 	public abstract Class< ? >[] stackOperandTypes() default {};
 	
 	public abstract Class< ? >[] stackResultTypes() default {};
+	
+	public abstract boolean repl() default true;
 }

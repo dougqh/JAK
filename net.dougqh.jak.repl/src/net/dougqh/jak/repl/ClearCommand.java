@@ -14,7 +14,8 @@ final class ClearCommand extends FixedIdCommand {
 	final void run(
 		final JakRepl repl,
 		final String command,
-		final String... args )
+		final String[] args,
+		final boolean isSolitary )
 		throws IOException
 	{
 		checkNoArguments( args );

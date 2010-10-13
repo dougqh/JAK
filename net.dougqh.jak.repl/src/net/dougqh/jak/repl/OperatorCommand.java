@@ -15,7 +15,8 @@ public final class OperatorCommand extends ReplCommand {
 	final void run(
 		final JakRepl repl,
 		final String command,
-		final String... argStrings )
+		final String[] argStrings,
+		final boolean isSolitary )
 		throws IOException
 	{
 		Set< ReplMethod > methods = ReplMethod.findByOperator( command );
@@ -25,7 +26,9 @@ public final class OperatorCommand extends ReplCommand {
 			try {
 				Object[] args = method.parseArguments( argStrings );
 				method.invoke( repl.codeWriter(), args );
-				repl.runProgram();
+				if ( isSolitary ) {
+					repl.runProgram();
+				}
 				
 				return;
 			} catch ( IllegalArgumentException e ) {

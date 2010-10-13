@@ -2,22 +2,16 @@ package net.dougqh.jak.repl;
 
 import java.io.IOException;
 
-final class LiteralCommand extends ReplCommand {
-	static final LiteralCommand INSTANCE = new LiteralCommand();
+public final class NumericLiteralCommand extends ReplCommand {
+	static final NumericLiteralCommand INSTANCE = new NumericLiteralCommand();
 	
-	private LiteralCommand() {}
-	
-	@Override
-	final boolean disableArgumentParsing() {
-		return true;
-	}
+	private NumericLiteralCommand() {}
 	
 	@Override
 	final boolean matches( final String command ) {
 		char firstChar = command.charAt( 0 );
 		return ( firstChar == '-' ) ||
 			( firstChar == ReplArgument.CHAR_QUOTE ) ||
-			( firstChar == ReplArgument.STRING_QUOTE ) ||
 			Character.isDigit( firstChar ) ||
 			isBooleanLiteral( command );
 	}
@@ -31,7 +25,8 @@ final class LiteralCommand extends ReplCommand {
 	final void run(
 		final JakRepl repl,
 		final String command,
-		final String... args )
+		final String[] args,
+		final boolean isSolitary )
 		throws IOException
 	{
 		try {
@@ -39,9 +34,6 @@ final class LiteralCommand extends ReplCommand {
 			if ( firstChar == ReplArgument.CHAR_QUOTE ) {
 				Character literal = (Character)ReplArgument.CHAR.parse( command );
 				repl.codeWriter().iconst( literal );
-			} else if ( firstChar == ReplArgument.STRING_QUOTE ) {
-				String literal = (String)ReplArgument.STRING_LITERAL.parse( command );
-				repl.codeWriter().ldc( literal );
 			} else if ( isBooleanLiteral( command ) ) {
 				Boolean literal = (Boolean)ReplArgument.BOOLEAN.parse( command );
 				repl.codeWriter().iconst( literal );
@@ -63,7 +55,9 @@ final class LiteralCommand extends ReplCommand {
 					throw new IllegalStateException();
 				}
 			}
-			repl.runProgram();
+			if ( isSolitary ) {
+				repl.runProgram();
+			}
 		} catch ( IllegalArgumentException e ) {
 			repl.console().printError( "Invalid literal" );
 		}

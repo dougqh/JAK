@@ -17,7 +17,8 @@ final class MethodCommand extends ReplCommand {
 	final void run(
 		final JakRepl repl,
 		final String methodName,
-		final String... argStrings )
+		final String[] argStrings,
+		final boolean isSolitary )
 		throws IOException
 	{
 		Set< ReplMethod > methods = ReplMethod.findByName( methodName );
