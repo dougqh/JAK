@@ -8,6 +8,11 @@ final class LiteralCommand extends ReplCommand {
 	private LiteralCommand() {}
 	
 	@Override
+	final boolean disableArgumentParsing() {
+		return true;
+	}
+	
+	@Override
 	final boolean matches( final String command ) {
 		char firstChar = command.charAt( 0 );
 		return ( firstChar == '-' ) ||

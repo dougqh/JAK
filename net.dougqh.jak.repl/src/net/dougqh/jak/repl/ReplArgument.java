@@ -2,6 +2,7 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
+import net.dougqh.jak.JavaAssembler;
 import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.java.meta.types.JavaTypes;
@@ -122,32 +123,23 @@ enum ReplArgument {
 			return argString.substring( 1, argString.length() - 1 );
 		}
 	},
-	TYPE_LITERAL( Type.class ) {
+	CLASS_LITERAL( Type.class ) {
 		@Override
 		public final Object parse( final String argString ) {
-			try {
-				return Class.forName( argString );
-			} catch ( ClassNotFoundException e ) {
-				throw new IllegalArgumentException();
-			}
-		}
-	},
-	CLASS_LITERAL( Class.class ) {
-		@Override
-		public final Object parse( final String argString ) {
-			try {
-				return Class.forName( argString );
-			} catch ( ClassNotFoundException e ) {
-				throw new IllegalArgumentException();
-			}
+			return loadClass( argString );
 		}
 	},
 	FIELD( JavaFieldDescriptor.class ) {
 		@Override
 		public final Object parse( final String argString ) {
-			//TODO: Implement this
-			throw new UnsupportedOperationException();
-		}		
+			String[] parts = splitOnLast( argString, ':' );
+			if ( parts.length != 2 ) {
+				throw new IllegalArgumentException();
+			}
+			return JavaAssembler.field(
+				loadClass( parts[ 1 ] ),
+				parts[ 0 ] );
+		}
 	},
 	METHOD( JavaMethodDescriptor.class ) {
 		@Override
@@ -189,6 +181,26 @@ enum ReplArgument {
 	
 	public abstract Object parse( final String argString );
 	
+	static final Class< ? > loadClass( final String name ) {
+		if ( name.indexOf( '.' ) == -1 ) {
+			return forJvmName( name );
+		} else {
+			return forJavaName( name );
+		}
+	}
+	
+	static final Class< ? > forJvmName( final String name ) {
+		return forJavaName( name.replace( '/', '.' ) );
+	}
+	
+	static final Class< ? > forJavaName( final String name ) {
+		try {
+			return Class.forName( name );
+		} catch ( ClassNotFoundException e ) {
+			throw new IllegalArgumentException( e );
+		}
+	}
+	
 	static final Class< ? > typeQualifier( final String argString ) {
 		char lastChar = Character.toUpperCase( argString.charAt( argString.length() - 1 ) );
 		if ( Character.isDigit( lastChar ) ) {
@@ -227,6 +239,20 @@ enum ReplArgument {
 		Class< ? > type = typeQualifier( argString );
 		if ( type != null && ! type.equals( expectedType ) ) {
 			throw new IllegalStateException();
+		}
+	}
+	
+	private static final String[] splitOnLast(
+		final String string,
+		final char splitChar )
+	{
+		int lastIndex = string.lastIndexOf( splitChar );
+		if ( lastIndex == -1 ) {
+			return new String[] { string };
+		} else {
+			return new String[] {
+				string.substring( 0, lastIndex ),
+				string.substring( lastIndex + 1 ) };
 		}
 	}
 }

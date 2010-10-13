@@ -3,6 +3,7 @@ package net.dougqh.jak.repl;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.ConstantEntry;
+import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplFormatter {
@@ -13,7 +14,7 @@ final class ReplFormatter {
 			return "String";
 		} else if ( type instanceof Class ) {
 			Class< ? > aClass = (Class< ? >)type;
-			return aClass.getSimpleName();
+			return aClass.getCanonicalName();
 		} else {
 			return JavaTypes.getRawClassName( type );
 		}
@@ -31,6 +32,9 @@ final class ReplFormatter {
 		} else if ( value instanceof String ) {
 			String string = (String)value;
 			return ReplArgument.STRING_QUOTE + string + ReplArgument.STRING_QUOTE;
+		} else if ( value instanceof JavaFieldDescriptor ) {
+			JavaFieldDescriptor field = (JavaFieldDescriptor)value;
+			return field.getName() + ":" + format( field.getType() );
 		} else {
 			return value.toString();
 		}

@@ -168,7 +168,12 @@ public final class JakRepl {
 		String command = commandParts[ 0 ];
 		String[] args = Arrays.copyOfRange( commandParts, 1, commandParts.length );
 		
-		findCommand( command ).run( this, command, args );
+		ReplCommand replCommand = findCommand( command );
+		if ( replCommand.disableArgumentParsing() ) {
+			replCommand.run( this, fullCommand, new String[] {} );
+		} else {
+			replCommand.run( this, command, args );
+		}
 	}
 	
 	private final ReplCommand findCommand( final String command ) {

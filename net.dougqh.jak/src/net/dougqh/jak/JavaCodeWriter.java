@@ -1558,7 +1558,7 @@ public final class JavaCodeWriter {
 		final Type targetType,
 		final String fieldName )
 	{
-		return this.getstatic( getField( targetType, fieldName ) );
+		return this.self_getstatic( getField( targetType, fieldName ) );
 	}
 
 	@Op( Getstatic.class )
@@ -1571,7 +1571,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Getstatic.class )
-	public final JavaCodeWriter getstatic( final Field field ) {
+	public final JavaCodeWriter self_getstatic( final Field field ) {
 		this.coreWriter.getstatic(
 			field.getDeclaringClass(),
 			JavaAssembler.field( field ) );
@@ -1587,7 +1587,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Putstatic.class )
-	public final JavaCodeWriter this_putstatic( final JavaFieldDescriptor field ) {
+	public final JavaCodeWriter self_putstatic( final JavaFieldDescriptor field ) {
 		return this.putstatic( this.thisType(), field );
 	}
 

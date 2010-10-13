@@ -11,6 +11,10 @@ abstract class ReplCommand {
 		final String... args )
 		throws IOException;
 	
+	boolean disableArgumentParsing() {
+		return false;
+	}
+	
 	protected static final void checkNoArguments( final String... args ) {
 		if ( args.length != 0 ) {
 			throw new IllegalArgumentException();
