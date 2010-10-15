@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenLoadAndStoreTest {
+public final class LoadAndStoreTest {
 	public final @Test void intLoadAndStore() {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "IntStore" ).implements_( IntCalculator.class ) );

@@ -1,6 +1,8 @@
 package net.dougqh.jak;
 
 import static net.dougqh.jak.JavaAssembler.*;
+import static net.dougqh.jak.matchers.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -17,9 +19,6 @@ import junit.framework.TestSuite;
 import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.operations.Operation;
 import net.dougqh.jak.operations.Operations;
-
-import static org.junit.Assert.*;
-import static net.dougqh.jak.matchers.Matchers.*;
 
 public final class OperationTest extends TestCase {
 	public static final TestSuite suite() {
@@ -63,7 +62,8 @@ public final class OperationTest extends TestCase {
 			0 );
 		
 		ExpectationMonitor monitor = new ExpectationMonitor( this.operation, this.method );
-		typeWriter.monitor( monitor );
+		typeWriter.initConfig(
+			new JakConfiguration().monitor( monitor ) );
 		
 		JavaCoreCodeWriter coreWriter = typeWriter.define(
 			static_().method( void.class, "main" ),
@@ -106,7 +106,7 @@ public final class OperationTest extends TestCase {
 		}
 		
 		@Override
-		public final Stack monitor( final Stack stack ) {
+		public final StackMonitor monitor( final StackMonitor stack ) {
 			this.checkedStack = new CheckedStack( this.operation, stack );
 			return this.checkedStack;
 		}
@@ -141,10 +141,10 @@ public final class OperationTest extends TestCase {
 		}
 	}
 	
-	private static abstract class TestStack implements Stack {
-		protected final Stack stack;
+	private static abstract class TestStack implements StackMonitor {
+		protected final StackMonitor stack;
 		
-		TestStack( final Stack stack ) {
+		TestStack( final StackMonitor stack ) {
 			this.stack = stack;
 		}
 		
@@ -213,7 +213,7 @@ public final class OperationTest extends TestCase {
 		private final ListIterator< Class< ? > > operandIter;
 		private final ListIterator< Class< ? > > resultIter;
 		
-		CheckedStack( final Operation operation, final Stack stack ) {
+		CheckedStack( final Operation operation, final StackMonitor stack ) {
 			super( stack );
 			
 			List< Class< ? > > operandTypes = Arrays.asList( operation.getStackOperandTypes() );
@@ -237,6 +237,16 @@ public final class OperationTest extends TestCase {
 			assertThat( type, is( expectedType ) );
 			
 			this.stack.stack( type );
+		}
+		
+		@Override
+		public final void enableTypeTracking() {
+			this.stack.enableTypeTracking();
+		}
+		
+		@Override
+		public final List< Type > stackTypes() {
+			return this.stack.stackTypes();
 		}
 		
 		final void assertDone() {

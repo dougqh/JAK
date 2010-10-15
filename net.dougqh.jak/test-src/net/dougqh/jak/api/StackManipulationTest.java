@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenStackManipulation {
+public final class StackManipulationTest {
 	public final @Test void swap() {
 		JavaClassWriter classWriter = define( 
 			public_().final_().class_( "Swap" ).implements_( IntCalculation.class ) );

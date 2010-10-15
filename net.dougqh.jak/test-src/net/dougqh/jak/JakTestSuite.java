@@ -1,6 +1,6 @@
 package net.dougqh.jak;
 
-import net.dougqh.jak.api.CodeGenApiTestSuite;
+import net.dougqh.jak.api.PublicApiTestSuite;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -12,5 +12,5 @@ import org.junit.runners.Suite.SuiteClasses;
 	ByteStreamTest.class,
 	ConstantPoolTest.class,
 	OperationTest.class,
-	CodeGenApiTestSuite.class } )
-public final class CodeGenTestSuite {}
+	PublicApiTestSuite.class } )
+public final class JakTestSuite {}

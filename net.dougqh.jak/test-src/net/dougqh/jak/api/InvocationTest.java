@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenInvocationTest {
+public final class InvocationTest {
 	public final @Test void invokeStatic() {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "InvokeStatic" ).implements_( Function.class ) );

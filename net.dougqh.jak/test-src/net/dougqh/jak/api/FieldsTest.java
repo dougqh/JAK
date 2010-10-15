@@ -10,7 +10,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenFieldsTest {
+public final class FieldsTest {
 	public @Test final void staticFields() {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "StaticFields" ).implements_( SetGet.class ) );

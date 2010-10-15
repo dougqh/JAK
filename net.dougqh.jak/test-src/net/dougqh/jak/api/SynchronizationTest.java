@@ -11,7 +11,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenSynchronizationTest {
+public final class SynchronizationTest {
 	public final @Test void synchronization() {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "WaitImpl" ).implements_( Wait.class ) );

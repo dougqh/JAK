@@ -13,8 +13,8 @@ import net.dougqh.jak.JavaCodeWriter;
 
 import org.junit.Test;
 
-public final class CodeGenArithmeticOpsTest {
-	public static final ClassLoader CLASS_LOADER = CodeGenArithmeticOpsTest.class.getClassLoader();
+public final class ArithmeticOpsTest {
+	public static final ClassLoader CLASS_LOADER = ArithmeticOpsTest.class.getClassLoader();
 	
 	private static final double DELTA = 1e-8;
 	

@@ -13,7 +13,7 @@ import net.dougqh.jak.JavaCodeWriter;
 
 import org.junit.Test;
 
-public final class CodeGenCastTest {
+public final class CastTest {
 	public final @Test void intCasts() {
 		JavaClassWriter writer = define( public_().static_().final_().class_( "IntCasts" ) );
 		

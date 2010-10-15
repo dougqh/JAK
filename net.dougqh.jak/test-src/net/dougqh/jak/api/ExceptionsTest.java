@@ -9,7 +9,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenExceptionsTest {
+public final class ExceptionsTest {
 	@Test( expected=TestException.class ) 
 	public final void throwsException() throws Exception {
 		JavaClassWriter writer = define(
@@ -140,19 +140,19 @@ public final class CodeGenExceptionsTest {
 		public abstract String handle( final Thrower thrower );
 	}
 	
-	public final class NoExceptionThrower implements Thrower {
+	public static final class NoExceptionThrower implements Thrower {
 		@Override
 		public final void throwIt() {}
 	}
 	
-	public final class MalformedUrlExceptionThrower implements Thrower {
+	public static final class MalformedUrlExceptionThrower implements Thrower {
 		@Override
 		public final void throwIt() throws Exception {
 			throw new MalformedURLException();
 		}
 	}
 	
-	public final class NullPointerExceptionThrower implements Thrower {
+	public static final class NullPointerExceptionThrower implements Thrower {
 		@Override
 		public final void throwIt() {
 			throw new NullPointerException();

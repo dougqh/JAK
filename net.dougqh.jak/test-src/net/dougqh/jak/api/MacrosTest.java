@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenMacrosTest {
+public final class MacrosTest {
 	public final @Test void not() {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "Not" ).implements_( BooleanOperation.class ) );

@@ -11,7 +11,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenModifiersTest {
+public final class ModifiersTest {
 	public final @Test void fieldModifiers() {
 		JavaClassWriter classWriter = define( public_().final_().class_( "Fields" ) );
 		

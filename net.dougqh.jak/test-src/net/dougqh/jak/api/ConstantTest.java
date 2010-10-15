@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenConstantTest {
+public final class ConstantTest {
 	public final @Test void booleanConstants() {
 		assertTrue( makeBoolean( true ) );
 		assertFalse( makeBoolean( false ) );

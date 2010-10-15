@@ -9,7 +9,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenArraysTest {
+public final class ArraysTest {
 	public final @Test void arrayCreation() {
 		assertTrue( makePrimitiveArray( boolean.class ) instanceof boolean[] );
 		assertTrue( makePrimitiveArray( byte.class ) instanceof byte[] );

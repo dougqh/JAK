@@ -14,8 +14,8 @@ import net.dougqh.jak.JavaInterfaceWriter;
 
 import org.junit.Test;
 
-public final class CodeGenStructuralTest {
-	private static final ClassLoader CLASS_LOADER = CodeGenStructuralTest.class.getClassLoader();
+public final class StructuralTest {
+	private static final ClassLoader CLASS_LOADER = StructuralTest.class.getClassLoader();
 	
 	public final @Test void trivialClass() {
 		JavaClassWriter classWriter = define( public_().final_().class_( "TrivialClass" ) );

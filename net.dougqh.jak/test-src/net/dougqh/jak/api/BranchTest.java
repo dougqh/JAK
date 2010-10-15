@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenBranchTest {
+public final class BranchTest {
 	public final @Test void forwardBranchIntZero1() {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "ForwardBranch" ).implements_( IntFunction.class ) );

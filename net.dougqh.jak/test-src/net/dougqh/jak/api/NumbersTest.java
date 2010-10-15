@@ -6,7 +6,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenNumbersTest {
+public final class NumbersTest {
 	public final @Test void ldc() throws Exception {
 		for ( int value = Integer.MIN_VALUE; 
 			value < Integer.MAX_VALUE;

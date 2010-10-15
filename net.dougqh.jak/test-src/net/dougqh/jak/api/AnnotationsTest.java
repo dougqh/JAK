@@ -10,7 +10,7 @@ import net.dougqh.jak.JavaAnnotationWriter;
 
 import org.junit.Test;
 
-public final class CodeGenAnnotationsTest {
+public final class AnnotationsTest {
 	public final @Test void trivialAnnotation() {
 		JavaAnnotationWriter annotationWriter = define( public_().$interface( "Annotation" ) );
 		

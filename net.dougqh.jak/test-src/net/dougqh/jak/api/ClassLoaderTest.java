@@ -5,7 +5,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenClassLoaderTest {
+public final class ClassLoaderTest {
 	public final @Test void classLoader() {
 		JavaClassWriter classWriter = define( class_( "NewClass" ) );
 		classWriter.load( new ClassLoader() {} );

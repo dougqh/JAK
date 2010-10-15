@@ -14,7 +14,7 @@ import net.dougqh.jak.JavaClassWriter;
 
 import org.junit.Test;
 
-public final class CodeGenGenericsTest {
+public final class GenericsTest {
 	public final @Test void genericReturnType() {
 		JavaClassWriter classWriter = define( public_().final_().class_( "GenericReturnType" ) );
 		

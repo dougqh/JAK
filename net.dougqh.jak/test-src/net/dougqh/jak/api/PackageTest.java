@@ -8,8 +8,8 @@ import net.dougqh.jak.JavaPackageWriter;
 
 import org.junit.Test;
 
-public final class CodeGenPackageTest {
-	private static final Package PACKAGE = CodeGenPackageTest.class.getPackage();
+public final class PackageTest {
+	private static final Package PACKAGE = PackageTest.class.getPackage();
 	
 	public final @Test void defineClass() {
 		JavaPackageWriter packageWriter = define( package_( "foo.bar" ) );
