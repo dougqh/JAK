@@ -3,6 +3,7 @@ package net.dougqh.jak.repl;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import net.dougqh.jak.JakTypeStack;
 import net.dougqh.jak.JavaAssembler;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.StackMonitor;
@@ -28,8 +29,8 @@ final class ReplStackMonitor implements StackMonitor {
 	}
 	
 	@Override
-	public final List< Type > stackTypes() {
-		return this.stack.stackTypes();
+	public final JakTypeStack typeStack() {
+		return this.stack.typeStack();
 	}
 	
 	final void suppressStackTracking() {

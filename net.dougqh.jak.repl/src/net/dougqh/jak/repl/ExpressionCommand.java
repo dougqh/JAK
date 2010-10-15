@@ -23,10 +23,11 @@ final class ExpressionCommand extends ReplCommand {
 	{
 		ArrayList< ReplCommand > argCommands = new ArrayList< ReplCommand >( args.length );
 		for ( String arg : args ) {
-			if ( NumericLiteralCommand.INSTANCE.matches( arg ) ) {
-				argCommands.add( NumericLiteralCommand.INSTANCE );
-			} else if ( OperatorCommand.INSTANCE.matches( arg ) ) {
+			//DQH - Operators have to come before Numerics to handle "-" case.
+			if ( OperatorCommand.INSTANCE.matches( arg ) ) {
 				argCommands.add( OperatorCommand.INSTANCE );
+			} else if ( NumericLiteralCommand.INSTANCE.matches( arg ) ) {
+				argCommands.add( NumericLiteralCommand.INSTANCE );
 			} else {
 				repl.console().printError( "Invalid expression" );
 				return;

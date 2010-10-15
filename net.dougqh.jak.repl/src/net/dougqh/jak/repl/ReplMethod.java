@@ -104,21 +104,18 @@ final class ReplMethod {
 	public final boolean matchesStackTypes( final JakRepl repl ) {
 		Operation operation = getOperationOf( this.method );
 		
-		List< Class< ? > > expectedTypes = Arrays.asList( operation.getStackOperandTypes() );
-		List< Type > actualTypes = repl.codeWriter().stack().stackTypes();
+		Class< ? >[] expectedTypes = operation.getStackOperandTypes().clone();
+		reverse( expectedTypes );
 		
-		ListIterator< Class< ? > > expectedIter = expectedTypes.listIterator( expectedTypes.size() );
-		ListIterator< Type > actualIterator = actualTypes.listIterator();
-		
-		while ( expectedIter.hasPrevious() ) {
-			Class< ? > expectedType = expectedIter.previous();
-			Type actualType = actualIterator.hasNext() ? actualIterator.next() : null;
-			
-			if ( ! expectedType.equals( actualType ) ) {
-				return false;
-			}
+		return repl.codeWriter().stackMonitor().typeStack().matches( expectedTypes );
+	}
+	
+	private final void reverse( final Object[] array ) {
+		for ( int i = 0; i < array.length / 2; ++i ) {
+			Object tmp = array[ i ];
+			array[ i ] = array[ array.length - 1 ];
+			array[ array.length - 1 ] = tmp;
 		}
-		return true;
 	}
 	
 	public final String getOperator() {
