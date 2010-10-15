@@ -33,15 +33,15 @@ final class ExpressionCommand extends ReplCommand {
 			}
 		}
 		
-		NumericLiteralCommand.INSTANCE.run( repl, command, NO_ARGS, true );
+		NumericLiteralCommand.INSTANCE.run( repl, command, NO_ARGS, false );
 		for ( int i = 0; i < args.length; ++i ) {
 			String arg = args[ i ];
 			ReplCommand argCommand = argCommands.get( i );
 			
-			argCommand.run( repl, arg, NO_ARGS, true );
+			argCommand.run( repl, arg, NO_ARGS, false );
 		}
 		if ( isSolitary ) {
-			//repl.runProgram();
+			repl.runProgram();
 		}
 	}
 }

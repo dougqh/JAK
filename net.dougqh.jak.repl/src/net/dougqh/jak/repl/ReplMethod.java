@@ -105,14 +105,14 @@ final class ReplMethod {
 		Operation operation = getOperationOf( this.method );
 		
 		List< Class< ? > > expectedTypes = Arrays.asList( operation.getStackOperandTypes() );
+		List< Type > actualTypes = repl.codeWriter().stack().stackTypes();
 		
-		int offset = 0;
-		for ( ListIterator< Class< ? > > expectedIter = expectedTypes.listIterator( expectedTypes.size() );
-			expectedIter.hasPrevious();
-			++offset )
-		{
+		ListIterator< Class< ? > > expectedIter = expectedTypes.listIterator( expectedTypes.size() );
+		ListIterator< Type > actualIterator = actualTypes.listIterator();
+		
+		while ( expectedIter.hasPrevious() ) {
 			Class< ? > expectedType = expectedIter.previous();
-			Type actualType = repl.topType( offset );
+			Type actualType = actualIterator.hasNext() ? actualIterator.next() : null;
 			
 			if ( ! expectedType.equals( actualType ) ) {
 				return false;

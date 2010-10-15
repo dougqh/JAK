@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import jline.Completor;
+import net.dougqh.jak.JakConfiguration;
 import net.dougqh.jak.JavaClassWriter;
 import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaFieldDescriptor;
@@ -93,14 +94,6 @@ public final class JakRepl {
 		return this.classWriter.thisType();
 	}
 	
-	final Type topType( final int offset ) {
-		if ( this.prevState == null ) {
-			return null;
-		} else {
-			return this.prevState.topType( offset );
-		}
-	}
-	
 	final ReplRecorder recorder() {
 		return this.recorder;
 	}
@@ -171,9 +164,9 @@ public final class JakRepl {
 		
 		ReplCommand replCommand = findCommand( command );
 		if ( replCommand.disableArgumentParsing() ) {
-			replCommand.run( this, fullCommand, ReplCommand.NO_ARGS, false );
+			replCommand.run( this, fullCommand, ReplCommand.NO_ARGS, true );
 		} else {
-			replCommand.run( this, command, args, false );
+			replCommand.run( this, command, args, true );
 		}
 	}
 	
@@ -257,8 +250,12 @@ public final class JakRepl {
 	}
 	
 	private final void initNewWriter() {		
+		JakConfiguration config = new JakConfiguration().
+			enableTypeTracking().
+			monitor( new ReplMonitor( this ) );
+		
 		this.classWriter = define( public_().final_().class_( CLASS ) );
-		this.classWriter.monitor( new ReplMonitor( this ) );
+		this.classWriter.initConfig( config );
 		
 		this.classWriter.define( STATE_FIELD );
 		

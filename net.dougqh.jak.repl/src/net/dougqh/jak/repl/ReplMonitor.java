@@ -2,8 +2,8 @@ package net.dougqh.jak.repl;
 
 import net.dougqh.jak.JakMonitor;
 import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.Locals;
-import net.dougqh.jak.Stack;
+import net.dougqh.jak.LocalsMonitor;
+import net.dougqh.jak.StackMonitor;
 
 final class ReplMonitor extends JakMonitor {
 	private final JakRepl repl;
@@ -18,12 +18,12 @@ final class ReplMonitor extends JakMonitor {
 	}
 	
 	@Override
-	public final Locals monitor( final Locals locals ) {
+	public final LocalsMonitor monitor( final LocalsMonitor locals ) {
 		return locals;
 	}
 	
 	@Override
-	public final Stack monitor( final Stack stack ) {
-		return new ReplStack( this.repl, stack );
+	public final StackMonitor monitor( final StackMonitor stack ) {
+		return new ReplStackMonitor( this.repl, stack );
 	}
 }

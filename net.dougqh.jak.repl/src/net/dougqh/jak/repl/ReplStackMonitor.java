@@ -1,24 +1,35 @@
 package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import net.dougqh.jak.JavaAssembler;
 import net.dougqh.jak.JavaMethodDescriptor;
-import net.dougqh.jak.Stack;
+import net.dougqh.jak.StackMonitor;
 import net.dougqh.jak.types.Types;
 
-final class ReplStack implements Stack {
+final class ReplStackMonitor implements StackMonitor {
 	private final JakRepl repl;
-	private final Stack stack;
+	private final StackMonitor stack;
 	
 	private int suppressionCount = 0;
 	
-	ReplStack(
+	ReplStackMonitor(
 		final JakRepl repl,
-		final Stack stack )
+		final StackMonitor stack )
 	{
 		this.repl = repl;
 		this.stack = stack;
+	}
+	
+	@Override
+	public final void enableTypeTracking() {
+		this.stack.enableTypeTracking();
+	}
+	
+	@Override
+	public final List< Type > stackTypes() {
+		return this.stack.stackTypes();
 	}
 	
 	final void suppressStackTracking() {
