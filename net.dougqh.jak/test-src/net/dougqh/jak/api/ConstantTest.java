@@ -234,7 +234,6 @@ public final class ConstantTest {
 		assertEquals( String.class, makeClass( String.class ) );
 	}
 	
-	@SuppressWarnings( "unchecked" )
 	private static final Class< ? > makeClass( final Class< ? > aClass ) {
 		JavaClassWriter classWriter = define(
 			public_().final_().class_( "ClassConstImpl" ).implements_( ObjectConst.class ) );

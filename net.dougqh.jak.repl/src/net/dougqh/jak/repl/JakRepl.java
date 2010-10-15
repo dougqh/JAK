@@ -243,6 +243,9 @@ public final class JakRepl {
 			throw new IllegalStateException( e );
 		}
 		
+		if ( this.echo ) {
+			this.console.endl();
+		}
 		state.print( this.console );
 		this.prevState = state;
 		
