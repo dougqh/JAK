@@ -23,6 +23,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	MacrosTest.class,
 	ClassLoaderTest.class,
 	AnnotationsTest.class,
-	StackTrackingTest.class,
+	JakTypeStackTest.class,
 	StackManipulationTest.class } )
 public class PublicApiTestSuite {}

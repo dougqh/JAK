@@ -245,8 +245,8 @@ public final class OperationTest extends TestCase {
 		}
 		
 		@Override
-		public final List< Type > stackTypes() {
-			return this.stack.stackTypes();
+		public final JakTypeStack typeStack() {
+			return this.stack.typeStack();
 		}
 		
 		final void assertDone() {

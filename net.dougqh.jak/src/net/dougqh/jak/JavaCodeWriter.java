@@ -2256,12 +2256,12 @@ public final class JavaCodeWriter {
 		return this.labels.containsKey( label );
 	}
 	
-	public final StackMonitor stack() {
-		return this.coreWriter.stack();
+	public final StackMonitor stackMonitor() {
+		return this.coreWriter.stackMonitor();
 	}
 	
-	public final LocalsMonitor locals() {
-		return this.coreWriter.locals();
+	public final LocalsMonitor localsMonitor() {
+		return this.coreWriter.localsMonitor();
 	}
 	
 	private final ConstantPool constantPool() {
@@ -2312,7 +2312,7 @@ public final class JavaCodeWriter {
 	{
 		Integer existingSlot = this.localVars.get( varName );
 		if ( existingSlot == null ) {
-			int newSlot = this.coreWriter.locals().addLocal( int.class );
+			int newSlot = this.coreWriter.localsMonitor().addLocal( int.class );
 			this.localVars.put( varName, newSlot );
 			return newSlot;
 		} else {

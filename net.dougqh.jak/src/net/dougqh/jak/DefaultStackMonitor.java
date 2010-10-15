@@ -1,9 +1,6 @@
 package net.dougqh.jak;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import net.dougqh.jak.types.Types;
 
@@ -11,7 +8,7 @@ final class DefaultStackMonitor implements StackMonitor {
 	private int curStack = 0;
 	private int maxStack = 0;
 	
-	private LinkedList< Type > types;
+	private JakTypeStack typeStack = null;
 	
 	DefaultStackMonitor() {}
 	
@@ -24,8 +21,8 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void stack( final Type type ) {
 		this.push( Types.size( type ) );
 
-		if ( this.types != null ) {
-			this.types.addFirst( type );
+		if ( this.typeStack != null ) {
+			this.typeStack.stack( type );
 		}
 	}
 	
@@ -33,8 +30,8 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void unstack( final Type type ) {
 		this.pop( Types.size( type ) );
 		
-		if ( this.types != null ) {
-			this.types.removeFirst();
+		if ( this.typeStack != null ) {
+			this.typeStack.unstack( type );
 		}
 	}
 	
@@ -42,8 +39,8 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void pop() {
 		this.pop( 1 );
 		
-		if ( this.types != null ) {
-			this.types.removeFirst();
+		if ( this.typeStack != null ) {
+			this.typeStack.pop();
 		}
 	}
 	
@@ -51,23 +48,15 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void pop2() {
 		this.pop( 2 );
 		
-		if ( this.types != null ) {
-			Type topType = this.types.removeFirst();
-			
-			if ( Types.isCategory1( topType ) ) {
-				this.types.removeFirst();
-			}
+		if ( this.typeStack != null ) {
+			this.typeStack.pop2();
 		}
 	}
 	
 	@Override
 	public final void swap() {
-		if ( this.types != null ) {
-			Type topType = this.types.removeFirst();
-			Type nextType = this.types.removeFirst();
-			
-			this.types.addFirst( topType );
-			this.types.addFirst( nextType );
+		if ( this.typeStack != null ) {
+			this.typeStack.swap();
 		}
 	}
 	
@@ -75,9 +64,8 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void dup() {
 		this.push( 1 );
 		
-		if ( this.types != null ) {
-			Type topType = this.types.getFirst();
-			this.types.addFirst( topType );
+		if ( this.typeStack != null ) {
+			this.typeStack.dup();
 		}
 	}
 	
@@ -85,27 +73,26 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void dup_x1() {
 		this.push( 1 );
 		
-		//TODO: Implement stack tracking
+		if ( this.typeStack != null ) {
+			this.typeStack.dup_x1();
+		}
 	}
 	
 	@Override
 	public final void dup_x2() {
 		this.push( 1 );
 		
-		//TODO: Implement stack tracking
+		if ( this.typeStack != null ) {
+			this.typeStack.dup_x2();
+		}
 	}
 	
 	@Override
 	public final void dup2() {
 		this.push( 2 );
 		
-		Type topType = this.types.getFirst();
-		if ( Types.isCategory1( topType ) ) {
-			Type nextType = this.types.get( 1 );
-			this.types.addFirst( nextType );
-			this.types.addFirst( topType );
-		} else {
-			this.types.addFirst( topType );
+		if ( this.typeStack != null ) {
+			this.typeStack.dup2();
 		}
 	}
 	
@@ -113,14 +100,18 @@ final class DefaultStackMonitor implements StackMonitor {
 	public final void dup2_x1() {
 		this.push( 2 );
 		
-		//TODO: Implement stack tracking
+		if ( this.typeStack != null ) {
+			this.typeStack.dup2_x1();
+		}
 	}
 	
 	@Override
 	public final void dup2_x2() {
 		this.push( 2 );
 		
-		//TODO: Implement stack tracking
+		if ( this.typeStack != null ) {
+			this.typeStack.dup2_x2();
+		}
 	}
 	
 	private final void push( final int size ) {
@@ -136,15 +127,15 @@ final class DefaultStackMonitor implements StackMonitor {
 	
 	@Override
 	public final void enableTypeTracking() {
-		this.types = new LinkedList< Type >();
+		this.typeStack = new JakTypeStack();
 	}
 	
 	@Override
-	public final List< Type > stackTypes() {
-		if ( this.types == null ) {
-			throw new IllegalStateException( "stack tracking was not enabled" );
+	public final JakTypeStack typeStack() {
+		if ( this.typeStack == null ) {
+			throw new IllegalStateException( "type tracking was not enabled" );
 		} else {
-			return Collections.unmodifiableList( this.types );
+			return this.typeStack;
 		}
 	}
 }

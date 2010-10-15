@@ -1,7 +1,6 @@
 package net.dougqh.jak;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 public interface StackMonitor {
 	public abstract void stack( final Type type );
@@ -28,7 +27,7 @@ public interface StackMonitor {
 	
 	public abstract void enableTypeTracking();
 	
-	public abstract List< Type > stackTypes();
+	public abstract JakTypeStack typeStack();
 	
 	public abstract int maxStack();
 }

@@ -2081,12 +2081,12 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	}
 	
 	@Override
-	public final LocalsMonitor locals() {
+	public final LocalsMonitor localsMonitor() {
 		return this.locals;
 	}
 	
 	@Override
-	public final StackMonitor stack() {
+	public final StackMonitor stackMonitor() {
 		return this.stack;
 	}
 }

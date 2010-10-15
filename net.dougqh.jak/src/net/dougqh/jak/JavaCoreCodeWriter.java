@@ -610,11 +610,11 @@ public interface JavaCoreCodeWriter {
 	
 	public abstract JavaCoreCodeWriter handleException( final ExceptionHandler exceptionHandler );
 	
-	public abstract StackMonitor stack();
+	public abstract StackMonitor stackMonitor();
 	
-	public abstract LocalsMonitor locals();
+	public abstract LocalsMonitor localsMonitor();
 	
-	public abstract int pos();	
+	public abstract int pos();
 	
 	public abstract class Jump {
 		public abstract Integer pos();

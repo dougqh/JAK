@@ -279,7 +279,11 @@ final class TypeWriter {
 			srcDir,
 			this.className.replace( '.', '/' ) + ".class" );
 		
-		classFile.getParentFile().mkdirs();
+		File packageDir = classFile.getParentFile();
+		boolean success = packageDir.mkdirs();
+		if ( ! success && ! packageDir.exists() ) {
+			throw new IOException( "Unable to create directory " + packageDir );
+		}
 		
 		FileOutputStream out = new FileOutputStream( classFile );
 		try {
