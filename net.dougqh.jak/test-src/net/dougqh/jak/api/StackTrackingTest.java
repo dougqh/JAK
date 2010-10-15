@@ -1,5 +1,9 @@
 package net.dougqh.jak.api;
 
-public final class StackTrackingTest {
+import org.junit.Test;
 
+public final class StackTrackingTest {
+	public final @Test void push() {
+		//TODO: Add stack tracking tests
+	}
 }

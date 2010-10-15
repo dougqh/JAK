@@ -38,7 +38,7 @@ public final class Sipush extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackResultTypes() {
-		return new Class< ? >[] { short.class };
+		return new Class< ? >[] { int.class };
 	}
 	
 	@Override

@@ -38,7 +38,7 @@ public final class Bipush extends Operation {
 	
 	@Override
 	public final Class< ? >[] getStackResultTypes() {
-		return new Class< ? >[] { byte.class };
+		return new Class< ? >[] { int.class };
 	}
 	
 	@Override
