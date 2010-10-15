@@ -4,10 +4,10 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.types.Types;
 
-final class LocalsImpl implements Locals {
+final class DefaultLocalsMonitor implements LocalsMonitor {
 	private int maxLocals = 0;
 	
-	LocalsImpl() {}
+	DefaultLocalsMonitor() {}
 	
 	@Override
 	public final int addLocal( final Type type ) {

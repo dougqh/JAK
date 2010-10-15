@@ -23,8 +23,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	private final ConstantPool constantPool;
 	private final ByteStream codeOut;
 	
-	private final Locals locals;
-	private final Stack stack;
+	private final LocalsMonitor locals;
+	private final StackMonitor stack;
 	
 	private final ArrayList< ExceptionHandler > handlers = new ArrayList< ExceptionHandler >( 8 );	
 	
@@ -33,8 +33,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	JavaCoreCodeWriterImpl(
 		final ConstantPool constantPool,
-		final Locals locals,
-		final Stack stack )
+		final LocalsMonitor locals,
+		final StackMonitor stack )
 	{
 		this.codeOut = new ByteStream( 128 );
 		this.constantPool = constantPool;
@@ -188,7 +188,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( BIPUSH ).u1( value );
 		} finally {
-			this.stack( byte.class );
+			this.stack( int.class );
 		}
 	}
 	
@@ -197,7 +197,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( SIPUSH ).u2( value );
 		} finally {
-			this.stack( short.class );
+			this.stack( int.class );
 		}
 	}
 	
@@ -1953,7 +1953,9 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	}
 	
 	private final void stack( final Type type ) {
-		this.stack.stack( type );
+		if ( ! type.equals( void.class) ) {
+			this.stack.stack( type );
+		}
 	}
 	
 	private final void unstack( final FormalArguments args ) {
@@ -2079,12 +2081,12 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	}
 	
 	@Override
-	public final Locals locals() {
+	public final LocalsMonitor locals() {
 		return this.locals;
 	}
 	
 	@Override
-	public final Stack stack() {
+	public final StackMonitor stack() {
 		return this.stack;
 	}
 }

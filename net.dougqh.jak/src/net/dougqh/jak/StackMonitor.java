@@ -1,8 +1,9 @@
 package net.dougqh.jak;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
-public interface Stack {
+public interface StackMonitor {
 	public abstract void stack( final Type type );
 	
 	public abstract void unstack( final Type type );
@@ -24,6 +25,10 @@ public interface Stack {
 	public abstract void dup2_x1();
 	
 	public abstract void dup2_x2();
+	
+	public abstract void enableTypeTracking();
+	
+	public abstract List< Type > stackTypes();
 	
 	public abstract int maxStack();
 }

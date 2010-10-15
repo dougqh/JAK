@@ -7,11 +7,11 @@ public abstract class JakMonitor {
 		return wrappedWriter;
 	}
 	
-	public Locals monitor( final Locals locals ) {
+	public LocalsMonitor monitor( final LocalsMonitor locals ) {
 		return locals;
 	}
 	
-	public Stack monitor( final Stack stack ) {
+	public StackMonitor monitor( final StackMonitor stack ) {
 		return stack;
 	}
 }

@@ -2256,6 +2256,14 @@ public final class JavaCodeWriter {
 		return this.labels.containsKey( label );
 	}
 	
+	public final StackMonitor stack() {
+		return this.coreWriter.stack();
+	}
+	
+	public final LocalsMonitor locals() {
+		return this.coreWriter.locals();
+	}
+	
 	private final ConstantPool constantPool() {
 		return this.typeWriter.constantPool();
 	}

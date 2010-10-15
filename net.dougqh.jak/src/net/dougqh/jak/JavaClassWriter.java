@@ -217,8 +217,8 @@ public final class JavaClassWriter implements JavaExtendedTypeWriter {
 		return this.typeWriter.getBytes();
 	}
 	
-	public final void monitor( final JakMonitor monitor ) {
-		this.typeWriter.monitor( monitor );
+	public final void initConfig( final JakConfiguration config ) {
+		this.typeWriter.initConfig( config );
 	}
 	
 	final TypeWriter typeWriter() {

@@ -24,8 +24,8 @@ final class Methods {
 		final FormalArguments arguments,
 		final Type[] exceptionTypes,
 		final Object defaultValue,
-		final Locals locals,
-		final Stack stack )
+		final LocalsMonitor locals,
+		final StackMonitor stack )
 	{
 		this.finishMethod();
 		++this.count;
@@ -147,8 +147,8 @@ final class Methods {
 		
 		CodeAttribute(
 			final ConstantPool constantPool,
-			final Locals locals,
-			final Stack stack )
+			final LocalsMonitor locals,
+			final StackMonitor stack )
 		{
 			super( constantPool, ID );
 			

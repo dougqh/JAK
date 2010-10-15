@@ -610,9 +610,9 @@ public interface JavaCoreCodeWriter {
 	
 	public abstract JavaCoreCodeWriter handleException( final ExceptionHandler exceptionHandler );
 	
-	public abstract Stack stack();
+	public abstract StackMonitor stack();
 	
-	public abstract Locals locals();
+	public abstract LocalsMonitor locals();
 	
 	public abstract int pos();	
 	

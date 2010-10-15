@@ -30,7 +30,7 @@ final class TypeWriter {
 	private final ConstantEntry parentClassNameEntry;
 	
 	private InnerClassesAttribute innerClasses = null;
-	private JakMonitor monitor = JakMonitor.NULL;
+	private JakConfiguration config = new JakConfiguration();
 	
 	TypeWriter(
 		final TypeWriterGroup writerGroup,
@@ -69,8 +69,8 @@ final class TypeWriter {
 				typeDescriptor.interfaceTypes() ) );
 	}
 	
-	final void monitor( final JakMonitor monitor ) {
-		this.monitor = monitor;
+	final void initConfig( final JakConfiguration config ) {
+		this.config = config;
 	}
 	
 	final ConstantPool constantPool() {
@@ -160,7 +160,7 @@ final class TypeWriter {
 		final int additionalFlags,
 		final Object defaultValue )
 	{
-		Locals locals = this.monitor.monitor( new LocalsImpl() );
+		LocalsMonitor locals = this.config.configure( new DefaultLocalsMonitor() );
 		if ( ! method.isStatic() ) {
 			locals.addLocal( Reference.class );
 		}
@@ -168,7 +168,7 @@ final class TypeWriter {
 			locals.addLocal( var.getType() );
 		}
 
-		Stack stack = this.monitor.monitor( new StackImpl() );		
+		StackMonitor stack = this.config.configure( new DefaultStackMonitor() );		
 		
 		JavaCoreCodeWriter writer = this.methods.createMethod(
 			method.flags() | additionalFlags,
@@ -180,7 +180,7 @@ final class TypeWriter {
 			locals,
 			stack );
 		
-		return this.monitor.monitor( writer );
+		return this.config.configure( writer );
 	}
 	
 	final byte[] getBytes() {
