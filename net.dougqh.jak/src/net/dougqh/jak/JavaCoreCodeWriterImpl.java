@@ -230,210 +230,210 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iload( final int slot ) {
-		this.local( slot, int.class );
 		try {
 			return this.op( ILOAD ).u1( slot );
 		} finally {
+			this.load( slot, int.class );
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iload_0() {
-		this.local( 0, int.class );
 		try {
 			return this.op( ILOAD_0 );
 		} finally {
+			this.load( 0, int.class );
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iload_1() {
-		this.local( 1, int.class );
 		try {
 			return this.op( ILOAD_1 );
 		} finally {
+			this.load( 1, int.class );
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iload_2() {
-		this.local( 2, int.class );
 		try {
 			return this.op( ILOAD_2 );
 		} finally {
+			this.load( 2, int.class );
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl iload_3() {
-		this.local( 3, int.class );
 		try {
 			return this.op( ILOAD_3 );
 		} finally {
+			this.load( 3, int.class );
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lload( final int slot ) {
-		this.local( slot, long.class );
 		try {
 			return this.op( LLOAD ).u1( slot );
 		} finally {
+			this.load( slot, long.class );
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lload_0() {
-		this.local( 0, long.class );
 		try {
 			return this.op( LLOAD_0 );
 		} finally {
+			this.load( 0, long.class );
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lload_1() {
-		this.local( 1, long.class );
 		try {
 			return this.op( LLOAD_1 );
 		} finally {
+			this.load( 1, long.class );
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lload_2() {
-		this.local( 2, long.class );
 		try {
 			return this.op( LLOAD_2 );
 		} finally {
+			this.load( 2, long.class );
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lload_3() {
-		this.local( 3, long.class );
 		try {
 			return this.op( LLOAD_3 );
 		} finally {
+			this.load( 3, long.class );
 			this.stack( long.class );
 		}
 	}	
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fload( final int slot ) {
-		this.local( slot, float.class );
 		try {
 			return this.op( FLOAD ).u1( slot );
 		} finally {
+			this.load( slot, float.class );
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fload_0() {
-		this.local( 0, float.class );
 		try {
 			return this.op( FLOAD_0 );
 		} finally {
+			this.load( 0, float.class );
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fload_1() {
-		this.local( 1, float.class );
 		try {
 			return this.op( FLOAD_1 );
 		} finally {
+			this.load( 1, float.class );
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fload_2() {
-		this.local( 2, float.class );
 		try {
 			return this.op( FLOAD_2 );	
 		} finally {
+			this.load( 2, float.class );
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fload_3() {
-		this.local( 3, float.class );
 		try {
 			return this.op( FLOAD_3 );
 		} finally {
+			this.load( 3, float.class );
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dload( final int slot ) {
-		this.local( slot, double.class );
 		try {
 			return this.op( DLOAD ).u1( slot );
 		} finally {
+			this.load( slot, double.class );
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dload_0() {
-		this.local( 0, double.class );
 		try {
 			return this.op( DLOAD_0 );
 		} finally {
+			this.load( 0, double.class );
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dload_1() {
-		this.local( 1, double.class );
 		try {
 			return this.op( DLOAD_1 );
 		} finally {
+			this.load( 1, double.class );
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dload_2() {
-		this.local( 2, double.class );
 		try {
 			return this.op( DLOAD_2 );
 		} finally {
+			this.load( 2, double.class );
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dload_3() {
-		this.local( 3, double.class );
 		try {
 			return this.op( DLOAD_3 );
 		} finally {
+			this.load( 3, double.class );
 			this.stack( double.class );
 		}
 	}	
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aload( final int slot ) {
-		this.local( slot, Reference.class );
 		try {
 			return this.op( ALOAD ).u1( slot );
 		} finally {
+			this.load( slot, Reference.class );
 			this.stack( Reference.class );
 		}
 	}
@@ -444,40 +444,40 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aload_0() {
-		this.local( 0, Reference.class );
 		try {
 			return this.op( ALOAD_0 );
 		} finally {
+			this.load( 0, Reference.class );			
 			this.stack( Reference.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aload_1() {
-		this.local( 1, Reference.class );
 		try {
 			return this.op( ALOAD_1 );
 		} finally {
+			this.load( 1, Reference.class );
 			this.stack( Reference.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aload_2() {
-		this.local( 2, Reference.class );
 		try {
 			return this.op( ALOAD_2 );
 		} finally {
+			this.load( 2, Reference.class );
 			this.stack( Reference.class );
 		}
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl aload_3() {
-		this.local( 3, Reference.class );
 		try {
 			return this.op( ALOAD_3 );
 		} finally {
+			this.load( 3, Reference.class );
 			this.stack( Reference.class );
 		}
 	}
@@ -572,7 +572,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl istore( final int index ) {
-		this.local( index, int.class );
+		this.store( index, int.class );
 		try {
 			return this.op( ISTORE ).u1( index );
 		} finally {
@@ -582,168 +582,168 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl istore_0() {
-		this.local( 0, int.class );
+		this.store( 0, int.class );
 		this.unstack( int.class );
 		return this.op( ISTORE_0 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl istore_1() {
-		this.local( 1, int.class );
+		this.store( 1, int.class );
 		this.unstack( int.class );
 		return this.op( ISTORE_1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl istore_2() {
-		this.local( 2, int.class );
+		this.store( 2, int.class );
 		this.unstack( int.class );
 		return this.op( ISTORE_2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl istore_3() {
-		this.local( 3, int.class );
+		this.store( 3, int.class );
 		this.unstack( int.class );
 		return this.op( ISTORE_3 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lstore( final int slot ) {
-		this.local( slot, long.class );
+		this.store( slot, long.class );
 		this.unstack( long.class );
 		return this.op( LSTORE ).u1( slot );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lstore_0() {
-		this.local( 0, long.class );
+		this.store( 0, long.class );
 		this.unstack( long.class );
 		return this.op( LSTORE_0 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lstore_1() {
-		this.local( 1, long.class );
+		this.store( 1, long.class );
 		this.unstack( long.class );
 		return this.op( LSTORE_1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lstore_2() {
-		this.local( 2, long.class );
+		this.store( 2, long.class );
 		this.unstack( long.class );
 		return this.op( LSTORE_2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl lstore_3() {
-		this.local( 3, long.class );
+		this.store( 3, long.class );
 		this.unstack( long.class );
 		return this.op( LSTORE_3 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fstore( final int slot ) {
-		this.local( slot, float.class );
+		this.store( slot, float.class );
 		this.unstack( float.class );
 		return this.op( FSTORE ).u1( slot );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fstore_0() {
-		this.local( 0, float.class );
+		this.store( 0, float.class );
 		this.unstack( float.class );
 		return this.op( FSTORE_0 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fstore_1() {
-		this.local( 1, float.class );
+		this.store( 1, float.class );
 		this.unstack( float.class );
 		return this.op( FSTORE_1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fstore_2() {
-		this.local( 2, float.class );
+		this.store( 2, float.class );
 		this.unstack( float.class );
 		return this.op( FSTORE_2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl fstore_3() {
-		this.local( 3, float.class );
+		this.store( 3, float.class );
 		this.unstack( float.class );
 		return this.op( FSTORE_3 );
 	}
 
 	@Override
 	public final JavaCoreCodeWriterImpl dstore( final int slot ) {
-		this.local( slot, double.class );
+		this.store( slot, double.class );
 		this.unstack( double.class );
 		return this.op( DSTORE ).u1( slot );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dstore_0() {
-		this.local( 0, double.class );
+		this.store( 0, double.class );
 		this.unstack( double.class );
 		return this.op( DSTORE_0 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dstore_1() {
-		this.local( 1, double.class );
+		this.store( 1, double.class );
 		this.unstack( double.class );
 		return this.op( DSTORE_1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dstore_2() {
-		this.local( 2, double.class );
+		this.store( 2, double.class );
 		this.unstack( double.class );
 		return this.op( DSTORE_2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl dstore_3() {
-		this.local( 3, double.class );
+		this.store( 3, double.class );
 		this.unstack( double.class );
 		return this.op( DSTORE_3 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore( final int slot ) {
-		this.local( slot, Reference.class );
+		this.store( slot, Reference.class );
 		this.unstack( Reference.class );
 		return this.op( ASTORE ).u1( slot );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_0() {
-		this.local( 0, Reference.class );
+		this.store( 0, Reference.class );
 		this.unstack( Reference.class );
 		return this.op( ASTORE_0 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_1() {
-		this.local( 1, Reference.class );
+		this.store( 1, Reference.class );
 		this.unstack( Reference.class );
 		return this.op( ASTORE_1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_2() {
-		this.local( 2, Reference.class );
+		this.store( 2, Reference.class );
 		this.unstack( Reference.class );
 		return this.op( ASTORE_2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_3() {
-		this.local( 3, Reference.class );
+		this.store( 3, Reference.class );
 		this.unstack( Reference.class );
 		return this.op( ASTORE_3 );
 	}
@@ -1292,8 +1292,11 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	{
 		//TODO: Bound checks on amount
 		
-		this.local( slot, int.class );
-		return this.op( IINC ).u1( slot ).u1( amount );
+		try {
+			return this.op( IINC ).u1( slot ).u1( amount );
+		} finally {
+			this.inc( slot );	
+		}
 	}
 	
 	@Override
@@ -1302,7 +1305,7 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( I2L );
 		} finally {
-			this.stack( long.class );	
+			this.stack( long.class );
 		}
 	}
 	
@@ -1948,8 +1951,16 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		return this;
 	}
 	
-	private final void local( final int slot, final Type type ) {
-		this.locals.local( slot, type );
+	private final void inc( final int slot ) {
+		this.locals.inc( slot );
+	}
+	
+	private final void load( final int slot, final Type type ) {
+		this.locals.load( slot, type );
+	}
+	
+	private final void store( final int slot, final Type type ) {
+		this.locals.store( slot, type );
 	}
 	
 	private final void stack( final Type type ) {

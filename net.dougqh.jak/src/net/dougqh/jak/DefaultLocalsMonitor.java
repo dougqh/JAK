@@ -17,10 +17,21 @@ final class DefaultLocalsMonitor implements LocalsMonitor {
 	}
 	
 	@Override
-	public final void local(
-		final int slot,
-		final Type type )
-	{
+	public final void inc( final int slot ) {
+		this.local( slot, int.class );
+	}
+	
+	@Override
+	public final void load( final int slot, final Type type ) {
+		this.local( slot, type );
+	}
+	
+	@Override
+	public final void store( final int slot, final Type type ) {
+		this.local( slot, type );
+	}
+	
+	private final void local( final int slot, final Type type ) {
 		int size = Types.size( type );
 		if ( slot + size > this.maxLocals ) {
 			this.maxLocals = slot + size;
