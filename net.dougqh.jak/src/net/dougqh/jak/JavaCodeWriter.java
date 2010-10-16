@@ -9,6 +9,7 @@ import java.util.HashMap;
 import net.dougqh.jak.JavaCoreCodeWriter.ExceptionHandler;
 import net.dougqh.jak.JavaCoreCodeWriter.Jump;
 import net.dougqh.jak.annotations.Op;
+import net.dougqh.jak.annotations.Symbol;
 import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.operations.*;
@@ -441,7 +442,7 @@ public final class JavaCodeWriter {
 	}
 
 	@Op( Lload.class )
-	public final JavaCodeWriter lload( final String var ) {
+	public final JavaCodeWriter lload( final @Symbol String var ) {
 		return this.lload( this.getOrReserveVarSlot( var, long.class ) );
 	}
 
@@ -491,7 +492,7 @@ public final class JavaCodeWriter {
 	}
 	
 	@Op( Fload.class )
-	public final JavaCodeWriter fload( final String var ) {
+	public final JavaCodeWriter fload( final @Symbol String var ) {
 		return this.fload( this.getOrReserveVarSlot( var, float.class ) );
 	}
 
@@ -541,7 +542,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Dload.class )
-	public final JavaCodeWriter dload( final String var ) {
+	public final JavaCodeWriter dload( final @Symbol String var ) {
 		return this.dload( this.getOrReserveVarSlot( var, double.class ) );
 	}
 
@@ -591,7 +592,7 @@ public final class JavaCodeWriter {
 	}
 
 	@Op( Aload.class )
-	public final JavaCodeWriter aload( final String var ) {
+	public final JavaCodeWriter aload( final @Symbol String var ) {
 		return this.aload( this.getOrReserveVarSlot( var, Reference.class ) );
 	}
 
@@ -694,7 +695,7 @@ public final class JavaCodeWriter {
 	}
 
 	@Op( Istore.class )
-	public final JavaCodeWriter istore( final String var ) {
+	public final JavaCodeWriter istore( final @Symbol String var ) {
 		return this.istore(this.getOrReserveVarSlot( var, int.class ) );
 	}
 
@@ -744,7 +745,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Lstore.class )
-	public final JavaCodeWriter lstore( final String var ) {
+	public final JavaCodeWriter lstore( final @Symbol String var ) {
 		return this.lstore( this.getOrReserveVarSlot( var, long.class ) );
 	}
 
@@ -794,7 +795,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Fstore.class )
-	public final JavaCodeWriter fstore( final String var ) {
+	public final JavaCodeWriter fstore( final @Symbol String var ) {
 		return this.fstore( this.getOrReserveVarSlot( var, float.class ) );
 	}
 
@@ -844,7 +845,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Dstore.class )
-	public final JavaCodeWriter dstore( final String var ) {
+	public final JavaCodeWriter dstore( final @Symbol String var ) {
 		return this.dstore( this.getOrReserveVarSlot( var, double.class ) );
 	}
 
@@ -894,7 +895,7 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Astore.class )
-	public final JavaCodeWriter astore( final String var ) {
+	public final JavaCodeWriter astore( final @Symbol String var ) {
 		return this.astore( this.getOrReserveVarSlot( var, Reference.class ) );
 	}
 
@@ -1262,12 +1263,12 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Iinc.class )
-	public final JavaCodeWriter iinc( final String var ) {
+	public final JavaCodeWriter iinc( final @Symbol String var ) {
 		return this.iinc( var, 1 );
 	}
 
 	@WrapOp( Iinc.class )
-	public final JavaCodeWriter iinc( final String var, final int amount ) {
+	public final JavaCodeWriter iinc( final @Symbol String var, final int amount ) {
 		return this.iinc( this.getOrReserveVarSlot( var, int.class ), amount );
 	}
 
@@ -1403,91 +1404,91 @@ public final class JavaCodeWriter {
 	}
 
 	@WrapOp( Ifeq.class )
-	public final JavaCodeWriter ifeq( final String label ) {
+	public final JavaCodeWriter ifeq( final @Symbol String label ) {
 		this.coreWriter.ifeq( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( Ifne.class )
-	public final JavaCodeWriter ifne( final String label ) {
+	public final JavaCodeWriter ifne( final @Symbol String label ) {
 		this.coreWriter.ifne( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( Iflt.class )
-	public final JavaCodeWriter iflt( final String label ) {
+	public final JavaCodeWriter iflt( final @Symbol String label ) {
 		this.coreWriter.iflt( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( Ifgt.class )
-	public final JavaCodeWriter ifgt( final String label ) {
+	public final JavaCodeWriter ifgt( final @Symbol String label ) {
 		this.coreWriter.ifgt( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( Ifge.class )
-	public final JavaCodeWriter ifge( final String label ) {
+	public final JavaCodeWriter ifge( final @Symbol String label ) {
 		this.coreWriter.ifge( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( Ifle.class )
-	public final JavaCodeWriter ifle( final String label ) {
+	public final JavaCodeWriter ifle( final @Symbol String label ) {
 		this.coreWriter.ifle( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_icmpeq.class )
-	public final JavaCodeWriter if_icmpeq( final String label ) {
+	public final JavaCodeWriter if_icmpeq( final @Symbol String label ) {
 		this.coreWriter.if_icmpeq( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_icmpne.class )
-	public final JavaCodeWriter if_icmpne( final String label ) {
+	public final JavaCodeWriter if_icmpne( final @Symbol String label ) {
 		this.coreWriter.if_icmpne( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_icmplt.class )
-	public final JavaCodeWriter if_icmplt( final String label ) {
+	public final JavaCodeWriter if_icmplt( final @Symbol String label ) {
 		this.coreWriter.if_icmplt( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_icmpgt.class )
-	public final JavaCodeWriter if_icmpgt( final String label ) {
+	public final JavaCodeWriter if_icmpgt( final @Symbol String label ) {
 		this.coreWriter.if_icmpgt( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_icmpge.class )
-	public final JavaCodeWriter if_icmpge( final String label ) {
+	public final JavaCodeWriter if_icmpge( final @Symbol String label ) {
 		this.coreWriter.if_icmpge( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_icmple.class )
-	public final JavaCodeWriter if_icmple( final String label ) {
+	public final JavaCodeWriter if_icmple( final @Symbol String label ) {
 		this.coreWriter.if_icmple( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_acmpeq.class )
-	public final JavaCodeWriter if_acmpeq( final String label ) {
+	public final JavaCodeWriter if_acmpeq( final @Symbol String label ) {
 		this.coreWriter.if_acmpeq( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( If_acmpne.class )
-	public final JavaCodeWriter if_acmpne( final String label ) {
+	public final JavaCodeWriter if_acmpne( final @Symbol String label ) {
 		this.coreWriter.if_acmpne( this.jumpTo( label ) );
 		return this;
 	}
 
 	@WrapOp( Goto.class )
-	public final JavaCodeWriter goto_( final String label ) {
+	public final JavaCodeWriter goto_( final @Symbol String label ) {
 		this.coreWriter.goto_( this.jumpTo( label ) );
 		return this;
 	}
@@ -1556,7 +1557,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Getstatic.class )
 	public final JavaCodeWriter getstatic(
 		final Type targetType,
-		final String fieldName )
+		final @Symbol String fieldName )
 	{
 		return this.self_getstatic( getField( targetType, fieldName ) );
 	}
@@ -1581,7 +1582,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Putstatic.class )
 	public final JavaCodeWriter putstatic(
 		final Type targetType,
-		final String fieldName )
+		final @Symbol String fieldName )
 	{
 		return this.putstatic( getField( targetType, fieldName ) );
 	}
@@ -1611,7 +1612,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Getfield.class )
 	public final JavaCodeWriter getfield(
 		final Type targetType,
-		final String fieldName )
+		final @Symbol String fieldName )
 	{
 		return this.getfield( getField( targetType, fieldName ) );
 	}
@@ -1642,7 +1643,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Putfield.class )
 	public final JavaCodeWriter putfield(
 		final Type targetType,
-		final String fieldName )
+		final @Symbol String fieldName )
 	{
 		return this.putfield( getField( targetType, fieldName ) );
 	}
@@ -1674,7 +1675,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Getfield.class )
 	private static final Field getField(
 		final Type targetType,
-		final String fieldName )
+		final @Symbol String fieldName )
 	{
 		Class<?> rawTargetClass = JavaTypes.getRawClass( targetType );
 		try {
@@ -1689,7 +1690,7 @@ public final class JavaCodeWriter {
 	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
 	public final JavaCodeWriter invoke(
 		final Type targetType,
-		final String methodName,
+		final @Symbol String methodName,
 		final Type... args )
 	{
 		return this.invoke( targetType, JavaAssembler.method( methodName, args ) );
@@ -1789,7 +1790,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Invokevirtual.class )
 	public final JavaCodeWriter this_invokevirtual(
 		final Type returnType,
-		final String methodName,
+		final @Symbol String methodName,
 		final Type... argumentTypes )
 	{
 		return this.invokevirtual(
@@ -1803,7 +1804,7 @@ public final class JavaCodeWriter {
 	public final JavaCodeWriter invokevirtual(
 		final Type targetType,
 		final Type returnType,
-		final String methodName,
+		final @Symbol String methodName,
 		final Type... argumentTypes )
 	{
 		this.coreWriter.invokevirtual(
@@ -1868,7 +1869,7 @@ public final class JavaCodeWriter {
 	public final JavaCodeWriter invokespecial(
 		final Type targetType,
 		final Type returnType,
-		final String methodName,
+		final @Symbol String methodName,
 		final Type... argumentTypes )
 	{
 		return this.invokespecial(
@@ -1900,7 +1901,7 @@ public final class JavaCodeWriter {
 	@WrapOp( Invokeinterface.class )
 	public final JavaCodeWriter this_invokeinterface(
 		final Type returnType,
-		final String methodName,
+		final @Symbol String methodName,
 		final Type... argumentTypes )
 	{
 		return this.invokeinterface(
@@ -1914,7 +1915,7 @@ public final class JavaCodeWriter {
 	public final JavaCodeWriter invokeinterface(
 		final Type targetType,
 		final Type returnType,
-		final String methodName,
+		final @Symbol String methodName,
 		final Type... argumentTypes )
 	{
 		return this.invokeinterface(
@@ -2219,8 +2220,8 @@ public final class JavaCodeWriter {
 
 	@SyntheticOp( id="catch" )
 	public final JavaCodeWriter catch_(
-		final String startLabel,
-		final String endLabel,
+		final @Symbol String startLabel,
+		final @Symbol String endLabel,
 		final Class< ? extends Throwable > throwableClass )
 	{
 		this.coreWriter.handleException(
@@ -2234,10 +2235,10 @@ public final class JavaCodeWriter {
 
 	@SyntheticOp( id="exception" )
 	public final JavaCodeWriter exception(
-		final String startLabel,
-		final String endLabel,
+		final @Symbol String startLabel,
+		final @Symbol String endLabel,
 		final Class<? extends Throwable> throwableClass,
-		final String handlerLabel )
+		final @Symbol String handlerLabel )
 	{
 		this.coreWriter.handleException(
 			new LabelBasedExceptionHandler(
