@@ -9,7 +9,7 @@ public abstract class JakStack< T > implements Iterable< T > {
 	private int size = 0;
 	
 	@SuppressWarnings( "unchecked" )
-	JakStack( final int initialCapacity ) {
+	protected JakStack( final int initialCapacity ) {
 		this.stack = (T[])new Object[ initialCapacity ];
 	}
 	
