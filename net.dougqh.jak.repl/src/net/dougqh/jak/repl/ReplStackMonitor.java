@@ -102,22 +102,27 @@ final class ReplStackMonitor implements StackMonitor {
 
 	public final void dup_x1() {
 		this.stack.dup_x1();
+		this.invoke( method( "dup_x1" ) );
 	}
 
 	public final void dup_x2() {
 		this.stack.dup_x2();
+		this.invoke( method( "dup_x2" ) );
 	}
 
 	public final void dup2() {
 		this.stack.dup2();
+		this.invoke( method( "dup2" ) );
 	}
 
 	public final void dup2_x1() {
 		this.stack.dup2_x1();
+		this.invoke( method( "dup2_x1" ) );
 	}
 
 	public final void dup2_x2() {
 		this.stack.dup2_x2();
+		this.invoke( method( "dup2_x2" ) );
 	}
 
 	public final int maxStack() {

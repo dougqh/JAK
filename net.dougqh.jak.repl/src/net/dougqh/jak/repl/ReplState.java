@@ -3,41 +3,14 @@ package net.dougqh.jak.repl;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+import net.dougqh.jak.JakStack;
 import net.dougqh.jak.types.Types;
 
 public final class ReplState {
-	private final Type[] types;
-	private final Object[] values;
-	private int nextPos = 0;
+	private final Stack stack;
 	
 	ReplState( final int size ) {
-		this.types = new Type[ size ];
-		this.values = new Object[ size ];
-		this.nextPos = 0;
-	}
-	
-	public final boolean isTopCategory1() {
-		return Types.isCategory1( this.topType() );
-	}
-	
-	public final boolean isTopCategory2() {
-		return Types.isCategory2( this.topType() );
-	}
-	
-	public final Type topType() {
-		return this.topType( 0 );
-	}
-	
-	public final Type topType( final int pos ) {
-		if ( this.nextPos <= pos ) {
-			return null;
-		} else {
-			return this.types[ this.nextPos - 1 - pos ];
-		}
-	}
-	
-	public final Object topValue() {
-		return this.values[ this.nextPos - 1 ];
+		this.stack = new Stack( size );
 	}
 	
 	public final void push( final int value ) {
@@ -61,51 +34,50 @@ public final class ReplState {
 	}
 	
 	public final void push( final Type type, final Object value ) {
-		this.types[ this.nextPos ] = type;
-		this.values[ this.nextPos ] = value;
-		++this.nextPos;		
+		this.stack.stack( new StackEntry( type, value ) );
 	}
 	
 	public final void pop() {
-		--this.nextPos;
+		this.stack.pop();
 	}
 	
 	public final void pop2() {
-		if ( this.isTopCategory2() ) {
-			this.pop();
-		} else {
-			this.pop();
-			this.pop();
-		}
+		this.stack.pop2();
 	}
 	
 	public final void swap() {
-		swap( this.types, this.nextPos - 2, this.nextPos - 1 );
-		swap( this.values, this.nextPos - 2, this.nextPos - 1 );
+		this.stack.swap();
 	}
 	
 	public final void dup() {
-		this.push( this.topType(), this.topValue() );
+		this.stack.dup();
 	}
 	
-	private static final void swap(
-		final Object[] array,
-		final int posA,
-		final int posB )
-	{
-		Object temp = array[ posA ];
-		array[ posA ] = array[ posB ];
-		array[ posB ] = temp;
+	public final void dup_x1() {
+		this.stack.dup_x1();
+	}
+	
+	public final void dup_x2() {
+		this.stack.dup_x2();
+	}
+	
+	public final void dup2() {
+		this.stack.dup2();
+	}
+	
+	public final void dup2_x1() {
+		this.stack.dup2_x1();
+	}
+	
+	public final void dup2_x2() {
+		this.stack.dup2_x2();
 	}
 
 	final void print( final ReplConsole console ) throws IOException {
-		for ( int i = this.nextPos - 1; i >= 0; --i ) {
-			Type type = this.types[ i ];
-			Object element = this.values[ i ];
-			
+		for ( StackEntry entry : this.stack ) {
 			console.printColumns(
-				ReplFormatter.getDisplayName( type ),
-				toString( element ) );
+				ReplFormatter.getDisplayName( entry.type ),
+				ReplFormatter.format( entry.value ) );
 		}
 	}
 	
@@ -114,6 +86,31 @@ public final class ReplState {
 			return "null";
 		} else {
 			return value.toString();
+		}
+	}
+	
+	private static final class Stack extends JakStack< StackEntry > {
+		Stack( final int initialCapacity ) {
+			super( initialCapacity );
+		}
+		
+		@Override
+		protected final boolean isCategory1( final StackEntry value ) {
+			return value.isCategory1();
+		}
+	}
+	
+	private static final class StackEntry {
+		final Type type;
+		final Object value;
+		
+		StackEntry( final Type type, final Object value ) {
+			this.type = type;
+			this.value = value;
+		}
+		
+		final boolean isCategory1() {
+			return Types.isCategory1( this.type );
 		}
 	}
 }
