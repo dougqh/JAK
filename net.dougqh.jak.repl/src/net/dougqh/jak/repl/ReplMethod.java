@@ -6,11 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import net.dougqh.jak.JavaCodeWriter;
@@ -96,13 +94,13 @@ final class ReplMethod {
 		
 		this.arguments = new ReplArgument[ types.length ];
 		for ( int i = 0; i < types.length; ++i ) {
-			this.arguments[ i ] = ReplArgument.instance(
+			this.arguments[ i ] = ReplArgument.find(
 				types[ i ],
-				hasAnnotation( parameterAnnotations[ i ], Symbol.class ) );
+				isAnnotationPresent( parameterAnnotations[ i ], Symbol.class ) );
 		}
 	}
 	
-	private static final boolean hasAnnotation(
+	private static final boolean isAnnotationPresent(
 		final Annotation[] annotations,
 		final Class< ? extends Annotation > annoClass )
 	{
@@ -116,6 +114,10 @@ final class ReplMethod {
 	
 	public final String getName() {
 		return this.name;
+	}
+	
+	public final boolean isSynthetic() {
+		return this.method.isAnnotationPresent( SyntheticOp.class );
 	}
 	
 	public final boolean matchesStackTypes( final JakRepl repl ) {

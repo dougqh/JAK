@@ -9,6 +9,17 @@ import net.dougqh.java.meta.types.JavaTypes;
 final class ReplFormatter {
 	private ReplFormatter() {}
 	
+	public static final String getShortDisplayName( final Type type ) {
+		String fullName = getDisplayName( type );
+		
+		int lastDotPos = fullName.lastIndexOf( '.' );
+		if ( lastDotPos == -1 ) {
+			return fullName;
+		} else {
+			return fullName.substring( lastDotPos + 1 );
+		}
+	}
+	
 	public static final String getDisplayName( final Type type ) {
 		if ( type.equals( CharSequence.class ) ) {
 			return "String";

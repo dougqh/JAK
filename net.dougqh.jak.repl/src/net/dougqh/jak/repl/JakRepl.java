@@ -56,7 +56,6 @@ public final class JakRepl {
 	
 	private boolean echo = true;
 	
-	private ReplState prevState = null;
 	private JavaClassWriter classWriter = null;
 	private JavaCodeWriter codeWriter = null;
 	
@@ -247,7 +246,6 @@ public final class JakRepl {
 			this.console.endl();
 		}
 		state.print( this.console );
-		this.prevState = state;
 		
 		this.initNewWriter();
 	}

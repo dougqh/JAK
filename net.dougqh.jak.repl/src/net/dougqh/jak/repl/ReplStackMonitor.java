@@ -1,7 +1,6 @@
 package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import net.dougqh.jak.JakTypeStack;
 import net.dougqh.jak.JavaAssembler;

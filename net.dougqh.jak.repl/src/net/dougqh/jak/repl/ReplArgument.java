@@ -1,6 +1,5 @@
 package net.dougqh.jak.repl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaAssembler;
@@ -113,6 +112,11 @@ enum ReplArgument {
 	},
 	SYMBOL( String.class, true ) {
 		@Override
+		public final String getTypeName() {
+			return "Symbol";
+		}
+		
+		@Override
 		public final Object parse( final String argString ) {
 			return argString;
 		}
@@ -156,7 +160,7 @@ enum ReplArgument {
 		}
 	};
 	
-	public static final ReplArgument instance( final Type type, final boolean isSymbol ) {
+	public static final ReplArgument find( final Type type, final boolean isSymbol ) {
 		for ( ReplArgument arg : values() ) {
 			if ( arg.matches( type, isSymbol ) ) {
 				return arg;
@@ -199,8 +203,8 @@ enum ReplArgument {
 		}
 	}
 	
-	public final String getTypeName() {
-		return ReplFormatter.getDisplayName( this.type );
+	public String getTypeName() {
+		return ReplFormatter.getShortDisplayName( this.type );
 	}
 	
 	public abstract Object parse( final String argString );
