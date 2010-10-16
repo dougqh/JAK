@@ -1,5 +1,6 @@
 package net.dougqh.jak.repl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.util.Set;
 import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaMethodSignature;
 import net.dougqh.jak.annotations.Op;
+import net.dougqh.jak.annotations.Symbol;
 import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.operations.Operation;
@@ -90,11 +92,26 @@ final class ReplMethod {
 		this.name = getNameOf( method );
 		
 		Class< ? >[] types = this.method.getParameterTypes();
+		Annotation[][] parameterAnnotations = this.method.getParameterAnnotations();
 		
 		this.arguments = new ReplArgument[ types.length ];
 		for ( int i = 0; i < types.length; ++i ) {
-			this.arguments[ i ] = ReplArgument.instance( types[ i ] );
+			this.arguments[ i ] = ReplArgument.instance(
+				types[ i ],
+				hasAnnotation( parameterAnnotations[ i ], Symbol.class ) );
 		}
+	}
+	
+	private static final boolean hasAnnotation(
+		final Annotation[] annotations,
+		final Class< ? extends Annotation > annoClass )
+	{
+		for ( Annotation annotation: annotations ) {
+			if ( annotation.annotationType().equals( annoClass ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public final String getName() {

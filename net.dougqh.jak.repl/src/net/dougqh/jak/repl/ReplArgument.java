@@ -1,5 +1,6 @@
 package net.dougqh.jak.repl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaAssembler;
@@ -110,6 +111,12 @@ enum ReplArgument {
 			}
 		}		
 	},
+	SYMBOL( String.class, true ) {
+		@Override
+		public final Object parse( final String argString ) {
+			return argString;
+		}
+	},
 	STRING_LITERAL( CharSequence.class ) {
 		@Override
 		public final Object parse( final String argString ) {
@@ -149,9 +156,9 @@ enum ReplArgument {
 		}
 	};
 	
-	public static final ReplArgument instance( final Type type ) {
+	public static final ReplArgument instance( final Type type, final boolean isSymbol ) {
 		for ( ReplArgument arg : values() ) {
-			if ( arg.matches( type ) ) {
+			if ( arg.matches( type, isSymbol ) ) {
 				return arg;
 			}
 		}
@@ -162,17 +169,34 @@ enum ReplArgument {
 	public static final char STRING_QUOTE = '"';
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
+	
 	private final Type type;
+	private final boolean acceptSymbols;
 	
 	ReplArgument( final Type type ) {
-		this.type = type;
+		this( type, false );
 	}
 	
-	public final boolean matches( final Type type ) {
-		Class< ? > thisType = JavaTypes.getRawClass( this.type );
-		Class< ? > thatType = JavaTypes.getRawClass( type );
-		
-		return thisType.isAssignableFrom( thatType );
+	ReplArgument(
+		final Type type,
+		final boolean acceptSymbols )
+	{
+		this.type = type;
+		this.acceptSymbols = acceptSymbols;
+	}
+	
+	public final boolean matches(
+		final Type type,
+		final boolean isSymbol )
+	{
+		if ( this.acceptSymbols != isSymbol ) {
+			return false;
+		} else {
+			Class< ? > thisType = JavaTypes.getRawClass( this.type );
+			Class< ? > thatType = JavaTypes.getRawClass( type );
+			
+			return thisType.isAssignableFrom( thatType );
+		}
 	}
 	
 	public final String getTypeName() {
