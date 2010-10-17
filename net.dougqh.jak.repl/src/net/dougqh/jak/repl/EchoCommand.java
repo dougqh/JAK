@@ -23,7 +23,7 @@ final class EchoCommand extends FixedIdCommand {
 			break;
 			
 			case 1:
-			repl.echo( OnOff.parse( args[ 0 ] ).booleanValue() );
+			repl.config().echo( OnOff.parse( args[ 0 ] ).booleanValue() );
 			break;
 			
 			default:
@@ -31,6 +31,6 @@ final class EchoCommand extends FixedIdCommand {
 			throw new IllegalStateException();
 		}
 		
-		repl.console().append( "echo is " ).append( OnOff.valueOf( repl.echo() ) ).endl();
+		repl.console().append( "echo is " ).append( OnOff.valueOf( repl.config().echo() ) ).endl();
 	}
 }

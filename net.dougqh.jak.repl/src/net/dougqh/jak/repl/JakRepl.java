@@ -51,10 +51,10 @@ public final class JakRepl {
 	private final ReplRecorder recorder;
 	private final ReplConsole console;
 	
+	private final ReplConfig config = new ReplConfig();
+	
 	private int suppressionCount = 0;
 	private boolean isReplaying = false;
-	
-	private boolean echo = true;
 	
 	private JavaClassWriter classWriter = null;
 	private JavaCodeWriter codeWriter = null;
@@ -81,14 +81,6 @@ public final class JakRepl {
 		this.recordingDir = dir;
 	}
 	
-	final boolean echo() {
-		return this.echo;
-	}
-	
-	final void echo( final boolean isOn ) {
-		this.echo = isOn;
-	}
-	
 	final Type thisType() {
 		return this.classWriter.thisType();
 	}
@@ -99,6 +91,10 @@ public final class JakRepl {
 	
 	final ReplConsole console() {
 		return this.console;
+	}
+	
+	final ReplConfig config() {
+		return this.config;
 	}
 	
 	final JavaCodeWriter codeWriter() {
@@ -242,7 +238,7 @@ public final class JakRepl {
 			throw new IllegalStateException( e );
 		}
 		
-		if ( this.echo ) {
+		if ( this.config.echo() ) {
 			this.console.endl();
 		}
 		state.print( this.console );

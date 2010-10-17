@@ -25,7 +25,7 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 		final Object[] args )
 	{
 		if ( isCoreWritingMethod( interfaceMethod ) && this.repl.isRecordingEnabled() ) {
-			if ( this.repl.echo() ) {
+			if ( this.repl.config().echo() ) {
 				this.repl.console().print( interfaceMethod, args );
 			}
 			this.repl.recorder().record( interfaceMethod, args );
