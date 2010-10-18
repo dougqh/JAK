@@ -1,8 +1,7 @@
 package net.dougqh.jak.repl;
 
-import java.io.IOException;
 
-final class EchoCommand extends FixedIdCommand {
+final class EchoCommand extends ConfigCommand {
 	static final String ID = "echo";
 	static final EchoCommand INSTANCE = new EchoCommand();
 	
@@ -11,26 +10,12 @@ final class EchoCommand extends FixedIdCommand {
 	}
 	
 	@Override
-	final void run(
-		final JakRepl repl,
-		final String command,
-		final String[] args,
-		final boolean isSolitary )
-		throws IOException
-	{
-		switch ( args.length ) {
-			case 0:
-			break;
-			
-			case 1:
-			repl.config().echo( OnOff.parse( args[ 0 ] ).booleanValue() );
-			break;
-			
-			default:
-			repl.console().printUsage( ID, boolean.class );
-			throw new IllegalStateException();
-		}
-		
-		repl.console().append( "echo is " ).append( OnOff.valueOf( repl.config().echo() ) ).endl();
+	final void set( final ReplConfig config, final boolean value ) {
+		config.echo( value );
+	}
+	
+	@Override
+	final boolean get( final ReplConfig config ) {
+		return config.echo();
 	}
 }

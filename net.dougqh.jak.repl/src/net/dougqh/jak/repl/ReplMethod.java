@@ -67,18 +67,14 @@ final class ReplMethod {
 	}
 	
 	public static final List< String > findLike( final String prefix ) {
-		Method[] methods = JavaCodeWriter.class.getMethods();
+		ArrayList< String > methodNames = new ArrayList< String >();
 		
-		ArrayList< String > matchingNames = new ArrayList< String >( methods.length );
-		for ( Method method : JavaCodeWriter.class.getMethods() ) {
-			if ( include( method ) ) {
-				String methodName = getNameOf( method );
-				if ( methodName.startsWith( prefix ) ) {
-					matchingNames.add( methodName );
-				}
+		for ( ReplMethod method : allMethods ) {
+			if ( method.getName().startsWith( prefix ) ) {
+				methodNames.add( method.getName() );
 			}
 		}
-		return Collections.unmodifiableList( matchingNames );
+		return Collections.unmodifiableList( methodNames );
 	}
 	
 	private final Method method;

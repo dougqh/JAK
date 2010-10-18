@@ -1,7 +1,7 @@
 package net.dougqh.jak.repl;
 
 abstract class FixedIdCommand extends ReplCommand {
-	private final String id;
+	protected final String id;
 	
 	FixedIdCommand( final String id ) {
 		this.id = id;
