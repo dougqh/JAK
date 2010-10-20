@@ -52,20 +52,7 @@ final class ReplStackMonitor implements StackMonitor {
 			try {
 				this.repl.suppressRecording();
 				try {
-					if ( Types.isCategory1( type ) ) {
-						this.repl.codeWriter().
-							dup().
-							self_getstatic( JakRepl.STATE_FIELD ).
-							swap().
-							invokevirtual( ReplState.class, pushMethod( type ) );
-					} else {
-						this.repl.codeWriter().
-							dup2().
-							self_getstatic( JakRepl.STATE_FIELD ).
-							dup_x2().
-							pop().
-							invokevirtual( ReplState.class, pushMethod( type ) );
-					}
+					repl.stateCodeWriter().push( type );
 				} finally {
 					this.repl.restoreRecording();
 				}
@@ -77,91 +64,84 @@ final class ReplStackMonitor implements StackMonitor {
 
 	public final void unstack( final Type type ) {
 		this.stack.unstack( type );
-		this.invoke( popMethod( type ) );
-	}
 
-	public final void pop() {
-		this.stack.pop();
-		this.invoke( method( "pop" ) );
-	}
-
-	public final void pop2() {
-		this.stack.pop2();
-		this.invoke( method( "pop2" ) );
-	}
-
-	public final void swap() {
-		this.stack.swap();
-		this.invoke( method( "swap" ) );
-	}
-
-	public final void dup() {
-		this.stack.dup();
-		this.invoke( method( "dup" ) );
-	}
-
-	public final void dup_x1() {
-		this.stack.dup_x1();
-		this.invoke( method( "dup_x1" ) );
-	}
-
-	public final void dup_x2() {
-		this.stack.dup_x2();
-		this.invoke( method( "dup_x2" ) );
-	}
-
-	public final void dup2() {
-		this.stack.dup2();
-		this.invoke( method( "dup2" ) );
-	}
-
-	public final void dup2_x1() {
-		this.stack.dup2_x1();
-		this.invoke( method( "dup2_x1" ) );
-	}
-
-	public final void dup2_x2() {
-		this.stack.dup2_x2();
-		this.invoke( method( "dup2_x2" ) );
-	}
-
-	public final int maxStack() {
-		return this.stack.maxStack();
-	}
-	
-	private final void invoke( final JavaMethodDescriptor method ) {
 		if ( this.isStackTrackingEnabled() ) {
 			this.suppressStackTracking();
 			try {
 				this.repl.suppressRecording();
 				try {
-					this.repl.codeWriter().
-						self_getstatic( JakRepl.STATE_FIELD ).
-						invokevirtual( ReplState.class, method );
+					this.repl.stateCodeWriter().unstack( type );
 				} finally {
 					this.repl.restoreRecording();
 				}
 			} finally {
 				this.restoreStackTracking();
 			}
-		}		
-	}
-	
-	private static final JavaMethodDescriptor pushMethod( final Type type ) {
-		if ( Types.isIntegerType( type ) ) {
-			return JavaAssembler.method( void.class, "push", int.class );
-		} else if ( Types.isReferenceType( type ) ) {
-			return JavaAssembler.method( void.class, "push", Object.class );
-		} else {
-			return JavaAssembler.method( void.class, "push", type );
 		}
 	}
+
+	public final void pop() {
+		this.stack.pop();
+		this.invoke( "pop" );
+	}
+
+	public final void pop2() {
+		this.stack.pop2();
+		this.invoke( "pop2" );
+	}
+
+	public final void swap() {
+		this.stack.swap();
+		this.invoke( "swap" );
+	}
+
+	public final void dup() {
+		this.stack.dup();
+		this.invoke( "dup" );
+	}
+
+	public final void dup_x1() {
+		this.stack.dup_x1();
+		this.invoke( "dup_x1" );
+	}
+
+	public final void dup_x2() {
+		this.stack.dup_x2();
+		this.invoke( "dup_x2" );
+	}
+
+	public final void dup2() {
+		this.stack.dup2();
+		this.invoke( "dup2" );
+	}
+
+	public final void dup2_x1() {
+		this.stack.dup2_x1();
+		this.invoke( "dup2_x1" );
+	}
+
+	public final void dup2_x2() {
+		this.stack.dup2_x2();
+		this.invoke( "dup2_x2" );
+	}
+
+	public final int maxStack() {
+		return this.stack.maxStack();
+	}
 	
-	private static final JavaMethodDescriptor popMethod( final Type type ) {
-		if ( Types.isCategory2( type ) ) {
-			return method( "pop2" );
-		} else {
-			return method( "pop" );
+	private final void invoke( final String method ) {
+		if ( this.isStackTrackingEnabled() ) {
+			this.suppressStackTracking();
+			try {
+				this.repl.suppressRecording();
+				try {
+					this.repl.stateCodeWriter().invoke( method );
+				} finally {
+					this.repl.restoreRecording();
+				}
+			} finally {
+				this.restoreStackTracking();
+			}
 		}
 	}
 	

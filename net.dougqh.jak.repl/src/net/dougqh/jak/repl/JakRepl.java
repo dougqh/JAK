@@ -16,7 +16,6 @@ import jline.Completor;
 import net.dougqh.jak.JakConfiguration;
 import net.dougqh.jak.JavaClassWriter;
 import net.dougqh.jak.JavaCodeWriter;
-import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
 
 public final class JakRepl {
@@ -41,8 +40,6 @@ public final class JakRepl {
 	
 	static final String SHORT_CLASS = "Generated";
 	static final String CLASS = "net.dougqh.jak.repl." + SHORT_CLASS;
-	static final JavaFieldDescriptor STATE_FIELD = 
-		public_().static_().field( ReplState.class, "state" );
 	static final JavaMethodDescriptor MAIN_METHOD = 
 		public_().static_().final_().method( void.class, "main" );
 	
@@ -101,7 +98,11 @@ public final class JakRepl {
 	
 	final JavaCodeWriter codeWriter() {
 		return this.codeWriter;
-	}	
+	}
+	
+	final ReplStateCodeWriter stateCodeWriter() {
+		return new ReplStateCodeWriter( this.codeWriter );
+	}
 	
 	final boolean isRecordingEnabled() {
 		return ( this.suppressionCount == 0 );
@@ -154,14 +155,23 @@ public final class JakRepl {
 	}
 	
 	private final void processLine( final String commandLine ) throws IOException {
+		if ( commandLine == null || commandLine.isEmpty() ) {
+			return;
+		}
+		
 		String[] commands = commandLine.split( ";" );
 
 		this.recorder.checkpoint();
 		try {
 			boolean needsRun = false;
 			for ( String command : commands ) {
+				command = command.trim();
+				if ( command.isEmpty() ) {
+					continue;
+				}
+				
 				//DQH - Intentionally not short-circuited
-				needsRun = needsRun | this.processCommand( command.trim() ); 
+				needsRun = needsRun | this.processCommand( command ); 
 			}
 			if ( needsRun && this.config.autoRun() ) {
 				this.runProgram( true );
@@ -255,7 +265,8 @@ public final class JakRepl {
 		Class< ? > generatedClass = this.classWriter.load();
 		
 		try {
-			Field stackField = generatedClass.getDeclaredField( STATE_FIELD.getName() );
+			Field stackField = generatedClass.getDeclaredField(
+				ReplStateCodeWriter.STATE_FIELD.getName() );
 			stackField.set( null, state );
 		} catch ( SecurityException e ) {
 			throw new IllegalStateException( e );
@@ -291,7 +302,7 @@ public final class JakRepl {
 		this.classWriter = define( public_().final_().class_( CLASS ) );
 		this.classWriter.initConfig( config );
 		
-		this.classWriter.define( STATE_FIELD );
+		this.classWriter.define( ReplStateCodeWriter.STATE_FIELD );
 		
 		//DQH - 10-10-2010 - It is crucial that this.codeWriter be set 
 		//before replay is called because ReplStack will make calls 
