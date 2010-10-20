@@ -62,6 +62,8 @@ public final class JakRepl {
 	private File recordingDir = null;
 	
 	private List< ReplCommand > commands = Arrays.asList(
+		AutoRunCommand.INSTANCE,
+		RunCommand.INSTANCE,
 		ResetCommand.INSTANCE,
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
@@ -138,7 +140,7 @@ public final class JakRepl {
 					this.console.printError( "Thread interrupted - exiting..." );
 				}
 				
-				this.processCommand( command );
+				this.processLine( command );
 			}
 		} catch ( IOException e ) {
 			try {
@@ -151,24 +153,39 @@ public final class JakRepl {
 		}
 	}
 	
-	private final void processCommand( final String fullCommand ) throws IOException {
-		String[] commandParts = fullCommand.split( " " );
+	private final void processLine( final String commandLine ) throws IOException {
+		String[] commands = commandLine.split( ";" );
 
-		String command = commandParts[ 0 ];
-		String[] args = Arrays.copyOfRange( commandParts, 1, commandParts.length );
-		
 		this.recorder.checkpoint();
 		try {
-			ReplCommand replCommand = findCommand( command );
-			if ( replCommand.disableArgumentParsing() ) {
-				replCommand.run( this, fullCommand, ReplCommand.NO_ARGS, true );
-			} else {
-				replCommand.run( this, command, args, true );
+			boolean needsRun = false;
+			for ( String command : commands ) {
+				//DQH - Intentionally not short-circuited
+				needsRun = needsRun | this.processCommand( command.trim() ); 
+			}
+			if ( needsRun && this.config.autoRun() ) {
+				this.runProgram( true );
 			}
 		} catch ( Error e ) {
 			this.console().printError( e.getMessage() );
 			this.recorder.rollback();
 		}
+	}
+	
+	private final boolean processCommand( final String fullCommand ) throws IOException {
+		String[] commandParts = fullCommand.split( " " );
+
+		String command = commandParts[ 0 ];
+		String[] args = Arrays.copyOfRange( commandParts, 1, commandParts.length );
+		
+		ReplCommand replCommand = findCommand( command );
+		boolean success;
+		if ( replCommand.disableArgumentParsing() ) {
+			success = replCommand.run( this, fullCommand, ReplCommand.NO_ARGS );
+		} else {
+			success = replCommand.run( this, command, args );
+		}
+		return success && replCommand.runProgramAfterCommand();
 	}
 	
 	private final ReplCommand findCommand( final String command ) {
@@ -190,7 +207,7 @@ public final class JakRepl {
 		this.console.clear();
 	}
 	
-	final void runProgram() throws IOException {
+	final void runProgram( final boolean isAuto ) throws IOException {
 		this.suppressRecording();
 		try {
 			this.codeWriter.return_();
@@ -211,9 +228,30 @@ public final class JakRepl {
 			}
 		}
 		
-		//TODO: set size properly
-		ReplState state = new ReplState( 32 );
+		try {
+			//TODO: set size properly
+			ReplState state = new ReplState( 32 );
+			
+			this.runImpl( state );
+			
+			if ( this.config.echo() ) {
+				this.console.endl();
+			}
+			state.print( this.console );
+			
+			this.recorder().checkpoint();
+		} catch ( Error e ) {
+			this.console().printError( e.getMessage() );
+			if ( ! isAuto ) {
+				this.console.printNotice( "Rolling back code to previous successful run." );
+			}
+			this.recorder().rollback();
+		}
 		
+		this.initNewWriter();
+	}
+
+	private void runImpl( final ReplState state ) {
 		Class< ? > generatedClass = this.classWriter.load();
 		
 		try {
@@ -243,13 +281,6 @@ public final class JakRepl {
 		} catch ( InvocationTargetException e ) {
 			throw new IllegalStateException( e );
 		}
-		
-		if ( this.config.echo() ) {
-			this.console.endl();
-		}
-		state.print( this.console );
-		
-		this.initNewWriter();
 	}
 	
 	private final void initNewWriter() {		

@@ -8,11 +8,10 @@ abstract class ConfigCommand extends FixedIdCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args,
-		final boolean isSolitary )
+		final String[] args )
 		throws IOException
 	{
 		switch ( args.length ) {
@@ -31,6 +30,8 @@ abstract class ConfigCommand extends FixedIdCommand {
 		repl.console().
 			append( this.id + " is " ).append( OnOff.valueOf( this.get( repl.config() ) ) ).
 			endl();
+		
+		return true;
 	}
 	
 	abstract void set( final ReplConfig config, final boolean value );

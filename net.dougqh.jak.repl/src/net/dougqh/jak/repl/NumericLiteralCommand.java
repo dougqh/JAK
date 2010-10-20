@@ -22,11 +22,15 @@ public final class NumericLiteralCommand extends ReplCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean runProgramAfterCommand() {
+		return true;
+	}
+	
+	@Override
+	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args,
-		final boolean isSolitary )
+		final String[] args )
 		throws IOException
 	{
 		try {
@@ -55,11 +59,10 @@ public final class NumericLiteralCommand extends ReplCommand {
 					throw new IllegalStateException();
 				}
 			}
-			if ( isSolitary ) {
-				repl.runProgram();
-			}
+			return true;
 		} catch ( IllegalArgumentException e ) {
 			repl.console().printError( "Invalid literal" );
+			return false;
 		}
 	}
 }

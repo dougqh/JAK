@@ -2,14 +2,14 @@ package net.dougqh.jak.repl;
 
 import java.io.IOException;
 
-final class ResetCommand extends FixedIdCommand {
-	static final String ID = "reset";
-	static final ResetCommand INSTANCE = new ResetCommand();
+final class RunCommand extends FixedIdCommand {
+	public static final String ID = "run";
+	public static final RunCommand INSTANCE = new RunCommand();
 	
-	private ResetCommand() {
+	private RunCommand() {
 		super( ID );
 	}
-
+	
 	@Override
 	final boolean run(
 		final JakRepl repl,
@@ -17,9 +17,7 @@ final class ResetCommand extends FixedIdCommand {
 		final String[] args )
 		throws IOException
 	{
-		checkNoArguments( args );
-		
-		repl.resetProgram();
+		repl.runProgram( false );
 		return true;
 	}
 }

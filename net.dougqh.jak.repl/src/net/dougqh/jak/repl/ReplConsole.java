@@ -129,6 +129,11 @@ final class ReplConsole {
 		return this;
 	}
 	
+	final void printNotice( final String notice ) throws IOException {
+		this.reader.printString( notice );
+		this.reader.printNewline();
+	}
+	
 	final void printError( final String error ) throws IOException {
 		this.reader.printString( error );
 		this.reader.printNewline();

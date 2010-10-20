@@ -19,21 +19,20 @@ final class StringLiteralCommand extends ReplCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args,
-		final boolean isSolitary )
+		final String[] args )
 		throws IOException
 	{
 		try {
 			String literal = (String)ReplArgument.STRING_LITERAL.parse( command );
 			repl.codeWriter().ldc( literal );
-			if ( isSolitary ) {
-				repl.runProgram();
-			}
+			
+			return true;
 		} catch ( IllegalArgumentException e ) {
 			repl.console().printError( "Invalid literal" );
+			return false;
 		}
 	}
 }

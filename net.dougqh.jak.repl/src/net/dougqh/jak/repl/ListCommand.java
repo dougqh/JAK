@@ -11,15 +11,15 @@ final class ListCommand extends FixedIdCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args,
-		final boolean isSolitary )
+		final String[] args )
 		throws IOException
 	{
 		checkNoArguments( args );
 		
 		repl.recorder().list( repl.console() );
+		return true;
 	}	
 }

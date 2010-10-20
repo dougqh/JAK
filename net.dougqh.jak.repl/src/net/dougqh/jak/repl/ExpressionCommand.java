@@ -14,11 +14,15 @@ final class ExpressionCommand extends ReplCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean runProgramAfterCommand() {
+		return true;
+	}
+	
+	@Override
+	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args,
-		final boolean isSolitary )
+		final String[] args )
 		throws IOException
 	{
 		ArrayList< ReplCommand > argCommands = new ArrayList< ReplCommand >( args.length );
@@ -30,19 +34,17 @@ final class ExpressionCommand extends ReplCommand {
 				argCommands.add( NumericLiteralCommand.INSTANCE );
 			} else {
 				repl.console().printError( "Invalid expression" );
-				return;
+				return false;
 			}
 		}
 		
-		NumericLiteralCommand.INSTANCE.run( repl, command, NO_ARGS, false );
+		NumericLiteralCommand.INSTANCE.run( repl, command, NO_ARGS );
 		for ( int i = 0; i < args.length; ++i ) {
 			String arg = args[ i ];
 			ReplCommand argCommand = argCommands.get( i );
 			
-			argCommand.run( repl, arg, NO_ARGS, false );
+			argCommand.run( repl, arg, NO_ARGS );
 		}
-		if ( isSolitary ) {
-			repl.runProgram();
-		}
+		return true;
 	}
 }

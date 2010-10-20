@@ -7,14 +7,17 @@ abstract class ReplCommand {
 	
 	abstract boolean matches( final String command );
 	
-	abstract void run(
+	abstract boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args,
-		final boolean isSolitary )
+		final String[] args )
 		throws IOException;
 
 	boolean disableArgumentParsing() {
+		return false;
+	}
+	
+	boolean runProgramAfterCommand() {
 		return false;
 	}
 	

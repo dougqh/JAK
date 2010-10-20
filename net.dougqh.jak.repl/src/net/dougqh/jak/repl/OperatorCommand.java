@@ -12,11 +12,10 @@ public final class OperatorCommand extends ReplCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] argStrings,
-		final boolean isSolitary )
+		final String[] argStrings )
 		throws IOException
 	{
 		Set< ReplMethod > methods = ReplMethod.findByOperator( command );
@@ -26,17 +25,15 @@ public final class OperatorCommand extends ReplCommand {
 			try {
 				Object[] args = method.parseArguments( argStrings );
 				method.invoke( repl.codeWriter(), args );
-				if ( isSolitary ) {
-					repl.runProgram();
-				}
 				
-				return;
+				return true;
 			} catch ( IllegalArgumentException e ) {
 				repl.console().printError( "Invalid arguments" );
 			}
 		}
 		
 		repl.console().printUsage( methods );
+		return false;
 	}
 	
 	private static final ReplMethod findMethod(

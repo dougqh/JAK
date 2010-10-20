@@ -14,11 +14,15 @@ final class MethodCommand extends ReplCommand {
 	}
 	
 	@Override
-	final void run(
+	final boolean runProgramAfterCommand() {
+		return true;
+	}
+	
+	@Override
+	final boolean run(
 		final JakRepl repl,
 		final String methodName,
-		final String[] argStrings,
-		final boolean isSolitary )
+		final String[] argStrings )
 		throws IOException
 	{
 		Set< ReplMethod > methods = ReplMethod.findByName( methodName );
@@ -27,26 +31,23 @@ final class MethodCommand extends ReplCommand {
 			if ( argStrings.length == 0 ) {
 				repl.console().complete( methodName );
 			}
+			return false;
 		} else {
 			//DQH - 10-11-2010 - Pretty ugly, loop over matching methods 
 			//until an implementations that has matching arguments is found.
 			//If no match is found, then print out usage.
-			boolean foundMatch = false;
 			for ( ReplMethod method : methods ) {
 				try {
 					Object[] args = method.parseArguments( argStrings );
 					method.invoke( repl.codeWriter(), args );
-					repl.runProgram();
-
-					foundMatch = true;
-					break;
+					return true;
 				} catch ( IllegalArgumentException e ) {
 				}				
 			}
-			if ( ! foundMatch ) {
-				repl.console().printError( "Invalid arguments" );
-				repl.console().printUsage( methods );
-			}
+			
+			repl.console().printError( "Invalid arguments" );
+			repl.console().printUsage( methods );
+			return false;
 		}		
 	}
 }
