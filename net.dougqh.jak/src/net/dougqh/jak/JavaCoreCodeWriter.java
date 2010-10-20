@@ -610,6 +610,8 @@ public interface JavaCoreCodeWriter {
 	
 	public abstract JavaCoreCodeWriter handleException( final ExceptionHandler exceptionHandler );
 	
+	public abstract void prepareForWrite();
+	
 	public abstract StackMonitor stackMonitor();
 	
 	public abstract LocalsMonitor localsMonitor();

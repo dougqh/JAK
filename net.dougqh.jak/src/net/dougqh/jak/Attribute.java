@@ -21,6 +21,9 @@ abstract class Attribute {
 		out.u2( nameEntry ).u4( this.length() );
 	}
 	
+	void prepare() {
+	}
+	
 	abstract void writeBody( final ByteStream out );
 	
 	static interface Deferred {}

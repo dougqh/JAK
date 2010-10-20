@@ -31,6 +31,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	private final ArrayList< Byte2Slot > unresolvedSlots = new ArrayList < Byte2Slot >( 4 );
 	private final ArrayList< Jump > unresolvedJumps = new ArrayList< Jump >( 4 );
 	
+	private JavaCoreCodeWriter wrapper = null;
+	
 	JavaCoreCodeWriterImpl(
 		final ConstantPool constantPool,
 		final LocalsMonitor locals,
@@ -1949,6 +1951,26 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	public final JavaCoreCodeWriter handleException( final ExceptionHandler exceptionHandler ) {
 		this.handlers.add( exceptionHandler );
 		return this;
+	}
+	
+	@Override
+	public final void prepareForWrite() {
+	}
+	
+	//DQH - 10-19-2010 - Rather ugly...
+	//The wrapping JavaCoreCodeWriter that might be added by a JakMonitor 
+	//may need to be flush any pending calls before the method can be written.  
+	//To enable this, the JAK core makes the JavaCoreCodeWriterImpl aware of
+	//the outermost wrapper.  This allows the JAK core to later prepare the
+	//outermost wrapper associated with a JavaCoreCodeWriterImpl that is about
+	//to be written.
+	//Overall, not very pretty, but effective.
+	final void initWrapper( final JavaCoreCodeWriter wrapper ) {
+		this.wrapper = wrapper;
+	}
+	
+	final void prepareWrapperForWrite() {
+		this.wrapper.prepareForWrite();
 	}
 	
 	private final void inc( final int slot ) {

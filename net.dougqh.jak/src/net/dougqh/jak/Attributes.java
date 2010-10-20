@@ -27,6 +27,7 @@ final class Attributes {
 	private final void write( final Attribute attribute ) {
 		if ( ! attribute.isEmpty() ) {
 			++this.count;
+			attribute.prepare();
 			attribute.writeHeader( this.out );
 			attribute.writeBody( this.out );
 		}

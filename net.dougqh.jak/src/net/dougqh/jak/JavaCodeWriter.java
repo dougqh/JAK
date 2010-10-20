@@ -110,7 +110,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@SyntheticOp( stackResultTypes=boolean.class )
+	@SyntheticOp( stackResultTypes=int.class )
 	public final JavaCodeWriter iconst( final boolean value ) {
 		if ( value ) {
 			return this.iconst_1();
@@ -119,7 +119,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@SyntheticOp( stackResultTypes=byte.class )
+	@SyntheticOp( stackResultTypes=int.class )
 	public final JavaCodeWriter iconst( final byte value ) {
 		switch ( value ) {
 			case -1:
@@ -148,7 +148,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@SyntheticOp( stackResultTypes=short.class )
+	@SyntheticOp( stackResultTypes=int.class )
 	public final JavaCodeWriter iconst( final short value ) {
 		switch ( value ) {
 			case -1:
@@ -177,7 +177,7 @@ public final class JavaCodeWriter {
 		}
 	}
 
-	@SyntheticOp( stackResultTypes=char.class )
+	@SyntheticOp( stackResultTypes=int.class )
 	public final JavaCodeWriter iconst( final char value ) {
 		return this.iconst( (int)value );
 	}
@@ -1968,7 +1968,7 @@ public final class JavaCodeWriter {
 		return this;
 	}
 
-	@SyntheticOp( stackOperandTypes=boolean[].class )
+	@SyntheticOp( stackOperandTypes=byte[].class )
 	public final JavaCodeWriter barray( final byte... array ) {
 		this.iconst( array.length ).newarray( byte.class );
 

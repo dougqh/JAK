@@ -170,7 +170,7 @@ final class TypeWriter {
 
 		StackMonitor stack = this.config.configure( new DefaultStackMonitor() );		
 		
-		JavaCoreCodeWriter writer = this.methods.createMethod(
+		JavaCoreCodeWriterImpl writer = this.methods.createMethod(
 			method.flags() | additionalFlags,
 			method.getReturnType(),
 			method.getName(),
@@ -180,7 +180,13 @@ final class TypeWriter {
 			locals,
 			stack );
 		
-		return this.config.configure( writer );
+		if ( writer != null ) {
+			JavaCoreCodeWriter wrapperWriter = this.config.configure( writer );
+			writer.initWrapper( wrapperWriter );
+			return wrapperWriter;
+		} else {
+			return null;
+		}
 	}
 	
 	final byte[] getBytes() {

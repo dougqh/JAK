@@ -169,7 +169,7 @@ final class ReplMethod {
 			throw new IllegalStateException( e );
 		} catch ( InvocationTargetException e ) {
 			throw new IllegalStateException( e );
-		}		
+		}
 	}
 	
 	private static final boolean include( final Method method ) {

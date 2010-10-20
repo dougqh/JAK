@@ -60,15 +60,25 @@ public final class JavaMethodDescriptor {
 		return this.args.getTypes();
 	}
 	
-	protected final FormalArguments arguments() {
-		return this.args;
-	}
-	
-	protected final Type[] exceptions() {
+	public final Type[] exceptions() {
 		return this.exceptionTypes;
 	}
 	
-	protected final boolean isStatic() {
+	public final boolean isInit() {
+		return this.methodName.equals( INIT );
+	}
+	
+	public final boolean isClinit() {
+		return this.methodName.equals( CLINIT );
+	}
+	
+	public final boolean isStatic() {
 		return ( ( this.flags & JavaFlagsBuilder.STATIC ) != 0 );
 	}
+	
+	protected final FormalArguments arguments() {
+		return this.args;
+	}
+
+
 }

@@ -17,7 +17,7 @@ final class Methods {
 		this.out = new ByteStream( 1024 );
 	}
 	
-	final JavaCoreCodeWriter createMethod(
+	final JavaCoreCodeWriterImpl createMethod(
 		final int flags,
 		final Type returnType,
 		final String name,
@@ -161,6 +161,11 @@ final class Methods {
 		}
 		
 		@Override
+		final void prepare() {
+			this.codeWriter.prepareWrapperForWrite();
+		}
+		
+		@Override
 		final int length() {
 			return this.codeWriter.length();
 		}
@@ -170,7 +175,7 @@ final class Methods {
 			this.codeWriter.write( out );
 		}
 		
-		final JavaCoreCodeWriter getCodeWriter() {
+		final JavaCoreCodeWriterImpl getCodeWriter() {
 			return this.codeWriter;
 		}
 	}
