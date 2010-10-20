@@ -510,7 +510,7 @@ public interface JavaCoreCodeWriter {
 		final Type targetType,
 		final JavaMethodDescriptor method );
 	
-	@Op( Invokevirtual.class )
+	@Op( Invokeinterface.class )
 	public abstract JavaCoreCodeWriter invokeinterface(
 		final Type targetType,
 		final JavaMethodDescriptor method );
@@ -520,7 +520,7 @@ public interface JavaCoreCodeWriter {
 		final Type targetType,
 		final JavaMethodDescriptor method );
 
-	@Op( Invokestatic.class )
+	@Op( Invokespecial.class )
 	public abstract JavaCoreCodeWriter invokespecial(
 		final Type targetType,
 		final JavaMethodDescriptor method );

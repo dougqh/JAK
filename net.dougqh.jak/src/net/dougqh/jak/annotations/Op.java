@@ -13,4 +13,6 @@ import net.dougqh.jak.operations.Operation;
 @Retention( RetentionPolicy.RUNTIME )
 public @interface Op {
 	public abstract Class< ? extends Operation > value();
+	
+	public abstract boolean repl() default true;
 }

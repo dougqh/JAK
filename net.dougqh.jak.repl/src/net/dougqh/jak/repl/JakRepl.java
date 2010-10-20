@@ -157,11 +157,17 @@ public final class JakRepl {
 		String command = commandParts[ 0 ];
 		String[] args = Arrays.copyOfRange( commandParts, 1, commandParts.length );
 		
-		ReplCommand replCommand = findCommand( command );
-		if ( replCommand.disableArgumentParsing() ) {
-			replCommand.run( this, fullCommand, ReplCommand.NO_ARGS, true );
-		} else {
-			replCommand.run( this, command, args, true );
+		this.recorder.checkpoint();
+		try {
+			ReplCommand replCommand = findCommand( command );
+			if ( replCommand.disableArgumentParsing() ) {
+				replCommand.run( this, fullCommand, ReplCommand.NO_ARGS, true );
+			} else {
+				replCommand.run( this, command, args, true );
+			}
+		} catch ( Error e ) {
+			this.console().printError( e.getMessage() );
+			this.recorder.rollback();
 		}
 	}
 	

@@ -74,7 +74,7 @@ public final class JavaTypeBuilder {
 			if ( this.isTypeVar ) {
 				return this.getTypeVariable();
 			} else {
-				Class< ? > aClass = JavaTypes.loadClass( this.name );
+				Class< ? > aClass = JavaTypes.loadClassImpl( this.name );
 				if ( aClass == null ) {
 					return new ClassNameRefType( this.name );
 				} else {

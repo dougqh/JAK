@@ -176,6 +176,20 @@ final class ReplMethod {
 		if ( ! isWritingMethod( method ) ) {
 			return false;
 		}
+		
+		Op op = method.getAnnotation( Op.class );
+		if ( op != null && ! op.repl() ) {
+			return false;
+		}
+		WrapOp wrapOp = method.getAnnotation( WrapOp.class );
+		if ( wrapOp != null && ! wrapOp.repl() ) {
+			return false;
+		}
+		SyntheticOp syntheticOp = method.getAnnotation( SyntheticOp.class );
+		if ( syntheticOp != null && ! syntheticOp.repl() ) {
+			return false;
+		}
+		
 		Class< ? >[] argTypes = method.getParameterTypes();
 		if ( containsArrayType( argTypes ) ) {
 			return false;
@@ -216,16 +230,22 @@ final class ReplMethod {
 	}
 	
 	private static final String getNameOf( final Method method ) {
-		Operation operation = getOperationOf( method );
-		if ( operation != null ) {
-			return operation.getId();
-		} else {
-			SyntheticOp synthOp = method.getAnnotation( SyntheticOp.class );
-			if ( synthOp != null ) {
-				return synthOp.id().isEmpty() ? method.getName() : synthOp.id();
-			}
-			throw new IllegalStateException();
+		Op op = method.getAnnotation( Op.class );
+		if ( op != null ) {
+			return Operations.getPrototype( op.value() ).getId();
 		}
+		
+		WrapOp wrapOp = method.getAnnotation( WrapOp.class );
+		if ( wrapOp != null ) {
+			return method.getName();
+		}
+		
+		SyntheticOp synthOp = method.getAnnotation( SyntheticOp.class );
+		if ( synthOp != null ) {
+			return synthOp.id().isEmpty() ? method.getName() : synthOp.id();
+		}
+		
+		throw new IllegalStateException();
 	}
 	
 	private static final Operation getOperationOf( final Method method ) {

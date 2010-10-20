@@ -147,16 +147,43 @@ enum ReplArgument {
 			if ( parts.length != 2 ) {
 				throw new IllegalArgumentException();
 			}
-			return JavaAssembler.field(
-				loadClass( parts[ 1 ] ),
-				parts[ 0 ] );
+			
+			String name = parts[ 0 ];
+			Type fieldType = loadClass( parts[ 1 ] );
+			
+			return JavaAssembler.field( fieldType, name );
 		}
 	},
 	METHOD( JavaMethodDescriptor.class ) {
 		@Override
 		public final Object parse( final String argString ) {
-			//TODO: Implement this
-			throw new UnsupportedOperationException();
+			//DQH: TODO - Make this parsing more robust
+			
+			String[] parts = splitOnLast( argString, ':' );
+			if ( parts.length != 2 ) {
+				throw new IllegalArgumentException();
+			}
+			Type returnType = loadClass( parts[ 1 ] );
+			
+			int startParenPos = parts[ 0 ].indexOf( '(' );
+			int endParenPos = parts[ 0 ].indexOf( ')' );
+			
+			if ( ( startParenPos == -1 ) || ( endParenPos == -1 ) ) {
+				throw new IllegalArgumentException();
+			}
+			
+			String name = parts[ 0 ].substring( 0, startParenPos );
+			
+			Type[] types;
+			if ( startParenPos + 1 == endParenPos ) {
+				types = new Type[] {};
+			} else {
+				String typeList = parts[ 0 ].substring( startParenPos + 1, endParenPos );
+				String[] typeNames = typeList.split( "," );
+				types = loadClasses( typeNames );
+			}
+			
+			return JavaAssembler.method( returnType, name, types );
 		}
 	};
 	
@@ -217,13 +244,24 @@ enum ReplArgument {
 		}
 	}
 	
+	static final Class< ? >[] loadClasses( final String[] names ) {
+		//DQH - TODO - Ideally, this would check to verify that all 
+		//names are either specified as VM-style or Java-style.
+		
+		Class< ? >[] classes = new Class< ? >[ names.length ];
+		for ( int i = 0; i < names.length; ++i ) {
+			classes[ i ] = loadClass( names[ i ] );
+		}
+		return classes;
+	}
+	
 	static final Class< ? > forJvmName( final String name ) {
 		return forJavaName( name.replace( '/', '.' ) );
 	}
 	
 	static final Class< ? > forJavaName( final String name ) {
 		try {
-			return Class.forName( name );
+			return JavaTypes.loadClass( name );
 		} catch ( ClassNotFoundException e ) {
 			throw new IllegalArgumentException( e );
 		}

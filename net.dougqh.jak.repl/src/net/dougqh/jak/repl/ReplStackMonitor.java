@@ -55,13 +55,13 @@ final class ReplStackMonitor implements StackMonitor {
 					if ( Types.isCategory1( type ) ) {
 						this.repl.codeWriter().
 							dup().
-							this_getstatic( JakRepl.STATE_FIELD ).
+							self_getstatic( JakRepl.STATE_FIELD ).
 							swap().
 							invokevirtual( ReplState.class, pushMethod( type ) );
 					} else {
 						this.repl.codeWriter().
 							dup2().
-							this_getstatic( JakRepl.STATE_FIELD ).
+							self_getstatic( JakRepl.STATE_FIELD ).
 							dup_x2().
 							pop().
 							invokevirtual( ReplState.class, pushMethod( type ) );
@@ -136,7 +136,7 @@ final class ReplStackMonitor implements StackMonitor {
 				this.repl.suppressRecording();
 				try {
 					this.repl.codeWriter().
-						this_getstatic( JakRepl.STATE_FIELD ).
+						self_getstatic( JakRepl.STATE_FIELD ).
 						invokevirtual( ReplState.class, method );
 				} finally {
 					this.repl.restoreRecording();

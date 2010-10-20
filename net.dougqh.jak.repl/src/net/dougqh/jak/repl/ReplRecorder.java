@@ -11,8 +11,25 @@ import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaTypeWriter;
 
 final class ReplRecorder {
-	private final ArrayList< Method > methods = new ArrayList< Method >( 32 );
-	private final ArrayList< Object[] > args = new ArrayList< Object[] >( 32 );
+	private ArrayList< Method > methods = new ArrayList< Method >( 32 );
+	private ArrayList< Object[] > args = new ArrayList< Object[] >( 32 );
+	
+	private ArrayList< Method > checkpointMethods;
+	private ArrayList< Object[] > checkpointArgs;
+	
+	ReplRecorder() {
+		this.checkpoint();
+	}
+	
+	final void checkpoint() {
+		this.checkpointMethods = new ArrayList< Method >( this.methods );
+		this.checkpointArgs = new ArrayList< Object[] >( this.args );
+	}
+	
+	final void rollback() {
+		this.methods = checkpointMethods;
+		this.args = checkpointArgs;
+	}
 	
 	final int size() {
 		return this.methods.size();

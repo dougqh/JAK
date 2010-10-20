@@ -169,7 +169,36 @@ public final class JavaTypes {
  		return new JavaTypeBuilder( name, false ).make();
 	}
 	
-	static final Class< ? > loadClass( final CharSequence name ) {
+	public static final Class< ? > loadClass( final CharSequence name )
+		throws ClassNotFoundException
+	{
+		String nameStr = name.toString();
+		if ( nameStr.equals( "void" ) ) {
+			return void.class;
+		} else if ( nameStr.equals( "boolean" ) ) {
+			return boolean.class;
+		} else if ( nameStr.equals( "byte" ) ) {
+			return byte.class;
+		} else if ( nameStr.equals( "char" ) ) {
+			return char.class;
+		} else if ( nameStr.equals( "short" ) ) {
+			return short.class;
+		} else if ( nameStr.equals( "int" ) ) {
+			return int.class;
+		} else if ( nameStr.equals( "float" ) ) {
+			return float.class;
+		} else if ( nameStr.equals( "long" ) ) {
+			return long.class;
+		} else if ( nameStr.equals( "double" ) ) {
+			return double.class;
+		} else if ( nameStr.endsWith( "[]" ) ) {
+			return array( loadClass( nameStr.substring( 0, nameStr.length() - 2 ) ) );
+		} else {
+			return Class.forName( nameStr );
+		}
+	}
+	
+	static final Class< ? > loadClassImpl( final CharSequence name ) {
 		String nameStr = name.toString();
 		try {
 			return Class.forName( nameStr );
@@ -226,7 +255,7 @@ public final class JavaTypes {
 	public static final Type resolve( final Type type ) {
 		if ( type instanceof ClassNameRefType ) {
 			ClassNameRefType nameRef = (ClassNameRefType)type;
-			Class< ? > aClass = loadClass( nameRef.getName() );
+			Class< ? > aClass = loadClassImpl( nameRef.getName() );
 			if ( aClass == null ) {
 				return nameRef;
 			} else {
