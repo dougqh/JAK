@@ -55,6 +55,7 @@ public final class JakRepl {
 	
 	private JavaClassWriter classWriter = null;
 	private JavaCodeWriter codeWriter = null;
+	private ReplStateCodeWriter replStateCodeWriter = null;
 	
 	private File recordingDir = null;
 	
@@ -101,7 +102,7 @@ public final class JakRepl {
 	}
 	
 	final ReplStateCodeWriter stateCodeWriter() {
-		return new ReplStateCodeWriter( this.codeWriter );
+		return this.replStateCodeWriter;
 	}
 	
 	final boolean isRecordingEnabled() {
@@ -312,6 +313,7 @@ public final class JakRepl {
 		//JavaCodeWriter during replay which did not produce the desired 
 		//results.
 		this.codeWriter = this.classWriter.define( MAIN_METHOD );
+		this.replStateCodeWriter = new ReplStateCodeWriter( this );
 		
 		this.startReplay();
 		try {

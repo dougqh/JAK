@@ -5,7 +5,6 @@ import static net.dougqh.jak.JavaAssembler.*;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaAssembler;
-import net.dougqh.jak.JavaCodeWriter;
 import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.types.Types;
@@ -14,28 +13,52 @@ final class ReplStateCodeWriter {
 	static final JavaFieldDescriptor STATE_FIELD = 
 		public_().static_().field( ReplState.class, "state" );
 
-	private final JavaCodeWriter codeWriter;
+	private final JakRepl repl;
+	private int suppressionCount = 0;
 	
-	ReplStateCodeWriter( final JavaCodeWriter codeWriter ) {
-		this.codeWriter = codeWriter;
+	ReplStateCodeWriter( final JakRepl repl ) {
+		this.repl = repl;
+	}
+	
+	final void suppressStackTracking() {
+		++this.suppressionCount;
+	}
+	
+	final void restoreStackTracking() {
+		--this.suppressionCount;
+	}
+	
+	final boolean isStackTrackingEnabled() {
+		return ( this.suppressionCount == 0 );
 	}
 	
 	final void push( final Type type ) {
-		if ( Types.isCategory1( type ) ) {
-			this.codeWriter.
-				dup().
-				self_getstatic( STATE_FIELD ).
-				swap().
-				invokevirtual( ReplState.class, pushMethod( type ) );
-		} else {
-			this.codeWriter.
-				dup2().
-				self_getstatic( STATE_FIELD ).
-				dup_x2().
-				pop().
-				invokevirtual( ReplState.class, pushMethod( type ) );
-			
-		}
+		if ( this.isStackTrackingEnabled() ) {
+			this.suppressStackTracking();
+			try {
+				this.repl.suppressRecording();
+				try {
+					if ( Types.isCategory1( type ) ) {
+						this.repl.codeWriter().
+							dup().
+							self_getstatic( STATE_FIELD ).
+							swap().
+							invokevirtual( ReplState.class, pushMethod( type ) );
+					} else {
+						this.repl.codeWriter().
+							dup2().
+							self_getstatic( STATE_FIELD ).
+							dup_x2().
+							pop().
+							invokevirtual( ReplState.class, pushMethod( type ) );
+					}
+				} finally {
+					this.repl.restoreRecording();
+				}
+			} finally {
+				this.restoreStackTracking();
+			}
+		}					
 	}
 	
 	final void unstack( final Type type ) {
@@ -47,9 +70,21 @@ final class ReplStateCodeWriter {
 	}
 	
 	private final void invoke( final JavaMethodDescriptor method ) {
-		this.codeWriter.
-			self_getstatic( STATE_FIELD ).
-			invokevirtual( ReplState.class, method );
+		if ( this.isStackTrackingEnabled() ) {
+			this.suppressStackTracking();
+			try {
+				this.repl.suppressRecording();
+				try {
+					this.repl.codeWriter().
+						self_getstatic( STATE_FIELD ).
+						invokevirtual( ReplState.class, method );
+				} finally {
+					this.repl.restoreRecording();
+				}
+			} finally {
+				this.restoreStackTracking();
+			}
+		}
 	}
 	
 	private static final JavaMethodDescriptor pushMethod( final Type type ) {
