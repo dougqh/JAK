@@ -29,13 +29,9 @@ public final class ReplState {
 		this.push( double.class, value );
 	}
 	
-	public final void push( final Object value ) {
-		this.push( Object.class, value );
-	}
-	
-	public final Object pushUninitialized() {
-		Object uninitialized = new Uninitialized();
-		this.push( uninitialized );
+	public final Object pushUninitialized( final Type type ) {
+		Object uninitialized = new Uninitialized( type );
+		this.push( Object.class, uninitialized );
 		return uninitialized;
 	}
 	
@@ -121,9 +117,15 @@ public final class ReplState {
 	}
 	
 	private static final class Uninitialized {
+		private final Type type;
+		
+		Uninitialized( final Type type ) {
+			this.type = type;
+		}
+		
 		@Override
 		public final String toString() {
-			return "<Uninitialized Object>";
+			return "<Uninitialized " + ReplFormatter.getDisplayName( this.type ) + ">";
 		}
 	}
 }

@@ -8,6 +8,7 @@ import net.dougqh.jak.JavaAssembler;
 import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.types.Types;
+import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplStateCodeWriter {
 	static final JavaFieldDescriptor STATE_FIELD = 
@@ -38,7 +39,15 @@ final class ReplStateCodeWriter {
 			try {
 				this.repl.suppressRecording();
 				try {
-					if ( Types.isCategory1( type ) ) {
+					if ( Types.isReferenceType( type ) ) {
+						this.repl.codeWriter().
+							dup().
+							self_getstatic( STATE_FIELD ).
+							swap().
+							ldc( JavaTypes.getRawClass( type ) ).
+							swap().
+							invokevirtual( ReplState.class, pushMethod( type ) );
+					} else if ( Types.isCategory1( type ) ) {
 						this.repl.codeWriter().
 							dup().
 							self_getstatic( STATE_FIELD ).
@@ -61,8 +70,23 @@ final class ReplStateCodeWriter {
 		}				
 	}
 	
-	final void pushUninitialized() {
-		this.invoke( pushUninitializedMethod() );
+	final void pushUninitialized( final Type type ) {
+		if ( this.isStackTrackingEnabled() ) {
+			this.suppressStackTracking();
+			try {
+				this.repl.suppressRecording();
+				try {
+					this.repl.codeWriter().
+					self_getstatic( STATE_FIELD ).						
+					ldc( JavaTypes.getRawClass( type ) ).
+					invokevirtual( ReplState.class, pushUninitializedMethod() );
+				} finally {
+					this.repl.restoreRecording();
+				}
+			} finally {
+				this.restoreStackTracking();
+			}
+		}
 	}
 	
 	final void unstack( final Type type ) {
@@ -95,14 +119,14 @@ final class ReplStateCodeWriter {
 		if ( Types.isIntegerType( type ) ) {
 			return JavaAssembler.method( void.class, "push", int.class );
 		} else if ( Types.isReferenceType( type ) ) {
-			return JavaAssembler.method( void.class, "push", Object.class );
+			return JavaAssembler.method( void.class, "push", Type.class, Object.class );
 		} else {
 			return JavaAssembler.method( void.class, "push", type );
 		}
 	}
 	
 	private static final JavaMethodDescriptor pushUninitializedMethod() {
-		return JavaAssembler.method( Object.class, "pushUninitialized" );
+		return JavaAssembler.method( Object.class, "pushUninitialized", Type.class );
 	}
 	
 	private static final JavaMethodDescriptor popMethod( final Type type ) {

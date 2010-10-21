@@ -213,7 +213,7 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 		@Override
 		final void writePlaceholder() throws Throwable {
 			ReplStateCodeWriter stateCodeWriter = WriterDelegate.this.repl.stateCodeWriter();
-			stateCodeWriter.pushUninitialized();
+			stateCodeWriter.pushUninitialized( this.< Type >arg( 0 ) );
 		}
 		
 		@Override

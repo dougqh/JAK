@@ -13,6 +13,11 @@ final class StringLiteralCommand extends ReplCommand {
 	}
 	
 	@Override
+	final boolean runProgramAfterCommand() {
+		return true;
+	}
+	
+	@Override
 	final boolean matches( final String command ) {
 		char firstChar = command.charAt( 0 );
 		return  ( firstChar == ReplArgument.STRING_QUOTE );

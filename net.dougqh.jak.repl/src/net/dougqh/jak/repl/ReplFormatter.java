@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.ConstantEntry;
 import net.dougqh.jak.JavaFieldDescriptor;
+import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplFormatter {
@@ -35,19 +36,55 @@ final class ReplFormatter {
 		if ( value == null ) {
 			return "null";
 		} else if ( value instanceof Class ) {
-			Class< ? > type = (Class< ?>)value;
-			return getDisplayName( type );
+			return format( (Class< ?>)value );
 		} else if ( value instanceof ConstantEntry ) {
-			ConstantEntry entry = (ConstantEntry)value;
-			return entry.index() + ":" + format( entry.value() );
+			return format( (ConstantEntry)value );
 		} else if ( value instanceof String ) {
-			String string = (String)value;
-			return ReplArgument.STRING_QUOTE + string + ReplArgument.STRING_QUOTE;
+			return format( (String)value );
 		} else if ( value instanceof JavaFieldDescriptor ) {
 			JavaFieldDescriptor field = (JavaFieldDescriptor)value;
-			return field.getName() + ":" + format( field.getType() );
+			return format( field );
+		} else if ( value instanceof JavaMethodDescriptor ) {
+			return format( (JavaMethodDescriptor)value );
 		} else {
 			return value.toString();
 		}
+	}
+
+	private static final String format( final Class<?> type ) {
+		return getDisplayName( type );
+	}
+
+	private static String format( final ConstantEntry entry ) {
+		return entry.index() + ":" + format( entry.value() );
+	}
+
+	private static String format( final String string ) {
+		return ReplArgument.STRING_QUOTE + string + ReplArgument.STRING_QUOTE;
+	}
+
+	private static String format( final JavaFieldDescriptor field ) {
+		return field.getName() + ":" + format( field.getType() );
+	}
+	
+	private static final String format( final JavaMethodDescriptor method ) {
+		StringBuilder builder = new StringBuilder();
+		builder.append( method.getName() );
+		builder.append( '(' );
+		
+		boolean isFirst = true;
+		for ( Type type : method.getArgumentTypes() ) {
+			if ( isFirst ) {
+				isFirst = false;
+			} else {
+				builder.append( ',' );
+			}
+			builder.append( format( type ) );
+		}
+		
+		builder.append( "):" );
+		builder.append( format( method.getReturnType() ) );
+		
+		return builder.toString();
 	}
 }
