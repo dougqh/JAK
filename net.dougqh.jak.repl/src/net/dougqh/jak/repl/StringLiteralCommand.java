@@ -26,7 +26,7 @@ final class StringLiteralCommand extends ReplCommand {
 		throws IOException
 	{
 		try {
-			String literal = (String)ReplArgument.STRING_LITERAL.parse( command );
+			String literal = (String)ReplArgument.STRING_LITERAL.parse( repl, command );
 			repl.codeWriter().ldc( literal );
 			
 			return true;

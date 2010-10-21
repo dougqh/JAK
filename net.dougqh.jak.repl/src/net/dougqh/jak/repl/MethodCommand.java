@@ -38,7 +38,7 @@ final class MethodCommand extends ReplCommand {
 			//If no match is found, then print out usage.
 			for ( ReplMethod method : methods ) {
 				try {
-					Object[] args = method.parseArguments( argStrings );
+					Object[] args = method.parseArguments( repl, argStrings );
 					method.invoke( repl.codeWriter(), args );
 					return true;
 				} catch ( IllegalArgumentException e ) {

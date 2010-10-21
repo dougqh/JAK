@@ -130,12 +130,15 @@ final class ReplConsole {
 	}
 	
 	final void printNotice( final String notice ) throws IOException {
-		this.reader.printString( notice );
-		this.reader.printNewline();
+		this.println( notice );
 	}
 	
 	final void printError( final String error ) throws IOException {
-		this.reader.printString( error );
+		this.println( error );
+	}
+	
+	final void println( final String string ) throws IOException {
+		this.reader.printString( string );
 		this.reader.printNewline();
 	}
 

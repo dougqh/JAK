@@ -10,7 +10,7 @@ import net.dougqh.java.meta.types.JavaTypes;
 enum ReplArgument {
 	BOOLEAN( boolean.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			if ( argString.equals( TRUE ) ) {
@@ -24,7 +24,7 @@ enum ReplArgument {
 	},
 	BYTE( byte.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			try {
@@ -36,7 +36,7 @@ enum ReplArgument {
 	},
 	CHAR( char.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			//TODO: Implement this proper escaping support
 			if ( argString.charAt( 0 ) != CHAR_QUOTE ) {
 				throw new IllegalArgumentException();
@@ -52,7 +52,7 @@ enum ReplArgument {
 	},
 	SHORT( short.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			try {
@@ -60,11 +60,11 @@ enum ReplArgument {
 			} catch ( NumberFormatException e ) {
 				throw new IllegalArgumentException( e );
 			}
-		}		
+		}	
 	},
 	INT( int.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			try {
@@ -72,11 +72,11 @@ enum ReplArgument {
 			} catch ( NumberFormatException e ) {
 				throw new IllegalArgumentException( e );
 			}
-		}	
+		}
 	},
 	FLOAT( float.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkType( argString, float.class );
 			
 			try {
@@ -88,7 +88,7 @@ enum ReplArgument {
 	},
 	LONG( long.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkType( argString, long.class );
 			
 			try {
@@ -100,7 +100,7 @@ enum ReplArgument {
 	},
 	DOUBLE( double.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			checkType( argString, double.class );
 			
 			try {
@@ -117,13 +117,13 @@ enum ReplArgument {
 		}
 		
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			return argString;
 		}
 	},
 	STRING_LITERAL( CharSequence.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			//TODO: Implement this proper escaping support
 			if ( argString.charAt( 0 ) != STRING_QUOTE ) {
 				throw new IllegalArgumentException();
@@ -136,34 +136,34 @@ enum ReplArgument {
 	},
 	CLASS_LITERAL( Type.class ) {
 		@Override
-		public final Object parse( final String argString ) {
-			return loadClass( argString );
+		public final Object parse( final JakRepl repl, final String argString ) {
+			return loadClass( repl, argString );
 		}
 	},
 	FIELD( JavaFieldDescriptor.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			String[] parts = splitOnLast( argString, ':' );
 			if ( parts.length != 2 ) {
 				throw new IllegalArgumentException();
 			}
 			
 			String name = parts[ 0 ];
-			Type fieldType = loadClass( parts[ 1 ] );
+			Type fieldType = loadClass( repl, parts[ 1 ] );
 			
 			return JavaAssembler.field( fieldType, name );
 		}
 	},
 	METHOD( JavaMethodDescriptor.class ) {
 		@Override
-		public final Object parse( final String argString ) {
+		public final Object parse( final JakRepl repl, final String argString ) {
 			//DQH: TODO - Make this parsing more robust
 			
 			String[] parts = splitOnLast( argString, ':' );
 			if ( parts.length != 2 ) {
 				throw new IllegalArgumentException();
 			}
-			Type returnType = loadClass( parts[ 1 ] );
+			Type returnType = loadClass( repl, parts[ 1 ] );
 			
 			int startParenPos = parts[ 0 ].indexOf( '(' );
 			int endParenPos = parts[ 0 ].indexOf( ')' );
@@ -180,7 +180,7 @@ enum ReplArgument {
 			} else {
 				String typeList = parts[ 0 ].substring( startParenPos + 1, endParenPos );
 				String[] typeNames = typeList.split( "," );
-				types = loadClasses( typeNames );
+				types = loadClasses( repl, typeNames );
 			}
 			
 			return JavaAssembler.method( returnType, name, types );
@@ -234,37 +234,22 @@ enum ReplArgument {
 		return ReplFormatter.getShortDisplayName( this.type );
 	}
 	
-	public abstract Object parse( final String argString );
+	public abstract Object parse( final JakRepl repl, final String argString );
 	
-	static final Class< ? > loadClass( final String name ) {
-		if ( name.indexOf( '.' ) == -1 ) {
-			return forJvmName( name );
-		} else {
-			return forJavaName( name );
-		}
-	}
-	
-	static final Class< ? >[] loadClasses( final String[] names ) {
-		//DQH - TODO - Ideally, this would check to verify that all 
-		//names are either specified as VM-style or Java-style.
-		
-		Class< ? >[] classes = new Class< ? >[ names.length ];
-		for ( int i = 0; i < names.length; ++i ) {
-			classes[ i ] = loadClass( names[ i ] );
-		}
-		return classes;
-	}
-	
-	static final Class< ? > forJvmName( final String name ) {
-		return forJavaName( name.replace( '/', '.' ) );
-	}
-	
-	static final Class< ? > forJavaName( final String name ) {
+	static final Class< ? > loadClass( final JakRepl repl, final String name ) {
 		try {
-			return JavaTypes.loadClass( name );
+			return repl.imports().loadClass( name );
 		} catch ( ClassNotFoundException e ) {
 			throw new IllegalArgumentException( e );
 		}
+	}
+	
+	static final Class< ? >[] loadClasses( final JakRepl repl, final String[] names ) {	
+		Class< ? >[] classes = new Class< ? >[ names.length ];
+		for ( int i = 0; i < names.length; ++i ) {
+			classes[ i ] = loadClass( repl, names[ i ] );
+		}
+		return classes;
 	}
 	
 	static final Class< ? > typeQualifier( final String argString ) {

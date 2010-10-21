@@ -23,7 +23,7 @@ public final class OperatorCommand extends ReplCommand {
 		
 		if ( method != null ) {
 			try {
-				Object[] args = method.parseArguments( argStrings );
+				Object[] args = method.parseArguments( repl, argStrings );
 				method.invoke( repl.codeWriter(), args );
 				
 				return true;

@@ -49,6 +49,7 @@ public final class JakRepl {
 	private final ReplConsole console;
 	
 	private final ReplConfig config = new ReplConfig();
+	private final ReplImports imports = new ReplImports();
 	
 	private int suppressionCount = 0;
 	private boolean isReplaying = false;
@@ -66,6 +67,8 @@ public final class JakRepl {
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
 		EchoCommand.INSTANCE,
+		ImportCommand.INSTANCE,
+		ImportsCommand.INSTANCE,
 		ExpressionCommand.INSTANCE,
 		StringLiteralCommand.INSTANCE,
 		OperatorCommand.INSTANCE );
@@ -95,6 +98,10 @@ public final class JakRepl {
 	
 	final ReplConfig config() {
 		return this.config;
+	}
+	
+	final ReplImports imports() {
+		return this.imports;
 	}
 	
 	final JavaCodeWriter codeWriter() {
@@ -209,6 +216,7 @@ public final class JakRepl {
 	}
 	
 	final void resetProgram() throws IOException {
+		this.imports.reset();
 		this.recorder.reset();
 		//DQH - 10-10-2010 - Need to reinitialize the current writer 
 		//because the current writer will already contain code replayed 

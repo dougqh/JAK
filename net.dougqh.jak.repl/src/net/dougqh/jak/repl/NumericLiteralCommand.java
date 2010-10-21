@@ -36,24 +36,24 @@ public final class NumericLiteralCommand extends ReplCommand {
 		try {
 			char firstChar = command.charAt( 0 );
 			if ( firstChar == ReplArgument.CHAR_QUOTE ) {
-				Character literal = (Character)ReplArgument.CHAR.parse( command );
+				Character literal = (Character)ReplArgument.CHAR.parse( repl, command );
 				repl.codeWriter().iconst( literal );
 			} else if ( isBooleanLiteral( command ) ) {
-				Boolean literal = (Boolean)ReplArgument.BOOLEAN.parse( command );
+				Boolean literal = (Boolean)ReplArgument.BOOLEAN.parse( repl, command );
 				repl.codeWriter().iconst( literal );
 			} else {
 				Class< ? > type = ReplArgument.typeQualifier( command );
 				if ( type == null ) {
-					Integer value = (Integer)ReplArgument.INT.parse( command );
+					Integer value = (Integer)ReplArgument.INT.parse( repl, command );
 					repl.codeWriter().iconst( value );
 				} else if ( type.equals( float.class ) ) {
-					Float value = (Float)ReplArgument.FLOAT.parse( command );
+					Float value = (Float)ReplArgument.FLOAT.parse( repl, command );
 					repl.codeWriter().fconst( value );
 				} else if ( type.equals( long.class ) ) {
-					Long value = (Long)ReplArgument.LONG.parse( command );
+					Long value = (Long)ReplArgument.LONG.parse( repl, command );
 					repl.codeWriter().lconst( value );
 				} else if ( type.equals( double.class ) ) {
-					Double value = (Double)ReplArgument.DOUBLE.parse( command );
+					Double value = (Double)ReplArgument.DOUBLE.parse( repl, command );
 					repl.codeWriter().dconst( value );
 				} else {
 					throw new IllegalStateException();
