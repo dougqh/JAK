@@ -1,6 +1,7 @@
 package net.dougqh.jak.repl;
 
 import java.io.IOException;
+import java.util.List;
 
 abstract class ConfigCommand extends FixedIdCommand {
 	ConfigCommand( final String id ) {
@@ -11,15 +12,15 @@ abstract class ConfigCommand extends FixedIdCommand {
 	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args )
+		final List< String > args )
 		throws IOException
 	{
-		switch ( args.length ) {
+		switch ( args.size() ) {
 			case 0:
 			break;
 			
 			case 1:
-			this.set( repl.config(), OnOff.parse( args[ 0 ] ).booleanValue() );
+			this.set( repl.config(), OnOff.parse( args.get( 0 ) ).booleanValue() );
 			break;
 			
 			default:

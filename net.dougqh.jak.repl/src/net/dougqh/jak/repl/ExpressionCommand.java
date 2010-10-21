@@ -2,6 +2,7 @@ package net.dougqh.jak.repl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 final class ExpressionCommand extends ReplCommand {
 	static final ExpressionCommand INSTANCE = new ExpressionCommand();
@@ -22,10 +23,10 @@ final class ExpressionCommand extends ReplCommand {
 	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args )
+		final List< String > args )
 		throws IOException
 	{
-		ArrayList< ReplCommand > argCommands = new ArrayList< ReplCommand >( args.length );
+		ArrayList< ReplCommand > argCommands = new ArrayList< ReplCommand >( args.size() );
 		for ( String arg : args ) {
 			//DQH - Operators have to come before Numerics to handle "-" case.
 			if ( OperatorCommand.INSTANCE.matches( arg ) ) {
@@ -39,8 +40,9 @@ final class ExpressionCommand extends ReplCommand {
 		}
 		
 		NumericLiteralCommand.INSTANCE.run( repl, command, NO_ARGS );
-		for ( int i = 0; i < args.length; ++i ) {
-			String arg = args[ i ];
+		//DQH - TODO: Consider switching to iterators
+		for ( int i = 0; i < args.size(); ++i ) {
+			String arg = args.get( i );
 			ReplCommand argCommand = argCommands.get( i );
 			
 			argCommand.run( repl, arg, NO_ARGS );

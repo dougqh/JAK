@@ -146,14 +146,14 @@ final class ReplMethod {
 		return this.arguments;
 	}
 	
-	public final Object[] parseArguments( final JakRepl repl, final String[] argStrings ) {
-		if ( this.arguments.length != argStrings.length ) {
+	public final Object[] parseArguments( final JakRepl repl, final List< String > argStrings ) {
+		if ( this.arguments.length != argStrings.size() ) {
 			throw new IllegalArgumentException();
 		}
 		
-		Object[] values = new Object[ argStrings.length ];
-		for ( int i = 0; i < argStrings.length; ++i ) {
-			values[ i ] = this.arguments[ i ].parse( repl, argStrings[ i ] );
+		Object[] values = new Object[ argStrings.size() ];
+		for ( int i = 0; i < argStrings.size(); ++i ) {
+			values[ i ] = this.arguments[ i ].parse( repl, argStrings.get( i ) );
 		}
 		return values;
 	}

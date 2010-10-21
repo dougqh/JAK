@@ -1,6 +1,7 @@
 package net.dougqh.jak.repl;
 
 import java.io.IOException;
+import java.util.List;
 
 final class ClearCommand extends FixedIdCommand {
 	static final String ID = "clear";
@@ -14,7 +15,7 @@ final class ClearCommand extends FixedIdCommand {
 	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args )
+		final List< String > args )
 		throws IOException
 	{
 		checkNoArguments( args );

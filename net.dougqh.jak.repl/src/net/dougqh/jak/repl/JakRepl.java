@@ -9,7 +9,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import jline.Completor;
@@ -178,7 +180,7 @@ public final class JakRepl {
 					continue;
 				}
 				
-				//DQH - Intentionally not short-circuited
+				//Intentionally not short-circuited
 				needsRun = needsRun | this.processCommand( command ); 
 			}
 			if ( needsRun && this.config.autoRun() ) {
@@ -191,19 +193,67 @@ public final class JakRepl {
 	}
 	
 	private final boolean processCommand( final String fullCommand ) throws IOException {
-		String[] commandParts = fullCommand.split( " " );
-
-		String command = commandParts[ 0 ];
-		String[] args = Arrays.copyOfRange( commandParts, 1, commandParts.length );
+		ParsedCommand parsedCommand = parseCommand( fullCommand );
 		
-		ReplCommand replCommand = findCommand( command );
-		boolean success;
-		if ( replCommand.disableArgumentParsing() ) {
-			success = replCommand.run( this, fullCommand, ReplCommand.NO_ARGS );
-		} else {
-			success = replCommand.run( this, command, args );
-		}
+		ReplCommand replCommand = findCommand( parsedCommand.command );
+		boolean success = replCommand.run( this, parsedCommand.command, parsedCommand.arguments );
 		return success && replCommand.runProgramAfterCommand();
+	}
+	
+	private static final ParsedCommand parseCommand( final String fullCommand ) {
+		if ( isStringStart( fullCommand ) && isStringEnd( fullCommand ) ) {
+			return new ParsedCommand( fullCommand, ReplCommand.NO_ARGS );
+		} else {
+			String[] commandParts = fullCommand.split( " " );
+
+			String command = commandParts[ 0 ];
+			List< String > arguments = parseArguments( commandParts );
+
+			return new ParsedCommand( command, arguments );
+		}
+	}
+	
+	private static final List< String > parseArguments( final String[] commandParts ) {
+		if ( commandParts.length == 1 ) {
+			return Collections.emptyList();
+		}
+
+		ArrayList< String > args = new ArrayList< String >( commandParts.length - 1 );
+
+		StringBuilder stringUnderConstruction = null;
+		for ( int i = 1; i < commandParts.length; ++i ) {
+			String arg = commandParts[ i ];
+			
+			if ( stringUnderConstruction == null ) {
+				if ( isStringStart( arg ) && ! isStringEnd( "arg" ) ) {
+					stringUnderConstruction = new StringBuilder();
+					stringUnderConstruction.append( arg );
+				} else {
+					args.add( arg );
+				}
+			} else {
+				stringUnderConstruction.append( ' ' ).append( arg );
+				
+				if ( isStringEnd( arg ) ) {
+					args.add( stringUnderConstruction.toString() );
+					stringUnderConstruction = null;
+				}
+			}
+		}
+		if ( stringUnderConstruction != null ) {
+			throw new IllegalArgumentException();
+		}
+		return Collections.unmodifiableList( args );
+	}
+	
+	private static final boolean isStringStart( final String arg ) {
+		char firstChar = arg.charAt( 0 );
+		return ( firstChar == ReplArgument.STRING_QUOTE );
+	}
+	
+	private static final boolean isStringEnd( final String arg ) {
+		char lastChar = arg.charAt( arg.length() - 1 );
+		return ( lastChar == ReplArgument.STRING_QUOTE );
 	}
 	
 	private final ReplCommand findCommand( final String command ) {
@@ -216,7 +266,6 @@ public final class JakRepl {
 	}
 	
 	final void resetProgram() throws IOException {
-		this.imports.reset();
 		this.recorder.reset();
 		//DQH - 10-10-2010 - Need to reinitialize the current writer 
 		//because the current writer will already contain code replayed 
@@ -335,7 +384,7 @@ public final class JakRepl {
 		return EXIT.equals( command );
 	}
 	
-	private final class ReplCompletor implements Completor {
+	private static final class ReplCompletor implements Completor {
 		@SuppressWarnings( { "unchecked", "rawtypes" } ) 
 		@Override
 		public final int complete(
@@ -345,6 +394,16 @@ public final class JakRepl {
 		{
 			candidates.addAll( ReplMethod.findLike( buffer ) );
 			return cursor;
+		}
+	}
+	
+	private static final class ParsedCommand {
+		final String command;
+		final List< String > arguments;
+		
+		ParsedCommand( final String command, final List< String > arguments ) {
+			this.command = command;
+			this.arguments = arguments;
 		}
 	}
 }

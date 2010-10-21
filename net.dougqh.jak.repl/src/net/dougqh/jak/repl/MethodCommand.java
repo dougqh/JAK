@@ -1,6 +1,7 @@
 package net.dougqh.jak.repl;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 final class MethodCommand extends ReplCommand {
@@ -22,13 +23,13 @@ final class MethodCommand extends ReplCommand {
 	final boolean run(
 		final JakRepl repl,
 		final String methodName,
-		final String[] argStrings )
+		final List< String > argStrings )
 		throws IOException
 	{
 		Set< ReplMethod > methods = ReplMethod.findByName( methodName );
 		if ( methods.isEmpty() ) {
 			repl.console().printError( "Unknown command: " + methodName );
-			if ( argStrings.length == 0 ) {
+			if ( argStrings.isEmpty() ) {
 				repl.console().complete( methodName );
 			}
 			return false;

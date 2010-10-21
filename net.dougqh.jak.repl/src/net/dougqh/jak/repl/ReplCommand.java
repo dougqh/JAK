@@ -1,28 +1,26 @@
 package net.dougqh.jak.repl;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 abstract class ReplCommand {
-	static final String[] NO_ARGS = {};
+	static final List< String > NO_ARGS = Collections.emptyList();
 	
 	abstract boolean matches( final String command );
 	
 	abstract boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args )
+		final List< String > args )
 		throws IOException;
 
-	boolean disableArgumentParsing() {
-		return false;
-	}
-	
 	boolean runProgramAfterCommand() {
 		return false;
 	}
 	
-	protected static final void checkNoArguments( final String... args ) {
-		if ( args.length != 0 ) {
+	protected static final void checkNoArguments( final List< String > args ) {
+		if ( ! args.isEmpty() ) {
 			throw new IllegalArgumentException();
 		}
 	}

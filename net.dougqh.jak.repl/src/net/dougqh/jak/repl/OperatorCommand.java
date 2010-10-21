@@ -1,6 +1,7 @@
 package net.dougqh.jak.repl;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public final class OperatorCommand extends ReplCommand {
@@ -15,7 +16,7 @@ public final class OperatorCommand extends ReplCommand {
 	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] argStrings )
+		final List< String > argStrings )
 		throws IOException
 	{
 		Set< ReplMethod > methods = ReplMethod.findByOperator( command );

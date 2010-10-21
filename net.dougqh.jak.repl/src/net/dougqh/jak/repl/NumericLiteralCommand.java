@@ -1,6 +1,7 @@
 package net.dougqh.jak.repl;
 
 import java.io.IOException;
+import java.util.List;
 
 public final class NumericLiteralCommand extends ReplCommand {
 	static final NumericLiteralCommand INSTANCE = new NumericLiteralCommand();
@@ -30,7 +31,7 @@ public final class NumericLiteralCommand extends ReplCommand {
 	final boolean run(
 		final JakRepl repl,
 		final String command,
-		final String[] args )
+		final List< String > args )
 		throws IOException
 	{
 		try {
