@@ -45,7 +45,7 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 	{
 		if ( isCoreWritingMethod( interfaceMethod ) ) {
 			if ( is( interfaceMethod, "new_" ) ) {
-				return this.startBuffering( new NewMethodInvocation( interfaceMethod, args ) );
+				return this.startBuffering( new NewMethodBuffer( interfaceMethod, args ) );
 			} else {
 				return this.invoke( new MethodInvocation( interfaceMethod, args ) );
 			}
@@ -69,7 +69,7 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 			this.buffer = null;
 			
 			try {
-				oldBuffer.writePlaceholders();
+				oldBuffer.writeIncomplete();
 			} catch ( Throwable e ) {
 				throw new IllegalStateException( e );
 			}
@@ -77,8 +77,8 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 		this.coreWriter.prepareForWrite();
 	}
 	
-	private final JavaCoreCodeWriter startBuffering( final PendingMethodInvocation invocation ) {
-		this.buffer = new MethodBuffer( invocation );
+	private final JavaCoreCodeWriter startBuffering( final MethodBuffer buffer ) {
+		this.buffer = buffer;
 		return this.getProxy();
 	}
 	
@@ -86,13 +86,12 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 		throws Throwable
 	{
 		if ( this.buffer != null ) {
+			this.buffer.add( invocation );
+			
 			if ( this.buffer.isTerminator( invocation ) ) {
 				MethodBuffer oldBuffer = this.buffer;
 				this.buffer = null;
-				oldBuffer.write();
-				this.invokeOn( this.coreWriter, invocation.method, invocation.args );
-			} else {
-				this.buffer.add( invocation );
+				oldBuffer.writeNormally();
 			}
 			return this.getProxy();
 		} else {
@@ -106,35 +105,62 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 			method.getReturnType().equals( JavaCoreCodeWriter.class );
 	}
 	
-	private static final class MethodBuffer {
-		private final PendingMethodInvocation pendingInvocation;
-		private final ArrayList< MethodInvocation > followingInvocations = 
+	private abstract class MethodBuffer {
+		private final MethodInvocation startingInvocation;
+		
+		final ArrayList< MethodInvocation > followingInvocations = 
 			new ArrayList< MethodInvocation >( 4 );
 		
-		MethodBuffer( final PendingMethodInvocation pendingInvocation ) {
-			this.pendingInvocation = pendingInvocation;
+		MethodBuffer( final Method method, final Object[] args ) {
+			this.startingInvocation = new MethodInvocation( method, args );
+		}
+
+		abstract boolean isTerminator( final MethodInvocation invocation );	
+		
+		final < T > T arg( final int index ) {
+			return this.startingInvocation.< T >arg( index );
 		}
 		
 		final void add( final MethodInvocation invocation ) {
 			this.followingInvocations.add( invocation );
 		}
 		
-		final void write() throws Throwable {
-			this.pendingInvocation.write();
-			for ( MethodInvocation invocation : this.followingInvocations ) {
-				invocation.write();
+		final void writeNormally() throws Throwable {
+			this.startWriteNormally();
+			try {
+				this.startingInvocation.write();
+				for ( MethodInvocation invocation : this.followingInvocations ) {
+					invocation.write();
+				}
+			} finally {
+				this.endWriteNormally();
 			}
 		}
 		
-		final void writePlaceholders() throws Throwable {
-			this.pendingInvocation.writePlaceholder();
-			for ( MethodInvocation invocation : this.followingInvocations ) {
-				invocation.writePlaceholder();
+		void startWriteNormally() {
+		}
+		
+		void endWriteNormally() {
+		}
+		
+		final void writeIncomplete() throws Throwable {
+			this.startWriteIncomplete();
+			try {
+				this.writePlaceholder();
+				for ( MethodInvocation invocation : this.followingInvocations ) {
+					invocation.write();
+				}
+			} finally {
+				this.endWriteIncomplete();
 			}
 		}
 		
-		final boolean isTerminator( final MethodInvocation invocation ) {
-			return this.pendingInvocation.isTerminator( invocation );
+		void startWriteIncomplete() {
+		}
+		
+		abstract void writePlaceholder() throws Throwable;
+		
+		void endWriteIncomplete() {
 		}
 	}
 	
@@ -156,10 +182,6 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 			return (T)this.args[ index ];
 		}
 		
-		void writePlaceholder() throws Throwable {
-			this.write();
-		}
-		
 		final void write() throws Throwable {
 			WriterDelegate.this.invokeOn(
 				WriterDelegate.this.coreWriter,
@@ -177,27 +199,47 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 				return false;
 			}
 		}
-	}
-	
-	private abstract class PendingMethodInvocation extends MethodInvocation {
-		PendingMethodInvocation( final Method method, final Object[] args ) {
-			super( method, args );
+		
+		final boolean isDup() {
+			return this.is( "dup" );
 		}
-		
-		@Override
-		abstract void writePlaceholder() throws Throwable;
-		
-		abstract boolean isTerminator( final MethodInvocation invocation );
 	}
 	
-	private final class NewMethodInvocation extends PendingMethodInvocation {
-		NewMethodInvocation( final Method method, final Object[] args ) {
+	private final class NewMethodBuffer extends MethodBuffer {
+		NewMethodBuffer( final Method method, final Object[] args ) {
 			super( method, args );
 		}
 		
 		@Override
 		final void writePlaceholder() throws Throwable {
-			WriterDelegate.this.coreWriter.aconst_null();
+			ReplStateCodeWriter stateCodeWriter = WriterDelegate.this.repl.stateCodeWriter();
+			stateCodeWriter.pushUninitialized();
+		}
+		
+		@Override
+		final void startWriteNormally() {
+			ReplStateCodeWriter stateCodeWriter = WriterDelegate.this.repl.stateCodeWriter();
+			stateCodeWriter.suppressStackTracking();
+		}
+		
+		@Override
+		final void endWriteNormally() {
+			ReplStateCodeWriter stateCodeWriter = WriterDelegate.this.repl.stateCodeWriter();
+
+			stateCodeWriter.restoreStackTracking();
+
+			if ( this.containsDup() ) {
+				stateCodeWriter.push( this.< Type >arg( 0 ) );
+			}
+		}
+		
+		final boolean containsDup() {
+			for ( MethodInvocation invocation : this.followingInvocations ) {
+				if ( invocation.isDup() ) {
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		@Override

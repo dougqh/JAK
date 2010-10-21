@@ -58,7 +58,11 @@ final class ReplStateCodeWriter {
 			} finally {
 				this.restoreStackTracking();
 			}
-		}					
+		}				
+	}
+	
+	final void pushUninitialized() {
+		this.invoke( pushUninitializedMethod() );
 	}
 	
 	final void unstack( final Type type ) {
@@ -95,6 +99,10 @@ final class ReplStateCodeWriter {
 		} else {
 			return JavaAssembler.method( void.class, "push", type );
 		}
+	}
+	
+	private static final JavaMethodDescriptor pushUninitializedMethod() {
+		return JavaAssembler.method( Object.class, "pushUninitialized" );
 	}
 	
 	private static final JavaMethodDescriptor popMethod( final Type type ) {

@@ -33,6 +33,12 @@ public final class ReplState {
 		this.push( Object.class, value );
 	}
 	
+	public final Object pushUninitialized() {
+		Object uninitialized = new Uninitialized();
+		this.push( uninitialized );
+		return uninitialized;
+	}
+	
 	public final void push( final Type type, final Object value ) {
 		this.stack.stack( new StackEntry( type, value ) );
 	}
@@ -111,6 +117,13 @@ public final class ReplState {
 		
 		final boolean isCategory1() {
 			return Types.isCategory1( this.type );
+		}
+	}
+	
+	private static final class Uninitialized {
+		@Override
+		public final String toString() {
+			return "<Uninitialized Object>";
 		}
 	}
 }
