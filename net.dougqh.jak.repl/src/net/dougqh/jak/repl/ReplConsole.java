@@ -137,6 +137,10 @@ final class ReplConsole {
 		this.println( error );
 	}
 	
+	final void println() throws IOException {
+		this.reader.printNewline();
+	}
+	
 	final void println( final String string ) throws IOException {
 		this.reader.printString( string );
 		this.reader.printNewline();
@@ -159,8 +163,8 @@ final class ReplConsole {
 		return this;
 	}
 	
-	final ReplConsole append( final OnOff onOff ) {
-		return this.append( onOff.toString() );
+	final ReplConsole append( final ReplEnum< ? > replEnum ) {
+		return this.append( replEnum.toString() );
 	}
 	
 	final ReplConsole append( final String str ) {

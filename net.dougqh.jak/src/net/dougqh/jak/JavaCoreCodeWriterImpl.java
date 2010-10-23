@@ -435,8 +435,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( ALOAD ).u1( slot );
 		} finally {
-			this.load( slot, Reference.class );
-			this.stack( Reference.class );
+			Type actualType = this.load( slot, Reference.class );
+			this.stack( actualType );
 		}
 	}
 	
@@ -449,8 +449,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( ALOAD_0 );
 		} finally {
-			this.load( 0, Reference.class );			
-			this.stack( Reference.class );
+			Type actualType = this.load( 0, Reference.class );
+			this.stack( actualType );
 		}
 	}
 	
@@ -459,8 +459,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( ALOAD_1 );
 		} finally {
-			this.load( 1, Reference.class );
-			this.stack( Reference.class );
+			Type actualType = this.load( 1, Reference.class );
+			this.stack( actualType );
 		}
 	}
 	
@@ -469,8 +469,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( ALOAD_2 );
 		} finally {
-			this.load( 2, Reference.class );
-			this.stack( Reference.class );
+			Type actualType = this.load( 2, Reference.class );
+			this.stack( actualType );
 		}
 	}
 	
@@ -479,8 +479,8 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		try {
 			return this.op( ALOAD_3 );
 		} finally {
-			this.load( 3, Reference.class );
-			this.stack( Reference.class );
+			Type actualType = this.load( 3, Reference.class );
+			this.stack( actualType );
 		}
 	}
 	
@@ -717,36 +717,41 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore( final int slot ) {
-		this.store( slot, Reference.class );
-		this.unstack( Reference.class );
+		Type actualType = this.topType( Reference.class );
+		this.store( slot, actualType );
+		this.unstack( actualType );
 		return this.op( ASTORE ).u1( slot );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_0() {
-		this.store( 0, Reference.class );
-		this.unstack( Reference.class );
+		Type actualType = this.topType( Reference.class );
+		this.store( 0, actualType );
+		this.unstack( actualType );
 		return this.op( ASTORE_0 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_1() {
-		this.store( 1, Reference.class );
-		this.unstack( Reference.class );
+		Type actualType = this.topType( Reference.class );
+		this.store( 1, actualType );
+		this.unstack( actualType );
 		return this.op( ASTORE_1 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_2() {
-		this.store( 2, Reference.class );
-		this.unstack( Reference.class );
+		Type actualType = this.topType( Reference.class );
+		this.store( 2, actualType );
+		this.unstack( actualType );
 		return this.op( ASTORE_2 );
 	}
 	
 	@Override
 	public final JavaCoreCodeWriterImpl astore_3() {
-		this.store( 3, Reference.class );
-		this.unstack( Reference.class );
+		Type actualType = this.topType( Reference.class );
+		this.store( 3, actualType );
+		this.unstack( actualType );
 		return this.op( ASTORE_3 );
 	}
 	
@@ -1977,8 +1982,10 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		this.locals.inc( slot );
 	}
 	
-	private final void load( final int slot, final Type type ) {
-		this.locals.load( slot, type );
+	private final Type load( final int slot, final Type expectedType ) {
+		Type actualType = this.locals.typeOf( slot, expectedType );
+		this.locals.load( slot, actualType );
+		return actualType;
 	}
 	
 	private final void store( final int slot, final Type type ) {
@@ -1996,6 +2003,10 @@ final class JavaCoreCodeWriterImpl implements JavaCoreCodeWriter {
 		for ( int i = types.length - 1; i >= 0; --i ) {
 			this.unstack( types[ i ] );
 		}
+	}
+	
+	private final Type topType( final Type expectedType ) {
+		return this.stack.topType( expectedType );
 	}
 	
 	private final void unstack( final Type type ) {

@@ -21,21 +21,21 @@ final class ReplStateCodeWriter {
 		this.repl = repl;
 	}
 	
-	final void suppressStackTracking() {
+	final void suppressStateTracking() {
 		++this.suppressionCount;
 	}
 	
-	final void restoreStackTracking() {
+	final void restoreStateTracking() {
 		--this.suppressionCount;
 	}
 	
-	final boolean isStackTrackingEnabled() {
+	final boolean isStateTrackingEnabled() {
 		return ( this.suppressionCount == 0 );
 	}
 	
 	final void push( final Type type ) {
-		if ( this.isStackTrackingEnabled() ) {
-			this.suppressStackTracking();
+		if ( this.isStateTrackingEnabled() ) {
+			this.suppressStateTracking();
 			try {
 				this.repl.suppressRecording();
 				try {
@@ -65,26 +65,26 @@ final class ReplStateCodeWriter {
 					this.repl.restoreRecording();
 				}
 			} finally {
-				this.restoreStackTracking();
+				this.restoreStateTracking();
 			}
 		}				
 	}
 	
 	final void pushUninitialized( final Type type ) {
-		if ( this.isStackTrackingEnabled() ) {
-			this.suppressStackTracking();
+		if ( this.isStateTrackingEnabled() ) {
+			this.suppressStateTracking();
 			try {
 				this.repl.suppressRecording();
 				try {
 					this.repl.codeWriter().
-					self_getstatic( STATE_FIELD ).						
-					ldc( JavaTypes.getRawClass( type ) ).
-					invokevirtual( ReplState.class, pushUninitializedMethod() );
+						self_getstatic( STATE_FIELD ).						
+						ldc( JavaTypes.getRawClass( type ) ).
+						invokevirtual( ReplState.class, pushUninitializedMethod() );
 				} finally {
 					this.repl.restoreRecording();
 				}
 			} finally {
-				this.restoreStackTracking();
+				this.restoreStateTracking();
 			}
 		}
 	}
@@ -93,13 +93,55 @@ final class ReplStateCodeWriter {
 		this.invoke( popMethod( type ) );
 	}
 	
+	final void storeLocal( final int slot, final Type type ) {
+		if ( this.isStateTrackingEnabled() ) {
+			this.suppressStateTracking();
+			try {
+				this.repl.suppressRecording();
+				try {
+					if ( Types.isReferenceType( type ) ) {
+						this.repl.codeWriter().
+							dup().
+							self_getstatic( STATE_FIELD ).
+							iconst( slot ).
+							dup2_x1().
+							pop2().
+							ldc( JavaTypes.getRawClass( type ) ).
+							swap().
+							invokevirtual( ReplState.class, storeMethod( type ) );
+					} else if ( Types.isCategory1( type ) ) {
+						this.repl.codeWriter().
+							dup().
+							self_getstatic( STATE_FIELD ).
+							iconst( slot ).
+							dup2_x1().
+							pop2().
+							invokevirtual( ReplState.class, storeMethod( type ) );
+					} else {
+						this.repl.codeWriter().
+							dup2().
+							self_getstatic( STATE_FIELD ).
+							iconst( slot ).
+							dup2_x2().
+							pop2().
+							invokevirtual( ReplState.class, storeMethod( type ) );
+					}					
+				} finally {
+					this.repl.restoreRecording();
+				}
+			} finally {
+				this.restoreStateTracking();
+			}
+		}
+	}
+	
 	final void invoke( final String name ) {
 		this.invoke( method( name ) );
 	}
 	
 	private final void invoke( final JavaMethodDescriptor method ) {
-		if ( this.isStackTrackingEnabled() ) {
-			this.suppressStackTracking();
+		if ( this.isStateTrackingEnabled() ) {
+			this.suppressStateTracking();
 			try {
 				this.repl.suppressRecording();
 				try {
@@ -110,7 +152,7 @@ final class ReplStateCodeWriter {
 					this.repl.restoreRecording();
 				}
 			} finally {
-				this.restoreStackTracking();
+				this.restoreStateTracking();
 			}
 		}
 	}
@@ -122,6 +164,16 @@ final class ReplStateCodeWriter {
 			return JavaAssembler.method( void.class, "push", Type.class, Object.class );
 		} else {
 			return JavaAssembler.method( void.class, "push", type );
+		}
+	}
+	
+	private static final JavaMethodDescriptor storeMethod( final Type type ) {
+		if ( Types.isIntegerType( type ) ) {
+			return JavaAssembler.method( void.class, "storeLocal", int.class, int.class );
+		} else if ( Types.isReferenceType( type ) ) {
+			return JavaAssembler.method( void.class, "storeLocal", int.class, Type.class, Object.class );
+		} else {
+			return JavaAssembler.method( void.class, "storeLocal", int.class, type );
 		}
 	}
 	

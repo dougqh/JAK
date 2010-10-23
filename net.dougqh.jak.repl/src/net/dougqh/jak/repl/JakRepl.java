@@ -59,12 +59,16 @@ public final class JakRepl {
 	private JavaClassWriter classWriter = null;
 	private JavaCodeWriter codeWriter = null;
 	private ReplStateCodeWriter replStateCodeWriter = null;
+	private ReplState lastState = new ReplState( 0, 0 );
 	
 	private File recordingDir = null;
 	
 	private List< ReplCommand > commands = Arrays.asList(
 		AutoRunCommand.INSTANCE,
 		RunCommand.INSTANCE,
+		AutoShowCommand.INSTANCE,
+		ShowCommand.INSTANCE,
+		ShowAliasCommand.INSTANCE,
 		ResetCommand.INSTANCE,
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
@@ -112,6 +116,10 @@ public final class JakRepl {
 	
 	final ReplStateCodeWriter stateCodeWriter() {
 		return this.replStateCodeWriter;
+	}
+	
+	final ReplState lastState() {
+		return this.lastState;
 	}
 	
 	final boolean isRecordingEnabled() {
@@ -225,7 +233,7 @@ public final class JakRepl {
 			String arg = commandParts[ i ];
 			
 			if ( stringUnderConstruction == null ) {
-				if ( isStringStart( arg ) && ! isStringEnd( "arg" ) ) {
+				if ( isStringStart( arg ) && ! isStringEnd( arg ) ) {
 					stringUnderConstruction = new StringBuilder();
 					stringUnderConstruction.append( arg );
 				} else {
@@ -298,15 +306,26 @@ public final class JakRepl {
 		
 		try {
 			//TODO: set size properly
-			ReplState state = new ReplState( 32 );
+			ReplState state = new ReplState(
+				this.codeWriter().stackMonitor().maxStack(),
+				this.codeWriter().localsMonitor().maxLocals() );
 			
 			this.runImpl( state );
 			
 			if ( this.config.echo() ) {
 				this.console.endl();
 			}
-			state.print( this.console );
+			if ( this.config.autoShowStack() ) {
+				state.printStack( this.console );
+			}
+			if ( this.config.autoShowStack() && this.config.autoShowLocals() ) {
+				this.console.println();
+			}
+			if ( this.config.autoShowLocals() ) {
+				state.printLocals( this.console );
+			}
 			
+			this.lastState = state;
 			this.recorder().checkpoint();
 		} catch ( Error e ) {
 			this.console().printError( e.getMessage() );
@@ -363,9 +382,9 @@ public final class JakRepl {
 		this.classWriter.define( ReplStateCodeWriter.STATE_FIELD );
 		
 		//DQH - 10-10-2010 - It is crucial that this.codeWriter be set 
-		//before replay is called because ReplStack will make calls 
-		//to JakRepl.codeWriter() which needs to return the newest 
-		//JavaCodeWriter.
+		//before replay is called because ReplStackMonitor and 
+		//ReplLocalsMonitor will make calls to JakRepl.codeWriter()
+		//which need to return the newest JavaCodeWriter.
 		//Previous implementations erroneously returned the previous 
 		//JavaCodeWriter during replay which did not produce the desired 
 		//results.

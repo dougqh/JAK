@@ -29,5 +29,7 @@ public interface StackMonitor {
 	
 	public abstract JakTypeStack typeStack();
 	
+	public abstract Type topType( final Type expectedType );
+	
 	public abstract int maxStack();
 }

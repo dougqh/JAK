@@ -1,6 +1,6 @@
 package net.dougqh.jak.repl;
 
-enum OnOff {
+enum OnOff implements ReplEnum< OnOff > {
 	ON( "on", true ),
 	OFF( "off", false );
 	
@@ -13,12 +13,7 @@ enum OnOff {
 	}
 	
 	public static final OnOff parse( final String stringValue ) {
-		for ( OnOff value : values() ) {
-			if ( value.id().equals( stringValue ) ) {
-				return value;
-			}
-		}
-		throw new IllegalArgumentException();
+		return ReplFormatter.parse( OnOff.class, stringValue );
 	}
 	
 	public static final OnOff valueOf( final boolean booleanValue ) {

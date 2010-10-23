@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 
-import javax.naming.Reference;
-
 import net.dougqh.jak.Attribute.Deferred;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -162,10 +160,10 @@ final class TypeWriter {
 	{
 		LocalsMonitor locals = this.config.configure( new DefaultLocalsMonitor() );
 		if ( ! method.isStatic() ) {
-			locals.addLocal( Reference.class );
+			locals.addParameter( this.thisType() );
 		}
 		for ( JavaVariable var : method.arguments() ) {
-			locals.addLocal( var.getType() );
+			locals.addParameter( var.getType() );
 		}
 
 		StackMonitor stack = this.config.configure( new DefaultStackMonitor() );		

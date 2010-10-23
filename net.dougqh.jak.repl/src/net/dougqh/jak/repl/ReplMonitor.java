@@ -19,7 +19,7 @@ final class ReplMonitor extends JakMonitor {
 	
 	@Override
 	public final LocalsMonitor monitor( final LocalsMonitor locals ) {
-		return new ReplLocalsMonitor( locals );
+		return new ReplLocalsMonitor( this.repl, locals );
 	}
 	
 	@Override

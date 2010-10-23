@@ -2313,7 +2313,7 @@ public final class JavaCodeWriter {
 	{
 		Integer existingSlot = this.localVars.get( varName );
 		if ( existingSlot == null ) {
-			int newSlot = this.coreWriter.localsMonitor().addLocal( type );
+			int newSlot = this.coreWriter.localsMonitor().maxLocals();
 			this.localVars.put( varName, newSlot );
 			return newSlot;
 		} else {

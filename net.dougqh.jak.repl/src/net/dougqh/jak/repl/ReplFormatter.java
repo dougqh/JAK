@@ -5,10 +5,23 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.ConstantEntry;
 import net.dougqh.jak.JavaFieldDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplFormatter {
 	private ReplFormatter() {}
+	
+	public static final < T extends Enum< T > & ReplEnum< T > > T parse(
+		final Class< T > enumClass,
+		final String value )
+	{
+		for ( T enumConstant : enumClass.getEnumConstants() ) {
+			if ( enumConstant.id().equals( value ) ) {
+				return enumConstant;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
 	
 	public static final String getShortDisplayName( final Type type ) {
 		String fullName = getDisplayName( type );
@@ -22,14 +35,35 @@ final class ReplFormatter {
 	}
 	
 	public static final String getDisplayName( final Type type ) {
-		if ( type.equals( CharSequence.class ) ) {
-			return "String";
+		if ( type.equals( Reference.class ) ) {
+			return "<Reference>";
 		} else if ( type instanceof Class ) {
 			Class< ? > aClass = (Class< ? >)type;
-			return aClass.getCanonicalName();
+			
+			if ( ReplEnum.class.isAssignableFrom( aClass ) ) {
+				@SuppressWarnings( "unchecked" )
+				Class< ? extends ReplEnum< ? > > replEnumClass = (Class< ? extends ReplEnum< ? > >)aClass;
+				return getEnumName( replEnumClass );
+			} else {
+				return aClass.getCanonicalName();
+			}
 		} else {
 			return JavaTypes.getRawClassName( type );
 		}
+	}
+
+	private static final String getEnumName( Class< ? extends ReplEnum< ? > > aClass) {
+		StringBuilder builder = new StringBuilder();
+		boolean isFirst = true;
+		for ( ReplEnum< ? > enumConstant : aClass.getEnumConstants() ) {
+			if ( isFirst ) {
+				isFirst = false;
+			} else {
+				builder.append( "|" );
+			}
+			builder.append( enumConstant.id() );
+		}
+		return builder.toString();
 	}
 	
 	public static final String format( final Object value ) {

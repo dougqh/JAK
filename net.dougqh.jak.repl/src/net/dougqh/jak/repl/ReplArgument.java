@@ -118,6 +118,15 @@ enum ReplArgument {
 		
 		@Override
 		public final Object parse( final JakRepl repl, final String argString ) {
+			char[] chars = argString.toCharArray();
+			if ( ! Character.isJavaIdentifierStart( chars[ 0 ] ) ) {
+				throw new IllegalArgumentException();
+			}
+			for ( int i = 1; i < chars.length; ++i ) {
+				if ( ! Character.isJavaIdentifierPart( chars[ i ] ) ) {
+					throw new IllegalArgumentException();
+				}
+			}
 			return argString;
 		}
 	},

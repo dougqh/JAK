@@ -138,4 +138,13 @@ final class DefaultStackMonitor implements StackMonitor {
 			return this.typeStack;
 		}
 	}
+	
+	@Override
+	public final Type topType( final Type expectedType ) {
+		if ( this.typeStack == null ) {
+			return expectedType;
+		} else {
+			return this.typeStack.top();
+		}
+	}
 }

@@ -15,7 +15,11 @@ public final class JakConfiguration {
 	}
 	
 	final LocalsMonitor configure( final LocalsMonitor locals ) {
-		return this.monitor.monitor( locals );
+		LocalsMonitor wrappedLocals = this.monitor.monitor( locals );
+		if ( this.stackTracking ) {
+			wrappedLocals.enableTypeTracking();
+		}
+		return wrappedLocals;
 	}
 	
 	final StackMonitor configure( final StackMonitor stack ) {

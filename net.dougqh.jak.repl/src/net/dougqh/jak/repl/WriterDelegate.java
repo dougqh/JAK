@@ -219,14 +219,14 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 		@Override
 		final void startWriteNormally() {
 			ReplStateCodeWriter stateCodeWriter = WriterDelegate.this.repl.stateCodeWriter();
-			stateCodeWriter.suppressStackTracking();
+			stateCodeWriter.suppressStateTracking();
 		}
 		
 		@Override
 		final void endWriteNormally() {
 			ReplStateCodeWriter stateCodeWriter = WriterDelegate.this.repl.stateCodeWriter();
 
-			stateCodeWriter.restoreStackTracking();
+			stateCodeWriter.restoreStateTracking();
 
 			if ( this.containsDup() ) {
 				stateCodeWriter.push( this.< Type >arg( 0 ) );

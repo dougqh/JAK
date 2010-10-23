@@ -2,15 +2,21 @@ package net.dougqh.jak.repl;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 
 import net.dougqh.jak.JakStack;
 import net.dougqh.jak.types.Types;
 
 public final class ReplState {
 	private final Stack stack;
+	private final Locals locals;
 	
-	ReplState( final int size ) {
-		this.stack = new Stack( size );
+	ReplState( final int stackSize, final int localsSize ) {
+		this.stack = new Stack( stackSize );
+		this.locals = new Locals( localsSize );
 	}
 	
 	public final void push( final int value ) {
@@ -36,7 +42,7 @@ public final class ReplState {
 	}
 	
 	public final void push( final Type type, final Object value ) {
-		this.stack.stack( new StackEntry( type, value ) );
+		this.stack.stack( new JvmValue( type, value ) );
 	}
 	
 	public final void pop() {
@@ -74,45 +80,124 @@ public final class ReplState {
 	public final void dup2_x2() {
 		this.stack.dup2_x2();
 	}
+	
+	public final void storeLocal( final int slot, final int value ) {
+		this.storeLocal( slot, int.class, value );
+	}
+	
+	public final void storeLocal( final int slot, final float value ) {
+		this.storeLocal( slot, float.class, value );
+	}
+	
+	public final void storeLocal( final int slot, final long value ) {
+		this.storeLocal( slot, long.class, value );
+	}
+	
+	public final void storeLocal( final int slot, final double value ) {
+		this.storeLocal( slot, double.class, value );
+	}
+	
+	public final void storeLocal( final int slot, final Type type, final Object value ) {
+		this.locals.set( slot, new JvmValue( type, value ) );
+	}
+	
+	public final void incLocal( final int slot ) {
+		this.locals.inc( slot );
+	}
 
-	final void print( final ReplConsole console ) throws IOException {
-		for ( StackEntry entry : this.stack ) {
+	final void printStack( final ReplConsole console ) throws IOException {
+		console.println( "STACK" );
+		for ( JvmValue jvmValue : this.stack ) {
 			console.printColumns(
-				ReplFormatter.getDisplayName( entry.type ),
-				ReplFormatter.format( entry.value ) );
+				ReplFormatter.getDisplayName( jvmValue.type ),
+				ReplFormatter.format( jvmValue.value ) );
 		}
 	}
-	
-	private static final String toString( final Object value ) {
-		if ( value == null ) {
-			return "null";
-		} else {
-			return value.toString();
+
+	final void printLocals( final ReplConsole console ) throws IOException {
+		console.println( "LOCALS" );
+		for ( JvmSlot slot : this.locals ) {
+			console.printColumns(
+				Integer.toString( slot.index ),
+				ReplFormatter.getDisplayName( slot.type ),
+				ReplFormatter.format( slot.value ) );
 		}
 	}
-	
-	private static final class Stack extends JakStack< StackEntry > {
+
+	private static final class Stack extends JakStack< JvmValue > {
 		Stack( final int initialCapacity ) {
 			super( initialCapacity );
 		}
 		
 		@Override
-		protected final boolean isCategory1( final StackEntry value ) {
+		protected final boolean isCategory1( final JvmValue value ) {
 			return value.isCategory1();
 		}
 	}
+
+	private static final class Locals implements Iterable< JvmSlot > {
+		private JvmValue[] values;
+		
+		Locals( final int initialCapacity ) {
+			this.values = new JvmValue[ initialCapacity ];
+		}
+		
+		final void set( final int slot, final JvmValue value ) {
+			this.ensureCapacity( slot );
+			
+			this.values[ slot ] = value;
+		}
+		
+		final void inc( final int slot ) {
+			this.values[ slot ] = this.values[ slot ].inc();
+		}
+		
+		@Override
+		public final Iterator< JvmSlot > iterator() {
+			ArrayList< JvmSlot > slots = new ArrayList< JvmSlot >( this.values.length );
+			for ( int i = 0; i < this.values.length; ++i ) {
+				JvmValue value = this.values[ i ];
+				if ( value != null ) {
+					slots.add( new JvmSlot( i, value ) );
+				}
+			}
+			return Collections.unmodifiableList( slots ).iterator();
+		}
+		
+		private final void ensureCapacity( final int slot ) {
+			if ( slot >= this.values.length ) {
+				this.values = Arrays.copyOf( this.values, this.values.length << 1 );
+			}
+		}
+	}
 	
-	private static final class StackEntry {
+	private static final class JvmValue {
 		final Type type;
 		final Object value;
 		
-		StackEntry( final Type type, final Object value ) {
+		JvmValue( final Type type, final Object value ) {
 			this.type = type;
 			this.value = value;
 		}
 		
+		final JvmValue inc() {
+			return new JvmValue( type, (Integer)this.value + 1 );
+		}
+		
 		final boolean isCategory1() {
 			return Types.isCategory1( this.type );
+		}
+	}
+	
+	private static final class JvmSlot {
+		final int index;
+		final Type type;
+		final Object value;
+		
+		JvmSlot( final int index, final JvmValue value ) {
+			this.index = index;
+			this.type = value.type;
+			this.value = value.value;
 		}
 	}
 	

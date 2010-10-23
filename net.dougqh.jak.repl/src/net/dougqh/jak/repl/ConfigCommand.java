@@ -16,16 +16,20 @@ abstract class ConfigCommand extends FixedIdCommand {
 		throws IOException
 	{
 		switch ( args.size() ) {
-			case 0:
-			break;
+			case 0: {
+				break;
+			}
 			
-			case 1:
-			this.set( repl.config(), OnOff.parse( args.get( 0 ) ).booleanValue() );
-			break;
+			case 1: {
+				this.set( repl.config(), OnOff.parse( args.get( 0 ) ).booleanValue() );
+				break;
+			}
 			
-			default:
-			repl.console().printUsage( this.id, OnOff.class );
-			throw new IllegalStateException();
+			default: {
+				repl.console().printUsage( this.id );
+				repl.console().printUsage( this.id, OnOff.class );
+				return false;
+			}
 		}
 		
 		repl.console().

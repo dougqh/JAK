@@ -82,6 +82,11 @@ final class ReplStackMonitor implements StackMonitor {
 		this.stack.dup2_x2();
 		this.repl.stateCodeWriter().invoke( "dup2_x2" );
 	}
+	
+	@Override
+	public final Type topType( final Type expectedType ) {
+		return this.stack.topType( expectedType );
+	}
 
 	public final int maxStack() {
 		return this.stack.maxStack();

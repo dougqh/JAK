@@ -7,7 +7,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,12 +41,14 @@ final class ReplMethod {
 			}
 		}
 		replMethods.trimToSize();
+		Collections.sort( replMethods, new MethodComparator() );
 		
 		return Collections.unmodifiableList( replMethods );
 	}
 	
 	public static final Set< ReplMethod > findByOperator( final String operator ) {
-		HashSet< ReplMethod > matchingMethods = new HashSet< ReplMethod >( 4 );
+		//Preservation of order is important
+		LinkedHashSet< ReplMethod > matchingMethods = new LinkedHashSet< ReplMethod >( 4 );
 		
 		for ( ReplMethod replMethod : allMethods ) {
 			if ( operator.equals( replMethod.getOperator() ) ) {
@@ -56,7 +59,8 @@ final class ReplMethod {
 	}
 	
 	public static final Set< ReplMethod > findByName( final String name ) {
-		HashSet< ReplMethod > matchingMethods = new HashSet< ReplMethod >( 4 );
+		//Preservation of order is important
+		LinkedHashSet< ReplMethod > matchingMethods = new LinkedHashSet< ReplMethod >( 4 );
 		
 		for ( ReplMethod method : allMethods ) {
 			if ( method.getName().equals( name ) ) {
@@ -66,15 +70,16 @@ final class ReplMethod {
 		return Collections.unmodifiableSet( matchingMethods );
 	}
 	
-	public static final List< String > findLike( final String prefix ) {
-		ArrayList< String > methodNames = new ArrayList< String >();
+	public static final Set< String > findLike( final String prefix ) {
+		//Preservation of order is important
+		LinkedHashSet< String > methodNames = new LinkedHashSet< String >();
 		
 		for ( ReplMethod method : allMethods ) {
 			if ( method.getName().startsWith( prefix ) ) {
 				methodNames.add( method.getName() );
 			}
 		}
-		return Collections.unmodifiableList( methodNames );
+		return Collections.unmodifiableSet( methodNames );
 	}
 	
 	private final Method method;
@@ -171,7 +176,7 @@ final class ReplMethod {
 			throw new IllegalStateException( e );
 		}
 	}
-	
+
 	private static final boolean include( final Method method ) {
 		if ( ! isWritingMethod( method ) ) {
 			return false;
@@ -258,5 +263,43 @@ final class ReplMethod {
 			return Operations.getPrototype( wrapOp.value() );
 		}
 		return null;
+	}
+	
+	private static final class MethodComparator implements Comparator< ReplMethod > {
+		@Override
+		public final int compare(
+			final ReplMethod lhs,
+			final ReplMethod rhs )
+		{
+			//Compare by name
+			int nameCompare = lhs.getName().compareToIgnoreCase( rhs.getName() );
+			if ( nameCompare != 0 ) {
+				return nameCompare;
+			}
+			
+			//Then argument length
+			if ( lhs.arguments.length < rhs.arguments.length ) {
+				return -1;
+			} else if ( lhs.arguments.length > rhs.arguments.length ) {
+				return 1;
+			}
+			
+			//Finally, argument type - sort Symbol last, so that ints,
+			//method descriptors, etc. are used as possible matches first
+			for ( int i = 0; i < lhs.arguments.length; ++i ) {
+				ReplArgument lhsArg = lhs.arguments[ i ];
+				ReplArgument rhsArg = rhs.arguments[ i ];
+				
+				//Symbols sort last
+				if ( rhsArg == ReplArgument.SYMBOL ) {
+					return -1;
+				} else if ( lhsArg == ReplArgument.SYMBOL ) {
+					return 1;
+				}
+			}
+			
+			//Otherwise, equivalent
+			return 0;
+		}
 	}
 }

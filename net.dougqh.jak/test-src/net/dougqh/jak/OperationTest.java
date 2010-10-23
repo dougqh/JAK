@@ -249,6 +249,11 @@ public final class OperationTest extends TestCase {
 			return this.stack.typeStack();
 		}
 		
+		@Override
+		public final Type topType( final Type expectedType ) {
+			return this.stack.topType( expectedType );
+		}
+		
 		final void assertDone() {
 			assertThat(
 				"Mismatched stack operands",
