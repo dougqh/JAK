@@ -11,3 +11,4 @@ Export-Package: net.dougqh.jak,
  net.dougqh.jak.annotations,
  net.dougqh.jak.operations,
  net.dougqh.jak.types
+Class-Path: net.dougqh.java.meta.jar
