@@ -23,7 +23,7 @@ final class ShowCommand extends FixedIdCommand {
 				case 0: {
 					repl.lastState().printStack( repl.console() );
 					repl.console().println();
-					repl.lastState().printStack( repl.console() );
+					repl.lastState().printLocals( repl.console() );
 					return true;
 				}
 				
