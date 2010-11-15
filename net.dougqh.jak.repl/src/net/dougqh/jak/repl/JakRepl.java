@@ -19,6 +19,7 @@ import net.dougqh.jak.assembler.JakConfiguration;
 import net.dougqh.jak.assembler.JavaClassWriter;
 import net.dougqh.jak.assembler.JavaCodeWriter;
 import net.dougqh.jak.assembler.JavaMethodDescriptor;
+import net.dougqh.jak.assembler.JavaWriter;
 
 public final class JakRepl {
 	public static void main( final String[] args ) throws IOException {
@@ -376,7 +377,7 @@ public final class JakRepl {
 			enableTypeTracking().
 			monitor( new ReplMonitor( this ) );
 		
-		this.classWriter = define( public_().final_().class_( CLASS ) );
+		this.classWriter = new JavaWriter().define( public_().final_().class_( CLASS ) );
 		this.classWriter.initConfig( config );
 		
 		this.classWriter.define( ReplStateCodeWriter.STATE_FIELD );

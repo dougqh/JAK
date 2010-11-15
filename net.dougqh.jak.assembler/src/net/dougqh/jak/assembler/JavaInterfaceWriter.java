@@ -169,11 +169,6 @@ public final class JavaInterfaceWriter implements JavaExtendedTypeWriter {
 	}
 	
 	@Override
-	public final Class< ? > load( final ClassLoader classLoader ) {
-		return this.typeWriter.load( classLoader );
-	}
-	
-	@Override
 	public final void writeTo( final File srcDir ) throws IOException {
 		this.typeWriter.writeTo( srcDir );
 	}

@@ -3,12 +3,13 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class LoadAndStoreTest {
 	public final @Test void intLoadAndStore() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntStore" ).implements_( IntCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -45,7 +46,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void floatLoadAndStore() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "FloatStore" ).implements_( FloatCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -83,7 +84,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void longStoreOddSlots() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "LongStore" ).implements_( LongOddSlotCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -120,7 +121,7 @@ public final class LoadAndStoreTest {
 	}
 
 	public final @Test void longStoreEvenSlots() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "LongStore" ).implements_( LongEvenSlotCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -157,7 +158,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void doubleStoreOddSlots() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleStore" ).implements_( DoubleOddSlotCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -195,7 +196,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void doubleStoreEvenSlots() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleStore" ).implements_( DoubleEvenSlotCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -233,7 +234,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void objectLoad() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "StringConcatenator" ).implements_( StringCalculator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -267,7 +268,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void objectLoadAndStore() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ObjectArrayMixer" ).implements_( ObjectArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -327,7 +328,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void intSlotZero() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "Int" ) );
+		JavaClassWriter classWriter = new JavaWriter().define( public_().final_().class_( "Int" ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -344,7 +345,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void floatSlotZero() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "Float" ) );
+		JavaClassWriter classWriter = new JavaWriter().define( public_().final_().class_( "Float" ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -361,7 +362,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void longSlotZero() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "Long" ) );
+		JavaClassWriter classWriter = new JavaWriter().define( public_().final_().class_( "Long" ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -378,7 +379,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void doubleSlotZero() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "Double" ) );
+		JavaClassWriter classWriter = new JavaWriter().define( public_().final_().class_( "Double" ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -395,7 +396,7 @@ public final class LoadAndStoreTest {
 	}
 	
 	public final @Test void objectSlotZero() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "Object" ) );
+		JavaClassWriter classWriter = new JavaWriter().define( public_().final_().class_( "Object" ) );
 		
 		classWriter.defineDefaultConstructor();
 		

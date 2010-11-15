@@ -3,12 +3,13 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class StackManipulationTest {
 	public final @Test void swap() {
-		JavaClassWriter classWriter = define( 
+		JavaClassWriter classWriter = new JavaWriter().define( 
 			public_().final_().class_( "Swap" ).implements_( IntCalculation.class ) );
 		
 		classWriter.defineDefaultConstructor();

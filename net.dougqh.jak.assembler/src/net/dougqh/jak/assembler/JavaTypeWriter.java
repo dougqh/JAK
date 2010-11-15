@@ -18,8 +18,6 @@ public interface JavaTypeWriter {
 	
 	public abstract Class< ? > load();
 	
-	public abstract Class< ? > load( final ClassLoader classLoader );
-	
 	public abstract void writeTo( final File srcDir ) throws IOException;
 	
 	public abstract void writeTo( final OutputStream out ) throws IOException;

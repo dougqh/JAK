@@ -3,12 +3,13 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class MacrosTest {
 	public final @Test void not() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "Not" ).implements_( BooleanOperation.class ) );
 	
 		classWriter.defineDefaultConstructor();
@@ -26,7 +27,7 @@ public final class MacrosTest {
 	}
 	
 	public final @Test void box() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "UnboxerImpl" ).implements_( Unboxer.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -92,7 +93,7 @@ public final class MacrosTest {
 	}
 	
 	public final @Test void unbox() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "BoxerImpl" ).implements_( Boxer.class ) );
 		
 		classWriter.defineDefaultConstructor();

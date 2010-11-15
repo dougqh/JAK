@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public final class ArraysTest {
 	}
 	
 	private final Object makePrimitiveArray( final Class< ? > componentType ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "PrimitiveArrayCreator" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -39,7 +40,7 @@ public final class ArraysTest {
 	}
 	
 	private final Object makeObjectArray( final Class< ? > componentType ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ObjectArrayCreator" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -54,7 +55,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void integerArrayStore() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IAStore" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -85,7 +86,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void integerArrayLoad() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "Sum" ).implements_( IntFunction.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -133,7 +134,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void longArrays() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "Rotate" ).implements_( LongArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -198,7 +199,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void booleanArrays() {
-		JavaClassWriter classWriter = define( 
+		JavaClassWriter classWriter = new JavaWriter().define( 
 			public_().final_().class_( "BooleanFlipper" ).implements_( BooleanArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -245,7 +246,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void charArrays() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "CharIncrementer" ).implements_( CharArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -293,7 +294,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void shortArray() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ShortSquared" ).implements_( ShortArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -341,7 +342,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void floatArray() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "FloatSquareRoot" ).implements_( FloatArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -387,7 +388,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void doubleArray() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleSquareRoot" ).implements_( DoubleArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -431,7 +432,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void objectArray() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ObjectReverse" ).implements_( ObjectArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -522,7 +523,7 @@ public final class ArraysTest {
 	}
 	
 	private static final boolean[] makeArray( final boolean[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "BooleanArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -536,7 +537,7 @@ public final class ArraysTest {
 	}
 
 	private static final byte[] makeArray( final byte[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ByteArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -550,7 +551,7 @@ public final class ArraysTest {
 	}
 
 	private static final char[] makeArray( final char[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "CharArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -564,7 +565,7 @@ public final class ArraysTest {
 	}
 	
 	private static final short[] makeArray( final short[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ShortArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -578,7 +579,7 @@ public final class ArraysTest {
 	}
 	
 	private static final int[] makeArray( final int[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -592,7 +593,7 @@ public final class ArraysTest {
 	}
 
 	private static final long[] makeArray( final long[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "LongArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -606,7 +607,7 @@ public final class ArraysTest {
 	}
 	
 	private static final float[] makeArray( final float[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "FloatArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -620,7 +621,7 @@ public final class ArraysTest {
 	}
 	
 	private static final double[] makeArray( final double[] array ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -634,7 +635,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void multiArrayTest() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "MultiArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -652,7 +653,7 @@ public final class ArraysTest {
 	}
 	
 	public final @Test void multiArrayTest2() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "MultiArray" ).implements_( Creator.class ) );
 		
 		classWriter.defineDefaultConstructor();

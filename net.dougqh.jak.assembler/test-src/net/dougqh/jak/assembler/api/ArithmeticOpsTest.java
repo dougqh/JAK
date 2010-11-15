@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
 import net.dougqh.jak.assembler.JavaCodeWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public final class ArithmeticOpsTest {
 		TestClassLoader classLoader = new TestClassLoader( CLASS_LOADER, "IntOps" ) {
 			@Override
 			protected final byte[] generateClass() throws IOException {
-				JavaClassWriter writer = define( public_().final_().class_( "IntOps" ) );
+				JavaClassWriter writer = new JavaWriter().define( public_().final_().class_( "IntOps" ) );
 				
 				binaryMethod( writer, "add" ).
 					iload_0().
@@ -205,7 +206,7 @@ public final class ArithmeticOpsTest {
 		TestClassLoader classLoader = new TestClassLoader( CLASS_LOADER, "FloatOps" ) {
 			@Override
 			protected final byte[] generateClass() throws IOException {
-				JavaClassWriter writer = define( public_().final_().class_( this.className ) );
+				JavaClassWriter writer = new JavaWriter().define( public_().final_().class_( this.className ) );
 
 				binaryMethod( writer, "add" ).
 					fload_0().
@@ -301,7 +302,7 @@ public final class ArithmeticOpsTest {
 		TestClassLoader classLoader = new TestClassLoader( CLASS_LOADER, "LongOps" ) {			
 			@Override
 			protected final byte[] generateClass() throws IOException {
-				JavaClassWriter writer = define( public_().final_().class_( this.className ) );
+				JavaClassWriter writer = new JavaWriter().define( public_().final_().class_( this.className ) );
 
 				binaryMethod( writer, "add" ).
 					lload_0().
@@ -452,7 +453,7 @@ public final class ArithmeticOpsTest {
 		TestClassLoader classLoader = new TestClassLoader( CLASS_LOADER, "DoubleOps" ) {
 			@Override
 			protected final byte[] generateClass() throws IOException {
-				JavaClassWriter writer = define( public_().final_().class_( this.className ) );
+				JavaClassWriter writer = new JavaWriter().define( public_().final_().class_( this.className ) );
 				
 				binaryMethod( writer, "add" ).
 					dload_0().

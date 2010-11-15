@@ -214,11 +214,7 @@ final class TypeWriter {
 	}
 	
 	final Class< ? > load() {
-		return this.load( TypeWriter.class.getClassLoader() );
-	}
-	
-	final Class< ? > load( final ClassLoader classLoader ) {
-		return this.writerGroup.load( classLoader, this.className );
+		return this.writerGroup.load( this.className );
 	}
 	
 	protected final Package definePackage(

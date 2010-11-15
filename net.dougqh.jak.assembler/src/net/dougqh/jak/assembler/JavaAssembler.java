@@ -11,33 +11,6 @@ import net.dougqh.java.meta.types.JavaTypeBuilder;
 import net.dougqh.java.meta.types.JavaTypes;
 
 public final class JavaAssembler {
-	public static final JavaPackageWriter define(
-		final JavaPackageDescriptor packageDescriptor )
-	{
-		return new JavaPackageWriter( packageDescriptor.name() );
-	}
-	
-	public static final JavaClassWriter define(
-		final JavaClassDescriptor classDescriptor )
-	{
-		return new TypeWriterGroup().createClassWriter(
-			classDescriptor.typeDescriptor() );
-	}
-	
-	public static final JavaInterfaceWriter define(
-		final JavaInterfaceDescriptor interfaceDescriptor )
-	{
-		return new TypeWriterGroup().createInterfaceWriter(
-			interfaceDescriptor.typeDescriptor() );
-	}
-	
-	public static final JavaAnnotationWriter define(
-		final JavaAnnotationDescriptor annotationDescriptor )
-	{
-		return new TypeWriterGroup().createAnnotationWriter(
-			annotationDescriptor.typeDescriptor() );
-	}
-	
 	public static final JavaPackageDescriptor package_( final String name ) {
 		return new JavaPackageDescriptor( name );
 	}

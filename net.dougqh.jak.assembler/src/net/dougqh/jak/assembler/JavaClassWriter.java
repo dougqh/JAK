@@ -175,26 +175,10 @@ public final class JavaClassWriter implements JavaExtendedTypeWriter {
 		return this.typeWriter.load();
 	}
 
-	@Override
-	public final Class< ? > load( final ClassLoader classLoader ) {
-		return this.typeWriter.load( classLoader );
-	}
-
 	@SuppressWarnings( "unchecked" )
 	public final < T > T newInstance() {
 		try {
 			return (T)this.load().newInstance();
-		} catch ( InstantiationException e ) {
-			throw new IllegalStateException( e );
-		} catch ( IllegalAccessException e ) {
-			throw new IllegalStateException( e );
-		}
-	}
-	
-	@SuppressWarnings( "unchecked" )
-	public final < T > T newInstance( final ClassLoader classLoader ) {
-		try {
-			return (T)this.load( classLoader ).newInstance();
 		} catch ( InstantiationException e ) {
 			throw new IllegalStateException( e );
 		} catch ( IllegalAccessException e ) {

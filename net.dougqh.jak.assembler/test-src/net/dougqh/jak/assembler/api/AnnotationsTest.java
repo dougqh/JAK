@@ -7,12 +7,14 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Method;
 
 import net.dougqh.jak.assembler.JavaAnnotationWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class AnnotationsTest {
 	public final @Test void trivialAnnotation() {
-		JavaAnnotationWriter annotationWriter = define( public_().$interface( "Annotation" ) );
+		JavaAnnotationWriter annotationWriter = 
+			new JavaWriter().define( public_().$interface( "Annotation" ) );
 		
 		annotationWriter.define( field( String.class, "value" ) );
 		

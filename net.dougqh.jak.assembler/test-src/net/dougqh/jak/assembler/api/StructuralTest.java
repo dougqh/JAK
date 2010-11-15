@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
 import net.dougqh.jak.assembler.JavaInterfaceWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
@@ -18,7 +19,8 @@ public final class StructuralTest {
 	private static final ClassLoader CLASS_LOADER = StructuralTest.class.getClassLoader();
 	
 	public final @Test void trivialClass() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "TrivialClass" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "TrivialClass" ) );
 		Class< ? > newClass = classWriter.load();
 		
 		assertEquals( "TrivialClass", newClass.getSimpleName() );
@@ -26,7 +28,8 @@ public final class StructuralTest {
 	}
 
 	public final @Test void trivialInterface() {
-		JavaInterfaceWriter interfaceWriter = define( public_().interface_( "TrivialInterface" ) );
+		JavaInterfaceWriter interfaceWriter = new JavaWriter().define(
+			public_().interface_( "TrivialInterface" ) );
 		Class< ? > newInterface = interfaceWriter.load();
 		
 		assertEquals( "TrivialInterface", newInterface.getName() );
@@ -34,7 +37,7 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void interfaceExtends() {
-		JavaInterfaceWriter interfaceWriter = define(
+		JavaInterfaceWriter interfaceWriter = new JavaWriter().define(
 			public_().interface_( "SerializableRunnable" ).
 				extends_( Serializable.class, Runnable.class ) );
 		
@@ -47,7 +50,8 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void throwsException() {
-		JavaInterfaceWriter interfaceWriter = define( public_().interface_( "ThrowsException" ) );
+		JavaInterfaceWriter interfaceWriter = new JavaWriter().define(
+			public_().interface_( "ThrowsException" ) );
 			
 		interfaceWriter.define( method( void.class, "run" ).throws_( Exception.class ) );
 		
@@ -60,7 +64,7 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void runnableImpl() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().abstract_().class_( "RunnableImpl" ).
 				extends_( Object.class ).
 				implements_( Runnable.class ) );
@@ -75,7 +79,8 @@ public final class StructuralTest {
 		TestClassLoader classLoader = new TestClassLoader( CLASS_LOADER, "Interface" ) {
 			@Override
 			protected final byte[] generateClass() throws IOException {
-				JavaInterfaceWriter writer = define( public_().interface_( this.className ) );
+				JavaInterfaceWriter writer = new JavaWriter().define(
+					public_().interface_( this.className ) );
 				
 				writer.define(
 					method( boolean.class, "getBoolean" ) );
@@ -197,7 +202,8 @@ public final class StructuralTest {
 		TestClassLoader classLoader = new TestClassLoader( CLASS_LOADER, "Fields" ) {
 			@Override
 			protected final byte[] generateClass() throws IOException {
-				JavaClassWriter writer = define( public_().final_().class_( this.className ) );
+				JavaClassWriter writer = new JavaWriter().define(
+					public_().final_().class_( this.className ) );
 				
 				writer.define(
 					public_().static_().final_().field( boolean.class, "booleanField" ),
@@ -253,9 +259,8 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void runnable() {
-		JavaClassWriter classWriter = define(
-			public_().final_().class_( "RunnableImpl" ).
-				implements_( Runnable.class ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "RunnableImpl" ).implements_( Runnable.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -267,7 +272,7 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void helloWorldRunnable() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "RunnableImpl" ).implements_( Runnable.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -283,7 +288,8 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void innerClass() {
-		JavaClassWriter outerClassWriter = define( public_().final_().class_( "Outer" ) );
+		JavaClassWriter outerClassWriter = new JavaWriter().define(
+			public_().final_().class_( "Outer" ) );
 		
 		JavaClassWriter innerClassWriter = 
 			outerClassWriter.define( public_().static_().final_().class_( "Inner" ) );
@@ -301,7 +307,8 @@ public final class StructuralTest {
 	}
 	
 	public final @Test void innerInterface() {
-		JavaClassWriter outerClassWriter = define( public_().final_().class_( "foo.bar.Outer" ) );
+		JavaClassWriter outerClassWriter = new JavaWriter().define(
+			public_().final_().class_( "foo.bar.Outer" ) );
 		
 		JavaInterfaceWriter innerClassWriter = 
 			outerClassWriter.define( public_().static_().interface_( "Inner" ) );

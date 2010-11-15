@@ -3,6 +3,7 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public final class NumbersTest {
 			value < Integer.MAX_VALUE;
 			value += 1000 )
 		{
-			JavaClassWriter writer = define(
+			JavaClassWriter writer = new JavaWriter().define(
 				public_().final_().class_( "Test" ).implements_( AnInteger.class ) );
 			
 			writer.define( public_().init() ).
@@ -36,7 +37,7 @@ public final class NumbersTest {
 			value < Integer.MAX_VALUE;
 			value += 1000 )
 		{
-			JavaClassWriter writer = define(
+			JavaClassWriter writer = new JavaWriter().define(
 				public_().final_().class_( "Test" ).implements_( AnInteger.class ) );
 			
 			writer.define( public_().init() ).

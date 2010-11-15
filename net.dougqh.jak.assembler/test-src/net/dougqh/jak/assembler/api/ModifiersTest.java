@@ -8,12 +8,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class ModifiersTest {
 	public final @Test void fieldModifiers() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "Fields" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "Fields" ) );
 		
 		classWriter.define(
 			public_().static_().final_().field( int.class, "STATIC" ),
@@ -55,7 +57,8 @@ public final class ModifiersTest {
 	}
 	
 	public final @Test void methodModifiers() {
-		JavaClassWriter classWriter = define( public_().abstract_().class_( "Methods" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().abstract_().class_( "Methods" ) );
 		
 		classWriter.define( public_().final_().strictfp_().method( void.class, "method1" ) ).
 			return_();

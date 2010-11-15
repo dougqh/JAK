@@ -7,25 +7,18 @@ final class TypeWriterGroup {
 	private final HashMap< String, TypeWriter > writers =
 		new HashMap< String, TypeWriter >( 4 );
 	
-	private DynamicClassLoader classLoader = null;
+	private final DynamicClassLoader classLoader;
 	
-	TypeWriterGroup() {}
+	TypeWriterGroup() {
+		this.classLoader = new DynamicClassLoader( TypeWriterGroup.class.getClassLoader() );
+	}
 	
-	final Class< ? > load(
-		final ClassLoader parentLoader,
-		final String name )
-	{
-		if ( this.classLoader != null ) {
-			this.classLoader.check( parentLoader );
-			try {
-				return this.classLoader.loadClass( name );
-			} catch ( ClassNotFoundException e ) {
-				throw new IllegalStateException( e );
-			}
-		}
-		
+	TypeWriterGroup( final ClassLoader classLoader ) {
+		this.classLoader = new DynamicClassLoader( classLoader );
+	}
+	
+	final Class< ? > load( final String name ) {
 		try {
-			this.classLoader = new DynamicClassLoader( parentLoader );
 			try {
 				return this.classLoader.loadClass( name );
 			} finally {
@@ -34,6 +27,10 @@ final class TypeWriterGroup {
 		} catch ( ClassNotFoundException e ) {
 			throw new IllegalStateException( e );
 		}
+	}
+	
+	final JavaPackageWriter createPackageWriter( final String name ) {
+		return new JavaPackageWriter( this, name );
 	}
 	
 	final JavaClassWriter createClassWriter( final TypeDescriptor typeDescriptor ) {

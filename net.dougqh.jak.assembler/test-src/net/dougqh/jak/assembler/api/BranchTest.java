@@ -3,12 +3,13 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class BranchTest {
 	public final @Test void forwardBranchIntZero1() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ForwardBranch" ).implements_( IntFunction.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -40,7 +41,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void forwardBranchIntZero2() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ForwardBranch" ).implements_( IntFunction.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -74,7 +75,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void loopWithContinue() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "LoopWithContinue" ).implements_( IntFunction.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -119,7 +120,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void reverseBranch() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ReverseBranch" ).implements_( IntFunction.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -156,8 +157,8 @@ public final class BranchTest {
 	}
 	
 	public final @Test void intLessCompare() {
-		JavaClassWriter classWriter = define(
-				public_().final_().class_( "IntLess" ).implements_( IntCompare.class ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "IntLess" ).implements_( IntCompare.class ) );
 			
 			classWriter.defineDefaultConstructor();
 			
@@ -181,7 +182,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void intGreaterCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntGreater" ).implements_( IntCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -206,7 +207,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void intLessEqualCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntLessEquals" ).implements_( IntCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -231,7 +232,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void intGreaterEqualCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntGreaterEquals" ).implements_( IntCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -256,7 +257,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void intEqualsCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntEquals" ).implements_( IntCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -280,7 +281,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void intNotEqualsCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntNotEquals" ).implements_( IntCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -304,7 +305,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void ifNull() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IfNull" ).implements_( NullChecker.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -324,7 +325,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void ifNonNull() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IfNonNull" ).implements_( NullChecker.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -344,7 +345,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void ifObjectEquals() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ObjectCompareImpl" ).implements_( ObjectCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -371,7 +372,7 @@ public final class BranchTest {
 	}
 
 	public final @Test void ifObjectNotEquals() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ObjectCompareImpl" ).implements_( ObjectCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -398,7 +399,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void longCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "LongCompareImpl" ).implements_( LongCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -420,7 +421,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void floatLessCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "FloatCompareImpl" ).implements_( FloatCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -442,7 +443,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void floatGreaterCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "FloatCompareImpl" ).implements_( FloatCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -464,7 +465,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void doubleLessCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleCompareImpl" ).implements_( DoubleCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -486,7 +487,7 @@ public final class BranchTest {
 	}
 	
 	public final @Test void doubleGreaterCompare() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleCompareImpl" ).implements_( DoubleCompare.class ) );
 		
 		classWriter.defineDefaultConstructor();

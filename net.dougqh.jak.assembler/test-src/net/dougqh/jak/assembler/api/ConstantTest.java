@@ -3,6 +3,7 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public final class ConstantTest {
 	}
 	
 	private static final boolean makeBoolean( final boolean value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "BooleanConstImpl" ).implements_( BooleanConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -33,7 +34,7 @@ public final class ConstantTest {
 	}
 	
 	private static final char makeChar( final char value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "CharConstImpl" ).implements_( CharConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -59,7 +60,7 @@ public final class ConstantTest {
 	}
 	
 	private static final byte makeByte( final byte value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ByteConstImpl" ).implements_( ByteConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -87,7 +88,7 @@ public final class ConstantTest {
 	}
 	
 	private static final short makeShort( final short value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ShortConstImpl" ).implements_( ShortConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -117,7 +118,7 @@ public final class ConstantTest {
 	}
 	
 	private static final int makeInt( final int value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntConstImpl" ).implements_( IntConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -150,7 +151,7 @@ public final class ConstantTest {
 	}
 	
 	private static long makeLong( final long value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "LongConstImpl" ).implements_( LongConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -176,7 +177,7 @@ public final class ConstantTest {
 	}
 	
 	private final float makeFloat( final float value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "FloatConstImpl" ).implements_( FloatConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -204,7 +205,7 @@ public final class ConstantTest {
 	}
 	
 	private final double makeDouble( final double value ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "DoubleConstImpl" ).implements_( DoubleConst.class ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -235,7 +236,7 @@ public final class ConstantTest {
 	}
 	
 	private static final Class< ? > makeClass( final Class< ? > aClass ) {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "ClassConstImpl" ).implements_( ObjectConst.class ) );
 		
 		classWriter.defineDefaultConstructor();

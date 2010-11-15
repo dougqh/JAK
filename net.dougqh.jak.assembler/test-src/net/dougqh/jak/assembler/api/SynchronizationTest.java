@@ -8,12 +8,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class SynchronizationTest {
 	public final @Test void synchronization() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "WaitImpl" ).implements_( Wait.class ) );
 		
 		classWriter.defineDefaultConstructor();

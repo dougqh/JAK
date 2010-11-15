@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class GenericsTest {
 	public final @Test void genericReturnType() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "GenericReturnType" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "GenericReturnType" ) );
 		
 		classWriter.define( public_().init() ).
 			this_().
@@ -41,7 +43,8 @@ public final class GenericsTest {
 	}
 	
 	public final @Test void wildcardExtendsType() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "WilcardExtends" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "WilcardExtends" ) );
 		
 		classWriter.define( public_().init() ).
 			this_().
@@ -65,7 +68,8 @@ public final class GenericsTest {
 	}
 	
 	public final @Test void genericParameterType() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "GenericReturnType" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "GenericReturnType" ) );
 		
 		classWriter.define( public_().init() ).
 			this_().
@@ -95,7 +99,7 @@ public final class GenericsTest {
 	
 	@SuppressWarnings( "unchecked" )
 	public final @Test void genericCode() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "GenericCode" ).implements_( Creator.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -116,7 +120,8 @@ public final class GenericsTest {
 	}
 	
 	public final @Test void genericField() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "GenericField" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "GenericField" ) );
 
 		Type List_String = type( List.class ).of( String.class ).make();
 		
@@ -131,7 +136,7 @@ public final class GenericsTest {
 	}
 	
 	public final @Test void genericExtension() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().abstract_().class_( "GenericExtension" ).
 				extends_( type( AbstractList.class ).of( String.class ) ).
 				implements_( type( List.class ).of( String.class ) ) );

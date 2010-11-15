@@ -7,6 +7,16 @@ public final class JavaWriter {
 		this.typeWriterGroup = new TypeWriterGroup();
 	}
 	
+	public JavaWriter( final ClassLoader classLoader ) {
+		this.typeWriterGroup = new TypeWriterGroup( classLoader );
+	}
+	
+	public final JavaPackageWriter define(
+		final JavaPackageDescriptor packageDescriptor )
+	{
+		return this.typeWriterGroup.createPackageWriter( packageDescriptor.name() );
+	}
+	
 	public final JavaClassWriter define(
 		final JavaClassDescriptor classDescriptor )
 	{
@@ -17,5 +27,11 @@ public final class JavaWriter {
 		final JavaInterfaceDescriptor interfaceDescriptor )
 	{
 		return this.typeWriterGroup.createInterfaceWriter( interfaceDescriptor.typeDescriptor() );
+	}
+	
+	public final JavaAnnotationWriter define(
+		final JavaAnnotationDescriptor annotationDescriptor )
+	{
+		return this.typeWriterGroup.createAnnotationWriter( annotationDescriptor.typeDescriptor() );
 	}
 }

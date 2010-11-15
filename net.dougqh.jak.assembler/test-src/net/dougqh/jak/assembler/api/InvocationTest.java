@@ -3,12 +3,13 @@ package net.dougqh.jak.assembler.api;
 import static net.dougqh.jak.assembler.JavaAssembler.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class InvocationTest {
 	public final @Test void invokeStatic() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "InvokeStatic" ).implements_( Function.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -28,7 +29,7 @@ public final class InvocationTest {
 	}
 	
 	public final @Test void invokeInterface() throws Exception {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "InvokeInterface" ).implements_( Function.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -52,7 +53,7 @@ public final class InvocationTest {
 	}
 	
 	public final @Test void invokeVirtual() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "InvokeVirtual" ).implements_( Function.class ) );
 		
 		classWriter.define( public_().init() ).
@@ -76,7 +77,7 @@ public final class InvocationTest {
 	}
 	
 	public final @Test void newObject() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "NewObject" ).implements_( Function.class ) );
 		
 		classWriter.define( public_().init() ).

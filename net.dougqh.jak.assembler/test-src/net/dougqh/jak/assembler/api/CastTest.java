@@ -10,12 +10,14 @@ import java.util.Arrays;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
 import net.dougqh.jak.assembler.JavaCodeWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class CastTest {
 	public final @Test void intCasts() {
-		JavaClassWriter writer = define( public_().static_().final_().class_( "IntCasts" ) );
+		JavaClassWriter writer = new JavaWriter().define(
+			public_().static_().final_().class_( "IntCasts" ) );
 		
 		castMethod( writer, int.class, byte.class ).
 			iload_0().
@@ -57,7 +59,8 @@ public final class CastTest {
 	}
 	
 	public final @Test void longCasts() {
-		JavaClassWriter writer = define( public_().static_().final_().class_( "LongCasts" ) );
+		JavaClassWriter writer = new JavaWriter().define(
+			public_().static_().final_().class_( "LongCasts" ) );
 		
 		castMethod( writer, long.class, int.class ).
 			lload_0().
@@ -81,7 +84,8 @@ public final class CastTest {
 	}
 	
 	public final @Test void floatCasts() {
-		JavaClassWriter writer = define( public_().static_().final_().class_( "FloatCasts" ) );
+		JavaClassWriter writer = new JavaWriter().define(
+			public_().static_().final_().class_( "FloatCasts" ) );
 		
 		castMethod( writer, float.class, int.class ).
 			fload( 0 ).
@@ -105,7 +109,8 @@ public final class CastTest {
 	}
 	
 	public final @Test void doubleCasts() {
-		JavaClassWriter writer = define( public_().static_().final_().class_( "DoubleCasts" ) );
+		JavaClassWriter writer = new JavaWriter().define(
+			public_().static_().final_().class_( "DoubleCasts" ) );
 		
 		castMethod( writer, double.class, int.class ).
 			dload( 0 ).
@@ -131,7 +136,7 @@ public final class CastTest {
 	public final @Test void objectCast() {
 		Type Serializer_String = type( Serializer.class ).of( String.class ).make();
 		
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "StringSerializer" ).implements_( Serializer_String ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -158,7 +163,7 @@ public final class CastTest {
 	public final @Test void arrayCast() {
 		Type Serializer_intArray = type( Serializer.class ).of( int[].class ).make();
 		
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "IntArraySerializer" ).implements_( Serializer_intArray ) );
 		
 		classWriter.defineDefaultConstructor();
@@ -184,7 +189,7 @@ public final class CastTest {
 	}
 	
 	public final @Test void instanceof_() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "NumberPredicate" ).implements_( Predicate.class ) );
 		
 		classWriter.defineDefaultConstructor();

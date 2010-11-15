@@ -7,12 +7,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class FieldsTest {
 	public @Test final void staticFields() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "StaticFields" ).implements_( SetGet.class ) );
 		
 		Type thisType = classWriter.thisType();
@@ -36,7 +37,8 @@ public final class FieldsTest {
 	}
 	
 	public @Test final void staticFieldsWithConstantValue() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "StaticConstants" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "StaticConstants" ) );
 		
 		classWriter.define(
 			public_().static_().final_().field( boolean.class, "BOOLEAN" ),
@@ -88,7 +90,8 @@ public final class FieldsTest {
 	}
 	
 	public @Test final void staticFieldsWithConstantValueFixType() {
-		JavaClassWriter classWriter = define( public_().final_().class_( "StaticConstants" ) );
+		JavaClassWriter classWriter = new JavaWriter().define(
+			public_().final_().class_( "StaticConstants" ) );
 		
 		classWriter.define(
 			public_().static_().final_().field( boolean.class, "BOOLEAN" ),
@@ -158,7 +161,7 @@ public final class FieldsTest {
 	}
 
 	public @Test final void instanceFields() {
-		JavaClassWriter classWriter = define(
+		JavaClassWriter classWriter = new JavaWriter().define(
 			public_().final_().class_( "InstanceFields" ).implements_( SetGet.class ) );
 		
 		Type thisType = classWriter.thisType();

@@ -6,13 +6,14 @@ import static org.junit.Assert.*;
 import java.net.MalformedURLException;
 
 import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaWriter;
 
 import org.junit.Test;
 
 public final class ExceptionsTest {
 	@Test( expected=TestException.class ) 
 	public final void throwsException() throws Exception {
-		JavaClassWriter writer = define(
+		JavaClassWriter writer = new JavaWriter().define(
 			public_().final_().class_( "Thrower" ).implements_( Thrower.class ) );
 		
 		writer.define( public_().init() ).
@@ -32,7 +33,7 @@ public final class ExceptionsTest {
 	
 	@Test( expected=TestRuntimeException.class )
 	public final void throwsRuntimeException() throws Exception {
-		JavaClassWriter writer = define(
+		JavaClassWriter writer = new JavaWriter().define(
 			public_().final_().class_( "Throws" ).implements_( Thrower.class ) );
 		
 		writer.define( public_().init() ).
@@ -51,7 +52,7 @@ public final class ExceptionsTest {
 	}
 	
 	public final @Test void exceptionHandling() {
-		JavaClassWriter writer = define(
+		JavaClassWriter writer = new JavaWriter().define(
 			public_().final_().class_( "ExceptionHandling" ).implements_( Handler.class ) );
 		
 		writer.define( public_().init() ).
@@ -90,7 +91,7 @@ public final class ExceptionsTest {
 	}
 	
 	public final @Test void exceptionHandlingWithCatchLabel() {
-		JavaClassWriter writer = define(
+		JavaClassWriter writer = new JavaWriter().define(
 			public_().final_().class_( "ExceptionHandlingWithCatchLabels" ).implements_( Handler.class ) );
 		
 		writer.define( public_().init() ).
