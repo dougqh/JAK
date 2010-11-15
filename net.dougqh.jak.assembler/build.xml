@@ -1,0 +1,94 @@
+<project name="net.dougqh.java.assembler" default="package" basedir=".">
+	<property name="project-dir" location="${basedir}/.." />
+	<property name="net.dougqh.java.meta-dir" location="${project-dir}/net.dougqh.java.meta" />
+	
+	<property name="root-src-dir" location="${basedir}" />
+	<property name="lib-dir" location="${basedir}/lib" />
+	
+	<property name="build-dir" location="${basedir}/build" />
+	<property name="classes-dir" location="${build-dir}/classes" />
+	
+	<target name="package" depends="jar, jar-tests" />
+	
+	<target name="compile" depends="net.dougqh.java.meta">
+		<dqh-javac src-dir="src">
+			<path>
+				<pathelement location="${net.dougqh.java.meta-dir}/build/net.dougqh.java.meta.jar" />
+			</path>
+		</dqh-javac>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<dqh-jar 
+			file="net.dougqh.java.assembler.jar"
+			src-dir="src"
+			dependencies="net.dougqh.java.meta.jar" />
+	</target>
+	
+	<target name="compile-tests" depends="jar">
+		<dqh-javac src-dir="test-src">
+			<path>
+				<pathelement location="${net.dougqh.java.meta-dir}/build/net.dougqh.java.meta.jar" />
+				<pathelement location="${net.dougqh.java.meta-dir}/build/net.dougqh.java.meta.test.jar" />
+				<pathelement location="${lib-dir}/junit-4.8.2.jar" />
+				<pathelement location="${build-dir}/net.dougqh.java.assembler.jar" />
+			</path>
+		</dqh-javac>
+	</target>
+	
+	<target name="jar-tests" depends="compile-tests">
+		<dqh-jar
+			file="net.dougqh.java.assembler.test.jar"
+			src-dir="test-src"
+			dependencies="net.doguqh.java.meta.jar net.dougqh.java.meta.test.jar net.dougqh.java.assembler.jar" />
+	</target>
+	
+	<target name="net.dougqh.java.meta">
+		<ant
+			dir="${net.dougqh.java.meta-dir}"
+			antfile="${net.dougqh.java.meta-dir}/build.xml"
+			target="package"
+			inheritall="false"
+			inheritrefs="false" />
+	</target>
+	
+	<macrodef name="dqh-javac">
+		<attribute name="src-dir" />
+		<element name="path" />
+		<sequential>
+			<mkdir dir="${classes-dir}/@{src-dir}" />
+			
+			<depend
+				srcdir="${root-src-dir}/@{src-dir}"
+				destdir="${classes-dir}/@{src-dir}">
+				<classpath>
+					<path />
+				</classpath>
+			</depend>
+			
+			<javac
+				srcdir="${root-src-dir}/@{src-dir}"
+				destdir="${classes-dir}/@{src-dir}"
+				debug="true">
+				<classpath>
+					<path />
+				</classpath>
+			</javac>
+		</sequential>
+	</macrodef>
+			
+	<macrodef name="dqh-jar">
+		<attribute name="file" />
+		<attribute name="src-dir" />
+		<attribute name="dependencies" default="" />
+		<sequential>
+			<jar destfile="${build-dir}/@{file}">
+				<fileset dir="${classes-dir}/@{src-dir}" includes="**/*" />
+				<fileset dir="${root-src-dir}/@{src-dir}" includes="**/*" />
+				<manifest>
+					<attribute name="Class-Path" value="@{dependencies}" />
+				</manifest>
+			</jar>
+		</sequential>
+	</macrodef>	
+</project>
