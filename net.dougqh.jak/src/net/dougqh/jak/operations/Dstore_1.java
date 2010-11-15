@@ -1,6 +1,6 @@
 package net.dougqh.jak.operations;
 
-import net.dougqh.jak.JavaCoreCodeWriter;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter;
 
 public final class Dstore_1 extends Operation {
 	public static final String ID = "dstore_1";

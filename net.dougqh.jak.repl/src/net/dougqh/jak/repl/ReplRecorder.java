@@ -6,9 +6,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.dougqh.jak.ConstantEntry;
-import net.dougqh.jak.JavaCodeWriter;
-import net.dougqh.jak.JavaTypeWriter;
+import net.dougqh.jak.assembler.ConstantEntry;
+import net.dougqh.jak.assembler.JavaCodeWriter;
+import net.dougqh.jak.assembler.JavaTypeWriter;
 
 final class ReplRecorder {
 	private ArrayList< Method > methods = new ArrayList< Method >( 32 );

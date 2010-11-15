@@ -2,7 +2,7 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.LocalsMonitor;
+import net.dougqh.jak.assembler.LocalsMonitor;
 
 public final class ReplLocalsMonitor implements LocalsMonitor {
 	private final JakRepl repl;

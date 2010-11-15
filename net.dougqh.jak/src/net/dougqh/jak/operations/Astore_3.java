@@ -1,6 +1,6 @@
 package net.dougqh.jak.operations;
 
-import net.dougqh.jak.JavaCoreCodeWriter;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter;
 import net.dougqh.jak.types.Reference;
 
 public final class Astore_3 extends Operation {

@@ -5,7 +5,7 @@ Bundle-SymbolicName: net.dougqh.jak.repl
 Bundle-Version: 1.0.0.1
 Bundle-Vendor: Douglas Q Hawkins
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: net.dougqh.jak;bundle-version="1.0.0"
+Require-Bundle: net.dougqh.jak.assembler;bundle-version="1.0.0"
 Class-Path: net.dougqh.meta.java.jar net.dougqh.jak.jar jline-0.9.94.jar
 Main-Class: net.dougqh.jak.repl.JakRepl
 

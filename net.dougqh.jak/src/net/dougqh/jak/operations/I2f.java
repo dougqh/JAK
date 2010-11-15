@@ -1,6 +1,6 @@
 package net.dougqh.jak.operations;
 
-import net.dougqh.jak.JavaCoreCodeWriter;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter;
 
 public final class I2f extends Operation {
 	public static final String ID = "i2f";

@@ -2,9 +2,9 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.JavaAssembler;
-import net.dougqh.jak.JavaFieldDescriptor;
-import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.assembler.JavaAssembler;
+import net.dougqh.jak.assembler.JavaFieldDescriptor;
+import net.dougqh.jak.assembler.JavaMethodDescriptor;
 import net.dougqh.java.meta.types.JavaTypes;
 
 enum ReplArgument {

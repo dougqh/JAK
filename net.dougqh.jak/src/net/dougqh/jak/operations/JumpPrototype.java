@@ -1,6 +1,6 @@
 package net.dougqh.jak.operations;
 
-import net.dougqh.jak.JavaCoreCodeWriter.Jump;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter.Jump;
 
 final class JumpPrototype extends Jump {
 	@Override

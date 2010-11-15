@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter;
+import net.dougqh.jak.assembler.JavaMethodDescriptor;
 import net.dougqh.reflection.Delegate;
 
 final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {	

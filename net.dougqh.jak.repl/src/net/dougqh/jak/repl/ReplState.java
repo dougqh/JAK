@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
-import net.dougqh.jak.JakStack;
+import net.dougqh.jak.assembler.JakStack;
 import net.dougqh.jak.types.Types;
 
 public final class ReplState {

@@ -1,7 +1,7 @@
 package net.dougqh.jak.operations;
 
-import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.JavaCoreCodeWriter.Jump;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter.Jump;
 
 public final class If_icmple extends Operation {
 	public static final String ID = "if_icmple";

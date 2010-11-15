@@ -12,12 +12,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.dougqh.jak.JavaCodeWriter;
-import net.dougqh.jak.JavaMethodSignature;
 import net.dougqh.jak.annotations.Op;
 import net.dougqh.jak.annotations.Symbol;
 import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
+import net.dougqh.jak.assembler.JavaCodeWriter;
+import net.dougqh.jak.assembler.JavaMethodSignature;
 import net.dougqh.jak.operations.Operation;
 import net.dougqh.jak.operations.Operations;
 import net.dougqh.java.meta.types.JavaTypes;

@@ -2,8 +2,8 @@ package net.dougqh.jak.operations;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.JavaCoreCodeWriter;
-import net.dougqh.jak.JavaFieldDescriptor;
+import net.dougqh.jak.assembler.JavaCoreCodeWriter;
+import net.dougqh.jak.assembler.JavaFieldDescriptor;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 

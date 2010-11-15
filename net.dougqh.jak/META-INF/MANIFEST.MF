@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Assembler
-Bundle-SymbolicName: net.dougqh.jak
+Bundle-SymbolicName: net.dougqh.jak.assembler
 Bundle-Version: 1.0.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0";visibility:=reexport,
  org.junit4;bundle-version="4.5.0"
 Bundle-Vendor: Douglas Q Hawkins
-Export-Package: net.dougqh.jak,
- net.dougqh.jak.annotations,
+Export-Package: net.dougqh.jak.annotations,
+ net.dougqh.jak.assembler,
  net.dougqh.jak.operations,
  net.dougqh.jak.types
 Class-Path: net.dougqh.java.meta.jar

@@ -1,6 +1,6 @@
 package net.dougqh.jak.repl;
 
-import static net.dougqh.jak.JavaAssembler.*;
+import static net.dougqh.jak.assembler.JavaAssembler.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,10 +15,10 @@ import java.util.Collections;
 import java.util.List;
 
 import jline.Completor;
-import net.dougqh.jak.JakConfiguration;
-import net.dougqh.jak.JavaClassWriter;
-import net.dougqh.jak.JavaCodeWriter;
-import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.assembler.JakConfiguration;
+import net.dougqh.jak.assembler.JavaClassWriter;
+import net.dougqh.jak.assembler.JavaCodeWriter;
+import net.dougqh.jak.assembler.JavaMethodDescriptor;
 
 public final class JakRepl {
 	public static void main( final String[] args ) throws IOException {

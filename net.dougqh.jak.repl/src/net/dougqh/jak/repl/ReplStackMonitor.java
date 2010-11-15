@@ -2,8 +2,8 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.JakTypeStack;
-import net.dougqh.jak.StackMonitor;
+import net.dougqh.jak.assembler.JakTypeStack;
+import net.dougqh.jak.assembler.StackMonitor;
 
 final class ReplStackMonitor implements StackMonitor {
 	private final JakRepl repl;
