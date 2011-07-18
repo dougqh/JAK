@@ -13,7 +13,7 @@ public final class JavaTypesArrayTest {
 		assertEquals( 0, JavaTypes.getArrayDepth( Object.class ) );
 		assertEquals( 1, JavaTypes.getArrayDepth( Object[].class ) );
 		assertEquals( 2, JavaTypes.getArrayDepth( Object[][].class ) );
-		assertEquals( 5, JavaTypes.getArrayDepth( Object[][][][][][].class ) );
+		assertEquals( 6, JavaTypes.getArrayDepth( Object[][][][][][].class ) );
 	}
 	
 	public final @Test void arrayType() {

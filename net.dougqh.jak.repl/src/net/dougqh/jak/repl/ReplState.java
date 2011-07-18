@@ -7,12 +7,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
-import net.dougqh.jak.assembler.JakStack;
+import net.dougqh.jak.jvm.assembler.JakStack;
 import net.dougqh.jak.types.Types;
 
 public final class ReplState {
 	private final Stack stack;
 	private final Locals locals;
+	
+	ReplState() {
+		this( 8, 8 );
+	}
 	
 	ReplState( final int stackSize, final int localsSize ) {
 		this.stack = new Stack( stackSize );

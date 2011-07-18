@@ -4,21 +4,21 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import net.dougqh.jak.assembler.JavaCoreCodeWriter;
-import net.dougqh.jak.assembler.JavaMethodDescriptor;
+import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter;
 import net.dougqh.reflection.Delegate;
 
-final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {	
+final class WriterDelegate extends Delegate< JvmCoreCodeWriter > {	
 	private final JakRepl repl;
-	private final JavaCoreCodeWriter coreWriter;
+	private final JvmCoreCodeWriter coreWriter;
 	
 	private MethodBuffer buffer = null;
 
 	WriterDelegate(
 		final JakRepl repl,
-		final JavaCoreCodeWriter coreWriter )
+		final JvmCoreCodeWriter coreWriter )
 	{
-		super( JavaCoreCodeWriter.class );
+		super( JvmCoreCodeWriter.class );
 		
 		this.repl = repl;
 		this.coreWriter = coreWriter;
@@ -77,12 +77,12 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 		this.coreWriter.prepareForWrite();
 	}
 	
-	private final JavaCoreCodeWriter startBuffering( final MethodBuffer buffer ) {
+	private final JvmCoreCodeWriter startBuffering( final MethodBuffer buffer ) {
 		this.buffer = buffer;
 		return this.getProxy();
 	}
 	
-	private final JavaCoreCodeWriter invoke( final MethodInvocation invocation )
+	private final JvmCoreCodeWriter invoke( final MethodInvocation invocation )
 		throws Throwable
 	{
 		if ( this.buffer != null ) {
@@ -101,8 +101,8 @@ final class WriterDelegate extends Delegate< JavaCoreCodeWriter > {
 	}
 	
 	private static final boolean isCoreWritingMethod( final Method method ) {
-		return method.getDeclaringClass().equals( JavaCoreCodeWriter.class ) &&
-			method.getReturnType().equals( JavaCoreCodeWriter.class );
+		return method.getDeclaringClass().equals( JvmCoreCodeWriter.class ) &&
+			method.getReturnType().equals( JvmCoreCodeWriter.class );
 	}
 	
 	private abstract class MethodBuffer {

@@ -2,15 +2,15 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.assembler.LocalsMonitor;
+import net.dougqh.jak.jvm.assembler.JvmLocals;
 
-public final class ReplLocalsMonitor implements LocalsMonitor {
+public final class ReplLocalsMonitor implements JvmLocals {
 	private final JakRepl repl;
-	private final LocalsMonitor locals;
+	private final JvmLocals locals;
 	
 	ReplLocalsMonitor(
 		final JakRepl repl,
-		final LocalsMonitor locals )
+		final JvmLocals locals )
 	{
 		this.repl = repl;
 		this.locals = locals;

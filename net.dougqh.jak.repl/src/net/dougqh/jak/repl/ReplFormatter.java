@@ -2,9 +2,9 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.assembler.ConstantEntry;
-import net.dougqh.jak.assembler.JavaFieldDescriptor;
-import net.dougqh.jak.assembler.JavaMethodDescriptor;
+import net.dougqh.jak.JavaField;
+import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.jvm.assembler.ConstantEntry;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -75,8 +75,8 @@ final class ReplFormatter {
 			return format( (ConstantEntry)value );
 		} else if ( value instanceof String ) {
 			return format( (String)value );
-		} else if ( value instanceof JavaFieldDescriptor ) {
-			JavaFieldDescriptor field = (JavaFieldDescriptor)value;
+		} else if ( value instanceof JavaField ) {
+			JavaField field = (JavaField)value;
 			return format( field );
 		} else if ( value instanceof JavaMethodDescriptor ) {
 			return format( (JavaMethodDescriptor)value );
@@ -97,7 +97,7 @@ final class ReplFormatter {
 		return ReplArgument.STRING_QUOTE + string + ReplArgument.STRING_QUOTE;
 	}
 
-	private static String format( final JavaFieldDescriptor field ) {
+	private static String format( final JavaField field ) {
 		return field.getName() + ":" + format( field.getType() );
 	}
 	

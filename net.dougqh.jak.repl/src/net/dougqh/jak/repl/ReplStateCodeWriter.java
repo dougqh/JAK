@@ -1,18 +1,16 @@
 package net.dougqh.jak.repl;
 
-import static net.dougqh.jak.assembler.JavaAssembler.*;
-
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.assembler.JavaAssembler;
-import net.dougqh.jak.assembler.JavaFieldDescriptor;
-import net.dougqh.jak.assembler.JavaMethodDescriptor;
+import net.dougqh.jak.Jak;
+import net.dougqh.jak.JavaField;
+import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.types.Types;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplStateCodeWriter {
-	static final JavaFieldDescriptor STATE_FIELD = 
-		public_().static_().field( ReplState.class, "state" );
+	static final JavaField STATE_FIELD = 
+		Jak.public_().static_().field( ReplState.class, "state" );
 
 	private final JakRepl repl;
 	private int suppressionCount = 0;
@@ -159,26 +157,26 @@ final class ReplStateCodeWriter {
 	
 	private static final JavaMethodDescriptor pushMethod( final Type type ) {
 		if ( Types.isIntegerType( type ) ) {
-			return JavaAssembler.method( void.class, "push", int.class );
+			return Jak.method( void.class, "push", int.class );
 		} else if ( Types.isReferenceType( type ) ) {
-			return JavaAssembler.method( void.class, "push", Type.class, Object.class );
+			return Jak.method( void.class, "push", Type.class, Object.class );
 		} else {
-			return JavaAssembler.method( void.class, "push", type );
+			return Jak.method( void.class, "push", type );
 		}
 	}
 	
 	private static final JavaMethodDescriptor storeMethod( final Type type ) {
 		if ( Types.isIntegerType( type ) ) {
-			return JavaAssembler.method( void.class, "storeLocal", int.class, int.class );
+			return Jak.method( void.class, "storeLocal", int.class, int.class );
 		} else if ( Types.isReferenceType( type ) ) {
-			return JavaAssembler.method( void.class, "storeLocal", int.class, Type.class, Object.class );
+			return Jak.method( void.class, "storeLocal", int.class, Type.class, Object.class );
 		} else {
-			return JavaAssembler.method( void.class, "storeLocal", int.class, type );
+			return Jak.method( void.class, "storeLocal", int.class, type );
 		}
 	}
 	
 	private static final JavaMethodDescriptor pushUninitializedMethod() {
-		return JavaAssembler.method( Object.class, "pushUninitialized", Type.class );
+		return Jak.method( Object.class, "pushUninitialized", Type.class );
 	}
 	
 	private static final JavaMethodDescriptor popMethod( final Type type ) {
@@ -190,6 +188,6 @@ final class ReplStateCodeWriter {
 	}
 		
 	private static final JavaMethodDescriptor method( final String methodName ) {
-		return JavaAssembler.method( void.class, methodName );
+		return Jak.method( void.class, methodName );
 	}
 }

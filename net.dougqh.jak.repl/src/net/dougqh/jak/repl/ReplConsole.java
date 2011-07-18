@@ -11,9 +11,9 @@ import jline.Completor;
 import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;
-import net.dougqh.jak.annotations.Op;
-import net.dougqh.jak.operations.Operation;
-import net.dougqh.jak.operations.Operations;
+import net.dougqh.jak.annotations.JvmOp;
+import net.dougqh.jak.jvm.operations.JvmOperation;
+import net.dougqh.jak.jvm.operations.JvmOperations;
 
 final class ReplConsole {
 	private final ConsoleReader reader;
@@ -188,8 +188,8 @@ final class ReplConsole {
 	}
 	
 	private static final String getNameOf( final Method method ) {
-		Op op = method.getAnnotation( Op.class );
-		Operation operation = Operations.getPrototype( op.value() );
+		JvmOp op = method.getAnnotation( JvmOp.class );
+		JvmOperation operation = JvmOperations.getPrototype( op.value() );
 		return operation.getId();
 	}
 }

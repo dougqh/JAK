@@ -6,7 +6,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith( Suite.class )
 @SuiteClasses( {
-	JavaTypeUtilsTest.class,
+	JavaTypeNamesTest.class,
+	JavaTypesTest.class,
 	JavaTypeBuildingTest.class,
-	JavaTypesArrayTest.class } )
+	JavaTypesArrayTest.class,
+	JavaJvmTypesTest.class } )
 public final class JavaTypesApiTestSuite {}

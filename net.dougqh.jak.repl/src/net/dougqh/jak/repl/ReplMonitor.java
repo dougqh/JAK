@@ -1,9 +1,9 @@
 package net.dougqh.jak.repl;
 
-import net.dougqh.jak.assembler.JakMonitor;
-import net.dougqh.jak.assembler.JavaCoreCodeWriter;
-import net.dougqh.jak.assembler.LocalsMonitor;
-import net.dougqh.jak.assembler.StackMonitor;
+import net.dougqh.jak.jvm.assembler.JakMonitor;
+import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter;
+import net.dougqh.jak.jvm.assembler.JvmLocals;
+import net.dougqh.jak.jvm.assembler.JvmStack;
 
 final class ReplMonitor extends JakMonitor {
 	private final JakRepl repl;
@@ -13,17 +13,17 @@ final class ReplMonitor extends JakMonitor {
 	}
 	
 	@Override
-	public final JavaCoreCodeWriter monitor( final JavaCoreCodeWriter wrappedWriter ) {
+	public final JvmCoreCodeWriter monitor( final JvmCoreCodeWriter wrappedWriter ) {
 		return new WriterDelegate( this.repl, wrappedWriter ).getProxy();
 	}
 	
 	@Override
-	public final LocalsMonitor monitor( final LocalsMonitor locals ) {
+	public final JvmLocals monitor( final JvmLocals locals ) {
 		return new ReplLocalsMonitor( this.repl, locals );
 	}
 	
 	@Override
-	public final StackMonitor monitor( final StackMonitor stack ) {
-		return new ReplStackMonitor( this.repl, stack );
+	public final JvmStack monitor( final JvmStack stack ) {
+		return new ReplJvmStack( this.repl, stack );
 	}
 }

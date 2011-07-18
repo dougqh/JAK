@@ -55,6 +55,60 @@ public final class JavaTypes {
 			resolvedType.equals( void.class );
 	}
 	
+	public static final Type fromPersistedName( final CharSequence name ) {
+		switch ( name.charAt( 0 ) ) {
+			case 'V': {
+				return void.class;
+			}
+			
+			case 'Z': {
+				return boolean.class;
+			}
+			
+			case 'B': {
+				return byte.class;
+			}
+			
+			case 'C': {
+				return char.class;
+			}
+			
+			case 'S': {
+				return short.class;
+			}
+			
+			case 'I': {
+				return int.class;
+			}
+			
+			case 'J': {
+				return long.class;
+			}
+			
+			case 'F': {
+				return float.class;
+			}
+			
+			case 'D': {
+				return double.class;
+			}
+			
+			case 'L' : {
+				String className = name.subSequence( 1, name.length() - 1 ).toString();
+				return objectTypeName( className.replace( '/', '.' ) );
+			}
+			
+			case '[' : {
+				String className = name.subSequence( 1, name.length() - 1 ).toString();
+				return array( fromPersistedName( className ) );
+			}
+			
+			default : {
+				throw new IllegalStateException( "Unsupported type: " + name.toString() );
+			}
+		}
+	}
+	
 	public static final String getRawClassName( final Type type ) {
 		Type rawType = getRawType( type );
 		if ( rawType instanceof Class ) {

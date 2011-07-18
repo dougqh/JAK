@@ -1,6 +1,6 @@
 package net.dougqh.jak.repl;
 
-import static net.dougqh.jak.assembler.JavaAssembler.*;
+import static net.dougqh.jak.Jak.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,11 +15,11 @@ import java.util.Collections;
 import java.util.List;
 
 import jline.Completor;
-import net.dougqh.jak.assembler.JakConfiguration;
-import net.dougqh.jak.assembler.JavaClassWriter;
-import net.dougqh.jak.assembler.JavaCodeWriter;
-import net.dougqh.jak.assembler.JavaMethodDescriptor;
-import net.dougqh.jak.assembler.JavaWriter;
+import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.jvm.assembler.JakConfiguration;
+import net.dougqh.jak.jvm.assembler.JvmClassWriter;
+import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
+import net.dougqh.jak.jvm.assembler.JvmWriter;
 
 public final class JakRepl {
 	public static void main( final String[] args ) throws IOException {
@@ -57,10 +57,10 @@ public final class JakRepl {
 	private int suppressionCount = 0;
 	private boolean isReplaying = false;
 	
-	private JavaClassWriter classWriter = null;
-	private JavaCodeWriter codeWriter = null;
+	private JvmClassWriter classWriter = null;
+	private JvmCodeWriter codeWriter = null;
 	private ReplStateCodeWriter replStateCodeWriter = null;
-	private ReplState lastState = new ReplState( 0, 0 );
+	private ReplState lastState = new ReplState();
 	
 	private File recordingDir = null;
 	
@@ -111,7 +111,7 @@ public final class JakRepl {
 		return this.imports;
 	}
 	
-	final JavaCodeWriter codeWriter() {
+	final JvmCodeWriter codeWriter() {
 		return this.codeWriter;
 	}
 	
@@ -308,7 +308,7 @@ public final class JakRepl {
 		try {
 			//TODO: set size properly
 			ReplState state = new ReplState(
-				this.codeWriter().stackMonitor().maxStack(),
+				Math.max( this.codeWriter().stackMonitor().maxStack(), 1 ),
 				this.codeWriter().localsMonitor().maxLocals() );
 			
 			this.runImpl( state );
@@ -377,7 +377,7 @@ public final class JakRepl {
 			enableTypeTracking().
 			monitor( new ReplMonitor( this ) );
 		
-		this.classWriter = new JavaWriter().define( public_().final_().class_( CLASS ) );
+		this.classWriter = new JvmWriter().define( public_().final_().class_( CLASS ) );
 		this.classWriter.initConfig( config );
 		
 		this.classWriter.define( ReplStateCodeWriter.STATE_FIELD );

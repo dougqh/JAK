@@ -2,9 +2,9 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.assembler.JavaAssembler;
-import net.dougqh.jak.assembler.JavaFieldDescriptor;
-import net.dougqh.jak.assembler.JavaMethodDescriptor;
+import net.dougqh.jak.Jak;
+import net.dougqh.jak.JavaField;
+import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.java.meta.types.JavaTypes;
 
 enum ReplArgument {
@@ -149,7 +149,7 @@ enum ReplArgument {
 			return loadClass( repl, argString );
 		}
 	},
-	FIELD( JavaFieldDescriptor.class ) {
+	FIELD( JavaField.class ) {
 		@Override
 		public final Object parse( final JakRepl repl, final String argString ) {
 			String[] parts = splitOnLast( argString, ':' );
@@ -160,7 +160,7 @@ enum ReplArgument {
 			String name = parts[ 0 ];
 			Type fieldType = loadClass( repl, parts[ 1 ] );
 			
-			return JavaAssembler.field( fieldType, name );
+			return Jak.field( fieldType, name );
 		}
 	},
 	METHOD( JavaMethodDescriptor.class ) {
@@ -192,7 +192,7 @@ enum ReplArgument {
 				types = loadClasses( repl, typeNames );
 			}
 			
-			return JavaAssembler.method( returnType, name, types );
+			return Jak.method( returnType, name, types );
 		}
 	};
 	

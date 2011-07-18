@@ -12,21 +12,21 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.dougqh.jak.annotations.Op;
+import net.dougqh.jak.JavaMethodSignature;
+import net.dougqh.jak.annotations.JvmOp;
 import net.dougqh.jak.annotations.Symbol;
 import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
-import net.dougqh.jak.assembler.JavaCodeWriter;
-import net.dougqh.jak.assembler.JavaMethodSignature;
-import net.dougqh.jak.operations.Operation;
-import net.dougqh.jak.operations.Operations;
+import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
+import net.dougqh.jak.jvm.operations.JvmOperation;
+import net.dougqh.jak.jvm.operations.JvmOperations;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class ReplMethod {
 	private static final List< ReplMethod > allMethods = gatherMethods();
 	
 	private static final List< ReplMethod > gatherMethods() {
-		Method[] methods = JavaCodeWriter.class.getMethods();
+		Method[] methods = JvmCodeWriter.class.getMethods();
 		
 		ArrayList< ReplMethod > replMethods = new ArrayList< ReplMethod >( methods.length );
 		for ( Method method : methods ) {
@@ -122,7 +122,7 @@ final class ReplMethod {
 	}
 	
 	public final boolean matchesStackTypes( final JakRepl repl ) {
-		Operation operation = getOperationOf( this.method );
+		JvmOperation operation = getOperationOf( this.method );
 		
 		Class< ? >[] expectedTypes = operation.getStackOperandTypes().clone();
 		reverse( expectedTypes );
@@ -139,7 +139,7 @@ final class ReplMethod {
 	}
 	
 	public final String getOperator() {
-		Operation operation = getOperationOf( this.method );
+		JvmOperation operation = getOperationOf( this.method );
 		if ( operation != null ) {
 			return operation.getOperator();
 		} else {
@@ -164,7 +164,7 @@ final class ReplMethod {
 	}
 	
 	public final void invoke(
-		final JavaCodeWriter codeWriter,
+		final JvmCodeWriter codeWriter,
 		final Object... arguments  )
 		throws IllegalArgumentException
 	{
@@ -182,7 +182,7 @@ final class ReplMethod {
 			return false;
 		}
 		
-		Op op = method.getAnnotation( Op.class );
+		JvmOp op = method.getAnnotation( JvmOp.class );
 		if ( op != null && ! op.repl() ) {
 			return false;
 		}
@@ -230,14 +230,14 @@ final class ReplMethod {
 	}
 	
 	private static final boolean isWritingMethod( final Method method ) {
-		return method.getDeclaringClass().equals( JavaCodeWriter.class ) &&
-			method.getReturnType().equals( JavaCodeWriter.class );
+		return method.getDeclaringClass().equals( JvmCodeWriter.class ) &&
+			method.getReturnType().equals( JvmCodeWriter.class );
 	}
 	
 	private static final String getNameOf( final Method method ) {
-		Op op = method.getAnnotation( Op.class );
+		JvmOp op = method.getAnnotation( JvmOp.class );
 		if ( op != null ) {
-			return Operations.getPrototype( op.value() ).getId();
+			return JvmOperations.getPrototype( op.value() ).getId();
 		}
 		
 		WrapOp wrapOp = method.getAnnotation( WrapOp.class );
@@ -253,14 +253,14 @@ final class ReplMethod {
 		throw new IllegalStateException();
 	}
 	
-	private static final Operation getOperationOf( final Method method ) {
-		Op op = method.getAnnotation( Op.class );
+	private static final JvmOperation getOperationOf( final Method method ) {
+		JvmOp op = method.getAnnotation( JvmOp.class );
 		if ( op != null ) {
-			return Operations.getPrototype( op.value() );
+			return JvmOperations.getPrototype( op.value() );
 		}
 		WrapOp wrapOp = method.getAnnotation( WrapOp.class );
 		if ( wrapOp != null ) {
-			return Operations.getPrototype( wrapOp.value() );
+			return JvmOperations.getPrototype( wrapOp.value() );
 		}
 		return null;
 	}

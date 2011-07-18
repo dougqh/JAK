@@ -6,9 +6,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.dougqh.jak.assembler.ConstantEntry;
-import net.dougqh.jak.assembler.JavaCodeWriter;
-import net.dougqh.jak.assembler.JavaTypeWriter;
+import net.dougqh.jak.jvm.assembler.ConstantEntry;
+import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
+import net.dougqh.jak.jvm.assembler.JvmTypeWriter;
 
 final class ReplRecorder {
 	private ArrayList< Method > methods = new ArrayList< Method >( 32 );
@@ -46,8 +46,8 @@ final class ReplRecorder {
 	}
 	
 	final void replay(
-		final JavaTypeWriter typeWriter,
-		final JavaCodeWriter codeWriter )
+		final JvmTypeWriter typeWriter,
+		final JvmCodeWriter codeWriter )
 	{
 		Iterator< Method > methodIter = this.methods.iterator();
 		Iterator< Object[] > argsIter = this.args.iterator();
@@ -71,7 +71,7 @@ final class ReplRecorder {
 	}
 	
 	private static final void ldc(
-		final JavaCodeWriter codeWriter,
+		final JvmCodeWriter codeWriter,
 		final Object... args )
 	{
 		ConstantEntry entry = (ConstantEntry)args[ 0 ];
@@ -96,7 +96,7 @@ final class ReplRecorder {
 	}
 	
 	private static final void invoke(
-		final JavaCodeWriter codeWriter,
+		final JvmCodeWriter codeWriter,
 		final Method method,
 		final Object... args )
 	{
