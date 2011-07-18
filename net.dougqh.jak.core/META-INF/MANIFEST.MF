@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JAK Core
+Bundle-SymbolicName: net.dougqh.jak.core
+Bundle-Version: 1.0.0.1
+Bundle-Vendor: Douglas Q Hawkins
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: net.dougqh.jak,
+ net.dougqh.jak.types
+Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0"
