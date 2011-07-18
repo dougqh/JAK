@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JAK Disassembler
+Bundle-SymbolicName: net.dougqh.jak.disassembler
+Bundle-Version: 1.0.0.1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Douglas Q. Hawkins
+Require-Bundle: net.dougqh.jak.core;bundle-version="1.0.0",
+ org.junit4;bundle-version="4.8.1",
+ net.dougqh.jak.jvm.core;bundle-version="1.0.0"
+Export-Package: net.dougqh.jak.disassembler
