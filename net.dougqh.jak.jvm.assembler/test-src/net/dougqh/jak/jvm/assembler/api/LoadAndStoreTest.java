@@ -276,45 +276,57 @@ public final class LoadAndStoreTest {
 		classWriter.define(
 			public_().final_().method( void.class, "alter", Object[].class ) ).
 			//tmp0 = array[ 0 ]
+			adeclare( "tmp0" ).
 			aload_1().
 			iconst_0().
 			aaload().
 			astore( "tmp0" ).
+			
 			//tmp1 = array[ 1 ]
+			adeclare( "tmp1" ).
 			aload_1().
 			iconst_1().
 			aaload().
 			astore( "tmp1" ).
+			
 			//tmp2 = array[ 2 ]
+			adeclare( "tmp2" ).
 			aload_1().
 			iconst_2().
 			aaload().
 			astore( "tmp2" ).
+			
 			//tmp3 = array[ 3 ]
+			adeclare( "tmp3" ).
 			aload_1().
 			iconst_3().
 			aaload().
 			astore( "tmp3" ).
+			
 			//array[ 0 ] = tmp1
 			aload_1().
 			iconst_0().
 			aload( "tmp1" ).
 			aastore().
+			
 			//array[ 1 ] = tmp3
 			aload_1().
 			iconst_1().
 			aload( "tmp3" ).
 			aastore().
+			
 			//array[ 2 ] = tmp0
 			aload_1().
 			iconst_2().
 			aload( "tmp0" ).
 			aastore().
+			
 			//array[ 3 ] = tmp2
 			aload_1().
 			iconst_3().
 			aload( "tmp2" ).
 			aastore().
+			
 			//return
 			return_();
 		
@@ -333,8 +345,8 @@ public final class LoadAndStoreTest {
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define( clinit() ).
-			iconst( 512 ).
-			istore( "tmp" ).
+			ideclare( "tmp" ).
+			istore( 512, "tmp" ).
 			iload( "tmp" ).
 			putstatic( ConstantHolder.class, field( int.class, "INT" ) ).
 			return_();
@@ -350,8 +362,8 @@ public final class LoadAndStoreTest {
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define( clinit() ).
-			fconst( 20f ).
-			fstore( "tmp" ).
+			fdeclare( "tmp" ).
+			fstore( 20f, "tmp" ).
 			fload( "tmp" ).
 			putstatic( ConstantHolder.class, field( float.class, "FLOAT" ) ).
 			return_();
@@ -367,8 +379,8 @@ public final class LoadAndStoreTest {
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define( clinit() ).
-			lconst( Long.MIN_VALUE ).
-			lstore( "tmp" ).
+			ldeclare( "tmp" ).
+			lstore( Long.MIN_VALUE, "tmp" ).
 			lload( "tmp" ).
 			putstatic( ConstantHolder.class, field( long.class, "LONG" ) ).
 			return_();
@@ -384,8 +396,8 @@ public final class LoadAndStoreTest {
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define( clinit() ).
-			dconst( Double.MIN_VALUE ).
-			dstore( "tmp" ).
+			ddeclare( "tmp" ).
+			dstore( Double.MIN_VALUE, "tmp" ).
 			dload( "tmp" ).
 			putstatic( ConstantHolder.class, field( double.class, "DOUBLE" ) ).
 			return_();
@@ -401,10 +413,13 @@ public final class LoadAndStoreTest {
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define( clinit() ).
+			adeclare( "tmp" ).
 			ldc( "Hello World" ).
 			astore( "tmp" ).
 			aload( "tmp" ).
 			putstatic( ConstantHolder.class, "STRING" ).
+			
+			adeclare( "tmp2" ).
 			ldc( "Good Bye World" ).
 			astore( "tmp2" ).
 			aload( "tmp2" ).

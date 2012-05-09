@@ -9,6 +9,8 @@ public interface JvmLocals {
 	
 	public abstract void addParameter( final Type type );
 	
+	public abstract void declare( final int slot, final Type type );
+	
 	public abstract void load( final int slot, final Type type );
 	
 	public abstract void inc( final int slot );

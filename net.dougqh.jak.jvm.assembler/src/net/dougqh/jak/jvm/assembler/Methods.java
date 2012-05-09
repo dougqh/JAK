@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.FormalArguments;
-import net.dougqh.jak.jvm.assembler.Attribute.Deferred;
+import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 
 final class Methods {
 	private final ConstantPool constantPool;
@@ -141,7 +141,7 @@ final class Methods {
 	
 	private static final class CodeAttribute
 		extends Attribute
-		implements Deferred
+		implements DeferredAttribute
 	{
 		static final String ID = net.dougqh.jak.core.Attributes.CODE;
 		

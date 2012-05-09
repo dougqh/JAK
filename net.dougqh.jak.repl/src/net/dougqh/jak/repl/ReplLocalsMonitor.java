@@ -22,6 +22,11 @@ public final class ReplLocalsMonitor implements JvmLocals {
 	}
 	
 	@Override
+	public void declare( final int slot, final Type type ) {
+		this.locals.declare( slot, type );
+	}
+	
+	@Override
 	public final Type typeOf( final int slot, final Type expectedType ) {
 		return this.locals.typeOf( slot, expectedType );
 	}

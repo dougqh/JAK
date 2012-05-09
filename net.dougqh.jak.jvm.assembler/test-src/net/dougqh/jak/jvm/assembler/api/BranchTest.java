@@ -84,11 +84,12 @@ public final class BranchTest {
 			public_().final_().method( int.class, "calculate" ).
 				arg( int.class, "count" ) ).
 			//sum = 0
-			iconst_0().
-			istore( "sum" ).
+			ideclare( "sum" ).
+			istore( 0, "sum" ).
+
 			//i = 0
-			iconst_0().
-			istore( "i" ).
+			ideclare( "i" ).
+			istore( 0, "i" ).
 			goto_( "test" ).
 			
 			label( "loop" ).
@@ -97,6 +98,7 @@ public final class BranchTest {
 			iconst( 10 ).
 			irem().
 			ifeq( "inc" ).
+			
 			//sum += i
 			iload( "sum" ).
 			iload( "i" ).

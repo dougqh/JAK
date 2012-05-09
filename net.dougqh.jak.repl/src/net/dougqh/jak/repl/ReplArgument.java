@@ -10,7 +10,7 @@ import net.dougqh.java.meta.types.JavaTypes;
 enum ReplArgument {
 	BOOLEAN( boolean.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Boolean parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			if ( argString.equals( TRUE ) ) {
@@ -24,7 +24,7 @@ enum ReplArgument {
 	},
 	BYTE( byte.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Byte parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			try {
@@ -36,7 +36,7 @@ enum ReplArgument {
 	},
 	CHAR( char.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Character parse( final JakRepl repl, final String argString ) {
 			//TODO: Implement this proper escaping support
 			if ( argString.charAt( 0 ) != CHAR_QUOTE ) {
 				throw new IllegalArgumentException();
@@ -52,7 +52,7 @@ enum ReplArgument {
 	},
 	SHORT( short.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Short parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			try {
@@ -64,7 +64,7 @@ enum ReplArgument {
 	},
 	INT( int.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Integer parse( final JakRepl repl, final String argString ) {
 			checkNoQualifier( argString );
 			
 			try {
@@ -76,7 +76,7 @@ enum ReplArgument {
 	},
 	FLOAT( float.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Float parse( final JakRepl repl, final String argString ) {
 			checkType( argString, float.class );
 			
 			try {
@@ -88,7 +88,7 @@ enum ReplArgument {
 	},
 	LONG( long.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Long parse( final JakRepl repl, final String argString ) {
 			checkType( argString, long.class );
 			
 			try {
@@ -100,7 +100,7 @@ enum ReplArgument {
 	},
 	DOUBLE( double.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Double parse( final JakRepl repl, final String argString ) {
 			checkType( argString, double.class );
 			
 			try {
@@ -117,7 +117,7 @@ enum ReplArgument {
 		}
 		
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final String parse( final JakRepl repl, final String argString ) {
 			char[] chars = argString.toCharArray();
 			if ( ! Character.isJavaIdentifierStart( chars[ 0 ] ) ) {
 				throw new IllegalArgumentException();
@@ -132,7 +132,7 @@ enum ReplArgument {
 	},
 	STRING_LITERAL( CharSequence.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final String parse( final JakRepl repl, final String argString ) {
 			//TODO: Implement this proper escaping support
 			if ( argString.charAt( 0 ) != STRING_QUOTE ) {
 				throw new IllegalArgumentException();
@@ -145,13 +145,13 @@ enum ReplArgument {
 	},
 	CLASS_LITERAL( Type.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final Class< ? > parse( final JakRepl repl, final String argString ) {
 			return loadClass( repl, argString );
 		}
 	},
 	FIELD( JavaField.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final JavaField parse( final JakRepl repl, final String argString ) {
 			String[] parts = splitOnLast( argString, ':' );
 			if ( parts.length != 2 ) {
 				throw new IllegalArgumentException();
@@ -165,7 +165,7 @@ enum ReplArgument {
 	},
 	METHOD( JavaMethodDescriptor.class ) {
 		@Override
-		public final Object parse( final JakRepl repl, final String argString ) {
+		public final JavaMethodDescriptor parse( final JakRepl repl, final String argString ) {
 			//DQH: TODO - Make this parsing more robust
 			
 			String[] parts = splitOnLast( argString, ':' );

@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.assembler;
 
 import java.util.ArrayList;
 
-import net.dougqh.jak.jvm.assembler.Attribute.Deferred;
+import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 
 
 final class Attributes {
@@ -17,7 +17,7 @@ final class Attributes {
 	}
 	
 	final void add( final Attribute attribute ) {
-		if ( attribute instanceof Deferred ) {
+		if ( attribute instanceof DeferredAttribute ) {
 			this.deferredAttributes.add( attribute );
 		} else {
 			this.write( attribute );

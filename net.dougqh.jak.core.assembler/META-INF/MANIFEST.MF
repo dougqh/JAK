@@ -6,5 +6,6 @@ Bundle-Version: 1.0.0.0
 Bundle-Vendor: Douglas Q Hawkins
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0",
- net.dougqh.jak.core;bundle-version="1.0.0"
+ net.dougqh.jak.core;bundle-version="1.0.0",
+ org.junit4;bundle-version="4.8.1"
 Export-Package: net.dougqh.jak.assembler

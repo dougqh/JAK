@@ -8,6 +8,16 @@ import net.dougqh.jak.annotations.JvmOp;
 import net.dougqh.jak.jvm.operations.*;
 
 public interface JvmCoreCodeWriter {
+	public interface DeferredWrite {
+		public abstract void write(
+			final JvmCoreCodeWriter coreWriter,
+			final boolean terminal );
+	}
+	
+	public abstract JvmCoreCodeWriter defer( final DeferredWrite deferredWrite );
+	
+	public abstract JvmCoreCodeWriter prepare();
+	
 	@JvmOp( nop.class )
 	public abstract JvmCoreCodeWriter nop();
 
@@ -632,7 +642,7 @@ public interface JvmCoreCodeWriter {
 		
 		public abstract int endPos();
 		
-		public abstract Class< ? extends Throwable > throwableClass();
+		public abstract Type exceptionType();
 		
 		public abstract int handlerPos();		
 	}

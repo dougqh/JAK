@@ -1,12 +1,17 @@
 package net.dougqh.jak.jvm.assembler.api;
 
 import static net.dougqh.jak.Jak.*;
+import static net.dougqh.jak.assembler.JakAsm.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
+import net.dougqh.jak.jvm.assembler.api.LoadAndStoreTest.ObjectArrayManipulator;
+import net.dougqh.jak.jvm.assembler.macros.For;
 
 import org.junit.Test;
 
@@ -85,7 +90,7 @@ public final class ArraysTest {
 			(int[])creator.create() );
 	}
 	
-	public final @Test void integerArrayLoad() {
+	public final @Test void integerArrayLoad() throws IOException {
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().final_().class_( "Sum" ).implements_( IntFunction.class ) );
 		
@@ -96,12 +101,12 @@ public final class ArraysTest {
 				arg( int[].class, "array" ) ).
 			
 			//sum = 0
-			iconst_0().
-			istore( "sum" ).
+			ideclare( "sum" ).
+			istore( 0, "sum" ).
 			
 			//i = 0
-			iconst_0().
-			istore( "i" ).
+			ideclare( "i" ).
+			istore( 0, "i" ).
 			goto_( "test" ).
 			
 			label( "loop" ).
@@ -128,6 +133,9 @@ public final class ArraysTest {
 			ireturn();
 		
 		IntFunction sum = classWriter.< IntFunction >newInstance();
+		
+		classWriter.writeTo( new File( "/Users/dougqh/Desktop/bc-scratch" ) );
+		
 		assertEquals(
 			59,
 			sum.process( new int[] { 1, 8, 50 } ) );
@@ -135,63 +143,67 @@ public final class ArraysTest {
 	
 	public final @Test void longArrays() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "Rotate" ).implements_( LongArrayManipulator.class ) );
+			public_().final_().class_( "Rotate" ).extends_( ArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( long[].class, "array" ) ).
+
+				//tmp = array[ array.length - 1 ]
+				ldeclare( "tmp" ).
 				
-			//tmp = array[ array.length - 1 ];
-			aload( "array" ).
-			dup().
-			arraylength().
-			iconst_1().
-			isub().
-			laload().
+				aload( "array" ).
+				arraylength( "array" ).
+				iconst_1().
+				isub().
+				laload().
+				lstore( "tmp" ).
+
+				macro( new For() {
+					protected void preinit() {
+					}
+					
+					protected void init() {
+						//i = array.length - 2
+						ideclare( "i" ).
+						arraylength( "array" ).
+						iconst_2().
+						isub().
+						istore( "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						if_( ge( "i", 0 ), trueLabel );
+					}
+					
+					protected void step() {
+						idec( "i" );
+					}
+					
+					protected void body() {
+						//array[ i + 1 ] = array[ i ];
+						aload( "array" ).
+						iload( "i" ).
+						iconst_1().
+						iadd().
+						laload( "array", "i" ).
+						lastore();
+					}
+				} ).
 			
-			lstore( "tmp" ).
-			
-			//i = array.length - 2
-			aload( "array" ).
-			arraylength().
-			iconst_2().
-			isub().
-			istore( "i" ).
-			goto_( "test" ).
-			
-			label( "loop" ).
-			//array[ i + 1 ] = array[ i ];
-			aload( "array" ).
-			iload( "i" ).
-			iconst_1().
-			iadd().
-			aload( "array" ).
-			iload( "i" ).
-			laload().
-			lastore().
-			
-			//--i;
-			iinc( "i", -1 ).
-			
-			label( "test" ).
-			//if ( i >= 0 ) goto loop
-			iload( "i" ).
-			ifge( "loop" ).
-			
-			//array[ 0 ] = tmp;
-			aload( "array" ).
-			iconst_0().
-			lload( "tmp" ).
-			lastore().
-			
-			return_();
+				//array[ 0 ] = tmp;
+				start_lastore( "array", 0 ).
+				lload( "tmp" ).
+				lastore().
+				
+				return_();
 		
-		LongArrayManipulator manipulator = classWriter.< LongArrayManipulator >newInstance();
+		ArrayManipulator rotate = classWriter.< ArrayManipulator >newInstance();
 		
 		long[] values = new long[] { 10L, 20L, 30L, 40L, 50L };
-		manipulator.alter( values );
+		rotate.alter( values );
 		
 		assertArrayEquals(
 			new long[] { 50L, 10L, 20L, 30L, 40L },
@@ -200,41 +212,39 @@ public final class ArraysTest {
 	
 	public final @Test void booleanArrays() {
 		JvmClassWriter classWriter = new JvmWriter().define( 
-			public_().final_().class_( "BooleanFlipper" ).implements_( BooleanArrayManipulator.class ) );
+			public_().final_().class_( "BooleanFlipper" ).extends_( ArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( boolean[].class, "array" ) ).
-			
-			//i = 0
-			iconst_0().
-			istore( "i" ).
-			goto_( "test" ).
-			
-			label( "loop" ).
-			//array[ i ] = ! array[ i ];
-			aload( "array" ).
-			iload( "i" ).
-			aload( "array" ).
-			iload( "i" ).
-			baload().
-			inot().
-			bastore().
-			
-			//++i
-			iinc( "i" ).
-			
-			label( "test" ).
-			iload( "i" ).
-			aload( "array" ).
-			arraylength().
-			if_icmplt( "loop" ).
-			
-			return_();
+				macro( new For() {
+					protected void init() {
+						ideclare( 0, "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						iload( "i" );
+						arraylength( "array" );
+						if_icmplt( trueLabel );
+					}
+					
+					protected void body() {
+						//array[ i ] = ! array[ i ];
+						start_bastore( "array", "i" );
+						baload( "array", "i" );
+						inot();
+						bastore();
+					}
+					
+					protected void step() {
+						iinc( "i" );
+					}
+				} ).
+				return_();
 		
-		BooleanArrayManipulator flipper = classWriter.< BooleanArrayManipulator >newInstance();
+		ArrayManipulator flipper = classWriter.< ArrayManipulator >newInstance();
 		
 		boolean[] values = new boolean[] { false, true, false, false, true };
 		flipper.alter( values );
@@ -247,46 +257,43 @@ public final class ArraysTest {
 	
 	public final @Test void charArrays() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "CharIncrementer" ).implements_( CharArrayManipulator.class ) );
+			public_().final_().class_( "CharIncrementer" ).extends_( ArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( char[].class, "array" ) ).
-				
-			//i = 0
-			iconst_0().
-			istore( "i" ).
-			goto_( "test" ).
-			
-			label( "loop" ).
-			//array[ i ] = array[ i ] + 1
-			aload( "array" ).
-			iload( "i" ).
-			aload( "array" ).
-			iload( "i" ).
-			caload().
-			iconst_1().
-			iadd().
-			castore().
-			
-			//++i;
-			iinc( "i" ).
-			
-			label( "test" ).
-			//if ( i < array.length ) goto loop
-			iload( "i" ).
-			aload( "array" ).
-			arraylength().
-			if_icmplt( "loop" ).
-			
-			return_();
+				macro( new For() {
+					protected void init() {
+						ideclare( 0, "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						iload( "i" );
+						arraylength( "array" );
+						if_icmplt( trueLabel );
+					}
+					
+					protected void body() {
+						//array[ i ] = array[ i ] + 1
+						start_castore( "array", "i" );
+						caload( "array", "i" );
+						iconst_1();
+						iadd();
+						castore();
+					}
+					
+					protected void step() {
+						iinc( "i" );
+					}
+				} ).
+				return_();
 		
-		CharArrayManipulator manipulator = classWriter.< CharArrayManipulator >newInstance();
+		ArrayManipulator incrementor = classWriter.< ArrayManipulator >newInstance();
 		
 		char[] values = new char[] { 'h', 'e', 'l', 'l', 'o' };
-		manipulator.alter( values );
+		incrementor.alter( values );
 		
 		assertArrayEquals(
 			new char[] { 'i', 'f', 'm', 'm', 'p' },
@@ -295,43 +302,40 @@ public final class ArraysTest {
 	
 	public final @Test void shortArray() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "ShortSquared" ).implements_( ShortArrayManipulator.class ) );
+			public_().final_().class_( "ShortSquared" ).extends_( ArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( short[].class, "array" ) ).
-			//i = 0
-			iconst( 0 ).
-			istore( "i" ).
-			goto_( "test" ).
-			//loop
-			label( "loop" ).
-			//array[ i ] *= array[ i ];
-			aload( "array" ).
-			iload( "i" ).
-			aload( "array" ).
-			iload( "i" ).
-			saload().
-			aload( "array" ).
-			iload( "i" ).
-			saload().
-			imul().
-			i2s().
-			sastore().
-			//++i
-			iinc( "i" ).
-			//test
-			label( "test" ).
-			iload( "i" ).
-			aload( "array" ).
-			arraylength().
-			if_icmplt( "loop" ).
-			//return
-			return_();
+				macro( new For() {
+					@Override
+					protected void init() {
+						ideclare( 0, "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						iload( "i" );
+						arraylength( "array" );
+						if_icmplt( trueLabel );
+					}
+					
+					protected void step() {
+						iinc( "i" );
+					}
+					
+					protected void body() {
+						start_sastore( "array", "i" );
+						saload( "array", "i" );
+						saload( "array", "i" );
+						imul();
+						sastore();
+					}
+				} ).
+				return_();
 		
-		ShortArrayManipulator manipulator = classWriter.< ShortArrayManipulator >newInstance();
+		ArrayManipulator manipulator = classWriter.< ArrayManipulator >newInstance();
 		
 		short[] values = new short[] { 1, 2, 3, 4, 5 };
 		manipulator.alter( values );
@@ -343,44 +347,44 @@ public final class ArraysTest {
 	
 	public final @Test void floatArray() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "FloatSquareRoot" ).implements_( FloatArrayManipulator.class ) );
+			public_().final_().class_( "FloatSquareRoot" ).extends_( ArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( float[].class, "array" ) ).
-			//i=0
-			iconst( 0 ).
-			istore( "i" ).
-			goto_( "test" ).
-			//loop
-			label( "loop" ).
-			//array[ i ] = (float)Math.sqrt( array[ i ] )
-			aload( "array" ).
-			iload( "i" ).
-			aload( "array" ).
-			iload( "i" ).
-			faload().
-			f2d().
-			invokestatic( Math.class, method( double.class, "sqrt", double.class ) ).
-			d2f().
-			fastore().
-			//inc
-			iinc( "i" ).
-			//test
-			label( "test" ).
-			iload( "i" ).
-			aload( "array" ).
-			arraylength().
-			if_icmplt( "loop" ).
-			//return
-			return_();
+				macro( new For() {
+					@Override
+					protected void init() {
+						ideclare( 0, "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						iload( "i" );
+						arraylength( "array" );
+						if_icmplt( trueLabel );
+					}
+					
+					protected void step() {
+						iinc( "i" );
+					}
+					
+					protected void body() {
+						start_fastore( "array", "i" );
+						faload( "array", "i" );
+						f2d();
+						invokestatic( Math.class, method( double.class, "sqrt", double.class ) );
+						d2f();
+						fastore();
+					}
+				} ).
+				return_();
 		
-		FloatArrayManipulator manipulator = classWriter.< FloatArrayManipulator >newInstance();
+		ArrayManipulator sqrt = classWriter.< ArrayManipulator >newInstance();
 		
 		float[] values = new float[] { 4f, 9f, 16f, 1024f, 1048576f };
-		manipulator.alter( values );
+		sqrt.alter( values );
 		assertTrue(
 			Arrays.equals(
 				new float[] { 2f, 3f, 4f, 32f, 1024f },
@@ -389,39 +393,40 @@ public final class ArraysTest {
 	
 	public final @Test void doubleArray() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "DoubleSquareRoot" ).implements_( DoubleArrayManipulator.class ) );
+			public_().final_().class_( "DoubleSquareRoot" ).extends_( ArrayManipulator.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( double[].class, "array" ) ).
-			//i=0
-			iconst( 0 ).
-			istore( "i" ).
-			goto_( "test" ).
-			//loop
-			label( "loop" ).
-			//array[ i ] = Math.sqrt( array[ i ] )
-			aload( "array" ).
-			iload( "i" ).
-			aload( "array" ).
-			iload( "i" ).
-			daload().
-			invokestatic( Math.class, method( double.class, "sqrt", double.class ) ).
-			dastore().
-			//inc
-			iinc( "i" ).
-			//test
-			label( "test" ).
-			iload( "i" ).
-			aload( "array" ).
-			arraylength().
-			if_icmplt( "loop" ).
-			//return
-			return_();
+				
+				macro( new For() {
+					@Override
+					protected void init() {
+						ideclare( 0, "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						iload( "i" );
+						arraylength( "array" );
+						if_icmplt( trueLabel );
+					}
+					
+					protected void step() {
+						iinc( "i" );
+					}
+					
+					protected void body() {
+						start_dastore( "array", "i" );
+						daload( "array", "i" );
+						invokestatic( Math.class, method( double.class, "sqrt", double.class ) );
+						dastore();
+					}
+				} ).
+				return_();
 		
-		DoubleArrayManipulator manipulator = classWriter.< DoubleArrayManipulator >newInstance();
+		ArrayManipulator manipulator = classWriter.< ArrayManipulator >newInstance();
 		
 		double[] values = new double[] { 1048576d, 1024d, 81d };
 		manipulator.alter( values );
@@ -440,48 +445,52 @@ public final class ArraysTest {
 		classWriter.define(
 			public_().final_().method( void.class, "alter" ).
 				arg( Object[].class, "array" ) ).
-			//i=0
-			iconst_0().
-			istore( "i" ).
-			goto_( "test" ).
-			//loop
-			label( "loop" ).
-			//tmp = array[ i ]
-			aload( "array" ).
-			iload( "i" ).
-			aaload().
-			astore( "tmp" ).
-			//array[ i ] = array[ array.length - 1 ]
-			aload( "array" ).
-			iload( "i" ).
-			aload( "array" ).
-			aload( "array" ).
-			arraylength().
-			iconst_1().
-			isub().
-			aaload().
-			aastore().
-			//array[ array.length - 1 ] = tmp
-			aload( "array" ).
-			aload( "array" ).
-			arraylength().
-			iconst_1().
-			isub().
-			aload( "tmp" ).
-			aastore().
-			//inc
-			iinc( "i" ).
-			//test
-			label( "test" ).
-			//if ( i < array.length < 2 ) goto loop
-			iload( "i" ).
-			aload( "array" ).
-			arraylength().
-			iconst_2().
-			idiv().
-			if_icmplt( "loop" ).
-			//return
-			return_();
+				macro( new For() {
+					protected void init() {
+						ideclare( 0, "i" );
+					}
+					
+					protected void test( final String trueLabel ) {
+						iload( "i" );
+						arraylength( "array" );
+						iconst_2();
+						idiv();
+						if_icmplt( trueLabel );
+					}
+					
+					protected void step() {
+						iinc( "i" );
+					}
+					
+					protected void body() {
+						ideclare( "swapIndex" );
+						
+						//swapIndex = array.length - i - 1
+						arraylength( "array" );
+						iload( "i" );
+						isub();
+						iconst_1();
+						isub();
+						istore( "swapIndex" );
+						
+						adeclare( "tmp" );
+						
+						//tmp = array[ i ]
+						aaload( "array", "i" );
+						astore( "tmp" );
+						
+						//array[ i ] = array[ swapIndex ];
+						start_aastore( "array", "i" );
+						aaload( "array", "swapIndex" );
+						aastore();
+						
+						//array[ swapIndex ] = tmp
+						start_aastore( "array", "swapIndex" );
+						aload( "tmp" );
+						aastore();
+					}
+				} ).
+				return_();
 		
 		ObjectArrayManipulator manipulator = classWriter.< ObjectArrayManipulator >newInstance();
 		
@@ -678,31 +687,33 @@ public final class ArraysTest {
 		public abstract int process( final int[] array );
 	}
 	
-	public interface BooleanArrayManipulator {
-		public abstract void alter( final boolean[] array );
-	}
-	
-	public interface CharArrayManipulator {
-		public abstract void alter( final char[] array );
-	}
-	
-	public interface ShortArrayManipulator {
-		public abstract void alter( final short[] array );
-	}
-	
-	public interface LongArrayManipulator {
-		public abstract void alter( final long[] array );
-	}
-	
-	public interface FloatArrayManipulator {
-		public abstract void alter( final float[] array );
-	}
-	
-	public interface DoubleArrayManipulator {
-		public abstract void alter( final double[] array );
-	}
-	
-	public interface ObjectArrayManipulator {
-		public abstract void alter( final Object[] array );
+	public static abstract class ArrayManipulator {
+		public void alter( final boolean[] array ) {
+			throw new UnsupportedOperationException();
+		}
+
+		public void alter( final char[] array ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public void alter( final short[] array ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public void alter( final long[] array ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public void alter( final float[] array ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public void alter( final double[] array ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public void alter( final Object[] array ) {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

@@ -12,7 +12,7 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
-import net.dougqh.jak.jvm.assembler.Attribute.Deferred;
+import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class TypeWriter {
@@ -349,7 +349,7 @@ final class TypeWriter {
 	
 	private final class InnerClassesAttribute
 		extends Attribute
-		implements Deferred
+		implements DeferredAttribute
 	{
 		static final String ID = net.dougqh.jak.core.Attributes.INNER_CLASSES;
 		

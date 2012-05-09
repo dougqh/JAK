@@ -29,7 +29,7 @@ public abstract class JakStack< T > implements Iterable< T > {
 		this.stackImpl( value );		
 	}
 	
-	public final void unstack( @SuppressWarnings( "unused" ) final T value ) {
+	public final void unstack( final T value ) {
 		this.unstackImpl();
 	}
 	

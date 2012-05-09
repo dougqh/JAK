@@ -3,9 +3,8 @@ package net.dougqh.jak;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.ListIterator;
 
-import net.dougqh.jak.JavaVariable;
 import net.dougqh.java.meta.types.JavaTypes;
 
 public final class FormalArguments implements Iterable< JavaVariable > {
@@ -71,7 +70,7 @@ public final class FormalArguments implements Iterable< JavaVariable > {
 	}
 	
 	@Override
-	public final Iterator< JavaVariable > iterator() {
-		return Collections.unmodifiableList( Arrays.asList( this.arguments ) ).iterator();
+	public final ListIterator< JavaVariable > iterator() {
+		return Collections.unmodifiableList( Arrays.asList( this.arguments ) ).listIterator();
 	}
 }

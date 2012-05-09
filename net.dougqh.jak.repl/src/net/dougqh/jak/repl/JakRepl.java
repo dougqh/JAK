@@ -77,6 +77,7 @@ public final class JakRepl {
 		ImportCommand.INSTANCE,
 		ImportsCommand.INSTANCE,
 		ExpressionCommand.INSTANCE,
+		ArrayLiteralCommand.INSTANCE,
 		StringLiteralCommand.INSTANCE,
 		OperatorCommand.INSTANCE );
 	

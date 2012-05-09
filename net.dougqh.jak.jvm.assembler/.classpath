@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test-src"/>
+	<classpathentry kind="src" path="scratch-src"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

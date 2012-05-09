@@ -36,6 +36,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	private final ArrayList< Jump > unresolvedJumps = new ArrayList< Jump >( 4 );
 	
 	private JvmCoreCodeWriter wrapper = null;
+	private DeferredWrite deferredWrite = null;
 	
 	JvmCoreCodeWriterImpl(
 		final ConstantPool constantPool,
@@ -47,6 +48,31 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		
 		this.locals = locals;
 		this.stack = stack;
+	}
+	
+	@Override
+	public final JvmCoreCodeWriter prepare() {
+		if ( this.deferredWrite != null ) {
+			DeferredWrite deferredWrite = this.deferredWrite;
+			this.deferredWrite = null;
+			deferredWrite.write( this, false );
+		}
+		return this;
+	}
+	
+	private final void prepareLast() {
+		if ( this.deferredWrite != null ) {
+			DeferredWrite deferredWrite = this.deferredWrite;
+			this.deferredWrite = null;
+			deferredWrite.write( this, true );
+		}		
+	}
+	
+	public final JvmCoreCodeWriter defer( final DeferredWrite deferredWrite ) {
+		this.prepare();
+		
+		this.deferredWrite = deferredWrite;
+		return this;
 	}
 
 	@Override
@@ -1964,6 +1990,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	
 	@Override
 	public final void prepareForWrite() {
+		this.prepareLast();
 	}
 	
 	//DQH - 10-19-2010 - Rather ugly...
@@ -2014,12 +2041,16 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	private final void unstack( final Type type ) {
+		this.prepare();
+		
 		if ( ! type.equals( void.class ) ) {
 			this.stack.unstack( type );
 		}
 	}
 	
 	private final JvmCoreCodeWriterImpl op( final byte opCode ) {
+		this.prepare();
+		
 		this.codeOut.u1( opCode );
 		return this;
 	}
@@ -2090,7 +2121,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	
 		out.u2( this.handlers.size() );
 		for ( ExceptionHandler handler : this.handlers ) {
-			ConstantEntry exceptionEntry =  this.constantPool.addClassInfo( handler.throwableClass() );
+			ConstantEntry exceptionEntry =  this.constantPool.addClassInfo( handler.exceptionType() );
 			out.u2( handler.startPos() ).
 				u2( handler.endPos() ).
 				u2( handler.handlerPos() ).

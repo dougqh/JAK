@@ -31,6 +31,7 @@ public final class SynchronizationTest {
 			monitorexit().
 			return_().
 			catch_( "try", "endTry", Throwable.class ).
+			adeclare( "e" ).
 			astore( "e" ).
 			aload_1().
 			monitorexit().

@@ -13,7 +13,16 @@ import net.dougqh.java.meta.types.JavaTypes;
 
 import static net.dougqh.jak.Methods.*;
 
-public final class Jak {
+public class Jak {
+	public static final Type boolean_ = boolean.class;
+	public static final Type byte_ = byte.class;
+	public static final Type char_ = char.class;
+	public static final Type short_ = short.class;
+	public static final Type int_ = int.class;
+	public static final Type long_ = long.class;
+	public static final Type float_ = float.class;
+	public static final Type double_ = double.class;
+	
 	public static final JavaPackageDescriptor package_( final String name ) {
 		return new JavaPackageDescriptor( name );
 	}

@@ -155,6 +155,12 @@ public final class JavaFlagsBuilder {
 		return new JavaAnnotationDescriptor( this, annotationName );
 	}
 	
+	public final JavaAnnotationDescriptor annotation(
+		final String annotationName )
+	{
+		return $interface( annotationName );
+	}
+	
 	public final JavaAnnotationDescriptor $interface(
 		final Package aPackage,
 		final String annotationName )
@@ -163,6 +169,13 @@ public final class JavaFlagsBuilder {
 			this,
 			aPackage.getName() + "." + annotationName );
 	}
+	
+	public final JavaAnnotationDescriptor annotation(
+		final Package aPackage,
+		final String annotationName )
+	{
+		return $interface( aPackage, annotationName );
+	}	
 	
 	final int flags() {
 		return this.flags;

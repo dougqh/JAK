@@ -26,5 +26,5 @@ abstract class Attribute {
 	
 	abstract void writeBody( final JvmOutputStream out );
 	
-	static interface Deferred {}
+	static interface DeferredAttribute {}
 }

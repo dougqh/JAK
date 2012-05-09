@@ -36,6 +36,11 @@ final class DefaultLocalsMonitor implements JvmLocals {
 	}
 	
 	@Override
+	public final void declare( final int slot, final Type type ) {
+		this.local( slot, type );
+	}
+	
+	@Override
 	public final void load( final int slot, final Type type ) {
 		this.local( slot, type );
 	}

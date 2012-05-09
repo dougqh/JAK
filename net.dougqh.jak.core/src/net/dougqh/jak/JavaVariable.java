@@ -23,4 +23,9 @@ public final class JavaVariable {
 	public final Type getType() {
 		return this.type;
 	}
+	
+	@Override
+	public final String toString() {
+		return this.name + ":" + this.type;
+	}
 }

@@ -140,14 +140,21 @@ public final class JvmClassWriter
 	public final JvmCodeWriter define(
 		final JavaMethodDescriptor method )
 	{
-		return new JvmCodeWriter(
-			this.typeWriter,
-			method.isStatic(),
-			method.arguments(),
-			this.typeWriter.define(
-				method,
-				ADDITIONAL_METHOD_FLAGS,
-				null ) );
+		//coreWriter will be null when the method is abstract or native pass it on
+		JvmCoreCodeWriter coreWriter = this.typeWriter.define(
+			method,
+			ADDITIONAL_METHOD_FLAGS,
+			null );
+		
+		if ( coreWriter == null ) {
+			return null;
+		} else {
+			return new JvmCodeWriterImpl(
+				this.typeWriter,
+				method.isStatic(),
+				method.arguments(),
+				coreWriter );
+		}
 	}
 	
 	public final JvmCodeWriter define( final Method method ) {

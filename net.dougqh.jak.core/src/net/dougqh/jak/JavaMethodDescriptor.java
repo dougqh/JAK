@@ -75,6 +75,14 @@ public final class JavaMethodDescriptor {
 		return ( ( this.flags & Flags.STATIC ) != 0 );
 	}
 	
+	public final boolean isAbstract() {
+		return ( ( this.flags & Flags.ABSTRACT ) != 0 );
+	}
+	
+	public final boolean isNative() {
+		return ( ( this.flags & Flags.NATIVE ) != 0 );
+	}
+	
 	public final FormalArguments arguments() {
 		return this.args;
 	}

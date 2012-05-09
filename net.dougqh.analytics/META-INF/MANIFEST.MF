@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Analytics
+Bundle-SymbolicName: net.dougqh.analytics
+Bundle-Version: 1.0.0.0
+Bundle-Vendor: Douglas Q Hawkins
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: net.dougqh.jak.jvm.disassembler;bundle-version="1.0.0"

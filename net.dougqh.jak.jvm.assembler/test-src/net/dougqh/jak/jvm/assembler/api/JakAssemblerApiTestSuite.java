@@ -1,5 +1,7 @@
 package net.dougqh.jak.jvm.assembler.api;
 
+import net.dougqh.jak.jvm.assembler.macros.MacrosTestSuite;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -24,5 +26,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	ClassLoaderTest.class,
 	AnnotationsTest.class,
 	JakTypeStackTest.class,
-	StackManipulationTest.class } )
+	StackManipulationTest.class,
+	MacrosTestSuite.class } )
 public class JakAssemblerApiTestSuite {}

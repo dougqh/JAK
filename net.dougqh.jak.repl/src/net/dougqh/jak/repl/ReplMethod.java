@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -17,6 +18,9 @@ import net.dougqh.jak.annotations.JvmOp;
 import net.dougqh.jak.annotations.Symbol;
 import net.dougqh.jak.annotations.SyntheticOp;
 import net.dougqh.jak.annotations.WrapOp;
+import net.dougqh.jak.assembler.JakCondition;
+import net.dougqh.jak.assembler.JakExpression;
+import net.dougqh.jak.assembler.JakMacro;
 import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.JvmOperations;
@@ -86,7 +90,7 @@ final class ReplMethod {
 	private final String name;
 	private final ReplArgument[] arguments;
 	
-	ReplMethod( final Method method ) {
+	private ReplMethod( final Method method ) {
 		this.method = method;
 		this.name = getNameOf( method );
 		
@@ -196,7 +200,10 @@ final class ReplMethod {
 		}
 		
 		Class< ? >[] argTypes = method.getParameterTypes();
-		if ( containsArrayType( argTypes ) ) {
+		if ( containsCollectionType( argTypes ) ) {
+			return false;
+		}
+		if ( containsMacroType( argTypes ) ) {
 			return false;
 		}
 		if ( contains( argTypes, Method.class ) ) {
@@ -211,9 +218,24 @@ final class ReplMethod {
 		return true;
 	}
 	
-	private static final boolean containsArrayType( final Type[] types ) {
+	private static final boolean containsCollectionType( final Type[] types ) {
 		for ( Type curType : types ) {
-			if ( JavaTypes.isArrayType( curType ) ) {
+			if ( JavaTypes.isArrayType( curType ) ||
+				JavaTypes.isObjectType( Collection.class ) )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static final boolean containsMacroType( final Type[] types ) {
+		for ( Type curType : types ) {
+			if ( curType.equals( JakMacro.class ) ) {
+				return true;
+			} else if ( curType.equals( JakExpression.class ) ) {
+				return true;
+			} else if ( curType.equals( JakCondition.class ) ) {
 				return true;
 			}
 		}
@@ -250,7 +272,7 @@ final class ReplMethod {
 			return synthOp.id().isEmpty() ? method.getName() : synthOp.id();
 		}
 		
-		throw new IllegalStateException();
+		throw new IllegalStateException( "Unannotated method " + method );
 	}
 	
 	private static final JvmOperation getOperationOf( final Method method ) {
