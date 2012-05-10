@@ -4,10 +4,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
@@ -113,15 +115,19 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@Override
 	@SyntheticOp
 	public final JvmCodeWriter endScope() {
-		this.sharedState().varScope = this.varScope( false ).endScope();
+		Scope varScope = this.varScope( false );
+		for ( Map.Entry< String, Integer> entry: varScope.entrySet() ) {
+			this.localsMonitor().undeclare( entry.getValue() );
+		}
+		
+		this.sharedState().varScope = varScope.endScope();
 		return this;
 	}
 	
 	@Override
 	@SyntheticOp
 	public final JvmCodeWriter declare( final Type type, final @Symbol String var ) {
-		int slot = this.localsMonitor().maxLocals();
-		this.localsMonitor().declare( slot, type );
+		int slot = this.localsMonitor().declare( type );
 		this.varScope( true ).set( var, slot );
 		return this;
 	}
@@ -652,7 +658,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@WrapOp( iload.class )
 	public final JvmCodeWriter iload( final String var ) {
-		return this.iload( this.getOrReserveVarSlot( var, int.class ) );
+		return this.iload( this.getVarSlot( var ) );
 	}
 
 	@WrapOp( iload.class )
@@ -702,7 +708,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@JvmOp( lload.class )
 	public final JvmCodeWriter lload( final @Symbol String var ) {
-		return this.lload( this.getOrReserveVarSlot( var, long.class ) );
+		return this.lload( this.getVarSlot( var ) );
 	}
 
 	@WrapOp( lload.class )
@@ -752,7 +758,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@JvmOp( fload.class )
 	public final JvmCodeWriter fload( final @Symbol String var ) {
-		return this.fload( this.getOrReserveVarSlot( var, float.class ) );
+		return this.fload( this.getVarSlot( var ) );
 	}
 
 	@WrapOp( fload.class )
@@ -802,7 +808,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( dload.class )
 	public final JvmCodeWriter dload( final @Symbol String var ) {
-		return this.dload( this.getOrReserveVarSlot( var, double.class ) );
+		return this.dload( this.getVarSlot( var ) );
 	}
 
 	@WrapOp( dload.class )
@@ -852,7 +858,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@JvmOp( aload.class )
 	public final JvmCodeWriter aload( final @Symbol String var ) {
-		return this.aload( this.getOrReserveVarSlot( var, Reference.class ) );
+		return this.aload( this.getVarSlot( var ) );
 	}
 
 	@WrapOp( aload.class )
@@ -1141,7 +1147,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( istore.class )
 	public final JvmCodeWriter istore( final @Symbol String var ) {
-		return this.istore( this.getOrReserveVarSlot( var, int.class ) );
+		return this.istore( this.getVarSlot( var ) );
 	}
 	
 	@SyntheticOp
@@ -1216,7 +1222,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( lstore.class )
 	public final JvmCodeWriter lstore( final @Symbol String var ) {
-		return this.lstore( this.getOrReserveVarSlot( var, long.class ) );
+		return this.lstore( this.getVarSlot( var ) );
 	}
 	
 	@SyntheticOp
@@ -1271,7 +1277,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( fstore.class )
 	public final JvmCodeWriter fstore( final @Symbol String var ) {
-		return this.fstore( this.getOrReserveVarSlot( var, float.class ) );
+		return this.fstore( this.getVarSlot( var ) );
 	}
 	
 	public final JvmCodeWriter fstore( final float value, final @Symbol String var ) {
@@ -1325,7 +1331,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( dstore.class )
 	public final JvmCodeWriter dstore( final @Symbol String var ) {
-		return this.dstore( this.getOrReserveVarSlot( var, double.class ) );
+		return this.dstore( this.getVarSlot( var ) );
 	}
 	
 	@SyntheticOp
@@ -1380,7 +1386,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( astore.class )
 	public final JvmCodeWriter astore( final @Symbol String var ) {
-		return this.astore( this.getOrReserveVarSlot( var, Reference.class ) );
+		return this.astore( this.getVarSlot( var ) );
 	}
 	
 	@SyntheticOp
@@ -2255,7 +2261,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@WrapOp( iinc.class )
 	public final JvmCodeWriter iinc( final @Symbol String var, final int amount ) {
-		return this.iinc( this.getOrReserveVarSlot( var, int.class ), amount );
+		return this.iinc( this.getVarSlot( var ), amount );
 	}
 
 	@WrapOp( iinc.class )
@@ -3887,17 +3893,8 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		};
 	}
 
-	@Deprecated
-	private final int getOrReserveVarSlot(
-		final String varName,
-		final Type type )
-	{
-		Integer existingSlot = this.varScope( false ).get( varName );
-		if ( existingSlot == null ) {
-			throw new IllegalStateException( "Undeclared variable: " + varName );
-		} else {
-			return existingSlot;
-		}
+	protected final int getVarSlot( final String varName ) {
+		return this.varScope( false ).get( varName );
 	}
 	
 	private final Type resolve( final Type type ) {
@@ -4096,6 +4093,15 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 				value = this.parentScope.get( resolvedId );
 			}
 			return value;
+		}
+		
+		public final Set< Map.Entry< String, Integer > > entrySet() {
+			//DQH - Frequent and internal to JvmCodeWriter, so I guess I'll forego the usual immutable wrapper.
+			if ( this.vars == null ) {
+				return Collections.emptySet();
+			} else {
+				return this.vars.entrySet();
+			}
 		}
 		
 		public final Scope startScope() {
