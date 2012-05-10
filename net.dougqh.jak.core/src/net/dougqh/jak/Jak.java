@@ -14,6 +14,7 @@ import net.dougqh.java.meta.types.JavaTypes;
 import static net.dougqh.jak.Methods.*;
 
 public class Jak {
+	public static final Type void_ = void.class;
 	public static final Type boolean_ = boolean.class;
 	public static final Type byte_ = byte.class;
 	public static final Type char_ = char.class;

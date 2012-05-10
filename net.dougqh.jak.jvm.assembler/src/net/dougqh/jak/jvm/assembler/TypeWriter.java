@@ -164,12 +164,12 @@ final class TypeWriter {
 		final int additionalFlags,
 		final Object defaultValue )
 	{
-		JvmLocals locals = this.config.configure( new DefaultLocalsMonitor() );
+		JvmLocals locals = this.config.configure( new DefaultLocals() );
 		if ( ! method.isStatic() ) {
-			locals.addParameter( this.thisType() );
+			locals.declare( this.thisType() );
 		}
 		for ( JavaVariable var : method.arguments() ) {
-			locals.addParameter( var.getType() );
+			locals.declare( var.getType() );
 		}
 
 		JvmStack stack = this.config.configure( new DefaultJvmStack() );		

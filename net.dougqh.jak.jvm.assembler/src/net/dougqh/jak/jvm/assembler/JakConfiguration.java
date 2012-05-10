@@ -1,11 +1,11 @@
 package net.dougqh.jak.jvm.assembler;
 
 public final class JakConfiguration {
-	private boolean stackTracking = false;
+	private boolean typeTracking = false;
 	private JakMonitor monitor = JakMonitor.NULL;
 	
 	public final JakConfiguration enableTypeTracking() {
-		this.stackTracking = true;
+		this.typeTracking = true;
 		return this;
 	}
 	
@@ -15,16 +15,12 @@ public final class JakConfiguration {
 	}
 	
 	public final JvmLocals configure( final JvmLocals locals ) {
-		JvmLocals wrappedLocals = this.monitor.monitor( locals );
-		if ( this.stackTracking ) {
-			wrappedLocals.enableTypeTracking();
-		}
-		return wrappedLocals;
+		return this.monitor.monitor( locals );
 	}
 	
 	public final JvmStack configure( final JvmStack stack ) {
 		JvmStack wrappedStack = this.monitor.monitor( stack );
-		if ( this.stackTracking ) {
+		if ( this.typeTracking ) {
 			wrappedStack.enableTypeTracking();
 		}
 		return wrappedStack;
