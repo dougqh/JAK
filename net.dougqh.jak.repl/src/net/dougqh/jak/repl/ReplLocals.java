@@ -4,11 +4,11 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.assembler.JvmLocals;
 
-public final class ReplLocalsMonitor implements JvmLocals {
+public final class ReplLocals implements JvmLocals {
 	private final JakRepl repl;
 	private final JvmLocals locals;
 	
-	ReplLocalsMonitor(
+	ReplLocals(
 		final JakRepl repl,
 		final JvmLocals locals )
 	{
@@ -17,23 +17,18 @@ public final class ReplLocalsMonitor implements JvmLocals {
 	}
 	
 	@Override
-	public final void enableTypeTracking() {
-		this.locals.enableTypeTracking();
+	public int declare( final Type type ) {
+		return this.locals.declare( type );
 	}
 	
 	@Override
-	public void declare( final int slot, final Type type ) {
-		this.locals.declare( slot, type );
+	public final void undeclare( final int slot ) {
+		this.locals.undeclare( slot );
 	}
 	
 	@Override
-	public final Type typeOf( final int slot, final Type expectedType ) {
-		return this.locals.typeOf( slot, expectedType );
-	}
-	
-	@Override
-	public final void addParameter( final Type type ) {
-		this.addParameter( type );
+	public final Type typeOf( final int slot ) {
+		return this.locals.typeOf( slot );
 	}
 	
 	@Override

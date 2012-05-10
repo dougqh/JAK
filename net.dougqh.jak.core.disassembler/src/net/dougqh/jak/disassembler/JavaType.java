@@ -9,6 +9,4 @@ public interface JavaType {
 	public abstract Type getParentType();
 	
 	public abstract List< Type > getInterfaces();
-	
-	public abstract List< Type > getReferencedTypes();
 }
