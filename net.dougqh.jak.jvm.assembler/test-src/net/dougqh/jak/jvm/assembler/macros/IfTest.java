@@ -15,7 +15,7 @@ public final class IfTest {
 		JvmWriter writer = new JvmWriter();
 		
 		JvmClassWriter classWriter = writer.define(
-			public_().final_().class_( "Signum" ).implements_( Conditional.class ) );
+			public_().final_().class_( "Signum" ).extends_( Conditional.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -50,7 +50,7 @@ public final class IfTest {
 		JvmWriter writer = new JvmWriter();
 		
 		JvmClassWriter classWriter = writer.define(
-			public_().final_().class_( "Abs" ).implements_( Conditional.class ) );
+			public_().final_().class_( "Abs" ).extends_( Conditional.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
@@ -75,11 +75,11 @@ public final class IfTest {
 		JvmWriter writer = new JvmWriter();
 		
 		JvmClassWriter classWriter = writer.define(
-			public_().final_().class_( "Abs" ).implements_( Conditional.class ) );
+			public_().final_().class_( "Abs" ).extends_( Conditional.class ) );
 		
 		classWriter.defineDefaultConstructor();
 		
-		classWriter.define( public_().final_().method( int_, "exec" ).arg( int_, "num" ) ).
+		classWriter.define( public_().method( int_, "exec" ).arg( int_, "num" ) ).
 			if_( ge( "num", 0 ), new stmt() {
 				@Override
 				protected final void body() {
@@ -99,7 +99,9 @@ public final class IfTest {
 		assertThat( abs.exec( -10 ), is( 10 ) );	
 	}
 	
-	public interface Conditional {
-		public abstract int exec( final int num );
+	public abstract class Conditional {
+		public int exec( final int num ) {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JakContext;
 
-public abstract class JakExpression {
+public interface JakExpression {
 	public abstract Type type( final JakContext context );
 	
 	public abstract boolean hasConstantValue( final JakContext context );

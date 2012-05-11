@@ -3,7 +3,7 @@ package net.dougqh.jak.assembler;
 import net.dougqh.jak.JakContext;
 
 
-abstract class JakVariableExpression extends JakExpression {
+abstract class JakVariableExpression implements JakExpression {
 	protected final String name;
 	
 	JakVariableExpression( final String name ) {

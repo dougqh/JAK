@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JakContext;
 
-abstract class JakConstantExpression extends JakExpression {
+abstract class JakConstantExpression implements JakExpression {
 	private final Type type;
 	private final Object value;
 	
