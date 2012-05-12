@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
+import net.dougqh.jak.assembler.JakExpression.Visitor;
 
 public class JakAsm extends Jak {
 	public static final JakExpression var( final String var ) {
@@ -111,6 +112,24 @@ public class JakAsm extends Jak {
 				visitor.const_( value );
 			}
 		};
+	}
+	
+	public static final JakExpression const_( final String value ) {
+		return new JakConstantExpression( String.class, value ) {
+			@Override
+			public final void accept( final Visitor visitor ) {
+				visitor.const_( value );
+			}
+		};
+	}
+	
+	public static final JakExpression const_( final Class<?> value ) {
+		return new JakConstantExpression( Class.class, value ) {
+			@Override
+			public final void accept( final Visitor visitor ) {
+				visitor.const_( value );
+			}
+		};		
 	}
 	
 	public static final JakCondition and(

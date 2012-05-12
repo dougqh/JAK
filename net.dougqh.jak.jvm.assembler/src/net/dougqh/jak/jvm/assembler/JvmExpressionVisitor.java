@@ -14,17 +14,17 @@ public abstract class JvmExpressionVisitor extends JvmExpression.Visitor {
 	
 	@Override
 	protected void const_( final byte value ) {
-		this.const_( value );
+		this.const_( (int)value );
 	}
 	
 	@Override
 	protected void const_( final char value ) {
-		this.const_( value );
+		this.const_( (int)value );
 	}
 	
 	@Override
 	protected void const_( final short value ) {
-		this.const_( value );
+		this.const_( (int)value );
 	}
 	
 	@Override

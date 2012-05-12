@@ -1,5 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
+import static net.dougqh.jak.Jak.*;
+import static net.dougqh.jak.assembler.JakAsm.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -11,7 +14,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
@@ -336,39 +338,39 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		if ( aClass.equals( void.class ) ) {
 			return this.getstatic(
 				Void.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( boolean.class ) ) {
 			return this.getstatic(
 				Boolean.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( byte.class ) ) {
 			return this.getstatic(
 				Byte.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( char.class ) ) {
 			return this.getstatic(
 				Character.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( short.class ) ) {
 			return this.getstatic(
 				Short.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( int.class ) ) {
 			return this.getstatic(
 				Integer.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( long.class ) ) {
 			return this.getstatic(
 				Long.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( float.class ) ) {
 			return this.getstatic(
 				Float.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( double.class ) ) {
 			return this.getstatic(
 				Double.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else {
 			return this.ldc( aClass );
 		}
@@ -2559,9 +2561,33 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.startConstruction( new IfConstruct( condition, stmt ) );
 	}
 	
+	public final JvmCodeWriter if_( final JakExpression expr, final stmt stmt ) {
+		return this.if_( ne( expr, const_( 0 ) ), stmt );
+	}
+	
+	public final JvmCodeWriter ifnonnull( final JakExpression expr, final stmt stmt ) {
+		return this.if_( ne( expr, null_() ), stmt );
+	}
+	
+	public final JvmCodeWriter ifnull( final JakExpression expr, final stmt stmt ) {
+		return this.if_( eq( expr, null_() ), stmt );
+	}
+	
 	public final JvmCodeWriter elseif( final JakCondition condition, final stmt stmt ) {
 		this.ifUnderConstruction().addElseIf( condition, stmt );
 		return this;
+	}
+
+	public final JvmCodeWriter elseif( final JakExpression expr, final stmt stmt ) {
+		return this.elseif( ne( expr, const_( 0 ) ), stmt );
+	}
+	
+	public final JvmCodeWriter elseif_nonnull( final JakExpression expr, final stmt stmt ) {
+		return this.elseif( ne( expr, null_() ), stmt );
+	}
+	
+	public final JvmCodeWriter elseif_null( final JakExpression expr, final stmt stmt ) {
+		return this.elseif( eq( expr, null_() ), stmt );
 	}
 	
 	public final JvmCodeWriter else_( final stmt stmt ) {
@@ -2991,7 +3017,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter getstatic( final Field field ) {
 		this.coreWriter().getstatic(
 			field.getDeclaringClass(),
-			Jak.field( field ) );
+			field( field ) );
 		return this;
 	}
 
@@ -3021,7 +3047,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter putstatic( final Field field ) {
 		this.coreWriter().putstatic(
 			field.getDeclaringClass(),
-			Jak.field( field ) );
+			field( field ) );
 		return this;
 	}
 
@@ -3051,7 +3077,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter getfield( final Field field ) {
 		this.coreWriter().getfield(
 			field.getDeclaringClass(),
-			Jak.field( field ) );
+			field( field ) );
 		
 		return this;
 	}
@@ -3076,7 +3102,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().putfield(
 			targetType,
-			Jak.field( field.getType(), field.getName() ) );
+			field( field.getType(), field.getName() ) );
 		return this;
 	}
 
@@ -3084,7 +3110,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter putfield( final Field field ) {
 		this.coreWriter().putfield(
 			field.getDeclaringClass(),
-			Jak.field( field.getType(), field.getName() ) );
+			field( field.getType(), field.getName() ) );
 		return this;
 	}
 
@@ -3109,7 +3135,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		final @Symbol String methodName,
 		final Type... args )
 	{
-		return this.invoke( targetType, Jak.method( methodName, args ) );
+		return this.invoke( targetType, method( methodName, args ) );
 	}
 
 	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
@@ -3151,28 +3177,28 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter invokevirtual( final Method method ) {
 		return this.invokevirtual(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 	
 	@JvmOp( invokeinterface.class )
 	public final JvmCodeWriter invokeinterface( final Method method ) {
 		return this.invokeinterface(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 
 	@JvmOp( invokespecial.class )
 	public final JvmCodeWriter invokespecial( final Method method ) {
 		return this.invokespecial(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 	
 	@JvmOp( invokestatic.class )
 	public final JvmCodeWriter invokestatic( final Method method ) {
 		return this.invokestatic(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 
 	@JvmOp( invokevirtual.class )
@@ -3225,7 +3251,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().invokevirtual(
 			targetType,
-			Jak.method(
+			method(
 				returnType,
 				methodName,
 				argumentTypes ) );
@@ -3290,7 +3316,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		return this.invokespecial(
 			targetType,
-			Jak.method( returnType, methodName, argumentTypes ) );
+			method( returnType, methodName, argumentTypes ) );
 	}
 
 	@JvmOp( invokestatic.class )
@@ -3336,7 +3362,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		return this.invokeinterface(
 			targetType,
-			Jak.method( returnType, methodName, argumentTypes ) );
+			method( returnType, methodName, argumentTypes ) );
 	}
 
 	@WrapOp( invokeinterface.class )
@@ -3754,7 +3780,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 		return this.invokestatic(
 			boxClass,
-			Jak.method( boxClass, "valueOf", primitiveClass ) );
+			method( boxClass, "valueOf", primitiveClass ) );
 	}
 
 	@SyntheticOp( stackOperandTypes=Reference.class, stackResultTypes=Primitive.class )
@@ -3768,7 +3794,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		
 		return this.invokevirtual(
 			boxClass,
-			Jak.method( primitiveClass, methodName ) );
+			method( primitiveClass, methodName ) );
 	}
 	
 	
