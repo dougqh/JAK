@@ -124,6 +124,10 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this;
 	}
 	
+	protected final Type typeOf( final String var ) {
+		return this.localsMonitor().typeOf( this.varScope( false ).get( var ) );
+	}
+	
 	@Override
 	@SyntheticOp
 	public final JvmCodeWriter declare( final Type type, final @Symbol String var ) {
@@ -201,8 +205,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return new JakContext() {
 			@Override
 			public final Type localType( final String name ) {
-				//TODO: Proper implementation
-				return int.class;
+				return JvmCodeWriter.this.typeOf( name );
 			}
 		};
 	}
@@ -248,6 +251,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			@Override
 			protected final void const_( final float value ) {
 				JvmCodeWriter.this.fconst( value );
+			}
+			
+			@Override
+			protected void arbitrary( final JvmExpression<?> expression ) {
+				expression.eval( JvmCodeWriter.this );
 			}
 		} );
 		return this;
@@ -2776,6 +2784,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@JvmOp( ireturn.class )
 	public final JvmCodeWriter ireturn() {
 		return this.return_( int.class );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ireturn( final JakExpression expr ) {
+		return this.expr( expr ).ireturn();
 	}
 	
 	@SyntheticOp

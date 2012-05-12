@@ -12,7 +12,7 @@ import java.util.List;
 
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
-import net.dougqh.java.meta.types.typeRef;
+import net.dougqh.java.meta.types.type;
 
 import org.junit.Test;
 
@@ -123,7 +123,7 @@ public final class GenericsTest {
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().final_().class_( "GenericField" ) );
 
-		Type List_String = new typeRef< List< String > >() {};
+		Type List_String = new type< List< String > >() {};
 		
 		classWriter.define(
 			public_().static_().field( List_String, "strings" ) );

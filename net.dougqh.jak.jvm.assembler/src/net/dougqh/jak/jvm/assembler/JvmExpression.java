@@ -73,7 +73,7 @@ public abstract class JvmExpression< T >
 	public final void accept( final JakExpression.Visitor visitor ) {
 		if ( visitor instanceof JvmExpression.Visitor ) {
 			Visitor jvmVisitor = (JvmExpression.Visitor)visitor;
-			jvmVisitor.visitArbitrary( this );
+			jvmVisitor.arbitrary( this );
 		}
 	}
 	
@@ -82,6 +82,6 @@ public abstract class JvmExpression< T >
 			super( context );
 		}
 
-		protected abstract void visitArbitrary( final JvmExpression<?> expression );
+		protected abstract void arbitrary( final JvmExpression<?> expression );
 	}
 }

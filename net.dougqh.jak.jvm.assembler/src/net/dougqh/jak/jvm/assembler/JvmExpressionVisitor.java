@@ -1,9 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
 import net.dougqh.jak.JakContext;
-import net.dougqh.jak.assembler.JakExpression;
 
-public abstract class JvmExpressionVisitor extends JakExpression.Visitor {
+public abstract class JvmExpressionVisitor extends JvmExpression.Visitor {
 	public JvmExpressionVisitor( final JakContext context ) {
 		super( context );
 	}
