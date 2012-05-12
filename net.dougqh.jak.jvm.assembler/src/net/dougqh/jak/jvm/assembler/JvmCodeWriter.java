@@ -168,7 +168,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@SyntheticOp
 	public final JvmCodeWriter fdeclare( final JakExpression expr, final @Symbol String var ) {
-		return this.fdeclare( var ).expr( expr ).fstore( var );
+		return this.fdeclare( var ).fstore( expr, var );
 	}
 	
 	@SyntheticOp
@@ -183,7 +183,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@SyntheticOp
 	public final JvmCodeWriter ldeclare( final JakExpression expr, final @Symbol String var ) {
-		return this.ldeclare( var ).expr( expr ).lstore( var );
+		return this.ldeclare( var ).lstore( expr, var );
 	}
 
 	@SyntheticOp
@@ -198,7 +198,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@SyntheticOp
 	public final JvmCodeWriter ddeclare( final JakExpression expr, final @Symbol String var ) {
-		return this.ddeclare( var ).expr( expr ).ddeclare( var );
+		return this.ddeclare( var ).ddeclare( expr, var );
 	}
 	
 	@SyntheticOp
@@ -213,7 +213,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@SyntheticOp
 	public final JvmCodeWriter adeclare( final JakExpression expr, final @Symbol String var ) {
-		return this.adeclare( var ).expr( expr ).astore( var );
+		return this.adeclare( var ).astore( expr, var );
 	}
 	
 	@SyntheticOp
@@ -1202,6 +1202,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter istore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).istore( var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter istore( final boolean value, final String var ) {
 		return this.iconst( value ).istore( var );
 	}
@@ -1277,6 +1282,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter lstore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).lstore( var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter lstore( final long value, final @Symbol String var ) {
 		return this.lconst( value ).lstore( var );
 	}
@@ -1331,10 +1341,16 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.fstore( this.getVarSlot( var ) );
 	}
 	
+	@WrapOp( fstore.class )
 	public final JvmCodeWriter fstore( final float value, final @Symbol String var ) {
 		return this.fconst( value ).fstore( var );
 	}
 
+	@SyntheticOp
+	public final JvmCodeWriter fstore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).fstore( var );
+	}
+	
 	@WrapOp( fstore.class )
 	public final JvmCodeWriter fstore( final int slot ) {
 		switch ( slot ) {
@@ -1390,6 +1406,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.dconst( value ).dstore( var );
 	}
 	
+	@SyntheticOp
+	public final JvmCodeWriter dstore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).dstore( var );
+	}
+	
 	@WrapOp( dstore.class )
 	public final JvmCodeWriter dstore( final int slot ) {
 		switch ( slot ) {
@@ -1438,6 +1459,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@WrapOp( astore.class )
 	public final JvmCodeWriter astore( final @Symbol String var ) {
 		return this.astore( this.getVarSlot( var ) );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter astore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).astore( var );
 	}
 	
 	@SyntheticOp
