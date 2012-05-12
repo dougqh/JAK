@@ -210,8 +210,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		};
 	}
 	
-	@Override
-	public final JvmCodeWriter expr( final JakExpression expr ) {
+	protected final JvmCodeWriter expr( final JakExpression expr ) {
 		expr.accept( new JvmExpressionVisitor( this.context() ) {
 			@Override
 			protected final void var( final String name, final Type type ) {
@@ -2827,6 +2826,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter lreturn( final JakExpression expr ) {
+		return this.expr( expr ).lreturn();
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter lreturn( final long value ) {
 		return this.lconst( value ).lreturn();
 	}
@@ -2839,6 +2843,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@JvmOp( freturn.class )
 	public final JvmCodeWriter freturn() {
 		return this.return_( float.class );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter freturn( final JakExpression expr ) {
+		return this.expr( expr ).freturn();
 	}
 	
 	@SyntheticOp
@@ -2857,6 +2866,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter dreturn( final JakExpression expr ) {
+		return this.expr( expr ).dreturn();
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter dreturn( final float value ) {
 		return this.dconst( value ).dreturn();
 	}
@@ -2869,6 +2883,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@JvmOp( areturn.class )
 	public final JvmCodeWriter areturn() {
 		return this.return_( Object.class );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter areturn( final JakExpression expr ) {
+		return this.expr( expr ).areturn();
 	}
 	
 	@SyntheticOp

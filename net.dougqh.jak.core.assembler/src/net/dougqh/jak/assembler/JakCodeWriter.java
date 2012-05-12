@@ -19,8 +19,6 @@ public interface JakCodeWriter {
 	
 	public abstract JakCodeWriter if_( final JakCondition condition, final String label );
 	
-	public abstract JakCodeWriter expr( final JakExpression expr );
-	
 	public abstract JakCodeWriter macro( final JakMacro macro );
 	
 	public abstract JakCodeWriter scope( final JakMacro macro );
