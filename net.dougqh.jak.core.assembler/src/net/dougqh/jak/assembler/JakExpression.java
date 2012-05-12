@@ -47,7 +47,7 @@ public interface JakExpression {
 		
 		protected abstract void const_( final double value );
 		
-		protected abstract void const_( final Class<?> aClass );
+		protected abstract void const_( final Type aClass );
 		
 		protected abstract void const_( final String value );
 		

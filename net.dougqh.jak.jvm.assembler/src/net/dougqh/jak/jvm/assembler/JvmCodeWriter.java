@@ -260,7 +260,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 			
 			@Override
-			protected final void const_( final Class<?> aClass ) {
+			protected final void const_( final Type aClass ) {
 				JvmCodeWriter.this.ldc( aClass );
 			}
 			
@@ -623,7 +623,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	@WrapOp( value=ldc.class, stackResultTypes=Class.class )
-	public final JvmCodeWriter ldc( final Class< ? > aClass ) {
+	public final JvmCodeWriter ldc( final Type aClass ) {
 		return this.smartLdc( this.constantPool().addClassInfo( aClass ) );
 	}
 

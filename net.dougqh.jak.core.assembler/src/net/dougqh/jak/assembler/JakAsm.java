@@ -123,7 +123,7 @@ public class JakAsm extends Jak {
 		};
 	}
 	
-	public static final JakExpression const_( final Class<?> value ) {
+	public static final JakExpression const_( final Type value ) {
 		return new JakConstantExpression( Class.class, value ) {
 			@Override
 			public final void accept( final Visitor visitor ) {
