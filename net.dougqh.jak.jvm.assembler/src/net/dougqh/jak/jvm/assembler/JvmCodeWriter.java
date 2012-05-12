@@ -47,8 +47,6 @@ import net.dougqh.java.meta.types.JavaTypes;
  */
 /*
  * Most convenience methods should be implemented here.
- * Type system gymnastics are used to allow the macros to add 
- * methods that they can easily call mid-chain.
  */
 public abstract class JvmCodeWriter implements JakCodeWriter {
 	private static final String TYPE = "TYPE";
@@ -136,6 +134,18 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this;
 	}
 	
+	public final JvmCodeWriter declare( final JakExpression expr, final @Symbol String var ) {
+		this.declare( expr.type( this.context() ), var );
+		this.expr( expr );
+		this.store( expr, var );
+		return this;
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ideclare( final JakExpression expr, final @Symbol String var ) {
+		return this.ideclare( var ).expr( expr ).istore( var );
+	}
+	
 	@SyntheticOp
 	public final JvmCodeWriter ideclare( final @Symbol String var ) {
 		return this.declare( int.class, var );
@@ -157,6 +167,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter fdeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.fdeclare( var ).expr( expr ).fstore( var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter fdeclare( final float value, final @Symbol String var ) {
 		return this.fdeclare( var ).fstore( value, var );
 	}
@@ -164,6 +179,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@SyntheticOp
 	public final JvmCodeWriter ldeclare( final @Symbol String var ) {
 		return this.declare( long.class, var );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ldeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.ldeclare( var ).expr( expr ).lstore( var );
 	}
 
 	@SyntheticOp
@@ -177,6 +197,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter ddeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.ddeclare( var ).expr( expr ).ddeclare( var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter ddeclare( final double value, final @Symbol String var ) {
 		return this.ddeclare( var ).dstore( value, var );
 	}
@@ -184,6 +209,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@SyntheticOp
 	public final JvmCodeWriter adeclare( final @Symbol String var ) {
 		return this.declare( Reference.class, var );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter adeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.adeclare( var ).expr( expr ).astore( var );
 	}
 	
 	@SyntheticOp
@@ -1145,6 +1175,10 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 	}
 	
+	@SyntheticOp
+	public final JvmCodeWriter store( final JakExpression expr, final String var ) {
+		return this.expr( expr ).store( expr.type( this.context() ), var );
+	}
 
 	@SyntheticOp( repl=false )
 	public final JvmCodeWriter store( final Type type, final String var ) {
