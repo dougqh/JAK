@@ -1,4 +1,4 @@
-package net.dougqh.jak.assembler;
+package net.dougqh.jak.jvm.assembler.macros;
 
 import static org.junit.Assert.*;
 
@@ -9,22 +9,30 @@ import net.dougqh.java.meta.types.primitives.boolean_;
 
 import org.junit.Test;
 
-public final class JakExpressionsTest {
+public final class ExpressionsTest {
 	@Test
 	public final void arbitraryPrimitive() {
-		assertEquals(
-			boolean.class,
-			new expr< boolean_ >() {}.type( new FakeContext() ) );
+		expr< boolean_ > expr = new expr< boolean_ >() {
+			@Override
+			protected void eval() {
+				true_();
+			}
+		};
+		
+		assertEquals( boolean.class, expr.type( new FakeContext() ) );
 	}
 	
 	@Test
 	public final void arbitaryReferenceType() {
-		assertEquals(
-			String.class,
-			new expr< String >() {}.type( new FakeContext() ) );
+		expr< String > expr = new expr< String >() {
+			@Override
+			protected final void eval() {
+				ldc("Hello World");
+			}
+		};
+		
+		assertEquals( String.class, expr.type( new FakeContext() ) );
 	}
-	
-	private static abstract class expr<T> extends JakArbitraryExpression<T> {}
 	
 	private static final class FakeContext implements JakContext {
 		@Override

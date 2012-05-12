@@ -11,5 +11,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	JavaTypeBuildingTest.class,
 	JavaTypesArrayTest.class,
 	JavaJvmTypesTest.class,
+	JavaTypeProviderTest.class,
 	JavaTypePrimitivesTest.class } )
 public final class JavaTypesApiTestSuite {}

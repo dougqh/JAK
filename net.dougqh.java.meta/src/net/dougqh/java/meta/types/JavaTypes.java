@@ -315,6 +315,9 @@ public final class JavaTypes {
 			} else {
 				return aClass;
 			}
+		} else if ( type instanceof JavaTypeProvider ) {
+			JavaTypeProvider provider = (JavaTypeProvider)type;
+			return JavaTypes.resolve( provider.get() );
 		} else if ( type instanceof Class<?> ) {
 			Class<?> aClass = (Class<?>)type;
 			TypeAlias alias = aClass.getAnnotation( TypeAlias.class );

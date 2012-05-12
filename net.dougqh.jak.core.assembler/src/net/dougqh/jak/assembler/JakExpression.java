@@ -52,6 +52,5 @@ public interface JakExpression {
 		protected abstract void const_( final String value );
 		
 		protected abstract void null_( final Type type );
-		
 	}
 }

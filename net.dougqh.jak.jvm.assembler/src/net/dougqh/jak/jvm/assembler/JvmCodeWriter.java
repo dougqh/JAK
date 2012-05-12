@@ -342,6 +342,16 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		this.coreWriter().aconst_null();
 		return this;
 	}
+	
+	@SyntheticOp( stackResultTypes=int.class )
+	public final JvmCodeWriter true_() {
+		return this.iconst( true );
+	}
+	
+	@SyntheticOp( stackResultTypes=int.class )
+	public final JvmCodeWriter false_() {
+		return this.iconst( false );
+	}
 
 	@SyntheticOp( stackResultTypes=int.class )
 	public final JvmCodeWriter iconst( final boolean value ) {

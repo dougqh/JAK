@@ -96,10 +96,10 @@ public final class IfTest {
 		Conditional abs = classWriter.newInstance();
 		assertThat( abs.exec( 10 ), is( 10 ) );
 		assertThat( abs.exec( 0 ), is( 0 ) );
-		assertThat( abs.exec( -10 ), is( 10 ) );	
+		assertThat( abs.exec( -10 ), is( 10 ) );
 	}
 	
-	public abstract class Conditional {
+	public static abstract class Conditional {
 		public int exec( final int num ) {
 			throw new UnsupportedOperationException();
 		}
