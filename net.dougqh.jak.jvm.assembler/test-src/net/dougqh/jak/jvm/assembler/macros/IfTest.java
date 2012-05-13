@@ -321,6 +321,36 @@ public final class IfTest {
 		assertThat( notEqual.predicate( "Foo" ), is( false ) );
 	}
 	
+	@Test
+	public final void if_nonnull() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "NonNull" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", Object.class, "value" ) ).
+			ireturn( ne( "value", null_() ) );
+		
+		Conditional notEqual = classWriter.< Conditional >newInstance();
+		assertThat( notEqual.predicate( null ), is( false ) );
+		assertThat( notEqual.predicate( "Foo" ), is( true ) );
+	}
+	
+	@Test
+	public final void if_ref_equals() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "RefEquals" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", Object.class, "lhs", Object.class, "rhs" ) ).
+			ireturn( eq( "lhs", "rhs" ) );
+		
+		Conditional notEqual = classWriter.< Conditional >newInstance();
+		assertThat( notEqual.predicate( null, null ), is( true ) );
+		assertThat( notEqual.predicate( "Foo", "Bar" ), is( false ) );
+	}
+	
 	public static abstract class IntConditional {
 		public int exec( final int num ) {
 			throw new UnsupportedOperationException();
@@ -337,6 +367,10 @@ public final class IfTest {
 		}
 		
 		public boolean predicate( final Object value ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public boolean predicate( final Object lhs, final Object rhs ) {
 			throw new UnsupportedOperationException();
 		}
 	}
