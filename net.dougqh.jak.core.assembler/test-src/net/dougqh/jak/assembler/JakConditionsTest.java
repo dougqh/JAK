@@ -228,7 +228,7 @@ public final class JakConditionsTest {
 		}
 	}
 	
-	private static final class FakeJakExpression extends JakExpression {
+	private static final class FakeJakExpression implements JakExpression {
 		@Override
 		public final void accept( final Visitor visitor ) {
 			throw new UnsupportedOperationException();

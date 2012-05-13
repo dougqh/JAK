@@ -1,9 +1,12 @@
 package net.dougqh.jak.jvm.assembler;
 
+import java.lang.reflect.Type;
+
 import net.dougqh.jak.JakContext;
 import net.dougqh.jak.assembler.JakAsm;
 import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
+import net.dougqh.java.meta.types.JavaTypes;
 
 public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected final JakContext context;
@@ -14,32 +17,60 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	
 	@Override
 	protected final void eq( final JakExpression lhs, final JakExpression rhs ) {
-		this.ieq( lhs, rhs );
+		if ( isInt( lhs ) && isInt( rhs ) ) {
+			this.ieq( lhs, rhs );	
+		} else if ( isRef( lhs ) && isRef( rhs ) ) {
+			this.aeq( lhs, rhs );
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 	
 	@Override
 	protected final void ne( final JakExpression lhs, final JakExpression rhs ) {
-		this.ine( lhs, rhs );
+		if ( isInt( lhs ) && isInt( rhs ) ) {
+			this.ine( lhs, rhs );
+		} else if ( isRef( lhs ) && isRef( rhs ) ) {
+			this.ane( lhs, rhs );
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 	
 	@Override
 	protected final void le( final JakExpression lhs, final JakExpression rhs ) {
-		this.ile( lhs, rhs );
+		if ( isInt( lhs ) && isInt( rhs ) ) {
+			this.ile( lhs, rhs );
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	@Override
 	protected final void lt( final JakExpression lhs, final JakExpression rhs ) {
-		this.ilt( lhs, rhs );
+		if ( isInt( lhs ) && isInt( rhs ) ) {
+			this.ilt( lhs, rhs );
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	@Override
 	protected final void ge( final JakExpression lhs, final JakExpression rhs ) {
-		this.ige( lhs, rhs );
+		if ( isInt( lhs ) && isInt( rhs ) ) {
+			this.ige( lhs, rhs );
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	@Override
 	protected final void gt( final JakExpression lhs, final JakExpression rhs ) {
-		this.igt( lhs, rhs );
+		if ( isInt( lhs ) && isInt( rhs ) ) {
+			this.igt( lhs, rhs );			
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 	
 	@Override
@@ -63,6 +94,24 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected abstract void igt( final JakExpression lhs, final JakExpression rhs );
 	
 	protected abstract void ige( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void aeq( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void ane( final JakExpression lhs, final JakExpression rhs );
+	
+	protected final boolean isInt( final JakExpression expr ) {
+		Type type = expr.type( this.context );
+		return type.equals( boolean.class ) ||
+			type.equals( byte.class ) ||
+			type.equals( char.class ) ||
+			type.equals( short.class ) ||
+			type.equals( int.class );
+	}
+	
+	protected final boolean isRef( final JakExpression expr ) {
+		Type type = expr.type( this.context );
+		return JavaTypes.getRawClass( type ).isAssignableFrom( Object.class );
+	}
 	
 	protected final boolean isZero( final JakExpression expr ) {
 		if ( expr.hasConstantValue( this.context ) ) {

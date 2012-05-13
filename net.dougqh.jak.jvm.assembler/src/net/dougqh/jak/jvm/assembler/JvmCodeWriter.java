@@ -1,5 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
+import static net.dougqh.jak.Jak.*;
+import static net.dougqh.jak.assembler.JakAsm.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -11,7 +14,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
@@ -32,6 +34,7 @@ import net.dougqh.jak.jvm.assembler.macros.DoWhile;
 import net.dougqh.jak.jvm.assembler.macros.IfConstruct;
 import net.dougqh.jak.jvm.assembler.macros.IterableFor;
 import net.dougqh.jak.jvm.assembler.macros.Synchronized;
+import net.dougqh.jak.jvm.assembler.macros.Ternary;
 import net.dougqh.jak.jvm.assembler.macros.TryConstruct;
 import net.dougqh.jak.jvm.assembler.macros.While;
 import net.dougqh.jak.jvm.assembler.macros.stmt;
@@ -47,8 +50,6 @@ import net.dougqh.java.meta.types.JavaTypes;
  */
 /*
  * Most convenience methods should be implemented here.
- * Type system gymnastics are used to allow the macros to add 
- * methods that they can easily call mid-chain.
  */
 public abstract class JvmCodeWriter implements JakCodeWriter {
 	private static final String TYPE = "TYPE";
@@ -124,12 +125,28 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this;
 	}
 	
+	protected final Type typeOf( final String var ) {
+		return this.localsMonitor().typeOf( this.varScope( false ).get( var ) );
+	}
+	
 	@Override
 	@SyntheticOp
 	public final JvmCodeWriter declare( final Type type, final @Symbol String var ) {
 		int slot = this.localsMonitor().declare( type );
 		this.varScope( true ).set( var, slot );
 		return this;
+	}
+	
+	public final JvmCodeWriter declare( final JakExpression expr, final @Symbol String var ) {
+		this.declare( expr.type( this.context() ), var );
+		this.expr( expr );
+		this.store( expr, var );
+		return this;
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ideclare( final JakExpression expr, final @Symbol String var ) {
+		return this.ideclare( var ).expr( expr ).istore( var );
 	}
 	
 	@SyntheticOp
@@ -153,6 +170,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter fdeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.fdeclare( var ).fstore( expr, var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter fdeclare( final float value, final @Symbol String var ) {
 		return this.fdeclare( var ).fstore( value, var );
 	}
@@ -160,6 +182,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@SyntheticOp
 	public final JvmCodeWriter ldeclare( final @Symbol String var ) {
 		return this.declare( long.class, var );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ldeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.ldeclare( var ).lstore( expr, var );
 	}
 
 	@SyntheticOp
@@ -173,6 +200,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter ddeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.ddeclare( var ).ddeclare( expr, var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter ddeclare( final double value, final @Symbol String var ) {
 		return this.ddeclare( var ).dstore( value, var );
 	}
@@ -180,6 +212,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@SyntheticOp
 	public final JvmCodeWriter adeclare( final @Symbol String var ) {
 		return this.declare( Reference.class, var );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter adeclare( final JakExpression expr, final @Symbol String var ) {
+		return this.adeclare( var ).astore( expr, var );
 	}
 	
 	@SyntheticOp
@@ -201,14 +238,12 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return new JakContext() {
 			@Override
 			public final Type localType( final String name ) {
-				//TODO: Proper implementation
-				return int.class;
+				return JvmCodeWriter.this.typeOf( name );
 			}
 		};
 	}
 	
-	@Override
-	public final JvmCodeWriter expr( final JakExpression expr ) {
+	protected final JvmCodeWriter expr( final JakExpression expr ) {
 		expr.accept( new JvmExpressionVisitor( this.context() ) {
 			@Override
 			protected final void var( final String name, final Type type ) {
@@ -226,7 +261,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 			
 			@Override
-			protected final void const_( final Class<?> aClass ) {
+			protected final void const_( final Type aClass ) {
 				JvmCodeWriter.this.ldc( aClass );
 			}
 			
@@ -249,8 +284,17 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			protected final void const_( final float value ) {
 				JvmCodeWriter.this.fconst( value );
 			}
+			
+			@Override
+			protected void arbitrary( final JvmExpression<?> expression ) {
+				expression.eval( JvmCodeWriter.this );
+			}
 		} );
 		return this;
+	}
+	
+	protected final JvmCodeWriter expr( final JakCondition cond ) {
+		return this.ternary( cond, JakAsm.true_(), JakAsm.false_() );
 	}
 	
 	@Override
@@ -299,39 +343,39 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		if ( aClass.equals( void.class ) ) {
 			return this.getstatic(
 				Void.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( boolean.class ) ) {
 			return this.getstatic(
 				Boolean.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( byte.class ) ) {
 			return this.getstatic(
 				Byte.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( char.class ) ) {
 			return this.getstatic(
 				Character.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( short.class ) ) {
 			return this.getstatic(
 				Short.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( int.class ) ) {
 			return this.getstatic(
 				Integer.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( long.class ) ) {
 			return this.getstatic(
 				Long.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( float.class ) ) {
 			return this.getstatic(
 				Float.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else if ( aClass.equals( double.class ) ) {
 			return this.getstatic(
 				Double.class,
-				Jak.field( Class.class, TYPE ) );
+				field( Class.class, TYPE ) );
 		} else {
 			return this.ldc( aClass );
 		}
@@ -341,6 +385,16 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter aconst_null() {
 		this.coreWriter().aconst_null();
 		return this;
+	}
+	
+	@SyntheticOp( stackResultTypes=int.class )
+	public final JvmCodeWriter true_() {
+		return this.iconst( true );
+	}
+	
+	@SyntheticOp( stackResultTypes=int.class )
+	public final JvmCodeWriter false_() {
+		return this.iconst( false );
 	}
 
 	@SyntheticOp( stackResultTypes=int.class )
@@ -574,7 +628,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	@WrapOp( value=ldc.class, stackResultTypes=Class.class )
-	public final JvmCodeWriter ldc( final Class< ? > aClass ) {
+	public final JvmCodeWriter ldc( final Type aClass ) {
 		return this.smartLdc( this.constantPool().addClassInfo( aClass ) );
 	}
 
@@ -1128,6 +1182,10 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 	}
 	
+	@SyntheticOp
+	public final JvmCodeWriter store( final JakExpression expr, final String var ) {
+		return this.expr( expr ).store( expr.type( this.context() ), var );
+	}
 
 	@SyntheticOp( repl=false )
 	public final JvmCodeWriter store( final Type type, final String var ) {
@@ -1148,6 +1206,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@WrapOp( istore.class )
 	public final JvmCodeWriter istore( final @Symbol String var ) {
 		return this.istore( this.getVarSlot( var ) );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter istore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).istore( var );
 	}
 	
 	@SyntheticOp
@@ -1226,6 +1289,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter lstore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).lstore( var );
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter lstore( final long value, final @Symbol String var ) {
 		return this.lconst( value ).lstore( var );
 	}
@@ -1280,10 +1348,16 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.fstore( this.getVarSlot( var ) );
 	}
 	
+	@WrapOp( fstore.class )
 	public final JvmCodeWriter fstore( final float value, final @Symbol String var ) {
 		return this.fconst( value ).fstore( var );
 	}
 
+	@SyntheticOp
+	public final JvmCodeWriter fstore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).fstore( var );
+	}
+	
 	@WrapOp( fstore.class )
 	public final JvmCodeWriter fstore( final int slot ) {
 		switch ( slot ) {
@@ -1339,6 +1413,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.dconst( value ).dstore( var );
 	}
 	
+	@SyntheticOp
+	public final JvmCodeWriter dstore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).dstore( var );
+	}
+	
 	@WrapOp( dstore.class )
 	public final JvmCodeWriter dstore( final int slot ) {
 		switch ( slot ) {
@@ -1387,6 +1466,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@WrapOp( astore.class )
 	public final JvmCodeWriter astore( final @Symbol String var ) {
 		return this.astore( this.getVarSlot( var ) );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter astore( final JakExpression expr, final @Symbol String var ) {
+		return this.expr( expr ).astore( var );
 	}
 	
 	@SyntheticOp
@@ -2482,14 +2566,46 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.startConstruction( new IfConstruct( condition, stmt ) );
 	}
 	
+	public final JvmCodeWriter if_( final JakExpression expr, final stmt stmt ) {
+		return this.if_( ne( expr, const_( 0 ) ), stmt );
+	}
+	
+	public final JvmCodeWriter ifnonnull( final JakExpression expr, final stmt stmt ) {
+		return this.if_( ne( expr, null_() ), stmt );
+	}
+	
+	public final JvmCodeWriter ifnull( final JakExpression expr, final stmt stmt ) {
+		return this.if_( eq( expr, null_() ), stmt );
+	}
+	
 	public final JvmCodeWriter elseif( final JakCondition condition, final stmt stmt ) {
 		this.ifUnderConstruction().addElseIf( condition, stmt );
 		return this;
+	}
+
+	public final JvmCodeWriter elseif( final JakExpression expr, final stmt stmt ) {
+		return this.elseif( ne( expr, const_( 0 ) ), stmt );
+	}
+	
+	public final JvmCodeWriter elseif_nonnull( final JakExpression expr, final stmt stmt ) {
+		return this.elseif( ne( expr, null_() ), stmt );
+	}
+	
+	public final JvmCodeWriter elseif_null( final JakExpression expr, final stmt stmt ) {
+		return this.elseif( eq( expr, null_() ), stmt );
 	}
 	
 	public final JvmCodeWriter else_( final stmt stmt ) {
 		this.ifUnderConstruction().addElse( stmt );
 		return this;
+	}
+	
+	public final JvmCodeWriter ternary(
+		final JakCondition cond, 
+		final JakExpression trueExpr,
+		final JakExpression falseExpr )
+	{
+		return this.expr( new Ternary( cond, trueExpr, falseExpr ) );
 	}
 	
 	@Override
@@ -2583,6 +2699,30 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 					JvmCodeWriter.this.expr( lhs );
 					JvmCodeWriter.this.expr( rhs );
 					JvmCodeWriter.this.if_icmpge( label );
+				}
+			}
+			
+			@Override
+			protected void aeq( final JakExpression lhs, final JakExpression rhs ) {
+				if ( isNull( rhs ) ) {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.ifnull( label );
+				} else {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.expr( rhs );
+					JvmCodeWriter.this.if_acmpeq( label );
+				}
+			}
+			
+			@Override
+			protected void ane( final JakExpression lhs, final JakExpression rhs ) {
+				if ( isNull( rhs ) ) {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.ifnonnull( label );
+				} else {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.expr( rhs );
+					JvmCodeWriter.this.if_acmpne( label );
 				}
 			}
 		});
@@ -2769,6 +2909,16 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter ireturn( final JakExpression expr ) {
+		return this.expr( expr ).ireturn();
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ireturn( final JakCondition cond ) {
+		return this.expr( cond ).ireturn();
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter ireturn( final boolean value ) {
 		return this.iconst( value ).ireturn();
 	}
@@ -2804,6 +2954,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter lreturn( final JakExpression expr ) {
+		return this.expr( expr ).lreturn();
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter lreturn( final long value ) {
 		return this.lconst( value ).lreturn();
 	}
@@ -2816,6 +2971,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@JvmOp( freturn.class )
 	public final JvmCodeWriter freturn() {
 		return this.return_( float.class );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter freturn( final JakExpression expr ) {
+		return this.expr( expr ).freturn();
 	}
 	
 	@SyntheticOp
@@ -2834,6 +2994,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	@SyntheticOp
+	public final JvmCodeWriter dreturn( final JakExpression expr ) {
+		return this.expr( expr ).dreturn();
+	}
+	
+	@SyntheticOp
 	public final JvmCodeWriter dreturn( final float value ) {
 		return this.dconst( value ).dreturn();
 	}
@@ -2846,6 +3011,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@JvmOp( areturn.class )
 	public final JvmCodeWriter areturn() {
 		return this.return_( Object.class );
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter areturn( final JakExpression expr ) {
+		return this.expr( expr ).areturn();
 	}
 	
 	@SyntheticOp
@@ -2889,7 +3059,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter getstatic( final Field field ) {
 		this.coreWriter().getstatic(
 			field.getDeclaringClass(),
-			Jak.field( field ) );
+			field( field ) );
 		return this;
 	}
 
@@ -2919,7 +3089,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter putstatic( final Field field ) {
 		this.coreWriter().putstatic(
 			field.getDeclaringClass(),
-			Jak.field( field ) );
+			field( field ) );
 		return this;
 	}
 
@@ -2949,7 +3119,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter getfield( final Field field ) {
 		this.coreWriter().getfield(
 			field.getDeclaringClass(),
-			Jak.field( field ) );
+			field( field ) );
 		
 		return this;
 	}
@@ -2974,7 +3144,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().putfield(
 			targetType,
-			Jak.field( field.getType(), field.getName() ) );
+			field( field.getType(), field.getName() ) );
 		return this;
 	}
 
@@ -2982,7 +3152,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter putfield( final Field field ) {
 		this.coreWriter().putfield(
 			field.getDeclaringClass(),
-			Jak.field( field.getType(), field.getName() ) );
+			field( field.getType(), field.getName() ) );
 		return this;
 	}
 
@@ -3007,7 +3177,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		final @Symbol String methodName,
 		final Type... args )
 	{
-		return this.invoke( targetType, Jak.method( methodName, args ) );
+		return this.invoke( targetType, method( methodName, args ) );
 	}
 
 	@SyntheticOp( stackOperandTypes={ Any.class, ArgList.class }, stackResultTypes=Any.class )
@@ -3049,28 +3219,28 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	public final JvmCodeWriter invokevirtual( final Method method ) {
 		return this.invokevirtual(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 	
 	@JvmOp( invokeinterface.class )
 	public final JvmCodeWriter invokeinterface( final Method method ) {
 		return this.invokeinterface(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 
 	@JvmOp( invokespecial.class )
 	public final JvmCodeWriter invokespecial( final Method method ) {
 		return this.invokespecial(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 	
 	@JvmOp( invokestatic.class )
 	public final JvmCodeWriter invokestatic( final Method method ) {
 		return this.invokestatic(
 			method.getDeclaringClass(),
-			Jak.method( method ) );
+			method( method ) );
 	}
 
 	@JvmOp( invokevirtual.class )
@@ -3123,7 +3293,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().invokevirtual(
 			targetType,
-			Jak.method(
+			method(
 				returnType,
 				methodName,
 				argumentTypes ) );
@@ -3188,7 +3358,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		return this.invokespecial(
 			targetType,
-			Jak.method( returnType, methodName, argumentTypes ) );
+			method( returnType, methodName, argumentTypes ) );
 	}
 
 	@JvmOp( invokestatic.class )
@@ -3234,7 +3404,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		return this.invokeinterface(
 			targetType,
-			Jak.method( returnType, methodName, argumentTypes ) );
+			method( returnType, methodName, argumentTypes ) );
 	}
 
 	@WrapOp( invokeinterface.class )
@@ -3652,7 +3822,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 		return this.invokestatic(
 			boxClass,
-			Jak.method( boxClass, "valueOf", primitiveClass ) );
+			method( boxClass, "valueOf", primitiveClass ) );
 	}
 
 	@SyntheticOp( stackOperandTypes=Reference.class, stackResultTypes=Primitive.class )
@@ -3666,7 +3836,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		
 		return this.invokevirtual(
 			boxClass,
-			Jak.method( primitiveClass, methodName ) );
+			method( primitiveClass, methodName ) );
 	}
 	
 	

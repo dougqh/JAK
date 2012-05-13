@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	IterableForTest.class,
 	ArrayForTest.class,
-	IfTest.class
+	IfTest.class,
+	ExpressionsTest.class
 })
 public final class MacrosTestSuite {}

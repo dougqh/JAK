@@ -247,7 +247,7 @@ public final class ConstantTest {
 			areturn();
 		
 		ObjectConst classConst = classWriter.< ObjectConst >newInstance();
-		return (Class)classConst.get();
+		return (Class<?>)classConst.get();
 	}
 	
 	public static interface BooleanConst {

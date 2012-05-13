@@ -148,6 +148,39 @@ public class Jak {
 		return new JavaFlagsBuilder().method( returnType, methodName, args );
 	}
 	
+	public static final JavaMethodDescriptor method(
+		final Type returnType, 
+		final String methodName,
+		final Type arg1Type, final String arg1Name )
+	{
+		return new JavaFlagsBuilder().method( returnType, methodName ).
+			arg( arg1Type, arg1Name );
+	}
+
+	public static final JavaMethodDescriptor method(
+		final Type returnType,
+		final String methodName,
+		final Type arg1Type, final String arg1Name,
+		final Type arg2Type, final String arg2Name )
+	{
+		return new JavaFlagsBuilder().method( returnType, methodName ).
+			arg( arg1Type, arg1Name ).
+			arg( arg2Type, arg2Name );
+	}
+
+	public static final JavaMethodDescriptor method(
+		final Type returnType,
+		final String methodName,
+		final Type arg1Type, final String arg1Name,
+		final Type arg2Type, final String arg2Name,
+		final Type arg3Type, final String arg3Name )
+	{
+		return new JavaFlagsBuilder().method( returnType, methodName ).
+			arg( arg1Type, arg1Name ).
+			arg( arg2Type, arg2Name ).
+			arg( arg3Type, arg3Name );
+	}	
+	
 	public static final JavaMethodSignature method(
 		final String methodName )
 	{

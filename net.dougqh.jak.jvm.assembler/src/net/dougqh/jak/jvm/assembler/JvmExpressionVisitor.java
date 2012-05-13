@@ -1,9 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
 import net.dougqh.jak.JakContext;
-import net.dougqh.jak.assembler.JakExpression;
 
-public abstract class JvmExpressionVisitor extends JakExpression.Visitor {
+public abstract class JvmExpressionVisitor extends JvmExpression.Visitor {
 	public JvmExpressionVisitor( final JakContext context ) {
 		super( context );
 	}
@@ -15,17 +14,17 @@ public abstract class JvmExpressionVisitor extends JakExpression.Visitor {
 	
 	@Override
 	protected void const_( final byte value ) {
-		this.const_( value );
+		this.const_( (int)value );
 	}
 	
 	@Override
 	protected void const_( final char value ) {
-		this.const_( value );
+		this.const_( (int)value );
 	}
 	
 	@Override
 	protected void const_( final short value ) {
-		this.const_( value );
+		this.const_( (int)value );
 	}
 	
 	@Override

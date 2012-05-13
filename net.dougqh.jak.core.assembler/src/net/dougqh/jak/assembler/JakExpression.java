@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JakContext;
 
-public abstract class JakExpression {
+public interface JakExpression {
 	public abstract Type type( final JakContext context );
 	
 	public abstract boolean hasConstantValue( final JakContext context );
@@ -47,11 +47,10 @@ public abstract class JakExpression {
 		
 		protected abstract void const_( final double value );
 		
-		protected abstract void const_( final Class<?> aClass );
+		protected abstract void const_( final Type aClass );
 		
 		protected abstract void const_( final String value );
 		
 		protected abstract void null_( final Type type );
-		
 	}
 }
