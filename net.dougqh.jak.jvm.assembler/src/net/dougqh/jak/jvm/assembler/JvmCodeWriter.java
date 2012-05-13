@@ -34,6 +34,7 @@ import net.dougqh.jak.jvm.assembler.macros.DoWhile;
 import net.dougqh.jak.jvm.assembler.macros.IfConstruct;
 import net.dougqh.jak.jvm.assembler.macros.IterableFor;
 import net.dougqh.jak.jvm.assembler.macros.Synchronized;
+import net.dougqh.jak.jvm.assembler.macros.Ternary;
 import net.dougqh.jak.jvm.assembler.macros.TryConstruct;
 import net.dougqh.jak.jvm.assembler.macros.While;
 import net.dougqh.jak.jvm.assembler.macros.stmt;
@@ -290,6 +291,10 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 		} );
 		return this;
+	}
+	
+	protected final JvmCodeWriter expr( final JakCondition cond ) {
+		return this.ternary( cond, JakAsm.true_(), JakAsm.false_() );
 	}
 	
 	@Override
@@ -2595,6 +2600,14 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this;
 	}
 	
+	public final JvmCodeWriter ternary(
+		final JakCondition cond, 
+		final JakExpression trueExpr,
+		final JakExpression falseExpr )
+	{
+		return this.expr( new Ternary( cond, trueExpr, falseExpr ) );
+	}
+	
 	@Override
 	public final JvmCodeWriter if_(
 		final JakCondition condition,
@@ -2874,6 +2887,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@SyntheticOp
 	public final JvmCodeWriter ireturn( final JakExpression expr ) {
 		return this.expr( expr ).ireturn();
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ireturn( final JakCondition cond ) {
+		return this.expr( cond ).ireturn();
 	}
 	
 	@SyntheticOp

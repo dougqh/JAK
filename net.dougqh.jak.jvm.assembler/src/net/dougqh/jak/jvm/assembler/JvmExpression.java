@@ -14,7 +14,7 @@ public abstract class JvmExpression< T >
 	private JvmCodeWriter codeWriter;
 	
 	@Override
-	public final Type type( final JakContext context ) {
+	public Type type( final JakContext context ) {
 		ParameterizedType superType = (ParameterizedType)this.getClass().getGenericSuperclass();
 		return JavaTypes.resolve( superType.getActualTypeArguments()[0] );
 	}

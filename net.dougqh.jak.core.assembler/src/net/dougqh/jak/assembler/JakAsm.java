@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
-import net.dougqh.jak.assembler.JakExpression.Visitor;
 
 public class JakAsm extends Jak {
 	public static final JakExpression var( final String var ) {
@@ -192,6 +191,13 @@ public class JakAsm extends Jak {
 	}
 	
 	public static final JakCondition eq(
+		final String lhs,
+		final String rhs )
+	{
+		return eq( var( lhs ), var( rhs ) );
+	}
+	
+	public static final JakCondition eq(
 		final JakExpression lhs,
 		final JakExpression rhs )
 	{
@@ -216,6 +222,14 @@ public class JakAsm extends Jak {
 	}
 	
 	public static final JakCondition ne(
+		final String lhs,
+		final String rhs )
+	{
+		return ne( var( lhs ), var( rhs ) );
+	}
+
+	
+	public static final JakCondition ne(
 		final JakExpression lhs,
 		final JakExpression rhs )
 	{
@@ -237,6 +251,13 @@ public class JakAsm extends Jak {
 		final int value )
 	{
 		return lt( var( var ), const_( value ) );
+	}
+	
+	public static final JakCondition lt(
+		final String lhs,
+		final String rhs )
+	{
+		return lt( var( lhs ), var( rhs ) );
 	}
 	
 	public static final JakCondition lt(
@@ -264,6 +285,13 @@ public class JakAsm extends Jak {
 	}
 	
 	public static final JakCondition le(
+		final String lhs,
+		final String rhs )
+	{
+		return le( var( lhs ), var( rhs ) );
+	}
+	
+	public static final JakCondition le(
 		final JakExpression lhs,
 		final JakExpression rhs )
 	{
@@ -285,6 +313,13 @@ public class JakAsm extends Jak {
 		final int value )
 	{
 		return gt( var( var ), const_( value ) );
+	}
+	
+	public static final JakCondition gt(
+		final String lhs,
+		final String rhs )
+	{
+		return gt( var( lhs ), var( rhs ) );
 	}
 	
 	public static final JakCondition gt(
@@ -310,6 +345,14 @@ public class JakAsm extends Jak {
 	{
 		return ge( var( var ), const_( value ) );
 	}
+	
+	public static final JakCondition ge(
+		final String lhs,
+		final String rhs )
+	{
+		return ge( var( lhs ), var( rhs ) );
+	}
+
 	
 	public static final JakCondition ge(
 		final JakExpression lhs,
