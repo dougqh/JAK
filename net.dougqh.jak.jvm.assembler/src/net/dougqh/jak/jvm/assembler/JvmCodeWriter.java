@@ -2529,6 +2529,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		this.coreWriter().lcmp();
 		return this;
 	}
+	
+	@SyntheticOp( stackOperandTypes=int.class )
+	public final JvmCodeWriter lcmp( final JakExpression lhsExpr, final JakExpression rhsExpr ) {
+		return this.expr( lhsExpr ).expr( rhsExpr ).lcmp();
+	}
 
 	@JvmOp( fcmpl.class )
 	public final JvmCodeWriter fcmpl() {
@@ -2655,7 +2660,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 			
 			@Override
-			protected void ilt( final JakExpression lhs, final JakExpression rhs ) {
+			protected final void ilt( final JakExpression lhs, final JakExpression rhs ) {
 				if ( isZero( rhs ) ) {
 					JvmCodeWriter.this.expr( lhs );
 					JvmCodeWriter.this.iflt( label );
@@ -2667,7 +2672,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 			
 			@Override
-			protected void ile( final JakExpression lhs, final JakExpression rhs ) {
+			protected final void ile( final JakExpression lhs, final JakExpression rhs ) {
 				if ( isZero( rhs ) ) {
 					JvmCodeWriter.this.expr( lhs );
 					JvmCodeWriter.this.ifle( label );
@@ -2679,7 +2684,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 			
 			@Override
-			protected void igt( final JakExpression lhs, final JakExpression rhs ) {
+			protected final void igt( final JakExpression lhs, final JakExpression rhs ) {
 				if ( isZero( rhs ) ) {
 					JvmCodeWriter.this.expr( lhs );
 					JvmCodeWriter.this.ifgt( label );
@@ -2691,7 +2696,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			}
 			
 			@Override
-			protected void ige( final JakExpression lhs, final JakExpression rhs ) {
+			protected final void ige( final JakExpression lhs, final JakExpression rhs ) {
 				if ( isZero( rhs ) ) {
 					JvmCodeWriter.this.expr( lhs );
 					JvmCodeWriter.this.ifge( label );
@@ -2700,6 +2705,42 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 					JvmCodeWriter.this.expr( rhs );
 					JvmCodeWriter.this.if_icmpge( label );
 				}
+			}
+			
+			@Override
+			protected final void leq( final JakExpression lhs, final JakExpression rhs ) {
+				JvmCodeWriter.this.lcmp( lhs, rhs );
+				JvmCodeWriter.this.ifeq( label );
+			}
+			
+			@Override
+			protected final void lne( final JakExpression lhs, final JakExpression rhs ) {
+				JvmCodeWriter.this.lcmp( lhs, rhs );
+				JvmCodeWriter.this.ifne( label );
+			}
+			
+			@Override
+			protected final void llt( final JakExpression lhs, final JakExpression rhs ) {
+				JvmCodeWriter.this.lcmp( lhs, rhs );
+				JvmCodeWriter.this.iflt( label );
+			}
+			
+			@Override
+			protected final void lle( final JakExpression lhs, final JakExpression rhs ) {
+				JvmCodeWriter.this.lcmp( lhs, rhs );
+				JvmCodeWriter.this.ifle( label );
+			}
+
+			@Override
+			protected final void lgt( final JakExpression lhs, final JakExpression rhs ) {
+				JvmCodeWriter.this.lcmp( lhs, rhs );
+				JvmCodeWriter.this.ifgt( label );
+			}
+			
+			@Override
+			protected final void lge( final JakExpression lhs, final JakExpression rhs ) {
+				JvmCodeWriter.this.lcmp( lhs, rhs );
+				JvmCodeWriter.this.ifge( label );
 			}
 			
 			@Override

@@ -346,9 +346,116 @@ public final class IfTest {
 		classWriter.define( public_().method( boolean_, "predicate", Object.class, "lhs", Object.class, "rhs" ) ).
 			ireturn( eq( "lhs", "rhs" ) );
 		
+		Conditional equal = classWriter.< Conditional >newInstance();
+		assertThat( equal.predicate( null, null ), is( true ) );
+		assertThat( equal.predicate( "Foo", "Bar" ), is( false ) );
+	}
+	
+	@Test
+	public final void if_ref_not_equal() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "RefNotEquals" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", Object.class, "lhs", Object.class, "rhs" ) ).
+			ireturn( ne( "lhs", "rhs" ) );
+		
 		Conditional notEqual = classWriter.< Conditional >newInstance();
-		assertThat( notEqual.predicate( null, null ), is( true ) );
-		assertThat( notEqual.predicate( "Foo", "Bar" ), is( false ) );
+		assertThat( notEqual.predicate( null, null ), is( false ) );
+		assertThat( notEqual.predicate( "Foo", "Bar" ), is( true ) );
+	}
+	
+	@Test
+	public final void if_long_equal() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "Equals" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", long_, "lhs", long_, "rhs" ) ).
+			ireturn( eq( "lhs", "rhs" ) );
+		
+		Conditional equal = classWriter.< Conditional >newInstance();
+		assertThat( equal.predicate( Long.MIN_VALUE, Long.MIN_VALUE ), is( true ) );
+		assertThat( equal.predicate( Long.MIN_VALUE, Long.MAX_VALUE ), is( false ) );
+	}
+	
+	@Test
+	public final void if_long_not_equal() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "NotEquals" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", long_, "lhs", long_, "rhs" ) ).
+			ireturn( ne( "lhs", "rhs" ) );
+		
+		Conditional notEqual = classWriter.< Conditional >newInstance();
+		assertThat( notEqual.predicate( 0L, -1L ), is( true ) );
+		assertThat( notEqual.predicate( 0L, 0L ), is( false ) );		
+	}
+	
+	@Test
+	public final void if_long_less_than() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "LessThan" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", long_, "lhs", long_, "rhs" ) ).
+			ireturn( lt( "lhs", "rhs" ) );
+		
+		Conditional lessThan = classWriter.< Conditional >newInstance();
+		assertThat( lessThan.predicate( 0L, 1L ), is( true ) );
+		assertThat( lessThan.predicate( 1L, 1L ), is( false ) );
+	}
+	
+	@Test
+	public final void if_long_less_than_or_equal() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "LessThanOrEqual" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", long_, "lhs", long_, "rhs" ) ).
+			ireturn( le( "lhs", "rhs" ) );
+		
+		Conditional lessThanOrEqual = classWriter.< Conditional >newInstance();
+		assertThat( lessThanOrEqual.predicate( 0L, 1L ), is( true ) );
+		assertThat( lessThanOrEqual.predicate( 1L, 1L ), is( true ) );
+		assertThat( lessThanOrEqual.predicate( 2L, 1L ), is( false ) );
+	}
+	
+	@Test
+	public final void if_long_greater_than() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "GreaterThan" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", long_, "lhs", long_, "rhs" ) ).
+			ireturn( gt( "lhs", "rhs" ) );
+		
+		Conditional greaterThan = classWriter.< Conditional >newInstance();
+		assertThat( greaterThan.predicate( 1L, 0L ), is( true ) );
+		assertThat( greaterThan.predicate( 1L, 1L ), is( false ) );
+	}
+	
+	@Test
+	public final void if_long_greater_than_or_equal() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "GreaterThanOrEqual" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", long_, "lhs", long_, "rhs" ) ).
+			ireturn( ge( "lhs", "rhs" ) );
+		
+		Conditional greaterThanOrEqual = classWriter.< Conditional >newInstance();
+		assertThat( greaterThanOrEqual.predicate( 0L, 1L ), is( false ) );
+		assertThat( greaterThanOrEqual.predicate( 1L, 1L ), is( true ) );
+		assertThat( greaterThanOrEqual.predicate( 2L, 1L ), is( true ) );
 	}
 	
 	public static abstract class IntConditional {
@@ -371,6 +478,10 @@ public final class IfTest {
 		}
 		
 		public boolean predicate( final Object lhs, final Object rhs ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public boolean predicate( final long lhs, final long rhs ) {
 			throw new UnsupportedOperationException();
 		}
 	}
