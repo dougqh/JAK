@@ -306,6 +306,21 @@ public final class IfTest {
 		assertThat( notEqual.predicate( 1, 2 ), is( true ) );
 	}
 	
+	@Test
+	public final void if_null() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().final_().class_( "Null" ).extends_( Conditional.class ) );
+			
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", Object.class, "value" ) ).
+			ireturn( eq( "value", null_() ) );
+		
+		Conditional notEqual = classWriter.< Conditional >newInstance();
+		assertThat( notEqual.predicate( null ), is( true ) );
+		assertThat( notEqual.predicate( "Foo" ), is( false ) );
+	}
+	
 	public static abstract class IntConditional {
 		public int exec( final int num ) {
 			throw new UnsupportedOperationException();
@@ -318,6 +333,10 @@ public final class IfTest {
 		}
 		
 		public boolean predicate( final int lhs, final int rhs ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		public boolean predicate( final Object value ) {
 			throw new UnsupportedOperationException();
 		}
 	}

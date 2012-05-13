@@ -191,6 +191,13 @@ public class JakAsm extends Jak {
 	}
 	
 	public static final JakCondition eq(
+		final String lhsVar,
+		final JakExpression rhsExpr )
+	{
+		return eq( var( lhsVar ), rhsExpr );
+	}
+	
+	public static final JakCondition eq(
 		final String lhs,
 		final String rhs )
 	{
@@ -227,7 +234,13 @@ public class JakAsm extends Jak {
 	{
 		return ne( var( lhs ), var( rhs ) );
 	}
-
+	
+	public static final JakCondition ne(
+		final String lhsVar,
+		final JakExpression rhsExpr )
+	{
+		return ne( var( lhsVar ), rhsExpr );
+	}
 	
 	public static final JakCondition ne(
 		final JakExpression lhs,
@@ -261,6 +274,13 @@ public class JakAsm extends Jak {
 	}
 	
 	public static final JakCondition lt(
+		final String lhsVar,
+		final JakExpression rhsExpr )
+	{
+		return lt( var( lhsVar ), rhsExpr );
+	}
+	
+	public static final JakCondition lt(
 		final JakExpression lhs,
 		final JakExpression rhs )
 	{
@@ -282,6 +302,13 @@ public class JakAsm extends Jak {
 		final int value )
 	{
 		return le( var( var ), const_( value ) );
+	}
+	
+	public static final JakCondition le(
+		final String lhsVar,
+		final JakExpression rhsExpr )
+	{
+		return le( var( lhsVar ), rhsExpr );
 	}
 	
 	public static final JakCondition le(
@@ -323,6 +350,13 @@ public class JakAsm extends Jak {
 	}
 	
 	public static final JakCondition gt(
+		final String lhsVar,
+		final JakExpression rhsExpr )
+	{
+		return gt( var( lhsVar ), rhsExpr );
+	}
+	
+	public static final JakCondition gt(
 		final JakExpression lhs,
 		final JakExpression rhs )
 	{
@@ -353,6 +387,12 @@ public class JakAsm extends Jak {
 		return ge( var( lhs ), var( rhs ) );
 	}
 
+	public static final JakCondition ge(
+		final String lhsVar,
+		final JakExpression rhsExpr )
+	{
+		return ge( var( lhsVar ), rhsExpr );
+	}
 	
 	public static final JakCondition ge(
 		final JakExpression lhs,

@@ -2701,6 +2701,30 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 					JvmCodeWriter.this.if_icmpge( label );
 				}
 			}
+			
+			@Override
+			protected void aeq( final JakExpression lhs, final JakExpression rhs ) {
+				if ( isNull( rhs ) ) {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.ifnull( label );
+				} else {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.expr( rhs );
+					JvmCodeWriter.this.if_acmpeq( label );
+				}
+			}
+			
+			@Override
+			protected void ane( final JakExpression lhs, final JakExpression rhs ) {
+				if ( isNull( rhs ) ) {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.ifnonnull( label );
+				} else {
+					JvmCodeWriter.this.expr( lhs );
+					JvmCodeWriter.this.expr( rhs );
+					JvmCodeWriter.this.if_acmpne( label );
+				}
+			}
 		});
 		
 		return this;
