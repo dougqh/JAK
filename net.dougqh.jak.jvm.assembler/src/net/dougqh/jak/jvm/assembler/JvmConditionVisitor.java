@@ -21,6 +21,8 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 			this.ieq( lhs, rhs );	
 		} else if ( isRef( lhs ) && isRef( rhs ) ) {
 			this.aeq( lhs, rhs );
+		} else if ( isLong( lhs ) && isLong( rhs ) ) {
+			this.leq( lhs, rhs );
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -32,6 +34,8 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 			this.ine( lhs, rhs );
 		} else if ( isRef( lhs ) && isRef( rhs ) ) {
 			this.ane( lhs, rhs );
+		} else if ( isLong( lhs ) && isLong( rhs ) ) {
+			this.lne( lhs, rhs );
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -41,6 +45,8 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected final void le( final JakExpression lhs, final JakExpression rhs ) {
 		if ( isInt( lhs ) && isInt( rhs ) ) {
 			this.ile( lhs, rhs );
+		} else if ( isLong( lhs ) && isLong( rhs ) ) {
+			this.lle( lhs, rhs );
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -50,6 +56,8 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected final void lt( final JakExpression lhs, final JakExpression rhs ) {
 		if ( isInt( lhs ) && isInt( rhs ) ) {
 			this.ilt( lhs, rhs );
+		} else if ( isLong( lhs ) && isLong( rhs ) ) {
+			this.llt( lhs, rhs );
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -59,6 +67,8 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected final void ge( final JakExpression lhs, final JakExpression rhs ) {
 		if ( isInt( lhs ) && isInt( rhs ) ) {
 			this.ige( lhs, rhs );
+		} else if ( isLong( lhs ) && isLong( rhs ) ) {
+			this.lge( lhs, rhs );
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -68,6 +78,8 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected final void gt( final JakExpression lhs, final JakExpression rhs ) {
 		if ( isInt( lhs ) && isInt( rhs ) ) {
 			this.igt( lhs, rhs );			
+		} else if ( isLong( lhs ) && isLong( rhs ) ) {
+			this.lgt( lhs, rhs );
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -95,6 +107,20 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	
 	protected abstract void ige( final JakExpression lhs, final JakExpression rhs );
 	
+	
+	protected abstract void leq( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void lne( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void llt( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void lle( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void lgt( final JakExpression lhs, final JakExpression rhs );
+	
+	protected abstract void lge( final JakExpression lhs, final JakExpression rhs );
+	
+	
 	protected abstract void aeq( final JakExpression lhs, final JakExpression rhs );
 	
 	protected abstract void ane( final JakExpression lhs, final JakExpression rhs );
@@ -111,6 +137,10 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected final boolean isRef( final JakExpression expr ) {
 		Type type = expr.type( this.context );
 		return JavaTypes.getRawClass( type ).isAssignableFrom( Object.class );
+	}
+	
+	protected final boolean isLong( final JakExpression expr ) {
+		return expr.type( this.context ).equals( long.class );
 	}
 	
 	protected final boolean isZero( final JakExpression expr ) {
