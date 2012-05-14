@@ -1,4 +1,4 @@
-package net.dougqh.jak.jvm.assembler.macros;
+package net.dougqh.jak.jvm.assembler.macros.api;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -6,6 +6,7 @@ import static net.dougqh.jak.Jak.*;
 import static net.dougqh.jak.assembler.JakAsm.*;
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
+import net.dougqh.jak.jvm.assembler.macros.stmt;
 
 import org.junit.Test;
 

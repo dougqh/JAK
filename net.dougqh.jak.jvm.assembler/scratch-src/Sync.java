@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
-import net.dougqh.jak.jvm.assembler.macros.SynchronizedTest.Function;
+import net.dougqh.jak.jvm.assembler.macros.api.SynchronizedTest.Function;
 import net.dougqh.jak.jvm.assembler.macros.stmt;
 
 
