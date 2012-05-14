@@ -10,6 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	ArrayForTest.class,
 	IfTest.class,
 	ExpressionsTest.class,
-	TryTest.class
+	TryTest.class,
+	SynchronizedTest.class,
+	WhileTest.class
 })
 public final class MacrosTestSuite {}
