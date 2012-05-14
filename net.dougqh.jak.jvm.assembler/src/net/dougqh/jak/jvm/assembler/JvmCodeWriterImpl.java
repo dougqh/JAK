@@ -73,4 +73,8 @@ final class JvmCodeWriterImpl extends JvmCodeWriter {
 		return this.typeWriter.superType();
 	}
 
+	@Override
+	protected final Type resolve( final Type type ) {
+		return this.typeWriter.resolve( type );
+	}
 }

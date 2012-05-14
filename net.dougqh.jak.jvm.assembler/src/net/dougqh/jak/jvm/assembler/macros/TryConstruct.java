@@ -19,6 +19,11 @@ public final class TryConstruct extends JvmMacro {
 		this.tryBody = tryBody;
 	}
 	
+	@Override
+	protected final boolean defer() {
+		return true;
+	}
+	
 	public final TryConstruct addCatch(
 		final Type exceptionType, final String var,
 		final stmt body )
@@ -38,21 +43,7 @@ public final class TryConstruct extends JvmMacro {
 		try {
 			boolean hasFinally = ( this.finallyBody != null );
 			
-			label( "try" );
-			startScope();
-			try {
-				if ( hasFinally ) {
-					trapReturn();
-				}
-				macro( this.tryBody );
-				if ( hasFinally ) {
-					macro( this.finallyBody );
-					releaseReturn();
-				}
-			} finally {
-				endScope();
-			}
-			label( "endTry" );
+			section( "try", "endTry", null, this.tryBody );
 			
 			for ( ListIterator< Catch > catchIter = this.catches.listIterator();
 				catchIter.hasNext(); )
@@ -61,23 +52,7 @@ public final class TryConstruct extends JvmMacro {
 				Catch catch_ = catchIter.next();
 				
 				catch_( "try", "endTry", catch_.exceptionType );
-				label( "catch" + catchIndex );
-				
-				startScope();
-				try {
-					if ( hasFinally ) {
-						trapReturn();
-					}
-					macro( catch_.body );
-					if ( hasFinally ) {
-						macro( this.finallyBody );
-						releaseReturn();
-					}
-				} finally {
-					endScope();
-				}
-				
-				label( "endCatch" + catchIndex );
+				section( "catch" + catchIndex, "endCatch" + catchIndex, catch_.var, catch_.body );
 			}
 			
 			if ( hasFinally ) {
@@ -87,6 +62,7 @@ public final class TryConstruct extends JvmMacro {
 				}
 				startScope();
 				try {
+					adeclare( "tempException" );
 					astore( "tempException" );
 					macro( this.finallyBody );
 					athrow( "tempException" );
@@ -94,8 +70,43 @@ public final class TryConstruct extends JvmMacro {
 					endScope();
 				}
 			}
+			label( "endTryCatchFinally" );
 		} finally {
 			endLabelScope();
+		}
+	}
+	
+	private final void section( 
+		final String startLabel,
+		final String endLabel,
+		final String exceptionVar,
+		final stmt stmt )
+	{
+		boolean hasFinally = ( this.finallyBody != null );
+		startScope();
+		try {
+			if ( hasFinally ) {
+				trapReturn();
+			}
+
+			label( startLabel );
+			if ( exceptionVar != null ) {
+				adeclare( exceptionVar );
+				astore( exceptionVar );
+			}
+			macro( stmt );
+			label( endLabel );
+			
+			if ( hasFinally ) {
+				macro( this.finallyBody );
+				releaseReturn();
+			}
+			
+			if ( ! this.terminal() ) {
+				goto_( "endTryCatchFinally" );
+			}
+		} finally {
+			endScope();
 		}
 	}
 	

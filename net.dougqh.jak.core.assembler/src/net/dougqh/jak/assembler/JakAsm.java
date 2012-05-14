@@ -6,6 +6,28 @@ import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
 
 public class JakAsm extends Jak {
+	public static final Type thisType_() {
+		return ThisType.INSTANCE;
+	}
+	
+	public static final Type superType() {
+		return SuperType.INSTANCE;
+	}
+	
+	public static final JakExpression this_() {
+		return new JakVariableExpression( "this" ) {
+			@Override
+			public final void accept( final Visitor visitor ) {
+				visitor.this_();
+			}
+			
+			@Override
+			public final Type type( final JakContext context ) {
+				return context.thisType();
+			}
+		};		
+	}
+	
 	public static final JakExpression var( final String var ) {
 		return new JakVariableExpression( var ) {
 			@Override

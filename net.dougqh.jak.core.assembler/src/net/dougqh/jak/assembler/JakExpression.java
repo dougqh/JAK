@@ -29,6 +29,8 @@ public interface JakExpression {
 			this.context = context;
 		}
 		
+		protected abstract void this_();
+		
 		protected abstract void var( final String name, final Type type );
 		
 		protected abstract void const_( final boolean value );
