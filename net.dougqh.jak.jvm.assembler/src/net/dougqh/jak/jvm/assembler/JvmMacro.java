@@ -65,4 +65,9 @@ public abstract class JvmMacro
 	protected final Type superType() {
 		return this.codeWriter.superType();
 	}
+	
+	@Override
+	protected final Type resolve( final Type type ) {
+		return this.codeWriter.resolve( type );
+	}
 }

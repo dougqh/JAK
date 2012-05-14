@@ -6,6 +6,14 @@ import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
 
 public class JakAsm extends Jak {
+	public static final Type thisType_() {
+		return ThisType.INSTANCE;
+	}
+	
+	public static final Type superType() {
+		return SuperType.INSTANCE;
+	}
+	
 	public static final JakExpression var( final String var ) {
 		return new JakVariableExpression( var ) {
 			@Override

@@ -70,6 +70,11 @@ public abstract class JvmExpression< T >
 	}
 	
 	@Override
+	protected final Type resolve( final Type type ) {
+		return this.codeWriter.resolve( type );
+	}
+	
+	@Override
 	public final void accept( final JakExpression.Visitor visitor ) {
 		if ( visitor instanceof JvmExpression.Visitor ) {
 			Visitor jvmVisitor = (JvmExpression.Visitor)visitor;

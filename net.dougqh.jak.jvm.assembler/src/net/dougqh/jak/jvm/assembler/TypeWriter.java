@@ -12,6 +12,7 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
+import net.dougqh.jak.assembler.JakTypeResolver;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -35,6 +36,18 @@ final class TypeWriter {
 	
 	private InnerClassesAttribute innerClasses = null;
 	private JakConfiguration config = new JakConfiguration();
+	
+	private final JakTypeResolver resolver = new JakTypeResolver() {
+		@Override
+		protected final Type thisType() {
+			return TypeWriter.this.thisType();
+		}
+		
+		@Override
+		protected final Type superType() {
+			return TypeWriter.this.superType();
+		}
+	};
 	
 	TypeWriter(
 		final TypeWriterGroup writerGroup,
@@ -87,6 +100,10 @@ final class TypeWriter {
 	
 	final Type superType() {
 		return this.parentType;
+	}
+	
+	final Type resolve( final Type type ) {
+		return this.resolver.resolve( type );
 	}
 	
 	final void define( final JavaField field ) {
@@ -278,11 +295,11 @@ final class TypeWriter {
 //		}
 //	}
 	
-	final void writeTo( final File srcDir )
+	final void writeTo( final File classDir )
 		throws IOException
 	{
 		File classFile = new File(
-			srcDir,
+			classDir,
 			this.className.replace( '.', '/' ) + ".class" );
 		
 		File packageDir = classFile.getParentFile();

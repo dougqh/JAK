@@ -52,6 +52,10 @@ public final class JvmClassWriter
 		return this.typeWriter.superType();
 	}
 	
+	protected final Type resolve( final Type type ) {
+		return this.typeWriter.resolve( type );
+	}
+	
 	@Override
 	public final void define( final JavaField field ) {
 		this.typeWriter.define( field );
@@ -205,8 +209,8 @@ public final class JvmClassWriter
 	}
 	
 	@Override
-	public final void writeTo( final File srcDir ) throws IOException {
-		this.typeWriter.writeTo( srcDir );
+	public final void writeTo( final File classDir ) throws IOException {
+		this.typeWriter.writeTo( classDir );
 	}
 	
 	@Override

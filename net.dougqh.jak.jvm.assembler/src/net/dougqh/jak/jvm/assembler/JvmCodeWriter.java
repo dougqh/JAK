@@ -78,6 +78,13 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 	}
 	
+	private final JakContext context = new JakContext() {
+		@Override
+		public final Type localType( final String name ) {
+			return JvmCodeWriter.this.typeOf( name );
+		}
+	};
+
 	private JvmMacro underConstructionMacro = null;
 	
 	protected abstract SharedState sharedState();
@@ -89,6 +96,13 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	protected abstract Type thisType();
 	
 	protected abstract Type superType();
+	
+	protected abstract Type resolve( final Type type );
+	
+	protected final Type[] resolveTypes( final Type type ) {
+		//TODO: Implement properly
+		return new Type[] { this.resolve( type ) };
+	}
 
 	protected final Scope varScope( final boolean writing ) {
 		if ( writing ) {
@@ -3173,11 +3187,6 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.putfield( getField( targetType, fieldName ) );
 	}
 
-	@WrapOp( putfield.class )
-	public final JvmCodeWriter this_putfield( final JavaField field ) {
-		return this.putfield( this.thisType(), field );
-	}
-
 	@JvmOp( putfield.class )
 	public final JvmCodeWriter putfield(
 		final Type targetType,
@@ -3296,13 +3305,6 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.invokevirtual( method );
 	}
 
-	@WrapOp( invokevirtual.class )
-	public final JvmCodeWriter this_invokevirtual(
-		final JavaMethodDescriptor method )
-	{
-		return this.invokevirtual( this.thisType(), method );
-	}
-
 	@JvmOp( invokevirtual.class )
 	public final JvmCodeWriter invokevirtual(
 		final Type targetType,
@@ -3310,19 +3312,6 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().invokevirtual( targetType, method );
 		return this;
-	}
-
-	@WrapOp( invokevirtual.class )
-	public final JvmCodeWriter this_invokevirtual(
-		final Type returnType,
-		final @Symbol String methodName,
-		final Type... argumentTypes )
-	{
-		return this.invokevirtual(
-			this.thisType(),
-			returnType,
-			methodName,
-			argumentTypes );
 	}
 
 	@WrapOp( invokevirtual.class )
@@ -3342,13 +3331,6 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	@WrapOp( invokespecial.class )
-	public final JvmCodeWriter this_invokespecial(
-		final JavaMethodDescriptor method )
-	{
-		return this.invokespecial( this.thisType(), method );
-	}
-
-	@WrapOp( invokespecial.class )
 	public final JvmCodeWriter super_invokespecial(
 		final JavaMethodDescriptor method )
 	{
@@ -3362,32 +3344,6 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().invokespecial( targetType, method );
 		return this;
-	}
-
-	@WrapOp( invokespecial.class )
-	public final JvmCodeWriter this_invokespecial(
-		final Type returnType,
-		final String methodName,
-		final Type... argumentTypes )
-	{
-		return this.invokespecial(
-			this.thisType(),
-			returnType,
-			methodName,
-			argumentTypes );
-	}
-
-	@WrapOp( invokespecial.class )
-	public final JvmCodeWriter super_invokespecial(
-		final Type returnType,
-		final String methodName,
-		final Type... argumentTypes )
-	{
-		return this.invokespecial(
-			this.superType(),
-			returnType,
-			methodName,
-			argumentTypes );
 	}
 
 	@WrapOp( invokespecial.class )
@@ -3467,6 +3423,14 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	@JvmOp( new_.class )
 	public final JvmCodeWriter new_( final Type type ) {
 		this.coreWriter().new_( type );
+		return this;
+	}
+	
+	@SyntheticOp( stackOperandTypes=Reference.class )
+	public final JvmCodeWriter new_default_init( final Type type ) {
+		this.new_( type );
+		this.dup();
+		this.invokespecial( type, init() );
 		return this;
 	}
 
@@ -4000,7 +3964,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	public final JvmCodeWriter finally_( final stmt stmt ) {
-		return this.tryUnderConstruction().finally_( stmt );
+		return this.tryUnderConstruction().addFinally( stmt );
 	}
 
 	@SyntheticOp( id="catch" )
@@ -4013,6 +3977,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		
 		this.coreWriter().handleException(
 			new CatchExceptionHandler(
+				this.labelScope( false ),
 				startLabel,
 				endLabel,
 				resolvedType,
@@ -4029,6 +3994,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	{
 		this.coreWriter().handleException(
 			new LabelBasedExceptionHandler(
+				this.labelScope( false ),
 				startLabel,
 				endLabel,
 				throwableClass,
@@ -4108,15 +4074,6 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.varScope( false ).get( varName );
 	}
 	
-	private final Type resolve( final Type type ) {
-		return JavaTypes.getRawType( type );
-	}
-	
-	private final Type[] resolveTypes( final Type type ) {
-		//TODO: Implement properly
-		return new Type[] { type };
-	}
-	
 	private final Class<?> slotType( final Type type ) {
 		Type resolvedType = this.resolve( type );
 		if ( resolvedType.equals( boolean.class ) ) {
@@ -4161,17 +4118,20 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	private final class CatchExceptionHandler extends ExceptionHandler {
+		private final Scope labelScope;
 		private final String startLabel;
 		private final String endLabel;
 		private final Type exceptionType;
 		private final int handlerPos;
 
 		CatchExceptionHandler(
+			final Scope labelScope,
 			final String startLabel,
 			final String endLabel,
 			final Type exceptionType,
 			final int handlerPos )
 		{
+			this.labelScope = labelScope;
 			this.startLabel = startLabel;
 			this.endLabel = endLabel;
 			this.exceptionType = exceptionType;
@@ -4180,12 +4140,12 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 		@Override
 		public final int startPos() {
-			return JvmCodeWriter.this.getLabelPos( this.startLabel );
+			return this.labelScope.get( this.startLabel );
 		}
 
 		@Override
 		public final int endPos() {
-			return JvmCodeWriter.this.getLabelPos( this.endLabel );
+			return this.labelScope.get( this.endLabel );
 		}
 		
 		@Override
@@ -4200,17 +4160,20 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	private final class LabelBasedExceptionHandler extends ExceptionHandler {
+		private final Scope labelScope;
 		private final String startLabel;
 		private final String endLabel;
 		private final Type exceptionType;
 		private final String handlerLabel;
 
 		LabelBasedExceptionHandler(
+			final Scope labelScope,
 			final String startLabel,
 			final String endLabel,
 			final Type exceptionType,
 			final String handlerLabel)
 		{
+			this.labelScope = labelScope;
 			this.startLabel = startLabel;
 			this.endLabel = endLabel;
 			this.exceptionType = exceptionType;
@@ -4219,12 +4182,12 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 		@Override
 		public final int startPos() {
-			return JvmCodeWriter.this.getLabelPos( this.startLabel );
+			return this.labelScope.get( this.startLabel );
 		}
 
 		@Override
 		public final int endPos() {
-			return JvmCodeWriter.this.getLabelPos( this.endLabel );
+			return this.labelScope.get( this.endLabel );
 		}
 
 		@Override
@@ -4234,7 +4197,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 		@Override
 		public final int handlerPos() {
-			return JvmCodeWriter.this.getLabelPos( this.handlerLabel );
+			return this.labelScope.get( this.handlerLabel );
 		}
 	}
 	
@@ -4355,6 +4318,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		@Override
 		protected final Type superType() {
 			return JvmCodeWriter.this.superType();
+		}
+		
+		@Override
+		protected final Type resolve( final Type type ) {
+			return JvmCodeWriter.this.resolve( type );
 		}
 	}
 }
