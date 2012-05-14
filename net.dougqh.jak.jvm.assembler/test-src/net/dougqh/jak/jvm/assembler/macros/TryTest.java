@@ -4,32 +4,88 @@ import static net.dougqh.jak.Jak.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
+import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
 
 import org.junit.Test;
 
 public final class TryTest {
 	private TryFixture tryFinally() {
+		return tryCatchFinally();
+	}
+	
+	private TryFixture tryCatchFinally( final Class<? extends Exception>... exceptions ) {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().class_( "TryFinally" ).extends_( TryFixture.class ) );
+			public_().class_( "TryCatchFinally" ).extends_( TryFixture.class ) );
 		
 		classWriter.defineDefaultConstructor();
 	
-		classWriter.define(
-			method( int_, "exec", Function.class, "func" ).throws_( Throwable.class ) ).
-			try_( new stmt() {
-				protected final void body() {
-					aload( "func" ).
-					invokeinterface( Function.class, method( int_, "eval" ) ).
-					ireturn();
-				}
-			} ).finally_( new stmt() {
+		JvmCodeWriter codeWriter = classWriter.define(
+			method( int_, "exec", Function.class, "func" ).throws_( Throwable.class ) );
+		
+		codeWriter.try_( new stmt() {
+			protected final void body() {
+				aload( "func" ).
+				invokeinterface( Function.class, method( int_, "eval" ) ).
+				ireturn();
+			}
+		} );
+		
+		for ( Class<? extends Exception> exception: exceptions ) {
+			codeWriter.catch_( exception, "e", new stmt() {
+				@Override
 				protected final void body() {
 					this_().
-					true_().
-					putfield( thisType(), field( boolean_, "finishedFinally" ) );
+					aload( "e" ).
+					invokevirtual( Object.class, Class.class, "getClass" ).
+					putfield( thisType(), Class.class, "caughtType" );
 				}
 			} );
+		}
+		
+		codeWriter.finally_( new stmt() {
+			protected final void body() {
+				this_().
+				true_().
+				putfield( thisType(), field( boolean_, "finishedFinally" ) );
+			}
+		} );
+		
+		codeWriter.ireturn( -1 );
+		
+		return classWriter.< TryFixture >newInstance();
+	}
+	
+	private TryFixture tryCatch( final Class<? extends Exception>... exceptions ) {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "TryCatch" ).extends_( TryFixture.class ) );
+		
+		classWriter.defineDefaultConstructor();
+	
+		JvmCodeWriter codeWriter = classWriter.define(
+			method( int_, "exec", Function.class, "func" ).throws_( Throwable.class ) );
+		
+		codeWriter.try_( new stmt() {
+			protected final void body() {
+				aload( "func" ).
+				invokeinterface( Function.class, method( int_, "eval" ) ).
+				ireturn();
+			}
+		} );
+		
+		for ( Class<? extends Exception> exception: exceptions ) {
+			codeWriter.catch_( exception, "e", new stmt() {
+				@Override
+				protected final void body() {
+					this_().
+					aload( "e" ).
+					invokevirtual( Object.class, Class.class, "getClass" ).
+					putfield( thisType(), Class.class, "caughtType" );
+				}
+			} );
+		}
+		
+		codeWriter.ireturn( -1 );
 		
 		return classWriter.< TryFixture >newInstance();
 	}
@@ -50,25 +106,80 @@ public final class TryTest {
 	}
 	
 	@Test
-	public final void try_finally_fail() throws Throwable {
+	public final void try_finally_fail_checked() throws Throwable {
 		TryFixture tryFinally = tryFinally();
 		
 		try {
 			tryFinally.exec( new Function() {
 				@Override
 				public final int eval() throws Throwable {
-					throw new CheckedException();
+					throw new CheckedException1();
 				}
 			} );
 			
 			fail();
-		} catch ( CheckedException e ) {
+		} catch ( CheckedException1 e ) {
+			//pass
+		}
+		
+		assertThat( tryFinally.finishedFinally, is( true ) );
+	}
+
+	@Test
+	public final void try_finally_fail_unchecked() throws Throwable {
+		TryFixture tryFinally = tryFinally();
+		
+		try {
+			tryFinally.exec( new Function() {
+				@Override
+				public final int eval() throws Throwable {
+					throw new UnsupportedOperationException();
+				}
+			} );
+			
+			fail();
+		} catch ( UnsupportedOperationException e ) {
 			//pass
 		}
 		
 		assertThat( tryFinally.finishedFinally, is( true ) );
 	}
 	
+	@Test
+	public final void try_catch_finally() throws Throwable {
+		TryFixture tryCatchFinally = tryCatchFinally(
+			CheckedException1.class,
+			CheckedException2.class,
+			CheckedException3.class );
+
+		tryCatchFinally.exec( new Function() {
+			@Override
+			public final int eval() throws Throwable {
+				throw new CheckedException1();
+			}
+		} );
+		
+		assertThat( tryCatchFinally.caughtType, is( (Object)CheckedException1.class ) );
+		assertThat( tryCatchFinally.finishedFinally, is( true ) );		
+	}
+	
+	@Test
+	public final void try_catch() throws Throwable {
+		TryFixture tryCatch = tryCatch(
+			CheckedException1.class,
+			CheckedException2.class,
+			CheckedException3.class );
+
+		tryCatch.exec( new Function() {
+			@Override
+			public final int eval() throws Throwable {
+				throw new CheckedException2();
+			}
+		} );
+		
+		assertThat( tryCatch.caughtType, is( (Object)CheckedException2.class ) );
+	}
+
 	public static abstract class TryFixture {
 		public boolean finishedTry = false;
 		public Class<?> caughtType = null;
@@ -81,7 +192,15 @@ public final class TryTest {
 		public int eval() throws Throwable;
 	}
 	
-	public static class CheckedException extends Exception {
+	public static class CheckedException1 extends Exception {
 		private static final long serialVersionUID = 1L;
+	}
+	
+	public static class CheckedException2 extends Exception {
+		private static final long serialVersionUID = 2L;
+	}
+	
+	public static final class CheckedException3 extends Exception {
+		private static final long serialVersionUID = 3L;
 	}
 }

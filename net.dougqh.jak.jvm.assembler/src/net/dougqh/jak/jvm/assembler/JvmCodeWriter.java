@@ -2944,12 +2944,13 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	@SyntheticOp
 	public final JvmCodeWriter releaseReturn() {
-		if ( this.sharedState().trapReturn && this.sharedState().returnType != null ) {
+		boolean trappedReturn = ( this.sharedState().trapReturn && this.sharedState().returnType != null );
+		if ( trappedReturn ) {
 			Class<?> slotType = this.sharedState().returnType;
 			if ( ! slotType.equals( void.class ) ) {
 				this.load( slotType, "returnValue" );
 			}
-			this.writeReturn( slotType);
+			this.writeReturn( slotType );
 			
 			this.sharedState().trapReturn = false;
 			this.sharedState().returnType = null;
@@ -3196,6 +3197,15 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			targetType,
 			field( field.getType(), field.getName() ) );
 		return this;
+	}
+	
+	@JvmOp( putfield.class )
+	public final JvmCodeWriter putfield(
+		final Type targetType,
+		final Type fieldType,
+		final String fieldName )
+	{
+		return this.putfield( targetType, field( fieldType, fieldName ) );
 	}
 
 	@WrapOp( putfield.class )
@@ -3960,11 +3970,13 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		final Type exceptionType, final String var,
 		final stmt stmt )
 	{
-		return this.tryUnderConstruction().addCatch( exceptionType, var, stmt );
+		this.tryUnderConstruction().addCatch( exceptionType, var, stmt );
+		return this;
 	}
 	
 	public final JvmCodeWriter finally_( final stmt stmt ) {
-		return this.tryUnderConstruction().addFinally( stmt );
+		this.tryUnderConstruction().addFinally( stmt );
+		return this;
 	}
 
 	@SyntheticOp( id="catch" )
