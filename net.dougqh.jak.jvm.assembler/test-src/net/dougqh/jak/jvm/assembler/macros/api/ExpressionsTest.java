@@ -1,4 +1,4 @@
-package net.dougqh.jak.jvm.assembler.macros;
+package net.dougqh.jak.jvm.assembler.macros.api;
 
 import static net.dougqh.jak.Jak.*;
 import static net.dougqh.jak.assembler.JakAsm.*;
@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.JakContext;
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
+import net.dougqh.jak.jvm.assembler.macros.expr;
 import net.dougqh.java.meta.types.primitives.boolean_;
 import net.dougqh.java.meta.types.primitives.byte_;
 import net.dougqh.java.meta.types.primitives.char_;

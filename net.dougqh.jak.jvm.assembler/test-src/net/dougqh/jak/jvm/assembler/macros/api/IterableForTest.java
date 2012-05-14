@@ -1,4 +1,4 @@
-package net.dougqh.jak.jvm.assembler.macros;
+package net.dougqh.jak.jvm.assembler.macros.api;
 
 import static net.dougqh.jak.Jak.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
+import net.dougqh.jak.jvm.assembler.macros.IterableFor;
+import net.dougqh.jak.jvm.assembler.macros.stmt;
 
 import org.junit.Test;
 
