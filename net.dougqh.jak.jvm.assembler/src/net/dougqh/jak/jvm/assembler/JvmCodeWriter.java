@@ -83,6 +83,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		public final Type localType( final String name ) {
 			return JvmCodeWriter.this.typeOf( name );
 		}
+		
+		@Override
+		public final Type thisType() {
+			return JvmCodeWriter.this.thisType();
+		}
 	};
 
 	private JvmMacro underConstructionMacro = null;
@@ -249,16 +254,16 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	private final JakContext context() {
-		return new JakContext() {
-			@Override
-			public final Type localType( final String name ) {
-				return JvmCodeWriter.this.typeOf( name );
-			}
-		};
+		return this.context;
 	}
 	
 	protected final JvmCodeWriter expr( final JakExpression expr ) {
 		expr.accept( new JvmExpressionVisitor( this.context() ) {
+			@Override
+			protected void this_() {
+				JvmCodeWriter.this.this_();
+			}
+			
 			@Override
 			protected final void var( final String name, final Type type ) {
 				JvmCodeWriter.this.load( type, name );

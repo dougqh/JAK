@@ -12,6 +12,11 @@ public final class Synchronized extends JvmMacro {
 		this.synchronizedVar = var;
 		this.body = body;
 	}
+	
+	@Override
+	protected final boolean defer() {
+		return true;
+	}
 
 	@Override
 	public final void write() {
@@ -21,16 +26,27 @@ public final class Synchronized extends JvmMacro {
 			try {
 				alias( var_synchronized, this.synchronizedVar );
 				monitorenter( var_synchronized );
+				
 				label( "try" );
+				trapReturn();
 				macro( this.body );
 				label( "endTry" );
+				
+				//finally
+				monitorexit( var_synchronized );
+				releaseReturn();
+				if ( ! this.terminal() ) {
+					goto_( "endSync" );
+				}
+				
 				catch_( "try", "endTry", Throwable.class );
 				adeclare( "e" );
 				astore( "e" );
-				monitorexit( var_synchronized ).
-				aload("e").
+				monitorexit( var_synchronized );
+				aload( "e" );
 				athrow();
 				
+				label( "endSync" );
 			} finally {
 				endScope();
 			}
