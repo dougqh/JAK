@@ -38,21 +38,7 @@ public final class TryConstruct extends JvmMacro {
 		try {
 			boolean hasFinally = ( this.finallyBody != null );
 			
-			label( "try" );
-			startScope();
-			try {
-				if ( hasFinally ) {
-					trapReturn();
-				}
-				macro( this.tryBody );
-				if ( hasFinally ) {
-					macro( this.finallyBody );
-					releaseReturn();
-				}
-			} finally {
-				endScope();
-			}
-			label( "endTry" );
+			section( "try", "endTry", this.tryBody );
 			
 			for ( ListIterator< Catch > catchIter = this.catches.listIterator();
 				catchIter.hasNext(); )
@@ -61,23 +47,7 @@ public final class TryConstruct extends JvmMacro {
 				Catch catch_ = catchIter.next();
 				
 				catch_( "try", "endTry", catch_.exceptionType );
-				label( "catch" + catchIndex );
-				
-				startScope();
-				try {
-					if ( hasFinally ) {
-						trapReturn();
-					}
-					macro( catch_.body );
-					if ( hasFinally ) {
-						macro( this.finallyBody );
-						releaseReturn();
-					}
-				} finally {
-					endScope();
-				}
-				
-				label( "endCatch" + catchIndex );
+				section( "catch" + catchIndex, "endCatch" + catchIndex, catch_.body );
 			}
 			
 			if ( hasFinally ) {
@@ -87,6 +57,7 @@ public final class TryConstruct extends JvmMacro {
 				}
 				startScope();
 				try {
+					adeclare( "tempException" );
 					astore( "tempException" );
 					macro( this.finallyBody );
 					athrow( "tempException" );
@@ -96,6 +67,31 @@ public final class TryConstruct extends JvmMacro {
 			}
 		} finally {
 			endLabelScope();
+		}
+	}
+	
+	private final void section( 
+		final String startLabel,
+		final String endLabel,
+		final stmt stmt )
+	{
+		boolean hasFinally = ( this.finallyBody != null );
+		startScope();
+		try {
+			if ( hasFinally ) {
+				trapReturn();
+	
+				label( "try" );
+				macro( stmt );
+				label( "endTry" );
+				
+				macro( this.finallyBody );
+				releaseReturn();
+			} else {
+				macro( stmt );
+			}
+		} finally {
+			endScope();
 		}
 	}
 	
