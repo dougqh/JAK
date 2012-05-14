@@ -400,5 +400,10 @@ public final class ExpressionsTest {
 		public final Type localType( final String name ) {
 			throw new UnsupportedOperationException();
 		}
+		
+		@Override
+		public Type thisType() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }
