@@ -2340,6 +2340,30 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		this.coreWriter().ixor();
 		return this;
 	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ixor(
+		final @Symbol String lhsVar,
+		final @Symbol String rhsVar )
+	{
+		return this.iload( lhsVar ).iload( rhsVar ).ixor();
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ixor(
+		final JakCondition lhsCond,
+		final JakCondition rhsCond )
+	{
+		return this.expr( lhsCond ).expr( rhsCond ).ixor();
+	}
+	
+	@SyntheticOp
+	public final JvmCodeWriter ixor(
+		final JakExpression lhsExpr,
+		final JakExpression rhsExpr )
+	{
+		return this.expr( lhsExpr ).expr( rhsExpr ).ixor();
+	}
 
 	@JvmOp( lxor.class )
 	public final JvmCodeWriter lxor() {
@@ -2640,12 +2664,53 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		condition.accept( new JvmConditionVisitor( this.context() ) {
 			@Override
 			protected final void and( final JakCondition lhs, final JakCondition rhs ) {
-				throw new UnsupportedOperationException();
+				JvmCodeWriter.this.startLabelScope();
+				try {
+					//TODO: optimize?
+					JvmCodeWriter.this.
+						if_( JakAsm.not( lhs ), "andFalse" ).
+						if_( JakAsm.not( rhs ), "andFalse" ).
+						true_().
+						goto_( "endAnd" ).
+						label( "andFalse" ).
+						false_().
+						label( "endAnd" );
+						ifne( label );
+				} finally {
+					JvmCodeWriter.this.endLabelScope();
+				}
 			}
 			
 			@Override
 			protected final void or( final JakCondition lhs, final JakCondition rhs ) {
-				throw new UnsupportedOperationException();
+				JvmCodeWriter.this.startLabelScope();
+				try {
+					//TODO: optimize?
+					JvmCodeWriter.this.
+						if_( lhs, "orTrue" ).
+						if_( rhs, "orTrue" ).
+						false_().
+						goto_( "endOr" ).
+						label( "orTrue" ).
+						true_().
+						label( "endOr" );
+						ifne( label );
+				} finally {
+					JvmCodeWriter.this.endLabelScope();
+				}
+			}
+			
+			@Override
+			protected final void xor( final JakCondition lhs, final JakCondition rhs ) {
+				JvmCodeWriter.this.
+					ixor( lhs, rhs ).
+					ifne( label );
+			}
+			
+			@Override
+			protected void not( final JakCondition cond ) {
+				JvmCodeWriter.this.expr( cond );
+				JvmCodeWriter.this.ifeq( label );
 			}
 
 			@Override

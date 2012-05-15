@@ -1,11 +1,11 @@
 package net.dougqh.jak.assembler;
 
-abstract class JakBinaryLogicalCondition extends JakCondition {
+abstract class BinaryLogicalCondition extends JakCondition {
 	final String operator;
 	final JakCondition lhsCondition;
 	final JakCondition rhsCondition;
 	
-	protected JakBinaryLogicalCondition(
+	protected BinaryLogicalCondition(
 		final String operator,
 		final JakCondition lhs,
 		final JakCondition rhs )
@@ -13,13 +13,6 @@ abstract class JakBinaryLogicalCondition extends JakCondition {
 		this.operator = operator;
 		this.lhsCondition = lhs;
 		this.rhsCondition = rhs;
-	}
-	
-	@Override
-	public JakCondition inverse() {
-		//DQH - Yes, this code be implemented with D'Morgan's, but
-		//I question the useful of implementing it.
-		return null;
 	}
 	
 	@Override
@@ -40,10 +33,10 @@ abstract class JakBinaryLogicalCondition extends JakCondition {
 	public final boolean equals( final Object obj ) {
 		if ( obj == this ) {
 			return true;
-		} else if ( ! ( obj instanceof JakBinaryLogicalCondition ) ) {
+		} else if ( ! ( obj instanceof BinaryLogicalCondition ) ) {
 			return false;
 		} else {
-			JakBinaryLogicalCondition that = (JakBinaryLogicalCondition)obj;
+			BinaryLogicalCondition that = (BinaryLogicalCondition)obj;
 			if ( ! this.operator.equals( that.operator ) ) {
 				return false;
 			} else if ( ! this.lhsCondition.equals( that.lhsCondition ) ) {
