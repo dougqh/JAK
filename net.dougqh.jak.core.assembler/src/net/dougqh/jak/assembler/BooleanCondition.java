@@ -1,10 +1,10 @@
 package net.dougqh.jak.assembler;
 
-abstract class JakBooleanCondition extends JakCondition {
+abstract class BooleanCondition extends JakCondition {
 	final JakExpression expr;
 	final boolean expected;
 	
-	public JakBooleanCondition(
+	public BooleanCondition(
 		final JakExpression expr,
 		final boolean expected )
 	{
@@ -25,10 +25,10 @@ abstract class JakBooleanCondition extends JakCondition {
 	public final boolean equals( final Object obj ) {
 		if ( obj == this ) {
 			return true;
-		} else if ( ! ( obj instanceof JakBooleanCondition ) ) {
+		} else if ( ! ( obj instanceof BooleanCondition ) ) {
 			return false;
 		} else {
-			JakBooleanCondition that = (JakBooleanCondition)obj;
+			BooleanCondition that = (BooleanCondition)obj;
 			return this.expected == that.expected &&
 				this.expr.equals( that.expr );
 		}

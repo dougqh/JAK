@@ -459,6 +459,72 @@ public final class IfTest {
 		assertThat( greaterThanOrEqual.predicate( 2L, 1L ), is( true ) );
 	}
 	
+	@Test
+	public final void logical_and() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "And" ).implements_( LogicalOperator.class ) );
+		
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "eval", boolean_, "lhs", boolean_, "rhs" ) ).
+			ireturn( and( "lhs", "rhs" ) );
+		
+		LogicalOperator and = classWriter.< LogicalOperator >newInstance();
+		assertThat( and.eval( true, true ), is( true ) );
+		assertThat( and.eval( true, false ), is( false ) );
+		assertThat( and.eval( false, true ), is( false ) );
+		assertThat( and.eval( false, false ), is( false ) );
+	}
+	
+	@Test
+	public final void logical_or() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "Or" ).implements_( LogicalOperator.class ) );
+		
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "eval", boolean_, "lhs", boolean_, "rhs" ) ).
+			ireturn( or( "lhs", "rhs" ) );
+		
+		LogicalOperator and = classWriter.< LogicalOperator >newInstance();
+		assertThat( and.eval( true, true ), is( true ) );
+		assertThat( and.eval( true, false ), is( true ) );
+		assertThat( and.eval( false, true ), is( true ) );
+		assertThat( and.eval( false, false ), is( false ) );		
+	}
+	
+	@Test
+	public final void logical_xor() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "Or" ).implements_( LogicalOperator.class ) );
+		
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "eval", boolean_, "lhs", boolean_, "rhs" ) ).
+			ireturn( xor( "lhs", "rhs" ) );
+		
+		LogicalOperator xor = classWriter.< LogicalOperator >newInstance();
+		assertThat( xor.eval( true, true ), is( false ) );
+		assertThat( xor.eval( true, false ), is( true ) );
+		assertThat( xor.eval( false, true ), is( true ) );
+		assertThat( xor.eval( false, false ), is( false ) );		
+	}
+	
+	@Test
+	public final void logical_not() {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "Not" ).extends_( Conditional.class ) );
+		
+		classWriter.defineDefaultConstructor();
+		
+		classWriter.define( public_().method( boolean_, "predicate", boolean_, "value" ) ).
+			ireturn( not( "value" ) );
+		
+		Conditional not = classWriter.< Conditional >newInstance();
+		assertThat( not.predicate( true ), is( false ) );
+		assertThat( not.predicate( false ), is( true ) );
+	}
+	
 	public static abstract class IntConditional {
 		public int exec( final int num ) {
 			throw new UnsupportedOperationException();
@@ -466,6 +532,10 @@ public final class IfTest {
 	}
 	
 	public static abstract class Conditional {
+		public boolean predicate( final boolean value ) {
+			throw new UnsupportedOperationException();
+		}
+		
 		public boolean predicate( final int value ) {
 			throw new UnsupportedOperationException();
 		}
@@ -485,5 +555,9 @@ public final class IfTest {
 		public boolean predicate( final long lhs, final long rhs ) {
 			throw new UnsupportedOperationException();
 		}
+	}
+	
+	public static interface LogicalOperator {
+		public abstract boolean eval( final boolean lhs, final boolean rhs );
 	}
 }

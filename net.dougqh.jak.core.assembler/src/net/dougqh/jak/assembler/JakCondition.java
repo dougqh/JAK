@@ -2,7 +2,7 @@ package net.dougqh.jak.assembler;
 
 public abstract class JakCondition {
 	/**
-	 * And-s this condition as the left hand side with the provided 
+	 * and-s this condition as the left hand side with the provided 
 	 * right hand side condition.
 	 * @param rhsCondition - a {@link JakCondition}
 	 * @pre rhsCondition != null
@@ -14,7 +14,7 @@ public abstract class JakCondition {
 	}
 	
 	/**
-	 * Or-s this condition as the left hand side with the provided 
+	 * or-s this condition as the left hand side with the provided 
 	 * right hand side condition.
 	 * @param rhsCondition - a {@link JakCondition}
 	 * @pre rhsCondition != null
@@ -24,14 +24,26 @@ public abstract class JakCondition {
 	public final JakCondition or( final JakCondition rhsCondition ) {
 		return JakAsm.or( this, rhsCondition );
 	}
+	
+	/**
+	 * xor-s this condition as the left hand side with the provided 
+	 * right hand side condition.
+	 * @param rhsCondition - a {@link JakCondition}
+	 * @pre rhsCondition != null
+	 * @return a {@link JakCondition}
+	 * @post result != null
+	 */
+	public final JakCondition xor( final JakCondition rhsCondition ) {
+		return JakAsm.xor( this, rhsCondition );
+	}
 
 	/**
 	 * Provides a way of expressing the opposite condition.
 	 * Can be used during assembling to rewrite more efficiently.
-	 * May return null if no reasonable inverse is available.
-	 * @return a {@link JakCondition} - may be null
+	 * May return null - if no simple inverse is available.
+	 * @return a {@link JakCondition}
 	 */
-	public abstract JakCondition inverse();
+	protected abstract JakCondition optimizedInverse();
 
 	public abstract void accept( final Visitor visitor );
 	
@@ -75,11 +87,18 @@ public abstract class JakCondition {
 		protected abstract void falsy(
 			final JakExpression expr );
 		
+		protected abstract void not(
+			final JakCondition cond );
+		
 		protected abstract void and(
 			final JakCondition lhs,
 			final JakCondition rhs );
 		
 		protected abstract void or(
+			final JakCondition lhs,
+			final JakCondition rhs );
+		
+		protected abstract void xor(
 			final JakCondition lhs,
 			final JakCondition rhs );
 	}
