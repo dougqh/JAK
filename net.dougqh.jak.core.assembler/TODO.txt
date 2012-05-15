@@ -1,0 +1,26 @@
+Optimizations
+- optimize use of and-s / or-s as expressions
+- optimize if/else if/else code generation
+
+Operations
+- switch
+- jsr / ret
+- wide instructions
+
+Conveniences
+- automatic method selection - w/ epxrs
+
+APIs
+- floating conditionals
+- try with resources
+- multi-catch
+- enum generation API
+- annotation definition API
+- annotation application API
+- stack map table
+
+Missing Tests
+- nesting
+  - if
+  - for
+  - try

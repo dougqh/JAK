@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static net.dougqh.jak.assembler.JakAsm.*;
 import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.jvm.assembler.JvmMacro;
 
@@ -57,7 +58,7 @@ public final class IfConstruct extends JvmMacro {
 		startLabelScope();
 		try {
 			int elseIndex = 0;
-			if_( this.ifCondition.inverse(), "else" + elseIndex );
+			if_( not( this.ifCondition ), "else" + elseIndex );
 
 			startScope();
 			macro( this.ifBody );
@@ -72,7 +73,7 @@ public final class IfConstruct extends JvmMacro {
 				ElseIf elseIf = elseIfIter.next();
 			
 				label( "else" + ( elseIndex++ ) );
-				if_( elseIf.condition.inverse(), "else" + elseIndex );
+				if_( not( elseIf.condition ), "else" + elseIndex );
 				
 				startScope();
 				macro( elseIf.stmt );

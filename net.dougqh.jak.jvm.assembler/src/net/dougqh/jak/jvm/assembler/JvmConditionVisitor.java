@@ -95,6 +95,7 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 		this.ieq( expr, JakAsm.const_( 0 ) );
 	}
 	
+	
 	protected abstract void ieq( final JakExpression lhs, final JakExpression rhs );
 	
 	protected abstract void ine( final JakExpression lhs, final JakExpression rhs );
@@ -124,6 +125,7 @@ public abstract class JvmConditionVisitor extends JakCondition.Visitor {
 	protected abstract void aeq( final JakExpression lhs, final JakExpression rhs );
 	
 	protected abstract void ane( final JakExpression lhs, final JakExpression rhs );
+	
 	
 	protected final boolean isInt( final JakExpression expr ) {
 		Type type = expr.type( this.context );

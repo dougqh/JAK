@@ -27,7 +27,7 @@ public final class JakConditionsTest {
 				assertThat( rhs, is( rhsExpr ) );
 			}
 		} );
-		assertThat( eq( lhsExpr, rhsExpr ).inverse(), is( ne( lhsExpr, rhsExpr ) ) );
+		assertThat( not( eq( lhsExpr, rhsExpr ) ), is( ne( lhsExpr, rhsExpr ) ) );
 	}
 
 	@Test
@@ -39,7 +39,7 @@ public final class JakConditionsTest {
 				assertThat( rhs, is( rhsExpr ) );
 			}
 		} );
-		assertThat( ne( lhsExpr, rhsExpr ).inverse(), is( eq( lhsExpr, rhsExpr ) ) );
+		assertThat( not( ne( lhsExpr, rhsExpr ) ), is( eq( lhsExpr, rhsExpr ) ) );
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public final class JakConditionsTest {
 				assertThat( rhs, is( rhsExpr ) );
 			}
 		} );
-		assertThat( lt( lhsExpr, rhsExpr ).inverse(), is( ge( lhsExpr, rhsExpr ) ) );
+		assertThat( not( lt( lhsExpr, rhsExpr ) ), is( ge( lhsExpr, rhsExpr ) ) );
 	}
 	
 	@Test
@@ -63,7 +63,7 @@ public final class JakConditionsTest {
 				assertThat( rhs, is( rhsExpr ) );
 			}
 		} );
-		assertThat( le( lhsExpr, rhsExpr ).inverse(), is( gt( lhsExpr, rhsExpr ) ) );
+		assertThat( not( le( lhsExpr, rhsExpr ) ), is( gt( lhsExpr, rhsExpr ) ) );
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public final class JakConditionsTest {
 				assertThat( rhs, is( rhsExpr ) );
 			}
 		} );
-		assertThat( gt( lhsExpr, rhsExpr ).inverse(), is( le( lhsExpr, rhsExpr ) ) );
+		assertThat( not( gt( lhsExpr, rhsExpr ) ), is( le( lhsExpr, rhsExpr ) ) );
 	}
 	
 	@Test
@@ -87,7 +87,7 @@ public final class JakConditionsTest {
 				assertThat( rhs, is( rhsExpr ) );
 			}
 		} );
-		assertThat( ge( lhsExpr, rhsExpr ).inverse(), is( lt( lhsExpr, rhsExpr ) ) );
+		assertThat( not( ge( lhsExpr, rhsExpr ) ), is( lt( lhsExpr, rhsExpr ) ) );
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public final class JakConditionsTest {
 				assertThat( expr, is( JakConditionsTest.expr ) );
 			}
 		} );
-		assertThat( truthy( expr ).inverse(), is( falsy( expr ) ) );
+		assertThat( not( truthy( expr ) ), is( falsy( expr ) ) );
 	}
 	
 	@Test
@@ -109,7 +109,7 @@ public final class JakConditionsTest {
 				assertThat( expr, is( JakConditionsTest.expr ) );
 			}
 		} );
-		assertThat( falsy( expr ).inverse(), is( truthy( expr ) ) );
+		assertThat( not( falsy( expr ) ), is( truthy( expr ) ) );
 	}
 	
 	@Test
@@ -118,6 +118,7 @@ public final class JakConditionsTest {
 			@Override
 			protected void and( final JakCondition lhs, final JakCondition rhs ) {
 				assertThat( lhs, is( lhsCond ) );
+				assertThat( rhs, is( rhsCond ) );
 			}
 		} );
 	}
@@ -128,6 +129,7 @@ public final class JakConditionsTest {
 			@Override
 			protected void and( final JakCondition lhs, final JakCondition rhs ) {
 				assertThat( lhs, is( lhsCond ) );
+				assertThat( rhs, is( rhsCond ) );
 			}
 		} );		
 	}
@@ -138,6 +140,7 @@ public final class JakConditionsTest {
 			@Override
 			protected void or( final JakCondition lhs, final JakCondition rhs ) {
 				assertThat( lhs, is( lhsCond ) );
+				assertThat( rhs, is( rhsCond ) );
 			}
 		} );	
 	}
@@ -148,6 +151,29 @@ public final class JakConditionsTest {
 			@Override
 			protected void or( final JakCondition lhs, final JakCondition rhs ) {
 				assertThat( lhs, is( lhsCond ) );
+				assertThat( rhs, is( rhsCond ) );
+			}
+		} );		
+	}
+	
+	@Test
+	public final void xoringDirect() {
+		xor( lhsCond, rhsCond ).accept( new TestVisitor() {
+			@Override
+			protected void xor( final JakCondition lhs, final JakCondition rhs ) {
+				assertThat( lhs, is( lhsCond ) );
+				assertThat( rhs, is( rhsCond ) );
+			}
+		} );	
+	}
+	
+	@Test
+	public final void xoringChain() {
+		lhsCond.xor( rhsCond ).accept( new TestVisitor() {
+			@Override
+			protected void xor( final JakCondition lhs, final JakCondition rhs ) {
+				assertThat( lhs, is( lhsCond ) );
+				assertThat( rhs, is( rhsCond ) );
 			}
 		} );		
 	}
@@ -212,6 +238,11 @@ public final class JakConditionsTest {
 		}
 		
 		@Override
+		protected void not( final JakCondition cond ) {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
 		protected void and(
 			final JakCondition lhs,
 			final JakCondition rhs )
@@ -221,6 +252,14 @@ public final class JakConditionsTest {
 		
 		@Override
 		protected void or(
+			final JakCondition lhs,
+			final JakCondition rhs )
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		protected void xor(
 			final JakCondition lhs,
 			final JakCondition rhs )
 		{

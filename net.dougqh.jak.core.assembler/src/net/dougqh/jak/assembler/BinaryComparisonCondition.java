@@ -1,11 +1,11 @@
 package net.dougqh.jak.assembler;
 
-abstract class JakBinaryComparisonCondition extends JakCondition {
+abstract class BinaryComparisonCondition extends JakCondition {
 	final String operator;
 	final JakExpression lhsExpression;
 	final JakExpression rhsExpression;
 	
-	public JakBinaryComparisonCondition(
+	public BinaryComparisonCondition(
 		final String operator,
 		final JakExpression lhsExpression,
 		final JakExpression rhsExpression )
@@ -33,10 +33,10 @@ abstract class JakBinaryComparisonCondition extends JakCondition {
 	public final boolean equals( final Object obj ) {
 		if ( obj == this ) {
 			return true;
-		} else if ( ! ( obj instanceof JakBinaryComparisonCondition ) ) {
+		} else if ( ! ( obj instanceof BinaryComparisonCondition ) ) {
 			return false;
 		} else {
-			JakBinaryComparisonCondition that = (JakBinaryComparisonCondition)obj;
+			BinaryComparisonCondition that = (BinaryComparisonCondition)obj;
 			if ( ! this.operator.equals( that.operator ) ) {
 				return false;
 			} else if ( ! this.lhsExpression.equals( that.lhsExpression ) ) {
