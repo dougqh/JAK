@@ -13,11 +13,6 @@ abstract class UnaryLogicalCondition extends JakCondition {
 	}
 	
 	@Override
-	protected JakCondition inverse() {
-		return null;
-	}
-	
-	@Override
 	public final int hashCode() {
 		int prime = 17;
 		
