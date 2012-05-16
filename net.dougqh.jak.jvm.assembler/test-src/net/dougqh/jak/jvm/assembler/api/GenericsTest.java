@@ -1,8 +1,5 @@
 package net.dougqh.jak.jvm.assembler.api;
 
-import static net.dougqh.jak.Jak.*;
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -16,15 +13,16 @@ import net.dougqh.java.meta.types.type;
 
 import org.junit.Test;
 
+import static net.dougqh.jak.Jak.*;
+import static org.junit.Assert.*;
+
 public final class GenericsTest {
-	public final @Test void genericReturnType() {
+	@Test
+	public final void specificReturnType() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "GenericReturnType" ) );
+			public_().final_().class_( "SpecificReturnType" ) );
 		
-		classWriter.define( public_().init() ).
-			this_().
-			invokespecial( Object.class, init() ).
-			return_();
+		classWriter.defineDefaultConstructor();
 		
 		Type List_String = type( List.class ).of( String.class ).make();
 		
@@ -43,14 +41,12 @@ public final class GenericsTest {
 			method.getGenericReturnType() );
 	}
 	
-	public final @Test void wildcardExtendsType() {
+	@Test
+	public final void wildcardExtendsType() {
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().final_().class_( "WilcardExtends" ) );
 		
-		classWriter.define( public_().init() ).
-			this_().
-			invokespecial( Object.class, init() ).
-			return_();
+		classWriter.defineDefaultConstructor();
 		
 		Type List_extends_String = 
 			type( List.class ).of(
@@ -68,14 +64,12 @@ public final class GenericsTest {
 			method.getGenericReturnType() );
 	}
 	
-	public final @Test void genericParameterType() {
+	@Test
+	public final void specificParameterType() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "GenericReturnType" ) );
+			public_().final_().class_( "SpecificReturnType" ) );
 		
-		classWriter.define( public_().init() ).
-			this_().
-			invokespecial( Object.class, init() ).
-			return_();
+		classWriter.defineDefaultConstructor();
 		
 		Type List_String = type( List.class ).of( String.class ).make();
 		
@@ -98,14 +92,12 @@ public final class GenericsTest {
 			paramTypes[ 0 ] );
 	}
 	
-	public final @Test void genericCode() {
+	@Test
+	public final void specificCode() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "GenericCode" ).implements_( Creator.class ) );
+			public_().final_().class_( "SpecificCode" ).implements_( Creator.class ) );
 		
-		classWriter.define( public_().init() ).
-			this_().
-			invokespecial( Object.class, init() ).
-			return_();
+		classWriter.defineDefaultConstructor();
 		
 		Type ArrayList_String = type( ArrayList.class ).of( String.class ).make();
 		
@@ -119,9 +111,10 @@ public final class GenericsTest {
 		assertTrue( creator.create() instanceof List );
 	}
 	
-	public final @Test void genericField() {
+	@Test
+	public final void specificField() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().final_().class_( "GenericField" ) );
+			public_().final_().class_( "SpecificField" ) );
 
 		Type List_String = new type< List< String > >() {};
 		
@@ -135,9 +128,10 @@ public final class GenericsTest {
 			field.getGenericType() );
 	}
 	
-	public final @Test void genericExtension() {
+	@Test
+	public final void specificExtension() {
 		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().abstract_().class_( "GenericExtension" ).
+			public_().abstract_().class_( "SpecificExtension" ).
 				extends_( type( AbstractList.class ).of( String.class ) ).
 				implements_( type( List.class ).of( String.class ) ) );
 		
