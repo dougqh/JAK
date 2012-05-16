@@ -106,13 +106,6 @@ public final class JavaModifiers {
 			fieldType,
 			fieldName );
 	}
-	
-	public final JavaFieldImpl field(
-		final JavaTypeBuilder typeBuilder,
-		final CharSequence fieldName )
-	{
-		return this.field( typeBuilder.make(), fieldName );
-	}
 
 	public final JavaMethodDescriptor method(
 		final Type returnType,
