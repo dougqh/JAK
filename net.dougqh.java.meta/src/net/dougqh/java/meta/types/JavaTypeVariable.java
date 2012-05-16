@@ -16,7 +16,7 @@ public final class JavaTypeVariable
 		final Type[] bounds )
 	{
 		this.name = name.toString();
-		this.bounds = JavaTypes.resolve( bounds );
+		this.bounds = bounds.clone();
 	}
 	
 	public JavaTypeVariable( final CharSequence name ) {

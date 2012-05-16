@@ -1,11 +1,12 @@
 package net.dougqh.jak;
 
-import static net.dougqh.jak.Methods.*;
-
 import java.lang.reflect.Type;
+
+import static net.dougqh.jak.Methods.*;
 
 public final class JavaMethodDescriptor {
 	private final int flags;
+	private final Type[] genericTypes;
 	private final Type returnType;
 	private final String methodName;
 	
@@ -18,6 +19,7 @@ public final class JavaMethodDescriptor {
 		final String methodName )
 	{
 		this.flags = modifiers.flags();
+		this.genericTypes = modifiers.genericTypes();
 		this.returnType = returnType;
 		this.methodName = methodName;
 	}
@@ -45,6 +47,10 @@ public final class JavaMethodDescriptor {
 	
 	public final int getFlags() {
 		return this.flags;
+	}
+	
+	public final Type[] getGenericTypes() {
+		return this.genericTypes;
 	}
 	
 	public final String getName() {

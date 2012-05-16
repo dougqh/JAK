@@ -21,6 +21,7 @@ final class Methods {
 	
 	final JvmCoreCodeWriterImpl createMethod(
 		final int flags,
+		final Type[] genericTypes,
 		final Type returnType,
 		final String name,
 		final FormalArguments arguments,
@@ -48,8 +49,10 @@ final class Methods {
 			this.methodAttributes = new Attributes( 64 );
 		}
 		
-		this.methodAttributes.add( new ExceptionsAttribute( this.constantPool, exceptionTypes ) );
-		this.methodAttributes.add( new SignatureAttribute( this.constantPool, returnType, arguments ) );
+		this.methodAttributes.add(
+			new ExceptionsAttribute( this.constantPool, exceptionTypes ) );
+		this.methodAttributes.add(
+			new SignatureAttribute( this.constantPool, genericTypes, returnType, arguments ) );
 		
 		if ( needsCode ) {			
 			CodeAttribute codeAttribute = new CodeAttribute( this.constantPool, locals, stack );
@@ -118,14 +121,13 @@ final class Methods {
 		
 		SignatureAttribute(
 			final ConstantPool constantPool,
+			final Type[] genericTypes,
 			final Type returnType,
 			final FormalArguments args )
 		{
 			super( constantPool, ID, 2 );
 			
-			this.entry = this.constantPool.addGenericMethodDescriptor(
-				returnType,
-				args );
+			this.entry = this.constantPool.addGenericMethodDescriptor( genericTypes, returnType, args );
 		}
 		
 		@Override

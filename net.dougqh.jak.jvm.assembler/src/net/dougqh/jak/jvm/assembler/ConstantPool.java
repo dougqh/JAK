@@ -1,7 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import static net.dougqh.jak.core.ConstantPoolConstants.*;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
@@ -10,6 +8,7 @@ import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.types.Utf8;
 import net.dougqh.java.meta.types.JavaTypeVisitor;
 import net.dougqh.java.meta.types.JavaTypes;
+import static net.dougqh.jak.core.ConstantPoolConstants.*;
 
 
 final class ConstantPool {	
@@ -161,10 +160,11 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addGenericMethodDescriptor(
+		final Type[] genericTypes,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		String genericSignature = getGenericMethodSignature( returnType, arguments );
+		String genericSignature = getGenericMethodSignature( genericTypes, returnType, arguments );
 		if ( genericSignature == null ) {
 			return null;
 		} else {
@@ -362,18 +362,28 @@ final class ConstantPool {
 	}
 	
 	static final String getGenericMethodSignature(
+		final Type[] genericTypes,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		if ( isGenericMethodSignature( returnType, arguments ) ) {
-			SignatureTypeVistor genericSigBuilder = 
-				new SignatureTypeVistor();
+		if ( isGenericMethodSignature( genericTypes, returnType, arguments ) ) {
+			SignatureTypeVistor genericSigBuilder = new SignatureTypeVistor();
+			
+			if ( genericTypes.length != 0 ) {
+				genericSigBuilder.startParameterization();
+				for ( Type genericType: genericTypes ) {
+					genericSigBuilder.visit( genericType );
+				}
+				genericSigBuilder.endParameterization();
+			}
+			
 			genericSigBuilder.startArguments();
 			for ( JavaVariable variable : arguments ) {
 				Type type = variable.getType();
 				genericSigBuilder.visit( type );
 			}
 			genericSigBuilder.endArguments();
+			
 			genericSigBuilder.visit( returnType );
 
 			return genericSigBuilder.getSignature();
@@ -383,12 +393,15 @@ final class ConstantPool {
 	}
 	
 	static final boolean isGenericMethodSignature(
+		final Type[] genericTypes,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
 		Type resolvedReturnedType = JavaTypes.resolve( returnType );
 		
-		if ( ! ( resolvedReturnedType instanceof Class ) ) {
+		if ( genericTypes.length != 0 ) {
+			return true;
+		} else if ( ! ( resolvedReturnedType instanceof Class ) ) {
 			return true;
 		} else {
 			for ( JavaVariable variable : arguments ) {
@@ -464,6 +477,7 @@ final class ConstantPool {
 	
 	static final class SignatureTypeVistor extends JavaTypeVisitor {
 		private final StringBuilder builder = new StringBuilder();
+		private boolean parameterizing = false;
 		
 		protected final String getSignature() {
 			return this.builder.toString();
@@ -503,6 +517,39 @@ final class ConstantPool {
 			}
 		}
 		
+		final void startParameterization() {
+			this.parameterizing = true;
+			
+			this.builder.append( '<' );
+		}
+		
+		final void endParameterization() {
+			this.builder.append( '>' );
+			
+			this.parameterizing = false;
+		}
+		
+		@Override
+		protected void visitTypeVariable(
+			final String variableName,
+			final Type[] bounds )
+		{
+			if ( this.parameterizing ) {
+				super.visitTypeVariable( variableName, bounds );
+			} else {
+				this.builder.append( 'T' ).append( variableName ).append( ';' );
+			}
+		}
+		
+		@Override
+		protected final void startTypeVariable( final String variableName ) {
+			this.builder.append( variableName ).append( ':' );
+		}
+		
+		@Override
+		protected final void endTypeVariable( final String variableName ) {
+		}
+		
 		final void startArguments() {
 			this.builder.append( '(' );
 		}
@@ -540,15 +587,6 @@ final class ConstantPool {
 		}
 		
 		@Override
-		protected final void startTypeVariable( final String variableName ) {
-			this.builder.append( variableName ).append( ':' );
-		}
-		
-		@Override
-		protected final void endTypeVariable( final String variableName ) {
-		}
-		
-		@Override
 		protected final void startWildcardExtends() {
 			this.builder.append( '+' );
 		}
@@ -574,6 +612,11 @@ final class ConstantPool {
 		@Override
 		protected final void visitPrimitiveClass( final String name ) {
 			this.builder.append( name );
+		}
+		
+		@Override
+		public final String toString() {
+			return this.builder.toString();
 		}
 	}
 }

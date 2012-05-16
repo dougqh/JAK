@@ -14,6 +14,7 @@ import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakTypeResolver;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
+import net.dougqh.java.meta.types.JavaTypeVariable;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class TypeWriter {
@@ -38,6 +39,12 @@ final class TypeWriter {
 	private JakConfiguration config = new JakConfiguration();
 	
 	private final JakTypeResolver resolver = new JakTypeResolver() {
+		@Override
+		protected final Type resolve( final JavaTypeVariable typeVar ) {
+			//TODO: Add support when generic class declaration support is added.
+			throw new UnsupportedOperationException();
+		}
+		
 		@Override
 		protected final Type thisType() {
 			return TypeWriter.this.thisType();
@@ -193,6 +200,7 @@ final class TypeWriter {
 		
 		JvmCoreCodeWriterImpl writer = this.methods.createMethod(
 			method.getFlags() | additionalFlags,
+			method.getGenericTypes(),
 			method.getReturnType(),
 			method.getName(),
 			method.arguments(),

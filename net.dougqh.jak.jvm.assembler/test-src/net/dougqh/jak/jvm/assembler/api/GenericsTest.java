@@ -2,7 +2,9 @@ package net.dougqh.jak.jvm.assembler.api;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +13,37 @@ import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
 import net.dougqh.java.meta.types.type;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import static net.dougqh.jak.Jak.*;
 import static org.junit.Assert.*;
 
 public final class GenericsTest {
+	@Test
+	public final void parameterizeMethod() throws NoSuchMethodException {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "ParameterizedMethod" ) );
+		
+		classWriter.define( public_().abstract_().generic( T ).method( T, "get", type( Class.class ).of( T ).make() ) );
+		
+		Class<?> parameterized = classWriter.load();
+		
+		Method method = parameterized.getMethod( "get", Class.class );
+		assertThat( method.getReturnType(), is( Object.class ) );
+		assertThat( method.getParameterTypes()[ 0 ], is( Class.class ) );
+		
+		TypeVariable<?> returnType = (TypeVariable<?>)method.getGenericReturnType();
+		assertThat( returnType.getName(), is( "T" ) );
+		
+		ParameterizedType parameterType = (ParameterizedType)method.getGenericParameterTypes()[ 0 ];
+		assertThat( parameterType.getRawType(), is( Class.class ) );
+
+		TypeVariable<?> typeVar = (TypeVariable<?>)parameterType.getActualTypeArguments()[ 0 ];
+		assertThat( typeVar.getName(), is( "T" ) );
+	}
+	
 	@Test
 	public final void specificReturnType() {
 		JvmClassWriter classWriter = new JvmWriter().define(
@@ -171,6 +198,14 @@ public final class GenericsTest {
 			}
 		}
 		throw new IllegalStateException( "Method " + methodName + " not found" );
+	}
+	
+	private static final Matcher< String > is( final String value ) {
+		return CoreMatchers.is( value );
+	}
+	
+	private static final Matcher< Type > is( final Type type ) {
+		return CoreMatchers.is( type );
 	}
 	
 	public interface Creator {

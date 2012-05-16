@@ -73,4 +73,19 @@ public final class FormalArguments implements Iterable< JavaVariable > {
 	public final ListIterator< JavaVariable > iterator() {
 		return Collections.unmodifiableList( Arrays.asList( this.arguments ) ).listIterator();
 	}
+	
+	@Override
+	public final String toString() {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for ( JavaVariable arg: this.arguments ) {
+			if ( first ) {
+				first = false;
+			} else {
+				builder.append( ", " );
+			}
+			builder.append( arg );
+		}
+		return builder.toString();
+	}
 }

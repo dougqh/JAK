@@ -1,8 +1,8 @@
 package net.dougqh.jak;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
-import net.dougqh.java.meta.types.JavaTypeBuilder;
 import static net.dougqh.jak.Flags.*;
 import static net.dougqh.jak.Methods.*;
 
@@ -225,7 +225,11 @@ public final class JavaModifiers {
 		final String annotationName )
 	{
 		return $interface( aPackage, annotationName );
-	}	
+	}
+	
+	final Type[] genericTypes() {
+		return this.genericTypes;
+	}
 	
 	final int flags() {
 		return this.flags;
@@ -244,7 +248,8 @@ public final class JavaModifiers {
 			return false;
 		} else {
 			JavaModifiers that = (JavaModifiers)obj;
-			return ( this.flags == that.flags );
+			return ( this.flags == that.flags ) &&
+				Arrays.equals( this.genericTypes, that.genericTypes ); 
 		}
 	}
 }
