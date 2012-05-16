@@ -2,6 +2,7 @@ package net.dougqh.java.meta.types;
 
 import java.lang.reflect.Type;
 
+@Deprecated
 public final class JavaTypeBuilder {
 	private final boolean isTypeVar;
 	private final CharSequence name;

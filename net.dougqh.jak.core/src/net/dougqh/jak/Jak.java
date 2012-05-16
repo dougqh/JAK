@@ -8,7 +8,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import net.dougqh.java.meta.types.JavaTypeBuilder;
+import net.dougqh.java.meta.types.JavaTypeVar;
 import net.dougqh.java.meta.types.JavaTypes;
+import net.dougqh.java.meta.types.JavaWildcardType;
 import static net.dougqh.jak.Methods.*;
 
 public class Jak {
@@ -22,7 +24,7 @@ public class Jak {
 	public static final Type float_ = float.class;
 	public static final Type double_ = double.class;
 	
-	public static final Type $ = typeVar( "$" );
+	public static final Type $ = wildcard();
 	public static final Type A = typeVar( "A" );
 	public static final Type B = typeVar( "B" );
 	public static final Type C = typeVar( "C" );
@@ -49,9 +51,13 @@ public class Jak {
 	public static final Type X = typeVar( "X" );
 	public static final Type Y = typeVar( "Y" );
 	public static final Type Z = typeVar( "Z" );
-		
+	
+	private static final Type wildcard() {
+		return new JavaWildcardType();
+	}
+	
 	private static final Type typeVar( final String var ) {
-		return JavaTypes.typeVar( var ).make();
+		return new JavaTypeVar( var );
 	}
 	
 	public static final JavaPackageDescriptor package_( final String name ) {
