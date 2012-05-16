@@ -6,7 +6,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 
 public final class JavaTypeVariable
-	implements TypeVariable< GenericDeclaration >
+	implements TypeVariable< GenericDeclaration >, JavaTypeProvider
 {
 	private final String name;
 	private final Type[] bounds;
@@ -32,6 +32,13 @@ public final class JavaTypeVariable
 	@Override
 	public final Type[] getBounds() {
 		return this.bounds;
+	}
+	
+	@Override
+	public final Type get() {
+		//TODO: A convenient, but not entirely correct definition
+		//Needs to be able to return all possible bounds
+		return this.bounds[ 0 ];
 	}
 	
 	//DQH: hashCode and equals are implemented such that equivalence only

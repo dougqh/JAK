@@ -8,7 +8,7 @@ public final class JavaAnnotationDescriptor {
 	private final String name;
 	
 	JavaAnnotationDescriptor(
-		final JavaFlagsBuilder flagsBuilder,
+		final JavaModifiers flagsBuilder,
 		final String name )
 	{
 		this.flags = flagsBuilder.flags();

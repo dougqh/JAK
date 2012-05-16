@@ -13,11 +13,11 @@ public final class JavaMethodDescriptor {
 	private Type[] exceptionTypes = new Type[]{};
 
 	JavaMethodDescriptor(
-		final JavaFlagsBuilder flagsBuilder,
+		final JavaModifiers modifiers,
 		final Type returnType,
 		final String methodName )
 	{
-		this.flags = flagsBuilder.flags();
+		this.flags = modifiers.flags();
 		this.returnType = returnType;
 		this.methodName = methodName;
 	}
