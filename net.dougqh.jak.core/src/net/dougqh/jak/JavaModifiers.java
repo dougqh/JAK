@@ -93,7 +93,7 @@ public final class JavaModifiers {
 		return new JavaModifiers( this, VAR_ARGS );
 	}
 	
-	public final JavaModifiers generic( final Type... typeArgs ) {
+	public final JavaModifiers parameterize( final Type... typeArgs ) {
 		return new JavaModifiers( this, typeArgs );
 	}
 	

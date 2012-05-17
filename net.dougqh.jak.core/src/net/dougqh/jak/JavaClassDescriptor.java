@@ -2,7 +2,6 @@ package net.dougqh.jak;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.java.meta.types.JavaTypeBuilder;
 import net.dougqh.java.meta.types.JavaTypes;
 
 public final class JavaClassDescriptor {
@@ -23,17 +22,9 @@ public final class JavaClassDescriptor {
 		return this.extends_( JavaTypes.objectTypeName( name ) );
 	}
 	
-	public final JavaClassDescriptor extends_( final JavaTypeBuilder typeBuilder ) {
-		return this.extends_( typeBuilder.make() );
-	}
-	
 	public final JavaClassDescriptor extends_( final Type type ) {
 		this.parentType = JavaTypes.resolve( type );
 		return this;
-	}
-	
-	public final JavaClassDescriptor implements_( final JavaTypeBuilder... typeBuilders ) {
-		return this.implements_( JavaTypeBuilder.make( typeBuilders ) );
 	}
 	
 	public final JavaClassDescriptor implements_( final Type... types ) {
