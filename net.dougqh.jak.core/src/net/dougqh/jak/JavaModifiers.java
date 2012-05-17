@@ -1,16 +1,17 @@
 package net.dougqh.jak;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 
 import static net.dougqh.jak.Flags.*;
 import static net.dougqh.jak.Methods.*;
 
 public final class JavaModifiers {
-	private static final Type[] EMPTY_TYPES = {};
+	private static final TypeVariable<?>[] EMPTY_TYPE_VARS = {};
 	
 	private final int flags;
-	private final Type[] genericTypes;
+	private final TypeVariable<?>[] typeVars;
 	
 	JavaModifiers() {
 		this( NO_FLAGS );
@@ -18,31 +19,31 @@ public final class JavaModifiers {
 	
 	JavaModifiers( final int flag ) {
 		this.flags = flag;
-		this.genericTypes = EMPTY_TYPES;
+		this.typeVars = EMPTY_TYPE_VARS;
 	}
 	
 	JavaModifiers(
 		final JavaModifiers baseModifiers,
 		final int flag )
 	{
-		if ( baseModifiers.genericTypes.length != 0 ) {
+		if ( baseModifiers.typeVars.length != 0 ) {
 			throw new IllegalStateException();
 		}
 		
 		this.flags = baseModifiers.flags | flag;
-		this.genericTypes = EMPTY_TYPES;
+		this.typeVars = EMPTY_TYPE_VARS;
 	}
 	
 	JavaModifiers(
 		final JavaModifiers baseModifiers,
-		final Type[] typeArgs )
+		final TypeVariable<?>[] typeVars )
 	{
-		if ( baseModifiers.genericTypes.length != 0 ) {
+		if ( baseModifiers.typeVars.length != 0 ) {
 			throw new IllegalStateException();
 		}
 		
 		this.flags = baseModifiers.flags;
-		this.genericTypes = typeArgs;
+		this.typeVars = typeVars;
 	}
 	
 	public final JavaModifiers public_() {
@@ -93,7 +94,7 @@ public final class JavaModifiers {
 		return new JavaModifiers( this, VAR_ARGS );
 	}
 	
-	public final JavaModifiers parameterize( final Type... typeArgs ) {
+	public final JavaModifiers parameterize( final TypeVariable<?>... typeArgs ) {
 		return new JavaModifiers( this, typeArgs );
 	}
 	
@@ -227,8 +228,8 @@ public final class JavaModifiers {
 		return $interface( aPackage, annotationName );
 	}
 	
-	final Type[] genericTypes() {
-		return this.genericTypes;
+	final TypeVariable<?>[] typeVars() {
+		return this.typeVars;
 	}
 	
 	final int flags() {
@@ -249,7 +250,7 @@ public final class JavaModifiers {
 		} else {
 			JavaModifiers that = (JavaModifiers)obj;
 			return ( this.flags == that.flags ) &&
-				Arrays.equals( this.genericTypes, that.genericTypes ); 
+				Arrays.equals( this.typeVars, that.typeVars ); 
 		}
 	}
 }

@@ -200,7 +200,7 @@ final class TypeWriter {
 		
 		JvmCoreCodeWriterImpl writer = this.methods.createMethod(
 			method.getFlags() | additionalFlags,
-			method.getGenericTypes(),
+			method.getTypeVars(),
 			method.getReturnType(),
 			method.getName(),
 			method.arguments(),

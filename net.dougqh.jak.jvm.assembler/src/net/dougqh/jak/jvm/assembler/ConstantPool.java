@@ -1,6 +1,7 @@
 package net.dougqh.jak.jvm.assembler;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 
 import net.dougqh.jak.FormalArguments;
@@ -160,11 +161,11 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addGenericMethodDescriptor(
-		final Type[] genericTypes,
+		final TypeVariable<?>[] typeVars,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		String genericSignature = getGenericMethodSignature( genericTypes, returnType, arguments );
+		String genericSignature = getGenericMethodSignature( typeVars, returnType, arguments );
 		if ( genericSignature == null ) {
 			return null;
 		} else {
@@ -362,17 +363,17 @@ final class ConstantPool {
 	}
 	
 	static final String getGenericMethodSignature(
-		final Type[] genericTypes,
+		final TypeVariable<?>[] typeVars,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		if ( isGenericMethodSignature( genericTypes, returnType, arguments ) ) {
+		if ( isGenericMethodSignature( typeVars, returnType, arguments ) ) {
 			SignatureTypeVistor genericSigBuilder = new SignatureTypeVistor();
 			
-			if ( genericTypes.length != 0 ) {
+			if ( typeVars.length != 0 ) {
 				genericSigBuilder.startParameterization();
-				for ( Type genericType: genericTypes ) {
-					genericSigBuilder.visit( genericType );
+				for ( Type typeVar: typeVars ) {
+					genericSigBuilder.visit( typeVar );
 				}
 				genericSigBuilder.endParameterization();
 			}

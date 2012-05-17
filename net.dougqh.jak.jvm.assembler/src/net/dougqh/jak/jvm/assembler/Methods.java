@@ -1,6 +1,7 @@
 package net.dougqh.jak.jvm.assembler;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.FormalArguments;
@@ -21,7 +22,7 @@ final class Methods {
 	
 	final JvmCoreCodeWriterImpl createMethod(
 		final int flags,
-		final Type[] genericTypes,
+		final TypeVariable<?>[] typeVars,
 		final Type returnType,
 		final String name,
 		final FormalArguments arguments,
@@ -52,7 +53,7 @@ final class Methods {
 		this.methodAttributes.add(
 			new ExceptionsAttribute( this.constantPool, exceptionTypes ) );
 		this.methodAttributes.add(
-			new SignatureAttribute( this.constantPool, genericTypes, returnType, arguments ) );
+			new SignatureAttribute( this.constantPool, typeVars, returnType, arguments ) );
 		
 		if ( needsCode ) {			
 			CodeAttribute codeAttribute = new CodeAttribute( this.constantPool, locals, stack );
@@ -121,13 +122,13 @@ final class Methods {
 		
 		SignatureAttribute(
 			final ConstantPool constantPool,
-			final Type[] genericTypes,
+			final TypeVariable<?>[] typeVars,
 			final Type returnType,
 			final FormalArguments args )
 		{
 			super( constantPool, ID, 2 );
 			
-			this.entry = this.constantPool.addGenericMethodDescriptor( genericTypes, returnType, args );
+			this.entry = this.constantPool.addGenericMethodDescriptor( typeVars, returnType, args );
 		}
 		
 		@Override
