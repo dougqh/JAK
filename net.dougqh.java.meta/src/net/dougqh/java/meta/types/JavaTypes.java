@@ -218,13 +218,10 @@ public final class JavaTypes {
 	public static final JavaWildcardType wildcard() {
 		return new JavaWildcardType();
 	}
-
-	public static final JavaTypeBuilder type() {
-		return new JavaTypeBuilder();
-	}
 	
 	public static final Type objectTypeName( final CharSequence name ) {
- 		return new JavaTypeBuilder( name, false ).make();
+		//TODO: Consider eliminating the resolve call
+ 		return JavaTypes.resolve( new ClassNameRefType( name ) );
 	}
 	
 	public static final Class< ? > loadClass( final CharSequence name )
@@ -273,12 +270,12 @@ public final class JavaTypes {
 		return objectTypeName( typeElement.getQualifiedName() );
 	}	
 	
-	public static final JavaTypeVar typeVar( final CharSequence name ) {
-		return new JavaTypeVar( name.toString() );
+	public static final JavaTypeVariable typeVar( final CharSequence name ) {
+		return new JavaTypeVariable( name.toString() );
 	}
 	
-	public static final JavaSpecificType parameterize( final Type type ) {
-		return new JavaSpecificType( type );
+	public static final JavaParameterizedType parameterize( final Type type ) {
+		return new JavaParameterizedType( type );
 	}
 	
 	public static final Class< ? > array( final Class< ? > aClass ) {

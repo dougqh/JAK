@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.dougqh.java.meta.types.JavaTypes;
+
 import org.junit.Test;
 
 import static net.dougqh.java.meta.types.JavaTypes.*;
@@ -16,7 +18,7 @@ import static org.junit.Assert.*;
 
 public final class JavaTypeBuildingTest {
 	public final @Test void nameLookup() {
-		assertEquals( Integer.class, objectTypeName( "java.lang.Integer" ) );
+		assertEquals( Integer.class, JavaTypes.resolve( objectTypeName( "java.lang.Integer" ) ) );
 	}
 	
 	@Test

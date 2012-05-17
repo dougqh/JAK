@@ -6,9 +6,9 @@ import java.lang.reflect.Type;
 
 import javax.lang.model.element.TypeElement;
 
-import net.dougqh.java.meta.types.JavaSpecificType;
+import net.dougqh.java.meta.types.JavaParameterizedType;
 import net.dougqh.java.meta.types.JavaTypeBuilder;
-import net.dougqh.java.meta.types.JavaTypeVar;
+import net.dougqh.java.meta.types.JavaTypeVariable;
 import net.dougqh.java.meta.types.JavaTypes;
 import net.dougqh.java.meta.types.JavaWildcardType;
 import static net.dougqh.jak.Methods.*;
@@ -25,32 +25,32 @@ public class Jak {
 	public static final Type double_ = double.class;
 	
 	public static final JavaWildcardType $ = wildcard();
-	public static final JavaTypeVar A = typeVar( "A" );
-	public static final JavaTypeVar B = typeVar( "B" );
-	public static final JavaTypeVar C = typeVar( "C" );
-	public static final JavaTypeVar D = typeVar( "D" );
-	public static final JavaTypeVar E = typeVar( "E" );
-	public static final JavaTypeVar F = typeVar( "F" );
-	public static final JavaTypeVar G = typeVar( "G" );
-	public static final JavaTypeVar H = typeVar( "H" );
-	public static final JavaTypeVar I = typeVar( "I" );
-	public static final JavaTypeVar J = typeVar( "J" );
-	public static final JavaTypeVar K = typeVar( "K" );
-	public static final JavaTypeVar L = typeVar( "L" );
-	public static final JavaTypeVar M = typeVar( "M" );
-	public static final JavaTypeVar N = typeVar( "N" );
-	public static final JavaTypeVar O = typeVar( "O" );
-	public static final JavaTypeVar P = typeVar( "P" );
-	public static final JavaTypeVar Q = typeVar( "Q" );
-	public static final JavaTypeVar R = typeVar( "R" );
-	public static final JavaTypeVar S = typeVar( "S" );
-	public static final JavaTypeVar T = typeVar( "T" );
-	public static final JavaTypeVar U = typeVar( "U" );
-	public static final JavaTypeVar V = typeVar( "V" );
-	public static final JavaTypeVar W = typeVar( "W" );
-	public static final JavaTypeVar X = typeVar( "X" );
-	public static final JavaTypeVar Y = typeVar( "Y" );
-	public static final JavaTypeVar Z = typeVar( "Z" );
+	public static final JavaTypeVariable A = typeVar( "A" );
+	public static final JavaTypeVariable B = typeVar( "B" );
+	public static final JavaTypeVariable C = typeVar( "C" );
+	public static final JavaTypeVariable D = typeVar( "D" );
+	public static final JavaTypeVariable E = typeVar( "E" );
+	public static final JavaTypeVariable F = typeVar( "F" );
+	public static final JavaTypeVariable G = typeVar( "G" );
+	public static final JavaTypeVariable H = typeVar( "H" );
+	public static final JavaTypeVariable I = typeVar( "I" );
+	public static final JavaTypeVariable J = typeVar( "J" );
+	public static final JavaTypeVariable K = typeVar( "K" );
+	public static final JavaTypeVariable L = typeVar( "L" );
+	public static final JavaTypeVariable M = typeVar( "M" );
+	public static final JavaTypeVariable N = typeVar( "N" );
+	public static final JavaTypeVariable O = typeVar( "O" );
+	public static final JavaTypeVariable P = typeVar( "P" );
+	public static final JavaTypeVariable Q = typeVar( "Q" );
+	public static final JavaTypeVariable R = typeVar( "R" );
+	public static final JavaTypeVariable S = typeVar( "S" );
+	public static final JavaTypeVariable T = typeVar( "T" );
+	public static final JavaTypeVariable U = typeVar( "U" );
+	public static final JavaTypeVariable V = typeVar( "V" );
+	public static final JavaTypeVariable W = typeVar( "W" );
+	public static final JavaTypeVariable X = typeVar( "X" );
+	public static final JavaTypeVariable Y = typeVar( "Y" );
+	public static final JavaTypeVariable Z = typeVar( "Z" );
 	
 	public static final JavaPackageDescriptor package_( final String name ) {
 		return new JavaPackageDescriptor( name );
@@ -247,11 +247,11 @@ public class Jak {
 		return JavaTypes.objectTypeName( name );
 	}
 	
-	public static final JavaTypeVar typeVar( final String name ) {
+	public static final JavaTypeVariable typeVar( final String name ) {
 		return JavaTypes.typeVar( name );
 	}
 	
-	public static final JavaSpecificType parameterize( final Type rawType ) {
+	public static final JavaParameterizedType parameterize( final Type rawType ) {
 		return JavaTypes.parameterize( rawType );
 	}
 	
