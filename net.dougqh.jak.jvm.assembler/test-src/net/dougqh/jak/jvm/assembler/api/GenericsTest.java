@@ -26,7 +26,7 @@ public final class GenericsTest {
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().class_( "ParameterizedMethod" ) );
 		
-		classWriter.define( public_().abstract_().generic( T ).method( T, "get", type( Class.class ).of( T ).make() ) );
+		classWriter.define( public_().abstract_().generic( T ).method( T, "get", parameterize( Class.class ).of( T ) ) );
 		
 		Class<?> parameterized = classWriter.load();
 		
@@ -51,7 +51,7 @@ public final class GenericsTest {
 		
 		classWriter.defineDefaultConstructor();
 		
-		Type List_String = type( List.class ).of( String.class ).make();
+		Type List_String = parameterize( List.class ).of( String.class );
 		
 		classWriter.define( public_().final_().method( List_String, "getStrings" ) ).
 			aconst_null().
@@ -60,11 +60,9 @@ public final class GenericsTest {
 		Class< ? > generatedClass = classWriter.load();
 		Method method = getMethod( generatedClass, "getStrings" );
 		
+		assertEquals( List.class, method.getReturnType() );
 		assertEquals(
-			List.class,
-			method.getReturnType() );
-		assertEquals(
-			type( List.class ).of( String.class ).make(),
+			new type< List< String > >() {}.get(),
 			method.getGenericReturnType() );
 	}
 	
@@ -75,9 +73,7 @@ public final class GenericsTest {
 		
 		classWriter.defineDefaultConstructor();
 		
-		Type List_extends_String = 
-			type( List.class ).of(
-				type().extends_( String.class ) ).make();
+		Type List_extends_String = new type< List< ? extends String > >() {}.get();
 		
 		classWriter.define( public_().final_().method( List_extends_String, "getStrings" ) ).
 			aconst_null().
@@ -87,7 +83,7 @@ public final class GenericsTest {
 		Method method = getMethod( generatedClass, "getStrings" );
 		
 		assertEquals(
-			type( List.class ).of( type().extends_( String.class ) ).make(),
+			parameterize( List.class ).of( $.extends_( String.class ) ),
 			method.getGenericReturnType() );
 	}
 	
@@ -98,7 +94,7 @@ public final class GenericsTest {
 		
 		classWriter.defineDefaultConstructor();
 		
-		Type List_String = type( List.class ).of( String.class ).make();
+		Type List_String = parameterize( List.class ).of( String.class );
 		
 		classWriter.define( public_().final_().method( void.class, "setStrings", List_String ) ).
 			aconst_null().
@@ -115,7 +111,7 @@ public final class GenericsTest {
 		
 		assertEquals( List.class, paramClasses[ 0 ] );
 		assertEquals(
-			type( List.class ).of( String.class ).make(),
+			parameterize( List.class ).of( String.class ),
 			paramTypes[ 0 ] );
 	}
 	
@@ -126,7 +122,7 @@ public final class GenericsTest {
 		
 		classWriter.defineDefaultConstructor();
 		
-		Type ArrayList_String = type( ArrayList.class ).of( String.class ).make();
+		Type ArrayList_String = parameterize( ArrayList.class ).of( String.class );
 		
 		classWriter.define( public_().final_().method( Object.class, "create" ) ).
 			new_( ArrayList_String ).
@@ -151,7 +147,7 @@ public final class GenericsTest {
 		Field field = getField( classWriter.load(), "strings" );
 		
 		assertEquals(
-			type( List.class ).of( String.class ).make(),
+			parameterize( List.class ).of( String.class ),
 			field.getGenericType() );
 	}
 	
@@ -159,19 +155,19 @@ public final class GenericsTest {
 	public final void specificExtension() {
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().abstract_().class_( "SpecificExtension" ).
-				extends_( type( AbstractList.class ).of( String.class ) ).
-				implements_( type( List.class ).of( String.class ) ) );
+				extends_( parameterize( AbstractList.class ).of( String.class ) ).
+				implements_( parameterize( List.class ).of( String.class ) ) );
 		
 		Class< ? > aClass = classWriter.load();
 		
 		assertEquals(
-			type( AbstractList.class ).of( String.class ).make(),
+			parameterize( AbstractList.class ).of( String.class ),
 			aClass.getGenericSuperclass() );
 		
 		Type[] interfaceTypes = aClass.getGenericInterfaces();
 		assertEquals( 1, interfaceTypes.length );
 		assertEquals(
-			type( List.class ).of( String.class ).make(),
+			parameterize( List.class ).of( String.class ),
 			interfaceTypes[ 0 ] );
 	}
 	

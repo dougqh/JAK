@@ -15,14 +15,14 @@ public class JavaWildcardType implements WildcardType {
 	
 	public JavaWildcardType( final Type lowerBound, final Type[] upperBounds ) {
 		this.lowerBound = lowerBound;
-		this.upperBounds = upperBounds.clone();
+		this.upperBounds = upperBounds == null ? null : upperBounds.clone();
 	}
 	
-	public Type extends_( final Type... upperBounds ) {
+	public WildcardType extends_( final Type... upperBounds ) {
 		return new JavaWildcardType( null, upperBounds );
 	}
 	
-	public Type super_( final Type lowerBound ) {
+	public WildcardType super_( final Type lowerBound ) {
 		return new JavaWildcardType( lowerBound, null );
 	}
 	
@@ -38,9 +38,9 @@ public class JavaWildcardType implements WildcardType {
 	@Override
 	public final Type[] getLowerBounds() {
 		if ( this.upperBounds == null ) {
-			return new Type[ 0 ];
-		} else {
 			return new Type[] { this.lowerBound };
+		} else {
+			return new Type[ 0 ];
 		}
 	}
 	

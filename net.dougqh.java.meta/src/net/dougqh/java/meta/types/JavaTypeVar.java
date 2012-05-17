@@ -9,7 +9,7 @@ public final class JavaTypeVar implements TypeVariable< GenericDeclaration > {
 	private final String name;
 	private final Type[] bounds;
 	
-	public JavaTypeVar( final String name ) {
+	protected JavaTypeVar( final String name ) {
 		this.name = name;
 		this.bounds = null;
 	}
@@ -19,8 +19,7 @@ public final class JavaTypeVar implements TypeVariable< GenericDeclaration > {
 		this.bounds = bounds;
 	}
 	
-	//Once, you've applied extends - there's no need to call it again, so return Type.
-	public final Type extends_( final Type... types ) {
+	public final TypeVariable< GenericDeclaration > extends_( final Type... types ) {
 		return new JavaTypeVar( this.name, types );
 	}
 	

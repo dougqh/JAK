@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
+import net.dougqh.java.meta.types.JavaSpecificType;
 import net.dougqh.java.meta.types.JavaTypeBuilder;
 import net.dougqh.java.meta.types.JavaTypeVar;
 import net.dougqh.java.meta.types.JavaTypes;
@@ -24,41 +24,33 @@ public class Jak {
 	public static final Type float_ = float.class;
 	public static final Type double_ = double.class;
 	
-	public static final Type $ = wildcard();
-	public static final Type A = typeVar( "A" );
-	public static final Type B = typeVar( "B" );
-	public static final Type C = typeVar( "C" );
-	public static final Type D = typeVar( "D" );
-	public static final Type E = typeVar( "E" );
-	public static final Type F = typeVar( "F" );
-	public static final Type G = typeVar( "G" );
-	public static final Type H = typeVar( "H" );
-	public static final Type I = typeVar( "I" );
-	public static final Type J = typeVar( "J" );
-	public static final Type K = typeVar( "K" );
-	public static final Type L = typeVar( "L" );
-	public static final Type M = typeVar( "M" );
-	public static final Type N = typeVar( "N" );
-	public static final Type O = typeVar( "O" );
-	public static final Type P = typeVar( "P" );
-	public static final Type Q = typeVar( "Q" );
-	public static final Type R = typeVar( "R" );
-	public static final Type S = typeVar( "S" );
-	public static final Type T = typeVar( "T" );
-	public static final Type U = typeVar( "U" );
-	public static final Type V = typeVar( "V" );
-	public static final Type W = typeVar( "W" );
-	public static final Type X = typeVar( "X" );
-	public static final Type Y = typeVar( "Y" );
-	public static final Type Z = typeVar( "Z" );
-	
-	private static final Type wildcard() {
-		return new JavaWildcardType();
-	}
-	
-	private static final Type typeVar( final String var ) {
-		return new JavaTypeVar( var );
-	}
+	public static final JavaWildcardType $ = wildcard();
+	public static final JavaTypeVar A = typeVar( "A" );
+	public static final JavaTypeVar B = typeVar( "B" );
+	public static final JavaTypeVar C = typeVar( "C" );
+	public static final JavaTypeVar D = typeVar( "D" );
+	public static final JavaTypeVar E = typeVar( "E" );
+	public static final JavaTypeVar F = typeVar( "F" );
+	public static final JavaTypeVar G = typeVar( "G" );
+	public static final JavaTypeVar H = typeVar( "H" );
+	public static final JavaTypeVar I = typeVar( "I" );
+	public static final JavaTypeVar J = typeVar( "J" );
+	public static final JavaTypeVar K = typeVar( "K" );
+	public static final JavaTypeVar L = typeVar( "L" );
+	public static final JavaTypeVar M = typeVar( "M" );
+	public static final JavaTypeVar N = typeVar( "N" );
+	public static final JavaTypeVar O = typeVar( "O" );
+	public static final JavaTypeVar P = typeVar( "P" );
+	public static final JavaTypeVar Q = typeVar( "Q" );
+	public static final JavaTypeVar R = typeVar( "R" );
+	public static final JavaTypeVar S = typeVar( "S" );
+	public static final JavaTypeVar T = typeVar( "T" );
+	public static final JavaTypeVar U = typeVar( "U" );
+	public static final JavaTypeVar V = typeVar( "V" );
+	public static final JavaTypeVar W = typeVar( "W" );
+	public static final JavaTypeVar X = typeVar( "X" );
+	public static final JavaTypeVar Y = typeVar( "Y" );
+	public static final JavaTypeVar Z = typeVar( "Z" );
 	
 	public static final JavaPackageDescriptor package_( final String name ) {
 		return new JavaPackageDescriptor( name );
@@ -243,12 +235,8 @@ public class Jak {
 	}
 	
 	//Methods from JavaTypes
-	public static final JavaTypeBuilder type() {
-		return JavaTypes.type();
-	}
-	
-	public static final JavaTypeBuilder type( final TypeMirror typeMirror ) {
-		return JavaTypes.type( typeMirror );
+	private static final JavaWildcardType wildcard() {
+		return new JavaWildcardType();
 	}
 	
 	public static final Type type( final TypeElement typeElement ) {
@@ -258,13 +246,13 @@ public class Jak {
 	public static final Type objectTypeName( final String name ) {
 		return JavaTypes.objectTypeName( name );
 	}
-//	
-//	public static final JavaTypeBuilder typeVar( final String name ) {
-//		return JavaTypes.typeVar( name );
-//	}
 	
-	public static final JavaTypeBuilder type( final Class< ? > aClass ) {
-		return JavaTypes.type( aClass );
+	public static final JavaTypeVar typeVar( final String name ) {
+		return JavaTypes.typeVar( name );
+	}
+	
+	public static final JavaSpecificType parameterize( final Type rawType ) {
+		return JavaTypes.parameterize( rawType );
 	}
 	
 	public static final Type array( final Type type ) {

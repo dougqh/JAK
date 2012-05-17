@@ -214,6 +214,10 @@ public final class JavaTypes {
 			return 0;
 		}
 	}
+	
+	public static final JavaWildcardType wildcard() {
+		return new JavaWildcardType();
+	}
 
 	public static final JavaTypeBuilder type() {
 		return new JavaTypeBuilder();
@@ -261,23 +265,20 @@ public final class JavaTypes {
 		}
 	}
 	
-	public static final JavaTypeBuilder type( final TypeMirror typeMirror ) {
-		return type(
-			typeMirror.accept(
-				new AptTypeVisitor(),
-				null ) );
-	}
+//	public static final JavaTypeBuilder type( final TypeMirror typeMirror ) {
+//		return typeMirror.accept( new AptTypeVisitor(), null ) );
+//	}
 	
 	public static final Type type( final TypeElement typeElement ) {
 		return objectTypeName( typeElement.getQualifiedName() );
 	}	
 	
-	public static final JavaTypeBuilder typeVar( final CharSequence name ) {
-		return new JavaTypeBuilder( name, true );
+	public static final JavaTypeVar typeVar( final CharSequence name ) {
+		return new JavaTypeVar( name.toString() );
 	}
 	
-	public static final JavaTypeBuilder type( final Type type ) {
-		return new JavaTypeBuilder( type );
+	public static final JavaSpecificType parameterize( final Type type ) {
+		return new JavaSpecificType( type );
 	}
 	
 	public static final Class< ? > array( final Class< ? > aClass ) {

@@ -22,8 +22,10 @@ final class AptTypeVisitor
 		final ArrayType arrayType,
 		final Void param )
 	{
-		return JavaTypes.array(
-			JavaTypes.type( arrayType.getComponentType() ).make() );
+		//TODO - Implement this - temporarily broken as types are being refactored
+		
+		//return JavaTypes.array( JavaTypes.type( arrayType.getComponentType() ) );
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
