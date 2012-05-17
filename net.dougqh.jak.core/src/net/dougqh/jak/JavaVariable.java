@@ -2,8 +2,6 @@ package net.dougqh.jak;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.java.meta.types.JavaTypes;
-
 public final class JavaVariable {
 	private final Type type;
 	private final String name;
@@ -12,7 +10,7 @@ public final class JavaVariable {
 		final Type type,
 		final String name )
 	{
-		this.type = JavaTypes.resolve( type );
+		this.type = type;
 		this.name = name;
 	}
 	

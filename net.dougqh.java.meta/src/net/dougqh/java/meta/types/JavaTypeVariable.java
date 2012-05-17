@@ -5,23 +5,22 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 
-public final class JavaTypeVariable
-	implements TypeVariable< GenericDeclaration >
-{
+public final class JavaTypeVariable implements TypeVariable< GenericDeclaration > {
 	private final String name;
 	private final Type[] bounds;
 	
-	public JavaTypeVariable(
-		final CharSequence name,
-		final Type[] bounds )
-	{
-		this.name = name.toString();
-		this.bounds = JavaTypes.resolve( bounds );
+	protected JavaTypeVariable( final String name ) {
+		this.name = name;
+		this.bounds = null;
 	}
 	
-	public JavaTypeVariable( final CharSequence name ) {
-		this.name = name.toString();
-		this.bounds = new Type[] { Object.class };
+	JavaTypeVariable( final String name, final Type[] bounds ) {
+		this.name = name;
+		this.bounds = bounds;
+	}
+	
+	public final TypeVariable< GenericDeclaration > extends_( final Type... types ) {
+		return new JavaTypeVariable( this.name, types );
 	}
 	
 	@Override
@@ -31,7 +30,11 @@ public final class JavaTypeVariable
 	
 	@Override
 	public final Type[] getBounds() {
-		return this.bounds;
+		if ( this.bounds == null ) {
+			return new Type[] { Object.class };
+		} else {
+			return this.bounds;
+		}
 	}
 	
 	//DQH: hashCode and equals are implemented such that equivalence only
@@ -53,10 +56,10 @@ public final class JavaTypeVariable
 	public final boolean equals( final Object obj ) {
 		if ( obj == this ) {
 			return true;
-		} else if ( ! ( obj instanceof JavaTypeVariable ) ) {
+		} else if ( ! ( obj instanceof TypeVariable ) ) {
 			return false;
 		} else {
-			JavaTypeVariable that = (JavaTypeVariable)obj;
+			TypeVariable<?> that = (TypeVariable<?>)obj;
 			
 			return this.getName().equals( that.getName() ) &&
 				Arrays.equals( this.getBounds(), that.getBounds() );			

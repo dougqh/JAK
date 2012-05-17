@@ -12,7 +12,7 @@ public final class JavaClassDescriptor {
 	private Type[] interfaceTypes = new Type[] {};
 	
 	JavaClassDescriptor(
-		final JavaFlagsBuilder flagsBuilder,
+		final JavaModifiers flagsBuilder,
 		final String name )
 	{
 		this.flags = flagsBuilder.flags();

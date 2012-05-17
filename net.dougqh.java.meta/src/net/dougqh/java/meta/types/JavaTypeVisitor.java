@@ -7,10 +7,6 @@ import java.lang.reflect.WildcardType;
 
 public abstract class JavaTypeVisitor {
 	public final void visit( final Type type ) {
-		this.visitHelper( JavaTypes.resolve( type ) );
-	}
-
-	private final void visitHelper( final Type type ) {
 		if ( type instanceof Class ) {
 			Class< ? > aClass = (Class< ? >)type;
 			this.visitClass( aClass );
@@ -34,7 +30,12 @@ public abstract class JavaTypeVisitor {
 			ClassNameRefType className = (ClassNameRefType)type;
 			this.visitObjectClass( this.transformName( className.getName() ) );
 		} else {
-			throw new IllegalStateException( "Incomplete code" );
+			Type resolvedType = JavaTypes.resolve( type );
+			if ( type == resolvedType ) {
+				throw new IllegalStateException( "Incomplete code" );
+			} else {
+				this.visit( resolvedType );
+			}
 		}
 	}
 	
@@ -61,7 +62,7 @@ public abstract class JavaTypeVisitor {
 	
 	protected abstract void visitObjectClass( final String name );
 	
-	protected final void visitArray( final Class< ? > componentType ) {
+	protected void visitArray( final Class< ? > componentType ) {
 		this.startArray();
 		this.visitClass( componentType );
 		this.endArray();
@@ -71,7 +72,7 @@ public abstract class JavaTypeVisitor {
 	
 	protected abstract void endArray();
 	
-	protected final void visitGenericArray( final Type componentType ) {
+	protected void visitGenericArray( final Type componentType ) {
 		this.startGenericArray();
 		this.visit( componentType );
 		this.endGenericArray();
@@ -81,7 +82,7 @@ public abstract class JavaTypeVisitor {
 	
 	protected abstract void endGenericArray();
 	
-	protected final void visitParameterizedType(
+	protected void visitParameterizedType(
 		final Class< ? > rawType,
 		final Type[] parameterTypes )
 	{
@@ -98,7 +99,7 @@ public abstract class JavaTypeVisitor {
 	
 	protected abstract void endParameterizedType( final String rawClassName );
 	
-	protected final void visitTypeVariable(
+	protected void visitTypeVariable(
 		final String variableName,
 		final Type[] bounds )
 	{
@@ -113,7 +114,7 @@ public abstract class JavaTypeVisitor {
 	
 	protected abstract void endTypeVariable( final String variableName );
 	
-	protected final void visitWildcardExtends( final Type[] bounds ) {
+	protected void visitWildcardExtends( final Type[] bounds ) {
 		this.startWildcardExtends();
 		for ( Type bound : bounds ) {
 			this.visit( bound );
@@ -125,7 +126,7 @@ public abstract class JavaTypeVisitor {
 	
 	protected abstract void endWildcardExtends();
 	
-	protected final void visitWildcardSuper( final Type[] bounds ) {
+	protected void visitWildcardSuper( final Type[] bounds ) {
 		this.startWildcardSuper();
 		for ( Type bound : bounds ) {
 			this.visit( bound );

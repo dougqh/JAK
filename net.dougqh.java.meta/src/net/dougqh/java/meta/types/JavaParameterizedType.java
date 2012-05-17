@@ -14,8 +14,8 @@ public final class JavaParameterizedType
 		final Type rawType,
 		final Type... actualTypeArguments )
 	{
-		this.rawType = JavaTypes.resolve( rawType );
-		this.actualTypeArguments = JavaTypes.resolve( actualTypeArguments );
+		this.rawType = rawType;
+		this.actualTypeArguments = actualTypeArguments;
 	}
 	 
 	@Override

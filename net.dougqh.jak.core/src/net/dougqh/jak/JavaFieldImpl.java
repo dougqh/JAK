@@ -8,7 +8,7 @@ final class JavaFieldImpl extends JavaField {
 	private final String name;
 	
 	JavaFieldImpl(
-		final JavaFlagsBuilder flagsBuilder,
+		final JavaModifiers flagsBuilder,
 		final Type type,
 		final CharSequence name )
 	{

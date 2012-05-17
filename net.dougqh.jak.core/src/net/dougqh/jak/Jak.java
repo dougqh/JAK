@@ -5,12 +5,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
-import net.dougqh.jak.Flags;
+import net.dougqh.java.meta.types.JavaParameterizedType;
 import net.dougqh.java.meta.types.JavaTypeBuilder;
+import net.dougqh.java.meta.types.JavaTypeVariable;
 import net.dougqh.java.meta.types.JavaTypes;
-
+import net.dougqh.java.meta.types.JavaWildcardType;
 import static net.dougqh.jak.Methods.*;
 
 public class Jak {
@@ -24,84 +24,112 @@ public class Jak {
 	public static final Type float_ = float.class;
 	public static final Type double_ = double.class;
 	
+	public static final JavaWildcardType $ = wildcard();
+	public static final JavaTypeVariable A = typeVar( "A" );
+	public static final JavaTypeVariable B = typeVar( "B" );
+	public static final JavaTypeVariable C = typeVar( "C" );
+	public static final JavaTypeVariable D = typeVar( "D" );
+	public static final JavaTypeVariable E = typeVar( "E" );
+	public static final JavaTypeVariable F = typeVar( "F" );
+	public static final JavaTypeVariable G = typeVar( "G" );
+	public static final JavaTypeVariable H = typeVar( "H" );
+	public static final JavaTypeVariable I = typeVar( "I" );
+	public static final JavaTypeVariable J = typeVar( "J" );
+	public static final JavaTypeVariable K = typeVar( "K" );
+	public static final JavaTypeVariable L = typeVar( "L" );
+	public static final JavaTypeVariable M = typeVar( "M" );
+	public static final JavaTypeVariable N = typeVar( "N" );
+	public static final JavaTypeVariable O = typeVar( "O" );
+	public static final JavaTypeVariable P = typeVar( "P" );
+	public static final JavaTypeVariable Q = typeVar( "Q" );
+	public static final JavaTypeVariable R = typeVar( "R" );
+	public static final JavaTypeVariable S = typeVar( "S" );
+	public static final JavaTypeVariable T = typeVar( "T" );
+	public static final JavaTypeVariable U = typeVar( "U" );
+	public static final JavaTypeVariable V = typeVar( "V" );
+	public static final JavaTypeVariable W = typeVar( "W" );
+	public static final JavaTypeVariable X = typeVar( "X" );
+	public static final JavaTypeVariable Y = typeVar( "Y" );
+	public static final JavaTypeVariable Z = typeVar( "Z" );
+	
 	public static final JavaPackageDescriptor package_( final String name ) {
 		return new JavaPackageDescriptor( name );
 	}
 	
-	public static final JavaFlagsBuilder public_() {
-		return new JavaFlagsBuilder( Flags.PUBLIC );
+	public static final JavaModifiers public_() {
+		return new JavaModifiers( Flags.PUBLIC );
 	}
 	
-	public static final JavaFlagsBuilder protected_() {
-		return new JavaFlagsBuilder( Flags.PROTECTED );
+	public static final JavaModifiers protected_() {
+		return new JavaModifiers( Flags.PROTECTED );
 	}
 	
-	public static final JavaFlagsBuilder private_() {
-		return new JavaFlagsBuilder( Flags.PRIVATE );
+	public static final JavaModifiers private_() {
+		return new JavaModifiers( Flags.PRIVATE );
 	}
 	
-	public static final JavaFlagsBuilder abstract_() {
-		return new JavaFlagsBuilder( Flags.ABSTRACT );
+	public static final JavaModifiers abstract_() {
+		return new JavaModifiers( Flags.ABSTRACT );
 	}
 	
-	public static final JavaFlagsBuilder static_() {
-		return new JavaFlagsBuilder( Flags.STATIC );
+	public static final JavaModifiers static_() {
+		return new JavaModifiers( Flags.STATIC );
 	}
 	
-	public static final JavaFlagsBuilder final_() {
-		return new JavaFlagsBuilder( Flags.FINAL );
+	public static final JavaModifiers final_() {
+		return new JavaModifiers( Flags.FINAL );
 	}
 	
-	public static final JavaFlagsBuilder synchronized_() {
-		return new JavaFlagsBuilder( Flags.SYNCHRONIZED );
+	public static final JavaModifiers synchronized_() {
+		return new JavaModifiers( Flags.SYNCHRONIZED );
 	}
 	
-	public static final JavaFlagsBuilder native_() {
-		return new JavaFlagsBuilder( Flags.NATIVE );
+	public static final JavaModifiers native_() {
+		return new JavaModifiers( Flags.NATIVE );
 	}
 	
-	public static final JavaFlagsBuilder strictfp_() {
-		return new JavaFlagsBuilder( Flags.STRICTFP );
+	public static final JavaModifiers strictfp_() {
+		return new JavaModifiers( Flags.STRICTFP );
 	}
 	
-	public static final JavaFlagsBuilder volatile_() {
-		return new JavaFlagsBuilder( Flags.VOLATILE );
+	public static final JavaModifiers volatile_() {
+		return new JavaModifiers( Flags.VOLATILE );
 	}
 	
-	public static final JavaFlagsBuilder transient_() {
-		return new JavaFlagsBuilder( Flags.TRANSIENT );
+	public static final JavaModifiers transient_() {
+		return new JavaModifiers( Flags.TRANSIENT );
 	}
 	
-	public static final JavaFlagsBuilder varargs() {
-		return new JavaFlagsBuilder( Flags.VAR_ARGS );
+	public static final JavaModifiers varargs() {
+		return new JavaModifiers( Flags.VAR_ARGS );
 	}
 	
 	public static final JavaClassDescriptor class_( final String className ) {
-		return new JavaFlagsBuilder().class_( className );
+		return new JavaModifiers().class_( className );
 	}
 	
 	public static final JavaClassDescriptor class_(
 		final Package aPackage,
 		final String className )
 	{
-		return new JavaFlagsBuilder().class_( aPackage, className );
+		return new JavaModifiers().class_( aPackage, className );
 	}
 	
 	public static final JavaInterfaceDescriptor interface_(
 		final String interfaceName )
 	{
-		return new JavaFlagsBuilder().interface_( interfaceName );
+		return new JavaModifiers().interface_( interfaceName );
 	}
 	
 	public static final JavaInterfaceDescriptor interface_(
 		final Package aPackage,
 		final String interfaceName )
 	{
-		return new JavaFlagsBuilder().interface_( aPackage, interfaceName );
+		return new JavaModifiers().interface_( aPackage, interfaceName );
 	}
 	
 	public static final JavaField field( final Field field ) {
-		return new JavaFlagsBuilder( field.getModifiers() ).field(
+		return new JavaModifiers( field.getModifiers() ).field(
 			field.getGenericType(),
 			field.getName() );
 	}
@@ -110,7 +138,7 @@ public class Jak {
 		final Type fieldType,
 		final CharSequence fieldName )
 	{
-		return new JavaFlagsBuilder().field( fieldType, fieldName );
+		return new JavaModifiers().field( fieldType, fieldName );
 	}
 	
 	public static final JavaField field(
@@ -124,7 +152,7 @@ public class Jak {
 		final Method method )
 	{
 		JavaMethodDescriptor methodDescriptor = new JavaMethodDescriptor(
-			new JavaFlagsBuilder( method.getModifiers() ),
+			new JavaModifiers( method.getModifiers() ),
 			method.getGenericReturnType(),
 			method.getName() );
 		methodDescriptor.args( method.getGenericParameterTypes() );
@@ -137,7 +165,7 @@ public class Jak {
 		final Type returnType,
 		final String methodName )
 	{
-		return new JavaFlagsBuilder().method( returnType, methodName );
+		return new JavaModifiers().method( returnType, methodName );
 	}
 	
 	public static final JavaMethodDescriptor method(
@@ -145,7 +173,7 @@ public class Jak {
 		final String methodName,
 		final Type... args )
 	{
-		return new JavaFlagsBuilder().method( returnType, methodName, args );
+		return new JavaModifiers().method( returnType, methodName, args );
 	}
 	
 	public static final JavaMethodDescriptor method(
@@ -153,7 +181,7 @@ public class Jak {
 		final String methodName,
 		final Type arg1Type, final String arg1Name )
 	{
-		return new JavaFlagsBuilder().method( returnType, methodName ).
+		return new JavaModifiers().method( returnType, methodName ).
 			arg( arg1Type, arg1Name );
 	}
 
@@ -163,7 +191,7 @@ public class Jak {
 		final Type arg1Type, final String arg1Name,
 		final Type arg2Type, final String arg2Name )
 	{
-		return new JavaFlagsBuilder().method( returnType, methodName ).
+		return new JavaModifiers().method( returnType, methodName ).
 			arg( arg1Type, arg1Name ).
 			arg( arg2Type, arg2Name );
 	}
@@ -175,7 +203,7 @@ public class Jak {
 		final Type arg2Type, final String arg2Name,
 		final Type arg3Type, final String arg3Name )
 	{
-		return new JavaFlagsBuilder().method( returnType, methodName ).
+		return new JavaModifiers().method( returnType, methodName ).
 			arg( arg1Type, arg1Name ).
 			arg( arg2Type, arg2Name ).
 			arg( arg3Type, arg3Name );
@@ -195,11 +223,11 @@ public class Jak {
 	}
 	
 	public static final JavaMethodDescriptor init() {
-		return new JavaFlagsBuilder().init();
+		return new JavaModifiers().init();
 	}
 	
 	public static final JavaMethodDescriptor init( final Type... args ) {
-		return new JavaFlagsBuilder().init( args );
+		return new JavaModifiers().init( args );
 	}
 	
 	public static final JavaMethodDescriptor clinit() {
@@ -207,12 +235,8 @@ public class Jak {
 	}
 	
 	//Methods from JavaTypes
-	public static final JavaTypeBuilder type() {
-		return JavaTypes.type();
-	}
-	
-	public static final JavaTypeBuilder type( final TypeMirror typeMirror ) {
-		return JavaTypes.type( typeMirror );
+	private static final JavaWildcardType wildcard() {
+		return new JavaWildcardType();
 	}
 	
 	public static final Type type( final TypeElement typeElement ) {
@@ -223,12 +247,12 @@ public class Jak {
 		return JavaTypes.objectTypeName( name );
 	}
 	
-	public static final JavaTypeBuilder typeVar( final String name ) {
+	public static final JavaTypeVariable typeVar( final String name ) {
 		return JavaTypes.typeVar( name );
 	}
 	
-	public static final JavaTypeBuilder type( final Class< ? > aClass ) {
-		return JavaTypes.type( aClass );
+	public static final JavaParameterizedType parameterize( final Type rawType ) {
+		return JavaTypes.parameterize( rawType );
 	}
 	
 	public static final Type array( final Type type ) {

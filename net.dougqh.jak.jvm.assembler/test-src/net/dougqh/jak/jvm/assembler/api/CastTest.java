@@ -134,7 +134,7 @@ public final class CastTest {
 	}
 	
 	public final @Test void objectCast() {
-		Type Serializer_String = type( Serializer.class ).of( String.class ).make();
+		Type Serializer_String = parameterize( Serializer.class ).of( String.class );
 		
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().final_().class_( "StringSerializer" ).implements_( Serializer_String ) );
@@ -161,7 +161,7 @@ public final class CastTest {
 	}
 	
 	public final @Test void arrayCast() {
-		Type Serializer_intArray = type( Serializer.class ).of( int[].class ).make();
+		Type Serializer_intArray = parameterize( Serializer.class ).of( int[].class );
 		
 		JvmClassWriter classWriter = new JvmWriter().define(
 			public_().final_().class_( "IntArraySerializer" ).implements_( Serializer_intArray ) );

@@ -1,76 +1,100 @@
 package net.dougqh.jak;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+
 import static net.dougqh.jak.Flags.*;
 import static net.dougqh.jak.Methods.*;
 
-import java.lang.reflect.Type;
-
-import net.dougqh.java.meta.types.JavaTypeBuilder;
-
-public final class JavaFlagsBuilder {
-	private final int flags;
+public final class JavaModifiers {
+	private static final Type[] EMPTY_TYPES = {};
 	
-	JavaFlagsBuilder() {
+	private final int flags;
+	private final Type[] genericTypes;
+	
+	JavaModifiers() {
 		this( NO_FLAGS );
 	}
 	
-	JavaFlagsBuilder( final int flag ) {
+	JavaModifiers( final int flag ) {
 		this.flags = flag;
+		this.genericTypes = EMPTY_TYPES;
 	}
 	
-	JavaFlagsBuilder(
-		final JavaFlagsBuilder baseBuilder,
+	JavaModifiers(
+		final JavaModifiers baseModifiers,
 		final int flag )
 	{
-		this.flags = baseBuilder.flags | flag;
+		if ( baseModifiers.genericTypes.length != 0 ) {
+			throw new IllegalStateException();
+		}
+		
+		this.flags = baseModifiers.flags | flag;
+		this.genericTypes = EMPTY_TYPES;
 	}
 	
-	public final JavaFlagsBuilder public_() {
-		return new JavaFlagsBuilder( this, PUBLIC );
+	JavaModifiers(
+		final JavaModifiers baseModifiers,
+		final Type[] typeArgs )
+	{
+		if ( baseModifiers.genericTypes.length != 0 ) {
+			throw new IllegalStateException();
+		}
+		
+		this.flags = baseModifiers.flags;
+		this.genericTypes = typeArgs;
 	}
 	
-	public final JavaFlagsBuilder protected_() {
-		return new JavaFlagsBuilder( this, PROTECTED );
+	public final JavaModifiers public_() {
+		return new JavaModifiers( this, PUBLIC );
 	}
 	
-	public final JavaFlagsBuilder private_() {
-		return new JavaFlagsBuilder( this, PRIVATE );
+	public final JavaModifiers protected_() {
+		return new JavaModifiers( this, PROTECTED );
 	}
 	
-	public final JavaFlagsBuilder static_() {
-		return new JavaFlagsBuilder( this, STATIC );
+	public final JavaModifiers private_() {
+		return new JavaModifiers( this, PRIVATE );
 	}
 	
-	public final JavaFlagsBuilder abstract_() {
-		return new JavaFlagsBuilder( this, ABSTRACT );
+	public final JavaModifiers static_() {
+		return new JavaModifiers( this, STATIC );
 	}
 	
-	public final JavaFlagsBuilder final_() {
-		return new JavaFlagsBuilder( this, FINAL );
+	public final JavaModifiers abstract_() {
+		return new JavaModifiers( this, ABSTRACT );
 	}
 	
-	public final JavaFlagsBuilder synchronized_() {
-		return new JavaFlagsBuilder( this, SYNCHRONIZED );
+	public final JavaModifiers final_() {
+		return new JavaModifiers( this, FINAL );
 	}
 	
-	public final JavaFlagsBuilder native_() {
-		return new JavaFlagsBuilder( this, NATIVE );
+	public final JavaModifiers synchronized_() {
+		return new JavaModifiers( this, SYNCHRONIZED );
 	}
 	
-	public final JavaFlagsBuilder strictfp_() {
-		return new JavaFlagsBuilder( this, STRICTFP );
+	public final JavaModifiers native_() {
+		return new JavaModifiers( this, NATIVE );
 	}
 	
-	public final JavaFlagsBuilder volatile_() {
-		return new JavaFlagsBuilder( this, VOLATILE );
+	public final JavaModifiers strictfp_() {
+		return new JavaModifiers( this, STRICTFP );
 	}
 	
-	public final JavaFlagsBuilder transient_() {
-		return new JavaFlagsBuilder( this, TRANSIENT );
+	public final JavaModifiers volatile_() {
+		return new JavaModifiers( this, VOLATILE );
 	}
 	
-	public final JavaFlagsBuilder varargs() {
-		return new JavaFlagsBuilder( this, VAR_ARGS );
+	public final JavaModifiers transient_() {
+		return new JavaModifiers( this, TRANSIENT );
+	}
+	
+	public final JavaModifiers varargs() {
+		return new JavaModifiers( this, VAR_ARGS );
+	}
+	
+	public final JavaModifiers generic( final Type... typeArgs ) {
+		return new JavaModifiers( this, typeArgs );
 	}
 	
 	public final JavaFieldImpl field(
@@ -81,13 +105,6 @@ public final class JavaFlagsBuilder {
 			this,
 			fieldType,
 			fieldName );
-	}
-	
-	public final JavaFieldImpl field(
-		final JavaTypeBuilder typeBuilder,
-		final CharSequence fieldName )
-	{
-		return this.field( typeBuilder.make(), fieldName );
 	}
 
 	public final JavaMethodDescriptor method(
@@ -208,7 +225,11 @@ public final class JavaFlagsBuilder {
 		final String annotationName )
 	{
 		return $interface( aPackage, annotationName );
-	}	
+	}
+	
+	final Type[] genericTypes() {
+		return this.genericTypes;
+	}
 	
 	final int flags() {
 		return this.flags;
@@ -223,11 +244,12 @@ public final class JavaFlagsBuilder {
 	public final boolean equals( final Object obj ) {
 		if ( obj == this ) {
 			return true;
-		} else if ( ! ( obj instanceof JavaFlagsBuilder ) ) {
+		} else if ( ! ( obj instanceof JavaModifiers ) ) {
 			return false;
 		} else {
-			JavaFlagsBuilder that = (JavaFlagsBuilder)obj;
-			return ( this.flags == that.flags );
+			JavaModifiers that = (JavaModifiers)obj;
+			return ( this.flags == that.flags ) &&
+				Arrays.equals( this.genericTypes, that.genericTypes ); 
 		}
 	}
 }
