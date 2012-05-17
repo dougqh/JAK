@@ -1,9 +1,6 @@
 package net.dougqh.java.meta.types.api;
 
 
-import static net.dougqh.java.meta.types.JavaTypes.*;
-import static org.junit.Assert.*;
-
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -14,55 +11,59 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import static net.dougqh.java.meta.types.JavaTypes.*;
+import static org.junit.Assert.*;
+
 public final class JavaTypeBuildingTest {
 	public final @Test void nameLookup() {
 		assertEquals( Integer.class, objectTypeName( "java.lang.Integer" ) );
 	}
 	
-	public final @Test void basic() {
-		assertEquals( Object.class, type( Object.class ).make() );
-		assertEquals( String.class, type( String.class ).make() );
-	}
-	
-	public final @Test void basicArray() {
+	@Test
+	public final void basicArray() {
 		assertEquals( Object[].class, array( Object.class ) );
 		assertEquals( int[].class, array( int.class ) );
 	}
 	
-	public final @Test void parameterizedNoWildcards() {
+	@Test 
+	public final void parameterizedNoWildcards() {
 		assertEquals(
 			returnTypeOf( "map_String_String" ),
-			type( Map.class ).of( String.class, String.class ).make() );
+			parameterize( Map.class ).of( String.class, String.class ) );
 	}
 	
-	public final @Test void parameterizeExtendsWildcard() {
+	@Test
+	public final void parameterizeExtendsWildcard() {
 		assertEquals(
 			returnTypeOf( "list_extends_Number" ),
-			type( List.class ).of( type().extends_( Number.class ) ).make() );
+			parameterize( List.class ).of( wildcard().extends_( Number.class ) ) );
 	}
 	
-	public final @Test void parameterizedSuperWildcard() {
+	@Test
+	public final void parameterizedSuperWildcard() {
 		assertEquals(
 			returnTypeOf( "set_super_Integer" ),
-			type( Set.class ).of( type().super_( Integer.class ) ).make() );
+			parameterize( Set.class ).of( wildcard().super_( Integer.class ) ) );
 	}
 	
 	//DQH - Since the generated type is not tied back to a source
 	//element (in this case a method), equals will fail.
 	//Instead compare the components that should match.
+	@Test
 	@SuppressWarnings( "unchecked" )
-	public final @Test void classTypeVariable() {
-		TypeVariable expected = (TypeVariable)returnTypeOf( "t" );
-		TypeVariable actual = (TypeVariable)typeVar( "T" ).make();
+	public final void classTypeVariable() {
+		TypeVariable<?> expected = (TypeVariable<?>)returnTypeOf( "t" );
+		TypeVariable<?> actual = (TypeVariable<?>)typeVar( "T" );
 		
 		assertEquals( expected.getName(), actual.getName() );
 		assertArrayEquals( expected.getBounds(), actual.getBounds() );
 	}
 	
+	@Test
 	@SuppressWarnings( "unchecked" )
-	public final @Test void methodTypeVariable() {
-		TypeVariable expected = (TypeVariable)returnTypeOf( "u" );
-		TypeVariable actual = (TypeVariable)typeVar( "U" ).make();
+	public final void methodTypeVariable() {
+		TypeVariable<?> expected = (TypeVariable<?>)returnTypeOf( "u" );
+		TypeVariable<?> actual = (TypeVariable<?>)typeVar( "U" );
 		
 		assertEquals( expected.getName(), actual.getName() );
 		assertArrayEquals( expected.getBounds(), actual.getBounds() );
@@ -71,10 +72,10 @@ public final class JavaTypeBuildingTest {
 	@SuppressWarnings( "unchecked" )
 	public final @Test void genericArray() {
 		GenericArrayType expected = (GenericArrayType)returnTypeOf( "ts" );
-		GenericArrayType actual = (GenericArrayType)array( typeVar( "T" ).make() );
+		GenericArrayType actual = (GenericArrayType)array( typeVar( "T" ) );
 		
-		TypeVariable expectedComponentType = (TypeVariable)expected.getGenericComponentType();
-		TypeVariable actualComponentType = (TypeVariable)actual.getGenericComponentType();
+		TypeVariable<?> expectedComponentType = (TypeVariable<?>)expected.getGenericComponentType();
+		TypeVariable<?> actualComponentType = (TypeVariable<?>)actual.getGenericComponentType();
 
 		assertEquals( expectedComponentType.getName(), actualComponentType.getName() );
 		assertArrayEquals( expectedComponentType.getBounds(), actualComponentType.getBounds() );
