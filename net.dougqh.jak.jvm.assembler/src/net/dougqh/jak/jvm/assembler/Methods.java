@@ -38,6 +38,7 @@ final class Methods {
 		
 		ConstantEntry nameEntry = this.context.constantPool.addUtf8( name );
 		ConstantEntry descriptorEntry = this.context.constantPool.addMethodDescriptor(
+			methodContext,
 			returnType,
 			arguments );
 		
@@ -165,7 +166,7 @@ final class Methods {
 		{
 			super( context, ID );
 			
-			this.codeWriter = new JvmCoreCodeWriterImpl( context, constantPool, locals, stack );
+			this.codeWriter = new JvmCoreCodeWriterImpl( context, locals, stack );
 		}
 		
 		@Override

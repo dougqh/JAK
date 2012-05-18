@@ -41,14 +41,13 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	
 	JvmCoreCodeWriterImpl(
 		final WritingContext context,
-		final ConstantPool constantPool,
 		final JvmLocals locals,
 		final JvmStack stack )
 	{
 		this.context = context;
 		
 		this.codeOut = new JvmOutputStream( 128 );
-		this.constantPool = constantPool;
+		this.constantPool = context.constantPool;
 		
 		this.locals = locals;
 		this.stack = stack;
@@ -1671,6 +1670,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKEVIRTUAL ).u2(
 				this.constantPool.addMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),
@@ -1690,6 +1690,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKEINTERFACE ).u2(
 				this.constantPool.addInterfaceMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),
@@ -1711,6 +1712,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKESPECIAL ).u2(
 				this.constantPool.addMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),
@@ -1729,6 +1731,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKESTATIC ).u2(
 				this.constantPool.addMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),

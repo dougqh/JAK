@@ -11,7 +11,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	FlagsTest.class,
 	JvmOutputStreamTest.class,
-	ConstantPoolTest.class,
 	OperationTest.class,
 	LocalsTest.class,
 	ScopeTest.class,

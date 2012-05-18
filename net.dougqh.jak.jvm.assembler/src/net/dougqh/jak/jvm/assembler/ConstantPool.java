@@ -153,11 +153,12 @@ final class ConstantPool {
 		}
 	}
 	
-	final ConstantEntry addMethodDescriptor( 
+	final ConstantEntry addMethodDescriptor(
+		final WritingContext methodContext,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		return this.addUtf8( getMethodSignature( returnType, arguments ) );
+		return this.addUtf8( getMethodSignature( methodContext, returnType, arguments ) );
 	}
 	
 	final ConstantEntry addGenericMethodDescriptor(
@@ -202,6 +203,7 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addMethodReference(
+		final WritingContext context,
 		final Type targetType,
 		final Type returnType,
 		final String methodName,
@@ -209,6 +211,7 @@ final class ConstantPool {
 	{
 		ConstantEntry classEntry = this.addClassInfo( targetType );
 		ConstantEntry nameAndTypeEntry = this.addNameAndType(
+			context,
 			returnType,
 			methodName,
 			arguments );
@@ -220,6 +223,7 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addInterfaceMethodReference(
+		final WritingContext context,
 		final Type targetType,
 		final Type returnType,
 		final String methodName,
@@ -227,6 +231,7 @@ final class ConstantPool {
 	{
 		ConstantEntry classEntry = this.addClassInfo( targetType );
 		ConstantEntry nameAndTypeEntry = this.addNameAndType(
+			context,
 			returnType,
 			methodName,
 			arguments );
@@ -266,12 +271,13 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addNameAndType(
+		final WritingContext context,
 		final Type returnType,
 		final String methodName,
 		final FormalArguments arguments )
 	{
 		ConstantEntry nameEntry = this.addUtf8( methodName );
-		ConstantEntry typeEntry = this.addUtf8( getMethodSignature( returnType, arguments ) );
+		ConstantEntry typeEntry = this.addUtf8( getMethodSignature( context, returnType, arguments ) );
 		
 		return this.addNameAndType( nameEntry, typeEntry );
 	}
@@ -335,13 +341,15 @@ final class ConstantPool {
 	}
 
 	static final String getMethodSignature(
+		final WritingContext methodContext,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
 		SignatureTypeVistor visitor = new SignatureTypeVistor();
 		visitor.startArguments();
 		for ( JavaVariable variable : arguments ) {
-			visitor.visit( JavaTypes.getRawType( variable.getType() ) );
+			Type resolvedType = methodContext.resolver.resolve( variable.getType() );
+			visitor.visit( JavaTypes.getRawType( resolvedType ) );
 		}
 		visitor.endArguments();
 		visitor.visit( JavaTypes.getRawType( returnType ) );
