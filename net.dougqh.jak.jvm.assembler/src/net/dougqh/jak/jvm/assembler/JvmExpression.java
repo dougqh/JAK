@@ -5,7 +5,6 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JakContext;
 import net.dougqh.jak.assembler.JakExpression;
-import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.java.meta.types.JavaTypes;
 
 public abstract class JvmExpression< T >

@@ -7,18 +7,15 @@ import net.dougqh.jak.JavaVariable;
 
 final class JvmCodeWriterImpl extends JvmCodeWriter {
 	private final JvmCoreCodeWriter coreWriter;
-	private final TypeWriter typeWriter;
 	
 	private final MethodWritingState sharedState = new MethodWritingState();
 
 	JvmCodeWriterImpl(
-		final TypeWriter typeWriter,
 		final boolean isStatic,
 		final FormalArguments arguments,
 		final JvmCoreCodeWriter coreWriter )
 	{
 		this.coreWriter = coreWriter;
-		this.typeWriter = typeWriter;
 		
 		//DQH - Currently, parameter handling is horrible mess.
 		//TypeWriter define handles reserving space for the locals, but 

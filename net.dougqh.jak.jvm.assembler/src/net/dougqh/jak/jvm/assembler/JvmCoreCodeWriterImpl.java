@@ -1,7 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import static net.dougqh.jak.jvm.operations.JvmOperation.*;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,10 +8,10 @@ import net.dougqh.jak.FormalArguments;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
-import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
+import static net.dougqh.jak.jvm.operations.JvmOperation.*;
 
 final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {	
 	private static final byte BOOLEAN_ARRAY = 4;

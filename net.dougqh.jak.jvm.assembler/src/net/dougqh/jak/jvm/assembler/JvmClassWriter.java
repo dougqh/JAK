@@ -15,7 +15,6 @@ import net.dougqh.jak.JavaInterfaceDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakClassWriter;
-import net.dougqh.jak.assembler.TypeResolver;
 
 public final class JvmClassWriter
 	implements JakClassWriter, JvmExtendedTypeWriter
@@ -150,11 +149,7 @@ public final class JvmClassWriter
 		if ( coreWriter == null ) {
 			return null;
 		} else {
-			return new JvmCodeWriterImpl(
-				this.typeWriter,
-				method.isStatic(),
-				method.arguments(),
-				coreWriter );
+			return new JvmCodeWriterImpl( method.isStatic(), method.arguments(), coreWriter );
 		}
 	}
 	
