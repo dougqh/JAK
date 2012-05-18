@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.annotations.JvmOp;
+import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.jvm.operations.*;
 
 public interface JvmCoreCodeWriter {
@@ -14,9 +15,12 @@ public interface JvmCoreCodeWriter {
 			final boolean terminal );
 	}
 	
+	//Deferred write methods
 	public abstract JvmCoreCodeWriter defer( final DeferredWrite deferredWrite );
 	
 	public abstract JvmCoreCodeWriter prepare();
+	
+	public abstract WritingContext context();
 	
 	@JvmOp( nop.class )
 	public abstract JvmCoreCodeWriter nop();

@@ -10,6 +10,7 @@ import net.dougqh.jak.FormalArguments;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
+import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
@@ -23,6 +24,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	private static final byte SHORT_ARRAY = 9;
 	private static final byte INT_ARRAY = 10;
 	private static final byte LONG_ARRAY = 11;
+	
+	private final WritingContext context;
 	
 	private final ConstantPool constantPool;
 	private final JvmOutputStream codeOut;
@@ -39,10 +42,13 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	private DeferredWrite deferredWrite = null;
 	
 	JvmCoreCodeWriterImpl(
+		final WritingContext context,
 		final ConstantPool constantPool,
 		final JvmLocals locals,
 		final JvmStack stack )
 	{
+		this.context = context;
+		
 		this.codeOut = new JvmOutputStream( 128 );
 		this.constantPool = constantPool;
 		
@@ -73,6 +79,11 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		
 		this.deferredWrite = deferredWrite;
 		return this;
+	}
+	
+	@Override
+	public final WritingContext context() {
+		return this.context;
 	}
 
 	@Override

@@ -12,9 +12,8 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
-import net.dougqh.jak.assembler.JakTypeResolver;
+import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
-import net.dougqh.java.meta.types.JavaTypeVariable;
 import net.dougqh.java.meta.types.JavaTypes;
 
 final class TypeWriter {
@@ -23,10 +22,13 @@ final class TypeWriter {
 	private final TypeWriterGroup writerGroup;
 	private final JavaVersion version;
 	
+	private final WritingContext context;
+	
 	private final String className;
-	private final ConstantPool constantPool;
+	//private final ConstantPool constantPool;
 	private final int flags;
-	private final Type parentType;
+	//private final TypeVariable<?>[] typeVars;
+	//private final Type parentType;
 	private final Interfaces interfaces;
 	private final Fields fields;
 	private final Methods methods;
@@ -38,38 +40,25 @@ final class TypeWriter {
 	private InnerClassesAttribute innerClasses = null;
 	private JakConfiguration config = new JakConfiguration();
 	
-	private final JakTypeResolver resolver = new JakTypeResolver() {
-		@Override
-		protected final Type resolve( final JavaTypeVariable typeVar ) {
-			//TODO: Add support when generic class declaration support is added.
-			throw new UnsupportedOperationException();
-		}
-		
-		@Override
-		protected final Type thisType() {
-			return TypeWriter.this.thisType();
-		}
-		
-		@Override
-		protected final Type superType() {
-			return TypeWriter.this.superType();
-		}
-	};
-	
 	TypeWriter(
 		final TypeWriterGroup writerGroup,
 		final TypeDescriptor typeDescriptor,
 		final int additionalFlags )
 	{
+		ConstantPool constantPool = new ConstantPool();
+		
 		this.writerGroup = writerGroup;
 		this.version = typeDescriptor.version();
 		
 		this.className = typeDescriptor.name();
-		this.parentType = typeDescriptor.parentType();
+		this.context = new WritingContext(
+			typeDescriptor.typeVars(),
+			constantPool,
+			JavaTypes.objectTypeName( this.className ),
+			typeDescriptor.parentType() );
 
-		this.constantPool = new ConstantPool();
-		this.classNameEntry = this.constantPool.addClassInfo( this.className );
-		this.parentClassNameEntry = this.constantPool.addClassInfo( this.parentType );
+		this.classNameEntry = constantPool.addClassInfo( this.className );
+		this.parentClassNameEntry = constantPool.addClassInfo( typeDescriptor.parentType() );
 		
 		if ( this.version.getSuperFlag() ) {
 			this.flags = typeDescriptor.flags() | additionalFlags | Flags.SUPER;
@@ -77,9 +66,9 @@ final class TypeWriter {
 			this.flags = typeDescriptor.flags() | additionalFlags;
 		}
 		
-		this.interfaces = new Interfaces( this.constantPool );
-		this.fields = new Fields( this.constantPool );
-		this.methods = new Methods( this.constantPool );
+		this.interfaces = new Interfaces( constantPool );
+		this.fields = new Fields( constantPool );
+		this.methods = new Methods( constantPool );
 		this.attributes = new Attributes( 128 );
 		
 		for ( Type interfaceType : typeDescriptor.interfaceTypes() ) {
@@ -88,7 +77,7 @@ final class TypeWriter {
 		
 		this.attributes.add(
 			new SignatureAttribute(
-				this.constantPool,
+				constantPool,
 				typeDescriptor.parentType(),
 				typeDescriptor.interfaceTypes() ) );
 	}
@@ -97,20 +86,8 @@ final class TypeWriter {
 		this.config = config;
 	}
 	
-	final ConstantPool constantPool() {
-		return this.constantPool;
-	}
-	
-	final Type thisType() {
-		return JavaTypes.objectTypeName( this.className );
-	}
-	
-	final Type superType() {
-		return this.parentType;
-	}
-	
-	final Type resolve( final Type type ) {
-		return this.resolver.resolve( type );
+	final WritingContext context() {
+		return this.context;
 	}
 	
 	final void define( final JavaField field ) {
@@ -169,7 +146,7 @@ final class TypeWriter {
 	
 	final void addInnerClass( final TypeDescriptor typeBuilder ) {
 		if ( this.innerClasses == null ) {
-			this.innerClasses = new InnerClassesAttribute( this.constantPool );
+			this.innerClasses = new InnerClassesAttribute( this.context.constantPool );
 			this.attributes.add( this.innerClasses );
 		}
 		this.innerClasses.addInnerClass( typeBuilder );
@@ -177,7 +154,7 @@ final class TypeWriter {
 	
 	final void addOuterClass( final TypeWriter outerWriter ) {
 		if ( this.innerClasses == null ) {
-			this.innerClasses = new InnerClassesAttribute( this.constantPool );
+			this.innerClasses = new InnerClassesAttribute( this.context.constantPool );
 			this.attributes.add( this.innerClasses );
 		}
 		this.innerClasses.addOuterClass( outerWriter );
@@ -190,7 +167,7 @@ final class TypeWriter {
 	{
 		JvmLocals locals = this.config.configure( new DefaultLocals() );
 		if ( ! method.isStatic() ) {
-			locals.declare( this.thisType() );
+			locals.declare( this.context.thisType );
 		}
 		for ( JavaVariable var : method.arguments() ) {
 			locals.declare( var.getType() );
@@ -199,6 +176,7 @@ final class TypeWriter {
 		JvmStack stack = this.config.configure( new DefaultJvmStack() );		
 		
 		JvmCoreCodeWriterImpl writer = this.methods.createMethod(
+			this.context,
 			method.getFlags() | additionalFlags,
 			method.getTypeVars(),
 			method.getReturnType(),
@@ -234,7 +212,7 @@ final class TypeWriter {
 		
 		out.u2( 0xCAFE ).u2( 0xBABE );
 		out.u2( this.version.getMinor() ).u2( this.version.getMajor() );
-		this.constantPool.write( out );
+		this.context.constantPool.write( out );
 		out.u2( this.flags );
 		out.u2( this.classNameEntry );
 		out.u2( this.parentClassNameEntry );
@@ -329,10 +307,6 @@ final class TypeWriter {
 	{
 		//TODO: Make this more efficient
 		out.write( this.getBytes() );
-	}
-	
-	protected final Type parentType() {
-		return this.parentType;
 	}
 	
 	protected final String simpleName() {

@@ -5,6 +5,7 @@ import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.FormalArguments;
+import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 
 final class Methods {
@@ -21,6 +22,7 @@ final class Methods {
 	}
 	
 	final JvmCoreCodeWriterImpl createMethod(
+		final WritingContext classContext,
 		final int flags,
 		final TypeVariable<?>[] typeVars,
 		final Type returnType,
@@ -55,8 +57,13 @@ final class Methods {
 		this.methodAttributes.add(
 			new SignatureAttribute( this.constantPool, typeVars, returnType, arguments ) );
 		
-		if ( needsCode ) {			
-			CodeAttribute codeAttribute = new CodeAttribute( this.constantPool, locals, stack );
+		if ( needsCode ) {
+			CodeAttribute codeAttribute = new CodeAttribute(
+				new WritingContext( classContext, typeVars ),
+				this.constantPool,
+				locals,
+				stack );
+			
 			this.methodAttributes.add( codeAttribute );
 			return codeAttribute.getCodeWriter();
 		} else {
@@ -151,13 +158,14 @@ final class Methods {
 		private final JvmCoreCodeWriterImpl codeWriter;
 		
 		CodeAttribute(
+			final WritingContext context,
 			final ConstantPool constantPool,
 			final JvmLocals locals,
 			final JvmStack stack )
 		{
 			super( constantPool, ID );
 			
-			this.codeWriter = new JvmCoreCodeWriterImpl( constantPool, locals, stack );
+			this.codeWriter = new JvmCoreCodeWriterImpl( context, constantPool, locals, stack );
 		}
 		
 		@Override

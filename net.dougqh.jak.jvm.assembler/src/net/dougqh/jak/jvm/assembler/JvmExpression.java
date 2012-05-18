@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JakContext;
 import net.dougqh.jak.assembler.JakExpression;
+import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.java.meta.types.JavaTypes;
 
 public abstract class JvmExpression< T >
@@ -45,33 +46,13 @@ public abstract class JvmExpression< T >
 	}
 	
 	@Override
-	protected final SharedState sharedState() {
+	protected final MethodWritingState sharedState() {
 		return this.codeWriter.sharedState();
-	}
-	
-	@Override
-	protected final ConstantPool constantPool() {
-		return this.codeWriter.constantPool();
 	}
 	
 	@Override
 	public final JvmCoreCodeWriter coreWriter() {
 		return this.codeWriter.coreWriter();
-	}
-	
-	@Override
-	protected final Type thisType() {
-		return this.codeWriter.thisType();
-	}
-	
-	@Override
-	protected final Type superType() {
-		return this.codeWriter.superType();
-	}
-	
-	@Override
-	protected final Type resolve( final Type type ) {
-		return this.codeWriter.resolve( type );
 	}
 	
 	@Override

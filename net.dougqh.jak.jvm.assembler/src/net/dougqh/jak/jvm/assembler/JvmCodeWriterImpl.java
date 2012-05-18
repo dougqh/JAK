@@ -1,6 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import java.lang.reflect.Type;
 import java.util.ListIterator;
 
 import net.dougqh.jak.FormalArguments;
@@ -10,7 +9,7 @@ final class JvmCodeWriterImpl extends JvmCodeWriter {
 	private final JvmCoreCodeWriter coreWriter;
 	private final TypeWriter typeWriter;
 	
-	private final SharedState sharedState = new SharedState();
+	private final MethodWritingState sharedState = new MethodWritingState();
 
 	JvmCodeWriterImpl(
 		final TypeWriter typeWriter,
@@ -49,32 +48,12 @@ final class JvmCodeWriterImpl extends JvmCodeWriter {
 	}
 	
 	@Override
-	protected final SharedState sharedState() {
+	protected final MethodWritingState sharedState() {
 		return this.sharedState;
 	}
 	
 	@Override
 	public final JvmCoreCodeWriter coreWriter() {
 		return this.coreWriter;
-	}
-
-	@Override
-	protected final ConstantPool constantPool() {
-		return this.typeWriter.constantPool();
-	}
-
-	@Override
-	protected final Type thisType() {
-		return this.typeWriter.thisType();
-	}
-
-	@Override
-	protected final Type superType() {
-		return this.typeWriter.superType();
-	}
-
-	@Override
-	protected final Type resolve( final Type type ) {
-		return this.typeWriter.resolve( type );
 	}
 }

@@ -13,7 +13,7 @@ public final class JavaClassDescriptor {
 	private final String name;
 	private Type parentType = Object.class;
 	private Type[] interfaceTypes = EMPTY_INTERFACES;
-	private Type[] typeVars = EMPTY_TYPE_VARS;
+	private TypeVariable<?>[] typeVars = EMPTY_TYPE_VARS;
 
 	JavaClassDescriptor(
 		final JavaModifiers modifiers,
@@ -50,6 +50,7 @@ public final class JavaClassDescriptor {
 		return new TypeDescriptor(
 			this.flags,
 			this.name,
+			this.typeVars,
 			this.parentType,
 			this.interfaceTypes );
 	}

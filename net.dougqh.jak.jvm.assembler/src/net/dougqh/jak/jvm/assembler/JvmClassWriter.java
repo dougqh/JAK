@@ -15,6 +15,7 @@ import net.dougqh.jak.JavaInterfaceDescriptor;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakClassWriter;
+import net.dougqh.jak.assembler.TypeResolver;
 
 public final class JvmClassWriter
 	implements JakClassWriter, JvmExtendedTypeWriter
@@ -44,16 +45,12 @@ public final class JvmClassWriter
 	
 	@Override
 	public final Type thisType() {
-		return this.typeWriter.thisType();
+		return this.typeWriter.context().thisType;
 	}
 	
 	@Override
 	public final Type superType() {
-		return this.typeWriter.superType();
-	}
-	
-	protected final Type resolve( final Type type ) {
-		return this.typeWriter.resolve( type );
+		return this.typeWriter.context().superType;
 	}
 	
 	@Override

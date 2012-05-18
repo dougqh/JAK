@@ -1,7 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import java.lang.reflect.Type;
-
 import net.dougqh.jak.assembler.JakMacro;
 
 public abstract class JvmMacro
@@ -42,32 +40,12 @@ public abstract class JvmMacro
 	}
 	
 	@Override
-	protected final SharedState sharedState() {
+	protected final MethodWritingState sharedState() {
 		return this.codeWriter.sharedState();
-	}
-	
-	@Override
-	protected final ConstantPool constantPool() {
-		return this.codeWriter.constantPool();
 	}
 	
 	@Override
 	public final JvmCoreCodeWriter coreWriter() {
 		return this.codeWriter.coreWriter();
-	}
-	
-	@Override
-	protected final Type thisType() {
-		return this.codeWriter.thisType();
-	}
-	
-	@Override
-	protected final Type superType() {
-		return this.codeWriter.superType();
-	}
-	
-	@Override
-	protected final Type resolve( final Type type ) {
-		return this.codeWriter.resolve( type );
 	}
 }
