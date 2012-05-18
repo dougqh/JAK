@@ -15,10 +15,10 @@ public final class AnnotationsAttribute extends Attribute {
 	private int numAnnotations;
 	
 	AnnotationsAttribute(
-		final ConstantPool constantPool,
+		final WritingContext context,
 		final RetentionPolicy retentionPolicy )
 	{
-		super( constantPool, name( retentionPolicy ) );
+		super( context, name( retentionPolicy ) );
 		
 		this.numAnnotations = 0;
 	}

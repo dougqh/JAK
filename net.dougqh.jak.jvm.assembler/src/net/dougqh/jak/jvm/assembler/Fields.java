@@ -6,10 +6,10 @@ final class Fields {
 	private final JvmOutputStream out = new JvmOutputStream( 512 );
 	private int fieldCount = 0;
 
-	private final ConstantPool constantPool;
+	private final WritingContext context;
 
-	Fields( final ConstantPool constantPool ) {
-		this.constantPool = constantPool;
+	Fields( final WritingContext context ) {
+		this.context = context;
 	}
 	
 	final Fields add(
@@ -20,12 +20,12 @@ final class Fields {
 	{
 		++this.fieldCount;
 		this.out.u2( flags ).
-			u2( this.constantPool.addUtf8( name ) ).
-			u2( this.constantPool.addFieldDescriptor( type ) );
+			u2( this.context.constantPool.addUtf8( name ) ).
+			u2( this.context.constantPool.addFieldDescriptor( type ) );
 		
 		Attributes attributes = new Attributes( 64 );
-		attributes.add( new ConstantValueAttribute( this.constantPool, type, value ) );
-		attributes.add( new SignatureAttribute( this.constantPool, type ) );
+		attributes.add( new ConstantValueAttribute( this.context, type, value ) );
+		attributes.add( new SignatureAttribute( this.context, type ) );
 		attributes.write( this.out );
 		
 		return this;
@@ -43,11 +43,11 @@ final class Fields {
 		private final Object value;
 		
 		ConstantValueAttribute(
-			final ConstantPool constantPool,
+			final WritingContext context,
 			final Type targetType,
 			final Object value )
 		{
-			super( constantPool, ID, 2 );
+			super( context, ID, 2 );
 			this.targetType = targetType;
 			this.value = value;
 		}
@@ -71,10 +71,10 @@ final class Fields {
 		private final ConstantEntry entry;
 		
 		SignatureAttribute(
-			final ConstantPool constantPool,
+			final WritingContext context,
 			final Type type )
 		{
-			super( constantPool, ID, 2 );
+			super( context, ID, 2 );
 			
 			this.entry = this.constantPool.addGenericFieldDescriptor( type );
 		}

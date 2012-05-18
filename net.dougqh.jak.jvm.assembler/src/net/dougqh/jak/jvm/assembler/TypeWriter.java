@@ -12,7 +12,6 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
-import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -66,9 +65,9 @@ final class TypeWriter {
 			this.flags = typeDescriptor.flags() | additionalFlags;
 		}
 		
-		this.interfaces = new Interfaces( constantPool );
-		this.fields = new Fields( constantPool );
-		this.methods = new Methods( constantPool );
+		this.interfaces = new Interfaces( this.context );
+		this.fields = new Fields( this.context );
+		this.methods = new Methods( this.context );
 		this.attributes = new Attributes( 128 );
 		
 		for ( Type interfaceType : typeDescriptor.interfaceTypes() ) {
@@ -77,7 +76,7 @@ final class TypeWriter {
 		
 		this.attributes.add(
 			new SignatureAttribute(
-				constantPool,
+				this.context,
 				typeDescriptor.parentType(),
 				typeDescriptor.interfaceTypes() ) );
 	}
@@ -146,7 +145,7 @@ final class TypeWriter {
 	
 	final void addInnerClass( final TypeDescriptor typeBuilder ) {
 		if ( this.innerClasses == null ) {
-			this.innerClasses = new InnerClassesAttribute( this.context.constantPool );
+			this.innerClasses = new InnerClassesAttribute( this.context );
 			this.attributes.add( this.innerClasses );
 		}
 		this.innerClasses.addInnerClass( typeBuilder );
@@ -154,7 +153,7 @@ final class TypeWriter {
 	
 	final void addOuterClass( final TypeWriter outerWriter ) {
 		if ( this.innerClasses == null ) {
-			this.innerClasses = new InnerClassesAttribute( this.context.constantPool );
+			this.innerClasses = new InnerClassesAttribute( this.context );
 			this.attributes.add( this.innerClasses );
 		}
 		this.innerClasses.addOuterClass( outerWriter );
@@ -176,7 +175,6 @@ final class TypeWriter {
 		JvmStack stack = this.config.configure( new DefaultJvmStack() );		
 		
 		JvmCoreCodeWriterImpl writer = this.methods.createMethod(
-			this.context,
 			method.getFlags() | additionalFlags,
 			method.getTypeVars(),
 			method.getReturnType(),
@@ -324,11 +322,11 @@ final class TypeWriter {
 		private final ConstantEntry entry;
 		
 		SignatureAttribute(
-			final ConstantPool constantPool,
+			final WritingContext context,
 			final Type parentType,
 			final Type[] interfaceTypes )
 		{
-			super( constantPool, ID, 2 );
+			super( context, ID, 2 );
 			
 			this.entry = this.constantPool.addGenericClassDescriptor(
 				parentType,
@@ -355,8 +353,8 @@ final class TypeWriter {
 		private final JvmOutputStream out;
 		private int count;
 		
-		InnerClassesAttribute( final ConstantPool constantPool ) {
-			super( constantPool, ID );
+		InnerClassesAttribute( final WritingContext context ) {
+			super( context, ID );
 			
 			this.out = new JvmOutputStream( 32 );
 			this.count = 0;
