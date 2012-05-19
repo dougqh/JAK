@@ -21,7 +21,7 @@ final class Fields {
 		++this.fieldCount;
 		this.out.u2( flags ).
 			u2( this.context.constantPool.addUtf8( name ) ).
-			u2( this.context.constantPool.addFieldDescriptor( type ) );
+			u2( this.context.constantPool.addFieldDescriptor( this.context, type ) );
 		
 		Attributes attributes = new Attributes( 64 );
 		attributes.add( new ConstantValueAttribute( this.context, type, value ) );

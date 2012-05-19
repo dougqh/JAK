@@ -1608,6 +1608,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( GETSTATIC ).u2(
 				this.constantPool.addFieldReference(
+					this.context,
 					targetType,
 					field.getType(),
 					field.getName() ) );
@@ -1624,6 +1625,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		this.unstack( field.getType() );
 		return this.op( PUTSTATIC ).u2(
 			this.constantPool.addFieldReference(
+				this.context,
 				targetType,
 				field.getType(),
 				field.getName() ) );
@@ -1638,6 +1640,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( GETFIELD ).u2(
 				this.constantPool.addFieldReference(
+					this.context,
 					targetType,
 					field.getType(),
 					field.getName() ) );
@@ -1655,6 +1658,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		this.unstack( field.getType() );
 		return this.op( PUTFIELD ).u2(
 			this.constantPool.addFieldReference(
+				this.context,
 				targetType,
 				field.getType(),
 				field.getName() ) );

@@ -140,8 +140,11 @@ final class ConstantPool {
 		return this.addClassInfo( JavaTypes.getRawClassName( type ) );
 	}
 	
-	final ConstantEntry addFieldDescriptor( final Type type ) {
-		return this.addUtf8( getFieldSignature( type ) );
+	final ConstantEntry addFieldDescriptor(
+		final WritingContext context,
+		final Type type )
+	{
+		return this.addUtf8( getFieldSignature( context, type ) );
 	}
 	
 	final ConstantEntry addGenericFieldDescriptor( final Type type ) {
@@ -187,12 +190,14 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addFieldReference(
+		final WritingContext context,
 		final Type targetType,
 		final Type fieldClass,
 		final String fieldName )
 	{
 		ConstantEntry classEntry = this.addClassInfo( targetType );
 		ConstantEntry nameAndTypeEntry = this.addNameAndType(
+			context,
 			fieldClass,
 			fieldName );
 		
@@ -261,11 +266,12 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addNameAndType(
+		final WritingContext context,
 		final Type fieldClass,
 		final String fieldName )
 	{
 		ConstantEntry nameEntry = this.addUtf8( fieldName );
-		ConstantEntry typeEntry = this.addUtf8( getFieldSignature( fieldClass ) );
+		ConstantEntry typeEntry = this.addUtf8( getFieldSignature( context, fieldClass ) );
 		
 		return this.addNameAndType( nameEntry, typeEntry );
 	}
@@ -334,9 +340,14 @@ final class ConstantPool {
 		return index;
 	}
 	
-	private static final String getFieldSignature( final Type type ) {
+	private static final String getFieldSignature(
+		final WritingContext context,
+		final Type type )
+	{
+		Type resolvedType = context.resolver.resolve( type );
+		
 		SignatureTypeVistor visitor = new SignatureTypeVistor();
-		visitor.visit( JavaTypes.getRawType( type ) );
+		visitor.visit( JavaTypes.getRawType( resolvedType ) );
 		return visitor.getSignature();
 	}
 
@@ -352,7 +363,8 @@ final class ConstantPool {
 			visitor.visit( JavaTypes.getRawType( resolvedType ) );
 		}
 		visitor.endArguments();
-		visitor.visit( JavaTypes.getRawType( returnType ) );
+		Type resolvedReturnType = methodContext.resolver.resolve( returnType );
+		visitor.visit( JavaTypes.getRawType( resolvedReturnType ) );
 		
 		return visitor.getSignature();
 	}
