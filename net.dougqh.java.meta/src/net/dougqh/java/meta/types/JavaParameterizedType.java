@@ -4,18 +4,25 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-public final class JavaParameterizedType
-	implements ParameterizedType
-{
+public final class JavaParameterizedType implements ParameterizedType {
 	private final Type rawType;
 	private final Type[] actualTypeArguments;
 	
-	public JavaParameterizedType(
-		final Type rawType,
-		final Type... actualTypeArguments )
-	{
+	JavaParameterizedType( final Type rawType ) {
 		this.rawType = rawType;
-		this.actualTypeArguments = actualTypeArguments;
+		this.actualTypeArguments = null;
+	}
+	
+	private JavaParameterizedType(
+		final JavaParameterizedType type,
+		final Type[] typeArgs )
+	{
+		this.rawType = type.rawType;
+		this.actualTypeArguments = typeArgs.clone();
+	}
+	
+	public final ParameterizedType of( final Type... typeArgs ) {
+		return new JavaParameterizedType( this, typeArgs );
 	}
 	 
 	@Override
