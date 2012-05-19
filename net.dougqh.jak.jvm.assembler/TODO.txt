@@ -1,8 +1,9 @@
 Generics/Parameterization
 - generic declarations
-  - classes
+  x - classes
   - interfaces
-  - methods
+  x - methods
+  x - methods & fields w/n classes
   - inner classes
   - type variable scoping & resolution
   - exceptions

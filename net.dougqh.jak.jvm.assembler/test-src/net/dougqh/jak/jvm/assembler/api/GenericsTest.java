@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
+import net.dougqh.jak.jvm.assembler.JvmInterfaceWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
 import net.dougqh.java.meta.types.type;
 
@@ -80,6 +81,19 @@ public final class GenericsTest {
 		
 		Field field = parameterized.getField( "field" );
 		assertThat( field.getType(), is( Number.class ) );
+		
+		Method method = parameterized.getMethod( "method" );
+		assertThat( method.getReturnType(), is( Number.class ) );
+	}
+	
+	@Test
+	public final void genericInterface() throws NoSuchFieldException, NoSuchMethodException {
+		JvmInterfaceWriter interfaceWriter = new JvmWriter().define(
+			public_().interface_( "GenericInterface" ).parameterize( V.extends_( Number.class ) ) );
+		
+		interfaceWriter.define( public_().abstract_().method( V, "method" ) );
+		
+		Class<?> parameterized = interfaceWriter.load();
 		
 		Method method = parameterized.getMethod( "method" );
 		assertThat( method.getReturnType(), is( Number.class ) );
