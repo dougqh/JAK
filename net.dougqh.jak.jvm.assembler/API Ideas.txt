@@ -1,0 +1,29 @@
+Generic Types
+
+T.extends( Number.class )
+specific( List.class ).of( String.class )
+specific( Map.class ).of( $.extends_( String.class ), $.extends_( Integer.class ) )
+generic( T.extends_( "Foo" ) ).method( T, "get", specific( Class.class ).of( T ) )
+
+
+Enums
+JvmEnumWriter enumWriter = new JvmWriter().define( public_().enum_( "MyEnum" ) );
+
+enumWriter.define( "FOO", exprs|consts );
+enumWriter.define( "BAR", exprs|consts );
+enumWriter.define( "BAZ", exprs|consts );
+
+enumWriter.define( public_().abstract_().method( ret, "name", args ) );
+
+JvmClassWriter classWriter = enumWriter.define( "QUUX" );
+classWriter.define( ... );
+
+
+Annotations
+define( 
+  annotate( Test.class, "expected", FooException.class ).
+  public_().final_().method( void_, "test" ) ).
+
+define( $( Test.class, "expected", FooException.class ).public_().method( void_, "test" ) ).
+	ireturn( true );
+

@@ -9,10 +9,6 @@ Generics/Parameterization
   - parameterized parent class
   - parameterized interfaces
 
-Optimizations
-- optimize use of and-s / or-s as expressions
-- optimize if/else if/else code generation
-
 Operations
 - switch
 - jsr / ret
@@ -21,17 +17,28 @@ Operations
 Conveniences
 - automatic method selection - w/ epxrs
 
-APIs
+Features
 - floating conditionals
 - try with resources
 - multi-catch
+- loop continue / break
+
+APIs
 - enum generation API
 - annotation definition API
 - annotation application API
+
+File Features
 - stack map table
 
 Missing Tests
 - nesting
   - if
-  - for
+X  - for
   - try
+  - sync
+  
+ Optimizations
+- optimize use of and-s / or-s as expressions
+- optimize if/else if/else code generation
+ 

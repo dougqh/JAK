@@ -13,6 +13,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	TryTest.class,
 	SynchronizedTest.class,
 	WhileTest.class,
-	DoWhileTest.class
+	DoWhileTest.class,
+	Nesting.class
 })
 public final class MacrosTestSuite {}
