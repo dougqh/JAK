@@ -1,8 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import static net.dougqh.jak.Jak.*;
-import static net.dougqh.jak.assembler.JakAsm.*;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -27,6 +24,7 @@ import net.dougqh.jak.assembler.JakCodeWriter;
 import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
+import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter.ExceptionHandler;
 import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter.Jump;
 import net.dougqh.jak.jvm.assembler.macros.ArrayFor;
@@ -44,6 +42,9 @@ import net.dougqh.jak.types.ArgList;
 import net.dougqh.jak.types.Primitive;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
+import static net.dougqh.jak.Jak.*;
+
+import static net.dougqh.jak.assembler.JakAsm.*;
 
 /**
  * Abstract base of JvmCodeWriter and JakMacro.
@@ -55,21 +56,21 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	private static final String TYPE = "TYPE";
 	
 	//Sub-writers need to share state with the surrounding writer.
-	//To accomplish this, a SharedState object is exchanged between 
+	//To accomplish this, a MethodWritingState object is shared between 
 	//the two objects.
-	protected final class SharedState {
+	protected final class MethodWritingState {
 		private Scope varScope;
 		private Scope labelScope;
 		
 		private boolean trapReturn = false;
 		private Class<?> returnType = null;
 		
-		protected SharedState() {
+		protected MethodWritingState() {
 			this.varScope = new Scope();
 			this.labelScope = new Scope();
 		}
 		
-		protected SharedState( final SharedState sharedState ) {
+		protected MethodWritingState( final MethodWritingState sharedState ) {
 			this.varScope = sharedState.varScope;
 			this.labelScope = sharedState.labelScope;
 			
@@ -92,23 +93,26 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	private JvmMacro underConstructionMacro = null;
 	
-	protected abstract SharedState sharedState();
+	protected abstract MethodWritingState sharedState();
 	
 	public abstract JvmCoreCodeWriter coreWriter();
 	
-	protected abstract ConstantPool constantPool();
-	
-	protected abstract Type thisType();
-	
-	protected abstract Type superType();
-	
-	protected abstract Type resolve( final Type type );
-	
-	protected final Type[] resolveTypes( final Type type ) {
-		//TODO: Implement properly
-		return new Type[] { this.resolve( type ) };
+	protected final ConstantPool constantPool() {
+		return this.coreWriter().context().constantPool;
 	}
-
+	
+	protected final Type thisType() {
+		return this.coreWriter().context().thisType;
+	}
+	
+	protected final Type superType() {
+		return this.coreWriter().context().superType;
+	}
+	
+	protected final TypeResolver resolver() {
+		return this.coreWriter().context().resolver;
+	}
+	
 	protected final Scope varScope( final boolean writing ) {
 		if ( writing ) {
 			this.coreWriter().prepare();
@@ -4055,7 +4059,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		final @Symbol String endLabel,
 		final Type exceptionType )
 	{
-		Type resolvedType = this.resolve( exceptionType );
+		Type resolvedType = this.resolver().resolve( exceptionType );
 		
 		this.coreWriter().handleException(
 			new CatchExceptionHandler(
@@ -4157,7 +4161,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 	
 	private final Class<?> slotType( final Type type ) {
-		Type resolvedType = this.resolve( type );
+		Type resolvedType = this.resolver().resolve( type );
 		if ( resolvedType.equals( boolean.class ) ) {
 			return int.class;
 		} else if ( resolvedType.equals( byte.class ) ) {
@@ -4370,7 +4374,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	private final class CaptureCodeWriter extends JvmCodeWriter {
-		private final SharedState sharedState = new SharedState( JvmCodeWriter.this.sharedState() );
+		private final MethodWritingState sharedState = new MethodWritingState( JvmCodeWriter.this.sharedState() );
 		private JvmCoreCodeWriter coreWriter = null;
 		
 		protected final void init( final JvmCoreCodeWriter coreWriter ) {
@@ -4383,28 +4387,8 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 		
 		@Override
-		protected final SharedState sharedState() {
+		protected final MethodWritingState sharedState() {
 			return this.sharedState;
-		}
-		
-		@Override
-		protected final ConstantPool constantPool() {
-			return JvmCodeWriter.this.constantPool();
-		}
-		
-		@Override
-		protected final Type thisType() {
-			return JvmCodeWriter.this.thisType();
-		}
-		
-		@Override
-		protected final Type superType() {
-			return JvmCodeWriter.this.superType();
-		}
-		
-		@Override
-		protected final Type resolve( final Type type ) {
-			return JvmCodeWriter.this.resolve( type );
 		}
 	}
 }

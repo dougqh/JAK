@@ -2,6 +2,7 @@ package net.dougqh.jak;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 public final class JavaAnnotationDescriptor {
 	private final int flags;
@@ -19,6 +20,7 @@ public final class JavaAnnotationDescriptor {
 		return new TypeDescriptor(
 			this.flags,
 			this.name,
+			new TypeVariable<?>[] {},
 			Object.class,
 			new Type[] { Annotation.class } );
 	}

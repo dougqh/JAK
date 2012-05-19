@@ -1,7 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import static net.dougqh.jak.jvm.operations.JvmOperation.*;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +11,7 @@ import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
+import static net.dougqh.jak.jvm.operations.JvmOperation.*;
 
 final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {	
 	private static final byte BOOLEAN_ARRAY = 4;
@@ -23,6 +22,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	private static final byte SHORT_ARRAY = 9;
 	private static final byte INT_ARRAY = 10;
 	private static final byte LONG_ARRAY = 11;
+	
+	private final WritingContext context;
 	
 	private final ConstantPool constantPool;
 	private final JvmOutputStream codeOut;
@@ -39,12 +40,14 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	private DeferredWrite deferredWrite = null;
 	
 	JvmCoreCodeWriterImpl(
-		final ConstantPool constantPool,
+		final WritingContext context,
 		final JvmLocals locals,
 		final JvmStack stack )
 	{
+		this.context = context;
+		
 		this.codeOut = new JvmOutputStream( 128 );
-		this.constantPool = constantPool;
+		this.constantPool = context.constantPool;
 		
 		this.locals = locals;
 		this.stack = stack;
@@ -73,6 +76,11 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		
 		this.deferredWrite = deferredWrite;
 		return this;
+	}
+	
+	@Override
+	public final WritingContext context() {
+		return this.context;
 	}
 
 	@Override
@@ -1600,6 +1608,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( GETSTATIC ).u2(
 				this.constantPool.addFieldReference(
+					this.context,
 					targetType,
 					field.getType(),
 					field.getName() ) );
@@ -1616,6 +1625,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		this.unstack( field.getType() );
 		return this.op( PUTSTATIC ).u2(
 			this.constantPool.addFieldReference(
+				this.context,
 				targetType,
 				field.getType(),
 				field.getName() ) );
@@ -1630,6 +1640,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( GETFIELD ).u2(
 				this.constantPool.addFieldReference(
+					this.context,
 					targetType,
 					field.getType(),
 					field.getName() ) );
@@ -1647,6 +1658,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		this.unstack( field.getType() );
 		return this.op( PUTFIELD ).u2(
 			this.constantPool.addFieldReference(
+				this.context,
 				targetType,
 				field.getType(),
 				field.getName() ) );
@@ -1662,6 +1674,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKEVIRTUAL ).u2(
 				this.constantPool.addMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),
@@ -1681,6 +1694,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKEINTERFACE ).u2(
 				this.constantPool.addInterfaceMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),
@@ -1702,6 +1716,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKESPECIAL ).u2(
 				this.constantPool.addMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),
@@ -1720,6 +1735,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			return this.op( INVOKESTATIC ).u2(
 				this.constantPool.addMethodReference(
+					this.context,
 					targetType,
 					method.getReturnType(),
 					method.getName(),

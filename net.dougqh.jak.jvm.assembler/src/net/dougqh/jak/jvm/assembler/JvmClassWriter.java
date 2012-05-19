@@ -44,16 +44,12 @@ public final class JvmClassWriter
 	
 	@Override
 	public final Type thisType() {
-		return this.typeWriter.thisType();
+		return this.typeWriter.context().thisType;
 	}
 	
 	@Override
 	public final Type superType() {
-		return this.typeWriter.superType();
-	}
-	
-	protected final Type resolve( final Type type ) {
-		return this.typeWriter.resolve( type );
+		return this.typeWriter.context().superType;
 	}
 	
 	@Override
@@ -153,11 +149,7 @@ public final class JvmClassWriter
 		if ( coreWriter == null ) {
 			return null;
 		} else {
-			return new JvmCodeWriterImpl(
-				this.typeWriter,
-				method.isStatic(),
-				method.arguments(),
-				coreWriter );
+			return new JvmCodeWriterImpl( method.isStatic(), method.arguments(), coreWriter );
 		}
 	}
 	

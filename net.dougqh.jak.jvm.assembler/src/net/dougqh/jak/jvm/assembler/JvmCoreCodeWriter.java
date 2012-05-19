@@ -14,9 +14,12 @@ public interface JvmCoreCodeWriter {
 			final boolean terminal );
 	}
 	
+	//Deferred write methods
 	public abstract JvmCoreCodeWriter defer( final DeferredWrite deferredWrite );
 	
 	public abstract JvmCoreCodeWriter prepare();
+	
+	public abstract WritingContext context();
 	
 	@JvmOp( nop.class )
 	public abstract JvmCoreCodeWriter nop();

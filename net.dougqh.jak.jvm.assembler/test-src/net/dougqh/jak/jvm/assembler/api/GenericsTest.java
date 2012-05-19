@@ -22,11 +22,10 @@ import static org.junit.Assert.*;
 
 public final class GenericsTest {
 	@Test
-	public final void parameterizeMethod() throws NoSuchMethodException {
-		JvmClassWriter classWriter = new JvmWriter().define(
-			public_().class_( "ParameterizedMethod" ) );
+	public final void genericMethod() throws NoSuchMethodException {
+		JvmClassWriter classWriter = new JvmWriter().define( public_().class_( "GenericMethod" ) );
 		
-		classWriter.define( public_().abstract_().generic( T ).method( T, "get", parameterize( Class.class ).of( T ) ) );
+		classWriter.define( public_().abstract_().parameterize( T ).method( T, "get", parameterize( Class.class ).of( T ) ) );
 		
 		Class<?> parameterized = classWriter.load();
 		
@@ -42,6 +41,48 @@ public final class GenericsTest {
 
 		TypeVariable<?> typeVar = (TypeVariable<?>)parameterType.getActualTypeArguments()[ 0 ];
 		assertThat( typeVar.getName(), is( "T" ) );
+	}
+	
+	@Test
+	public final void genericExtendsMethod() throws NoSuchMethodException {
+		JvmClassWriter classWriter = new JvmWriter().define( public_().class_( "GenericMethod" ) );
+		
+		classWriter.define(
+			public_().abstract_().parameterize( T.extends_( Number.class ) ).method( T, "get", parameterize( Class.class ).of( T ) ) );
+		
+		Class<?> parameterized = classWriter.load();
+		
+		Method method = parameterized.getMethod( "get", Class.class );
+		assertThat( method.getReturnType(), is( Number.class ) );
+		assertThat( method.getParameterTypes()[ 0 ], is( Class.class ) );
+		
+		TypeVariable<?> returnType = (TypeVariable<?>)method.getGenericReturnType();
+		assertThat( returnType.getName(), is( "T" ) );
+		assertThat( returnType.getBounds()[0], is( Number.class ) );
+		
+		ParameterizedType parameterType = (ParameterizedType)method.getGenericParameterTypes()[ 0 ];
+		assertThat( parameterType.getRawType(), is( Class.class ) );
+
+		TypeVariable<?> typeVar = (TypeVariable<?>)parameterType.getActualTypeArguments()[ 0 ];
+		assertThat( typeVar.getName(), is( "T" ) );
+	}
+	
+	@Test
+	public final void genericClass() throws NoSuchFieldException, NoSuchMethodException {
+		JvmClassWriter classWriter = new JvmWriter().define(
+			public_().class_( "GenericClass" ).parameterize( T.extends_( Number.class ) ) );
+		
+		classWriter.define( public_().field( T, "field" ) );
+		
+		classWriter.define( public_().abstract_().method( T, "method" ) );
+		
+		Class<?> parameterized = classWriter.load();
+		
+		Field field = parameterized.getField( "field" );
+		assertThat( field.getType(), is( Number.class ) );
+		
+		Method method = parameterized.getMethod( "method" );
+		assertThat( method.getReturnType(), is( Number.class ) );
 	}
 	
 	@Test

@@ -1,14 +1,16 @@
 package net.dougqh.jak.jvm.assembler;
 
 abstract class Attribute {
+	protected final WritingContext context;
 	protected final ConstantPool constantPool;
 	protected final String name;
 	
 	Attribute(
-		final ConstantPool constantPool,
+		final WritingContext context,
 		final String name )
 	{
-		this.constantPool = constantPool;
+		this.context = context;
+		this.constantPool = this.context.constantPool;
 		this.name = name;
 	}
 

@@ -43,12 +43,12 @@ public final class JvmInterfaceWriter
 	
 	@Override
 	public final Type thisType() {
-		return this.typeWriter.thisType();
+		return this.typeWriter.context().thisType;
 	}
 	
 	@Override
 	public final Type superType() {
-		return this.typeWriter.superType();
+		return this.typeWriter.context().superType;
 	}
 	
 	@Override

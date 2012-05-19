@@ -1,27 +1,28 @@
 package net.dougqh.jak.jvm.assembler;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.FormalArguments;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 
 final class Methods {
-	private final ConstantPool constantPool;
+	private final WritingContext context;
 	private final JvmOutputStream out;
 	
 	private int count = 0;
 	
 	private Attributes methodAttributes = null;
 	
-	Methods( final ConstantPool constantPool ) {
-		this.constantPool = constantPool;
+	Methods( final WritingContext context ) {
+		this.context = context;
 		this.out = new JvmOutputStream( 1024 );
 	}
 	
 	final JvmCoreCodeWriterImpl createMethod(
 		final int flags,
-		final Type[] genericTypes,
+		final TypeVariable<?>[] typeVars,
 		final Type returnType,
 		final String name,
 		final FormalArguments arguments,
@@ -33,8 +34,11 @@ final class Methods {
 		this.finishMethod();
 		++this.count;
 		
-		ConstantEntry nameEntry = this.constantPool.addUtf8( name );
-		ConstantEntry descriptorEntry = this.constantPool.addMethodDescriptor(
+		WritingContext methodContext = new WritingContext( this.context, typeVars );
+		
+		ConstantEntry nameEntry = this.context.constantPool.addUtf8( name );
+		ConstantEntry descriptorEntry = this.context.constantPool.addMethodDescriptor(
+			methodContext,
 			returnType,
 			arguments );
 		
@@ -50,12 +54,17 @@ final class Methods {
 		}
 		
 		this.methodAttributes.add(
-			new ExceptionsAttribute( this.constantPool, exceptionTypes ) );
+			new ExceptionsAttribute( methodContext, exceptionTypes ) );
 		this.methodAttributes.add(
-			new SignatureAttribute( this.constantPool, genericTypes, returnType, arguments ) );
+			new SignatureAttribute( methodContext, typeVars, returnType, arguments ) );
 		
-		if ( needsCode ) {			
-			CodeAttribute codeAttribute = new CodeAttribute( this.constantPool, locals, stack );
+		if ( needsCode ) {
+			CodeAttribute codeAttribute = new CodeAttribute(
+				methodContext,
+				this.context.constantPool,
+				locals,
+				stack );
+			
 			this.methodAttributes.add( codeAttribute );
 			return codeAttribute.getCodeWriter();
 		} else {
@@ -86,10 +95,10 @@ final class Methods {
 		private final Type[] exceptionTypes;
 		
 		ExceptionsAttribute(
-			final ConstantPool constantPool,
+			final WritingContext context,
 			final Type[] exceptionTypes )
 		{
-			super( constantPool, ID );
+			super( context, ID );
 			
 			this.exceptionTypes = exceptionTypes;
 		}
@@ -120,14 +129,14 @@ final class Methods {
 		private final ConstantEntry entry;
 		
 		SignatureAttribute(
-			final ConstantPool constantPool,
-			final Type[] genericTypes,
+			final WritingContext context,
+			final TypeVariable<?>[] typeVars,
 			final Type returnType,
 			final FormalArguments args )
 		{
-			super( constantPool, ID, 2 );
+			super( context, ID, 2 );
 			
-			this.entry = this.constantPool.addGenericMethodDescriptor( genericTypes, returnType, args );
+			this.entry = this.constantPool.addGenericMethodDescriptor( typeVars, returnType, args );
 		}
 		
 		@Override
@@ -150,13 +159,14 @@ final class Methods {
 		private final JvmCoreCodeWriterImpl codeWriter;
 		
 		CodeAttribute(
+			final WritingContext context,
 			final ConstantPool constantPool,
 			final JvmLocals locals,
 			final JvmStack stack )
 		{
-			super( constantPool, ID );
+			super( context, ID );
 			
-			this.codeWriter = new JvmCoreCodeWriterImpl( constantPool, locals, stack );
+			this.codeWriter = new JvmCoreCodeWriterImpl( context, locals, stack );
 		}
 		
 		@Override

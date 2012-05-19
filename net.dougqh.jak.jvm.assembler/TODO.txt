@@ -1,3 +1,14 @@
+Generics/Parameterization
+- generic declarations
+  - classes
+  - interfaces
+  - methods
+  - inner classes
+  - type variable scoping & resolution
+  - exceptions
+  - parameterized parent class
+  - parameterized interfaces
+
 Operations
 - switch
 - jsr / ret

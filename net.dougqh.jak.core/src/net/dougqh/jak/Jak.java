@@ -7,7 +7,6 @@ import java.lang.reflect.Type;
 import javax.lang.model.element.TypeElement;
 
 import net.dougqh.java.meta.types.JavaParameterizedType;
-import net.dougqh.java.meta.types.JavaTypeBuilder;
 import net.dougqh.java.meta.types.JavaTypeVariable;
 import net.dougqh.java.meta.types.JavaTypes;
 import net.dougqh.java.meta.types.JavaWildcardType;
@@ -139,13 +138,6 @@ public class Jak {
 		final CharSequence fieldName )
 	{
 		return new JavaModifiers().field( fieldType, fieldName );
-	}
-	
-	public static final JavaField field(
-		final JavaTypeBuilder typeBuilder,
-		final CharSequence fieldName )
-	{
-		return field( typeBuilder.make(), fieldName );
 	}
 	
 	public static final JavaMethodDescriptor method(

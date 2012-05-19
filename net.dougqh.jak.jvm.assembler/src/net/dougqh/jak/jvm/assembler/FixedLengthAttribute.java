@@ -4,11 +4,11 @@ abstract class FixedLengthAttribute extends Attribute {
 	private final int length;
 	
 	FixedLengthAttribute(
-		final ConstantPool constantPool,
+		final WritingContext context,
 		final String name,
 		final int length )
 	{
-		super( constantPool, name );
+		super( context, name );
 		this.length = length;
 	}
 	

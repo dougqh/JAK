@@ -1,6 +1,7 @@
 package net.dougqh.jak.jvm.assembler;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 
 import net.dougqh.jak.FormalArguments;
@@ -139,8 +140,11 @@ final class ConstantPool {
 		return this.addClassInfo( JavaTypes.getRawClassName( type ) );
 	}
 	
-	final ConstantEntry addFieldDescriptor( final Type type ) {
-		return this.addUtf8( getFieldSignature( type ) );
+	final ConstantEntry addFieldDescriptor(
+		final WritingContext context,
+		final Type type )
+	{
+		return this.addUtf8( getFieldSignature( context, type ) );
 	}
 	
 	final ConstantEntry addGenericFieldDescriptor( final Type type ) {
@@ -152,19 +156,20 @@ final class ConstantPool {
 		}
 	}
 	
-	final ConstantEntry addMethodDescriptor( 
+	final ConstantEntry addMethodDescriptor(
+		final WritingContext methodContext,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		return this.addUtf8( getMethodSignature( returnType, arguments ) );
+		return this.addUtf8( getMethodSignature( methodContext, returnType, arguments ) );
 	}
 	
 	final ConstantEntry addGenericMethodDescriptor(
-		final Type[] genericTypes,
+		final TypeVariable<?>[] typeVars,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		String genericSignature = getGenericMethodSignature( genericTypes, returnType, arguments );
+		String genericSignature = getGenericMethodSignature( typeVars, returnType, arguments );
 		if ( genericSignature == null ) {
 			return null;
 		} else {
@@ -185,12 +190,14 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addFieldReference(
+		final WritingContext context,
 		final Type targetType,
 		final Type fieldClass,
 		final String fieldName )
 	{
 		ConstantEntry classEntry = this.addClassInfo( targetType );
 		ConstantEntry nameAndTypeEntry = this.addNameAndType(
+			context,
 			fieldClass,
 			fieldName );
 		
@@ -201,6 +208,7 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addMethodReference(
+		final WritingContext context,
 		final Type targetType,
 		final Type returnType,
 		final String methodName,
@@ -208,6 +216,7 @@ final class ConstantPool {
 	{
 		ConstantEntry classEntry = this.addClassInfo( targetType );
 		ConstantEntry nameAndTypeEntry = this.addNameAndType(
+			context,
 			returnType,
 			methodName,
 			arguments );
@@ -219,6 +228,7 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addInterfaceMethodReference(
+		final WritingContext context,
 		final Type targetType,
 		final Type returnType,
 		final String methodName,
@@ -226,6 +236,7 @@ final class ConstantPool {
 	{
 		ConstantEntry classEntry = this.addClassInfo( targetType );
 		ConstantEntry nameAndTypeEntry = this.addNameAndType(
+			context,
 			returnType,
 			methodName,
 			arguments );
@@ -255,22 +266,24 @@ final class ConstantPool {
 	}
 	
 	final ConstantEntry addNameAndType(
+		final WritingContext context,
 		final Type fieldClass,
 		final String fieldName )
 	{
 		ConstantEntry nameEntry = this.addUtf8( fieldName );
-		ConstantEntry typeEntry = this.addUtf8( getFieldSignature( fieldClass ) );
+		ConstantEntry typeEntry = this.addUtf8( getFieldSignature( context, fieldClass ) );
 		
 		return this.addNameAndType( nameEntry, typeEntry );
 	}
 	
 	final ConstantEntry addNameAndType(
+		final WritingContext context,
 		final Type returnType,
 		final String methodName,
 		final FormalArguments arguments )
 	{
 		ConstantEntry nameEntry = this.addUtf8( methodName );
-		ConstantEntry typeEntry = this.addUtf8( getMethodSignature( returnType, arguments ) );
+		ConstantEntry typeEntry = this.addUtf8( getMethodSignature( context, returnType, arguments ) );
 		
 		return this.addNameAndType( nameEntry, typeEntry );
 	}
@@ -327,23 +340,31 @@ final class ConstantPool {
 		return index;
 	}
 	
-	private static final String getFieldSignature( final Type type ) {
+	private static final String getFieldSignature(
+		final WritingContext context,
+		final Type type )
+	{
+		Type resolvedType = context.resolver.resolve( type );
+		
 		SignatureTypeVistor visitor = new SignatureTypeVistor();
-		visitor.visit( JavaTypes.getRawType( type ) );
+		visitor.visit( JavaTypes.getRawType( resolvedType ) );
 		return visitor.getSignature();
 	}
 
 	static final String getMethodSignature(
+		final WritingContext methodContext,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
 		SignatureTypeVistor visitor = new SignatureTypeVistor();
 		visitor.startArguments();
 		for ( JavaVariable variable : arguments ) {
-			visitor.visit( JavaTypes.getRawType( variable.getType() ) );
+			Type resolvedType = methodContext.resolver.resolve( variable.getType() );
+			visitor.visit( JavaTypes.getRawType( resolvedType ) );
 		}
 		visitor.endArguments();
-		visitor.visit( JavaTypes.getRawType( returnType ) );
+		Type resolvedReturnType = methodContext.resolver.resolve( returnType );
+		visitor.visit( JavaTypes.getRawType( resolvedReturnType ) );
 		
 		return visitor.getSignature();
 	}
@@ -362,17 +383,17 @@ final class ConstantPool {
 	}
 	
 	static final String getGenericMethodSignature(
-		final Type[] genericTypes,
+		final TypeVariable<?>[] typeVars,
 		final Type returnType,
 		final FormalArguments arguments )
 	{
-		if ( isGenericMethodSignature( genericTypes, returnType, arguments ) ) {
+		if ( isGenericMethodSignature( typeVars, returnType, arguments ) ) {
 			SignatureTypeVistor genericSigBuilder = new SignatureTypeVistor();
 			
-			if ( genericTypes.length != 0 ) {
+			if ( typeVars.length != 0 ) {
 				genericSigBuilder.startParameterization();
-				for ( Type genericType: genericTypes ) {
-					genericSigBuilder.visit( genericType );
+				for ( Type typeVar: typeVars ) {
+					genericSigBuilder.visit( typeVar );
 				}
 				genericSigBuilder.endParameterization();
 			}

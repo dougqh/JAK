@@ -5,15 +5,15 @@ final class Interfaces {
 	private final JvmOutputStream out = new JvmOutputStream( 16 );
 	private int count = 0;
 	
-	private final ConstantPool constantPool;
+	private final WritingContext context;
 	
-	Interfaces( final ConstantPool constantPool ) {
-		this.constantPool = constantPool;
+	Interfaces( final WritingContext context ) {
+		this.context = context;
 	}
 	
 	final Interfaces add( final Class< ? > anInterface ) {
 		++this.count;
-		this.out.u2( this.constantPool.addClassInfo( anInterface ) );
+		this.out.u2( this.context.constantPool.addClassInfo( anInterface ) );
 		return this;
 	}
 	
