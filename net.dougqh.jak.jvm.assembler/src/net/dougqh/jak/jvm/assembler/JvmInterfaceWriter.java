@@ -177,8 +177,8 @@ public final class JvmInterfaceWriter
 	}
 	
 	@Override
-	public final Class< ? > load() {
-		return this.typeWriter.load();
+	public final <T> Class<T> load() {
+		return this.typeWriter.<T>load();
 	}
 	
 	@Override

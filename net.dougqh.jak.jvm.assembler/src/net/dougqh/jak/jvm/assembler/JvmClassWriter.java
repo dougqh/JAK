@@ -58,88 +58,56 @@ public final class JvmClassWriter
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final boolean value )
-	{
+	public final void define( final JavaField field, final boolean value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final byte value )
-	{
+	public final void define( final JavaField field, final byte value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final char value )
-	{
+	public final void define( final JavaField field, final char value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final short value )
-	{
+	public final void define( final JavaField field, final short value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final int value )
-	{
+	public final void define( final JavaField field, final int value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final long value )
-	{
+	public final void define( final JavaField field, final long value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final float value )
-	{
+	public final void define( final JavaField field, final float value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final double value )
-	{
+	public final void define( final JavaField field, final double value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final CharSequence value )
-	{
+	public final void define( final JavaField field, final CharSequence value ) {
 		this.typeWriter.define( field, value );
 	}
 	
 	@Override
-	public final void define(
-		final JavaField field,
-		final Class< ? > aClass )
-	{
+	public final void define( final JavaField field, final Class< ? > aClass ) {
 		this.typeWriter.define( field, aClass );
 	}
 	
-	public final JvmCodeWriter define(
-		final JavaMethodDescriptor method )
-	{
+	public final JvmCodeWriter define( final JavaMethodDescriptor method ) {
 		//coreWriter will be null when the method is abstract or native pass it on
 		JvmCoreCodeWriter coreWriter = this.typeWriter.define(
 			method,
@@ -158,35 +126,29 @@ public final class JvmClassWriter
 	}
 	
 	@Override
-	public final JvmClassWriter define(
-		final JavaClassDescriptor classDescriptor )
-	{
+	public final JvmClassWriter define( final JavaClassDescriptor classDescriptor ) {
 		return this.typeWriter.defineClass(
 			classDescriptor.typeDescriptor(),
 			ADDITIONAL_INNER_TYPE_FLAGS );
 	}
 	
 	@Override
-	public final JvmInterfaceWriter define(
-		final JavaInterfaceDescriptor interfaceDescriptor )
-	{
+	public final JvmInterfaceWriter define( final JavaInterfaceDescriptor interfaceDescriptor ) {
 		return this.typeWriter.defineInterface(
 			interfaceDescriptor.typeDescriptor(),
 			ADDITIONAL_INNER_TYPE_FLAGS );
 	}
 	
 	@Override
-	public final JvmAnnotationWriter define(
-		final JavaAnnotationDescriptor annotationDescriptor )
-	{
+	public final JvmAnnotationWriter define( final JavaAnnotationDescriptor annotationDescriptor ) {
 		return this.typeWriter.defineAnnotation(
 			annotationDescriptor.typeDescriptor(),
 			ADDITIONAL_INNER_TYPE_FLAGS );
 	}
 	
 	@Override
-	public final Class< ? > load() {
-		return this.typeWriter.load();
+	public final <T> Class<T> load() {
+		return this.typeWriter.<T>load();
 	}
 
 	@SuppressWarnings( "unchecked" )

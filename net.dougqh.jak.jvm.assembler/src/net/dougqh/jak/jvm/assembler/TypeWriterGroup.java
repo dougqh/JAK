@@ -53,6 +53,12 @@ final class TypeWriterGroup {
 		return annotationWriter;
 	}
 	
+	final JvmEnumWriter createEnumWriter( final TypeDescriptor typeDescriptor ) {
+		JvmEnumWriter enumWriter = new JvmEnumWriter( this, typeDescriptor );
+		this.register( enumWriter.typeWriter() );
+		return enumWriter;
+	}
+	
 	final void register( final TypeWriter writer ) {
 		this.writers.put( writer.name(), writer );
 	}

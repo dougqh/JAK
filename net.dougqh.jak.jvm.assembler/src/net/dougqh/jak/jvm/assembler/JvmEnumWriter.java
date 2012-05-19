@@ -3,7 +3,10 @@ package net.dougqh.jak.jvm.assembler;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.Jak;
@@ -11,38 +14,30 @@ import net.dougqh.jak.JavaAnnotationDescriptor;
 import net.dougqh.jak.JavaClassDescriptor;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaInterfaceDescriptor;
+import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.TypeDescriptor;
-import net.dougqh.jak.assembler.JakAnnotationWriter;
+import net.dougqh.jak.assembler.JakEnumWriter;
+import static net.dougqh.jak.Jak.*;
 
-public final class JvmAnnotationWriter
-	implements JakAnnotationWriter, JvmTypeWriter
+public final class JvmEnumWriter
+	implements JakEnumWriter, JvmExtendedTypeWriter
 {
-	private static final int ADDITIONAL_TYPE_FLAGS = 
-		Flags.ABSTRACT | Flags.INTERFACE | Flags.ANNOTATION;
-
-	private static final int ADDITIONAL_METHOD_FLAGS = 
-		Flags.PUBLIC | Flags.ABSTRACT;
-	
-	private static final int ADDITIONAL_INNER_TYPE_FLAGS = 
-		Flags.PUBLIC | Flags.STATIC;
+	private static final int ADDITIONAL_TYPE_FLAGS = Flags.NO_FLAGS;
+	private static final int ADDITIONAL_METHOD_FLAGS = Flags.NO_FLAGS;
+	private static final int ADDITIONAL_INNER_TYPE_FLAGS = Flags.NO_FLAGS;
 	
 	private final TypeWriter typeWriter;
 	
-	JvmAnnotationWriter(
-		final TypeWriterGroup typeWriterGroup,
+	private final List< Element > elements = new ArrayList< Element >( 8 );
+	
+	JvmEnumWriter(
+		final TypeWriterGroup writerGroup,
 		final TypeDescriptor typeDescriptor )
 	{
 		this.typeWriter = new TypeWriter(
-			typeWriterGroup,
+			writerGroup,
 			typeDescriptor,
 			ADDITIONAL_TYPE_FLAGS );
-	}
-	
-	public final void define( final JavaField field ) {
-		this.typeWriter.define(
-			Jak.method( field.getType(), field.getName() ),
-			ADDITIONAL_METHOD_FLAGS,
-			null );
 	}
 	
 	@Override
@@ -55,102 +50,87 @@ public final class JvmAnnotationWriter
 		return this.typeWriter.context().superType;
 	}
 	
+	public final void define( final String element ) {
+		this.elements.add( new Element( element ) );
+		
+		this.define( public_().static_().final_().field( this.thisType(), element ) );
+	}
+	
+	@Override
+	public final void define( final JavaField field ) {
+		this.typeWriter.define( field );
+	}
+	
+	@Override
 	public final void define( final JavaField field, final boolean value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final byte value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final char value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final short value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final int value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final long value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final float value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final double value ) {
 		this.typeWriter.define( field, value );
 	}
 	
+	@Override
 	public final void define( final JavaField field, final CharSequence value ) {
 		this.typeWriter.define( field, value );
 	}
 	
-	public final void define( final JavaField field, final Class< ? > value ) {
-		this.typeWriter.define( field, value );
+	@Override
+	public final void define( final JavaField field, final Class< ? > aClass ) {
+		this.typeWriter.define( field, aClass );
 	}
 	
-	public final void define( final JavaField field, final Enum< ? > value ) {
-		this.typeWriter.define( field, value );
+	public final JvmCodeWriter define( final JavaMethodDescriptor method ) {
+		//coreWriter will be null when the method is abstract or native pass it on
+		JvmCoreCodeWriter coreWriter = this.typeWriter.define(
+			method,
+			ADDITIONAL_METHOD_FLAGS,
+			null );
+		
+		if ( coreWriter == null ) {
+			return null;
+		} else {
+			return new JvmCodeWriterImpl( method.isStatic(), method.arguments(), coreWriter );
+		}
 	}
 	
-	public final void define( final JavaField field, final boolean[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final byte[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final char[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final short[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final int[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final long[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final float[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final double[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final CharSequence[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final Class< ? >[] value ) {
-		this.typeWriter.define( field, value );
-	}
-	
-	public final void define( final JavaField field, final Enum< ? >[] value ) {
-		this.typeWriter.define( field, value );
-	}
-
-	public final void define( final JavaField field, final Object value ) {
-		this.typeWriter.define( field, value );
+	public final JvmCodeWriter define( final Method method ) {
+		return this.define( Jak.method( method ) );
 	}
 	
 	@Override
-	public final JvmClassWriter define(
-		final JavaClassDescriptor classDescriptor )
-	{
+	public final JvmClassWriter define( final JavaClassDescriptor classDescriptor ) {
 		return this.typeWriter.defineClass(
 			classDescriptor.typeDescriptor(),
 			ADDITIONAL_INNER_TYPE_FLAGS );
@@ -178,10 +158,21 @@ public final class JvmAnnotationWriter
 	public final <T> Class<T> load() {
 		return this.typeWriter.<T>load();
 	}
+
+	@SuppressWarnings( "unchecked" )
+	public final < T > T newInstance() {
+		try {
+			return (T)this.load().newInstance();
+		} catch ( InstantiationException e ) {
+			throw new IllegalStateException( e );
+		} catch ( IllegalAccessException e ) {
+			throw new IllegalStateException( e );
+		}
+	}
 	
 	@Override
-	public final void writeTo( final File srcDir ) throws IOException {
-		this.typeWriter.writeTo( srcDir );
+	public final void writeTo( final File classDir ) throws IOException {
+		this.typeWriter.writeTo( classDir );
 	}
 	
 	@Override
@@ -192,9 +183,21 @@ public final class JvmAnnotationWriter
 	@Override
 	public final byte[] getBytes() {
 		return this.typeWriter.getBytes();
-	}	
+	}
+	
+	public final void initConfig( final JakConfiguration config ) {
+		this.typeWriter.initConfig( config );
+	}
 	
 	final TypeWriter typeWriter() {
 		return this.typeWriter;
+	}
+	
+	private static final class Element {
+		final String name;
+		
+		Element( final String name ) {
+			this.name  = name;
+		}
 	}
 }

@@ -56,21 +56,21 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	private static final String TYPE = "TYPE";
 	
 	//Sub-writers need to share state with the surrounding writer.
-	//To accomplish this, a MethodWritingState object is shared between 
+	//To accomplish this, a CodeWritingState object is shared between 
 	//the two objects.
-	protected final class MethodWritingState {
+	protected final class CodeWritingState {
 		private Scope varScope;
 		private Scope labelScope;
 		
 		private boolean trapReturn = false;
 		private Class<?> returnType = null;
 		
-		protected MethodWritingState() {
+		protected CodeWritingState() {
 			this.varScope = new Scope();
 			this.labelScope = new Scope();
 		}
 		
-		protected MethodWritingState( final MethodWritingState sharedState ) {
+		protected CodeWritingState( final CodeWritingState sharedState ) {
 			this.varScope = sharedState.varScope;
 			this.labelScope = sharedState.labelScope;
 			
@@ -93,7 +93,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	private JvmMacro underConstructionMacro = null;
 	
-	protected abstract MethodWritingState sharedState();
+	protected abstract CodeWritingState sharedState();
 	
 	public abstract JvmCoreCodeWriter coreWriter();
 	
@@ -4374,7 +4374,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	private final class CaptureCodeWriter extends JvmCodeWriter {
-		private final MethodWritingState sharedState = new MethodWritingState( JvmCodeWriter.this.sharedState() );
+		private final CodeWritingState sharedState = new CodeWritingState( JvmCodeWriter.this.sharedState() );
 		private JvmCoreCodeWriter coreWriter = null;
 		
 		protected final void init( final JvmCoreCodeWriter coreWriter ) {
@@ -4387,7 +4387,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 		
 		@Override
-		protected final MethodWritingState sharedState() {
+		protected final CodeWritingState sharedState() {
 			return this.sharedState;
 		}
 	}

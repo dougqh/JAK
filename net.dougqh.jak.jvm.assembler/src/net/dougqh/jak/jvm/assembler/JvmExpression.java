@@ -45,7 +45,7 @@ public abstract class JvmExpression< T >
 	}
 	
 	@Override
-	protected final MethodWritingState sharedState() {
+	protected final CodeWritingState sharedState() {
 		return this.codeWriter.sharedState();
 	}
 	

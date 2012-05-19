@@ -8,7 +8,7 @@ import net.dougqh.jak.JavaVariable;
 final class JvmCodeWriterImpl extends JvmCodeWriter {
 	private final JvmCoreCodeWriter coreWriter;
 	
-	private final MethodWritingState sharedState = new MethodWritingState();
+	private final CodeWritingState sharedState = new CodeWritingState();
 
 	JvmCodeWriterImpl(
 		final boolean isStatic,
@@ -45,7 +45,7 @@ final class JvmCodeWriterImpl extends JvmCodeWriter {
 	}
 	
 	@Override
-	protected final MethodWritingState sharedState() {
+	protected final CodeWritingState sharedState() {
 		return this.sharedState;
 	}
 	

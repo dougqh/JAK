@@ -2,6 +2,7 @@ package net.dougqh.jak.jvm.assembler;
 
 import net.dougqh.jak.JavaAnnotationDescriptor;
 import net.dougqh.jak.JavaClassDescriptor;
+import net.dougqh.jak.JavaEnumDescriptor;
 import net.dougqh.jak.JavaInterfaceDescriptor;
 import net.dougqh.jak.JavaPackageDescriptor;
 import net.dougqh.jak.assembler.JakWriter;
@@ -24,23 +25,22 @@ public final class JvmWriter implements JakWriter {
 	}
 	
 	@Override
-	public final JvmClassWriter define(
-		final JavaClassDescriptor classDescriptor )
-	{
-		return this.typeWriterGroup.createClassWriter( classDescriptor.typeDescriptor() );
+	public final JvmClassWriter define( final JavaClassDescriptor descriptor ) {
+		return this.typeWriterGroup.createClassWriter( descriptor.typeDescriptor() );
 	}
 	
 	@Override
-	public final JvmInterfaceWriter define(
-		final JavaInterfaceDescriptor interfaceDescriptor )
-	{
-		return this.typeWriterGroup.createInterfaceWriter( interfaceDescriptor.typeDescriptor() );
+	public final JvmInterfaceWriter define( final JavaInterfaceDescriptor descriptor ) {
+		return this.typeWriterGroup.createInterfaceWriter( descriptor.typeDescriptor() );
+	}
+
+	@Override
+	public final JvmEnumWriter define( final JavaEnumDescriptor descriptor ) {
+		return this.typeWriterGroup.createEnumWriter( descriptor.typeDescriptor() );
 	}
 	
 	@Override
-	public final JvmAnnotationWriter define(
-		final JavaAnnotationDescriptor annotationDescriptor )
-	{
-		return this.typeWriterGroup.createAnnotationWriter( annotationDescriptor.typeDescriptor() );
+	public final JvmAnnotationWriter define( final JavaAnnotationDescriptor descriptor ) {
+		return this.typeWriterGroup.createAnnotationWriter( descriptor.typeDescriptor() );
 	}
 }
