@@ -64,7 +64,7 @@ public final class GenericsTest {
 		assertThat( parameterType.getRawType(), is( Class.class ) );
 
 		TypeVariable<?> typeVar = (TypeVariable<?>)parameterType.getActualTypeArguments()[ 0 ];
-		assertThat( typeVar.getName(), is( "T" ) );		
+		assertThat( typeVar.getName(), is( "T" ) );
 	}
 	
 	@Test
