@@ -16,9 +16,7 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakClassWriter;
 
-public final class JvmClassWriter
-	implements JakClassWriter, JvmExtendedTypeWriter
-{
+public final class JvmClassWriter implements JakClassWriter, JvmExtendedTypeWriter {
 	private static final int ADDITIONAL_TYPE_FLAGS = Flags.NO_FLAGS;
 	private static final int ADDITIONAL_METHOD_FLAGS = Flags.NO_FLAGS;
 	private static final int ADDITIONAL_INNER_TYPE_FLAGS = Flags.NO_FLAGS;

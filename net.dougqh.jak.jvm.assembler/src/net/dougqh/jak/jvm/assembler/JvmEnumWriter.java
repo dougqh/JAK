@@ -19,9 +19,7 @@ import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakEnumWriter;
 import static net.dougqh.jak.Jak.*;
 
-public final class JvmEnumWriter
-	implements JakEnumWriter, JvmExtendedTypeWriter
-{
+public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter {
 	private static final int ADDITIONAL_TYPE_FLAGS = Flags.NO_FLAGS;
 	private static final int ADDITIONAL_METHOD_FLAGS = Flags.NO_FLAGS;
 	private static final int ADDITIONAL_INNER_TYPE_FLAGS = Flags.NO_FLAGS;

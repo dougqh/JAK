@@ -14,9 +14,7 @@ import net.dougqh.jak.JavaInterfaceDescriptor;
 import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakAnnotationWriter;
 
-public final class JvmAnnotationWriter
-	implements JakAnnotationWriter, JvmTypeWriter
-{
+public final class JvmAnnotationWriter implements JakAnnotationWriter, JvmTypeWriter {
 	private static final int ADDITIONAL_TYPE_FLAGS = 
 		Flags.ABSTRACT | Flags.INTERFACE | Flags.ANNOTATION;
 
