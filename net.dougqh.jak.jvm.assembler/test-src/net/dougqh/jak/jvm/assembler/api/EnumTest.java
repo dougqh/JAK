@@ -8,6 +8,7 @@ import net.dougqh.jak.jvm.assembler.JvmWriter;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static net.dougqh.jak.Jak.*;
@@ -15,7 +16,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public final class EnumTest {
-	@Test
+	@Test @Ignore
 	public final void trivialEnum() throws NoSuchFieldException {
 		JvmEnumWriter enumWriter = new JvmWriter().define( public_().final_().enum_( "MyEnum" ) );
 		
