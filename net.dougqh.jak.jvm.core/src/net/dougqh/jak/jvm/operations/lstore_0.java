@@ -36,7 +36,7 @@ public final class lstore_0 extends StoreOperation {
 	
 	@Override
 	public final Type type() {
-		return int.class;
+		return long.class;
 	}
 	
 	@Override

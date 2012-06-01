@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class lstore_3 extends LoadOperation {
+public final class lstore_3 extends StoreOperation {
 	public static final String ID = "lstore_3";
 	public static final byte CODE = LSTORE_3;
 	
@@ -36,7 +36,7 @@ public final class lstore_3 extends LoadOperation {
 	
 	@Override
 	public final Type type() {
-		return int.class;
+		return long.class;
 	}
 	
 	@Override

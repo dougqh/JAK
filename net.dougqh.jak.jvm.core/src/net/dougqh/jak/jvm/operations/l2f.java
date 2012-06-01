@@ -36,6 +36,6 @@ public final class l2f extends CastOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.l2d();
+		processor.l2f();
 	}
 }

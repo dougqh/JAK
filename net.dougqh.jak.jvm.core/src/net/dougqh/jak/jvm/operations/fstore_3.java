@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class fstore_3 extends LoadOperation {
+public final class fstore_3 extends StoreOperation {
 	public static final String ID = "fstore_3";
 	public static final byte CODE = FSTORE_3;
 	

@@ -36,6 +36,6 @@ public final class d2i extends CastOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.d2l();
+		processor.d2i();
 	}
 }
