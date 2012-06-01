@@ -1,9 +1,5 @@
 package net.dougqh.jak.jvm.assembler;
 
-import static net.dougqh.jak.Jak.*;
-import static net.dougqh.jak.matchers.Matchers.*;
-import static org.junit.Assert.*;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -16,14 +12,18 @@ import java.util.ListIterator;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import net.dougqh.jak.annotations.JvmOp;
+import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.JvmOperations;
+import static net.dougqh.jak.Jak.*;
+import static net.dougqh.jak.matchers.Matchers.*;
+import static org.junit.Assert.*;
 
 public final class OperationTest extends TestCase {
 	public static final TestSuite suite() {
 		TestSuite suite = new TestSuite();
-		for ( Method method : JvmCoreCodeWriter.class.getDeclaredMethods() ) {
+		for ( Method method : JvmOperationProcessor.class.getDeclaredMethods() ) {
 			JvmOperation testOperation = createTestOperation( method );
 			if ( ( testOperation != null ) && ! testOperation.isPolymorphic() ) {
 				suite.addTest( new OperationTest( testOperation, method ) );
@@ -71,7 +71,7 @@ public final class OperationTest extends TestCase {
 			null );
 		
 		try {
-			this.operation.write( coreWriter );
+			this.operation.process( coreWriter );
 		} catch ( UndeclaredThrowableException e ) {
 			if ( e.getCause() instanceof AssertionFailedError ) {
 				throw (AssertionFailedError)e.getCause();
@@ -210,16 +210,16 @@ public final class OperationTest extends TestCase {
 	}
 	
 	private static final class CheckedStack extends TestJvmStack {
-		private final ListIterator< Class< ? > > operandIter;
-		private final ListIterator< Class< ? > > resultIter;
+		private final ListIterator<Type> operandIter;
+		private final ListIterator<Type> resultIter;
 		
 		CheckedStack( final JvmOperation operation, final JvmStack stack ) {
 			super( stack );
 			
-			List< Class< ? > > operandTypes = Arrays.asList( operation.getStackOperandTypes() );
+			List<Type> operandTypes = Arrays.asList( operation.getStackOperandTypes() );
 			this.operandIter = operandTypes.listIterator( operandTypes.size() );
 			
-			List< Class< ? > > resultTypes = Arrays.asList( operation.getStackResultTypes() );
+			List<Type> resultTypes = Arrays.asList( operation.getStackResultTypes() );
 			this.resultIter = resultTypes.listIterator();
 		}
 		

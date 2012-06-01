@@ -1,12 +1,14 @@
 package net.dougqh.jak;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+
+import net.dougqh.java.meta.types.JavaTypes;
 
 public final class JavaEnumDescriptor {
 	private final int flags;
 	private final String name;
+	private Type[] interfaces = {};
 	
 	JavaEnumDescriptor(
 		final JavaModifiers flagsBuilder,
@@ -21,7 +23,12 @@ public final class JavaEnumDescriptor {
 			this.flags,
 			this.name,
 			new TypeVariable<?>[] {},
-			Object.class,
-			new Type[] { Annotation.class } );
+			JavaTypes.parameterize( Enum.class ).of( JavaTypes.objectTypeName( this.name ) ),
+			this.interfaces );
+	}
+	
+	public final JavaEnumDescriptor implements_( final Type... types ) {
+		this.interfaces = types;
+		return this;
 	}
 }

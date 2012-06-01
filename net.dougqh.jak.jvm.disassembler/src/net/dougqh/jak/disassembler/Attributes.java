@@ -1,6 +1,6 @@
 package net.dougqh.jak.disassembler;
 
-import static net.dougqh.jak.core.Attributes.*;
+import static net.dougqh.jak.jvm.Attributes.*;
 
 import java.io.IOException;
 

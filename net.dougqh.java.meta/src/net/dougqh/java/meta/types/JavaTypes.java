@@ -8,7 +8,6 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
 public final class JavaTypes {
 	public static final boolean isArrayType( final Type type ) {
@@ -297,7 +296,7 @@ public final class JavaTypes {
 		final Type type,
 		final int numDimensions )
 	{
-		Type curType = JavaTypes.resolve( type );
+		Type curType = type;
 		for ( int i = 0; i < numDimensions; ++i ) {
 			curType = array( curType );
 		}
@@ -325,14 +324,14 @@ public final class JavaTypes {
 		}
 	}
 	
-	public static final Type[] resolve( final Type... types ) {
-		Type[] resolvedTypes = new Type[ types.length ];
-		for ( int i = 0; i < types.length; ++i ) {
-			Type type = types[ i ];
-			resolvedTypes[ i ] = resolve( type );
-		}
-		return resolvedTypes;
-	}
+//	public static final Type[] resolve( final Type... types ) {
+//		Type[] resolvedTypes = new Type[ types.length ];
+//		for ( int i = 0; i < types.length; ++i ) {
+//			Type type = types[ i ];
+//			resolvedTypes[ i ] = resolve( type );
+//		}
+//		return resolvedTypes;
+//	}
 	
 	private JavaTypes() {}
 }

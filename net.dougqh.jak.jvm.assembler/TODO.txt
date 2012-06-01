@@ -1,14 +1,25 @@
+Implementation Enhancements
+- eliminate ConstantEntry
+
+Internal Features
+- deferred slot resolution
+- restore smart LDC support in iconst, fconst, etc.
+
+API Enhancements
+- inline initialization support for instance and static variables
+
 Generics/Parameterization
 - generic declarations
   x - classes
-  - interfaces
+  x - interfaces
   x - methods
   x - methods & fields w/n classes
   - inner classes
-  - type variable scoping & resolution
+  x - type variable scoping & resolution
   - exceptions
   - parameterized parent class
   - parameterized interfaces
+  - arrays
 
 Operations
 - switch
@@ -39,7 +50,13 @@ X  - for
   - try
   - sync
   
- Optimizations
+Optimizations
 - optimize use of and-s / or-s as expressions
 - optimize if/else if/else code generation
+- constant folding
+- trivial returns in try/finally
  
+Completeness
+- wide operations
+- jsr / ret
+- fully correct String encoding

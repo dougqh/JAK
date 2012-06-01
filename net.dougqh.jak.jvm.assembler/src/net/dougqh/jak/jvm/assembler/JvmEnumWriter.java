@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.Jak;
@@ -28,6 +29,9 @@ public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter
 	
 	private final List< Element > elements = new ArrayList< Element >( 8 );
 	
+	private boolean initDefined = false;
+	private boolean clinitDefined = false;
+	
 	JvmEnumWriter(
 		final TypeWriterGroup writerGroup,
 		final TypeDescriptor typeDescriptor )
@@ -48,10 +52,22 @@ public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter
 		return this.typeWriter.context().superType;
 	}
 	
+	public final void defineDefaultConstructor() {
+		this.define( protected_().init() ).
+			this_().
+			super_invokespecial( init() ).
+			return_();
+	}
+	
 	public final void define( final String element ) {
-		this.elements.add( new Element( element ) );
+		if ( this.initDefined || this.clinitDefined ) {
+			throw new IllegalStateException( "Must define all elements before <init> or <clinit>" );
+		}
 		
-		this.define( public_().static_().final_().field( this.thisType(), element ) );
+		JavaField field = public_().static_().final_().field( this.thisType(), element );
+		this.elements.add( new Element( element, field ) );
+		
+		this.define( field );
 	}
 	
 	@Override
@@ -135,18 +151,14 @@ public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter
 	}
 	
 	@Override
-	public final JvmInterfaceWriter define(
-		final JavaInterfaceDescriptor interfaceDescriptor )
-	{
+	public final JvmInterfaceWriter define( final JavaInterfaceDescriptor interfaceDescriptor ) {
 		return this.typeWriter.defineInterface(
 			interfaceDescriptor.typeDescriptor(),
 			ADDITIONAL_INNER_TYPE_FLAGS );
 	}
 	
 	@Override
-	public final JvmAnnotationWriter define(
-		final JavaAnnotationDescriptor annotationDescriptor )
-	{
+	public final JvmAnnotationWriter define( final JavaAnnotationDescriptor annotationDescriptor ) {
 		return this.typeWriter.defineAnnotation(
 			annotationDescriptor.typeDescriptor(),
 			ADDITIONAL_INNER_TYPE_FLAGS );
@@ -154,6 +166,8 @@ public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter
 	
 	@Override
 	public final <T> Class<T> load() {
+		this.finish();
+		
 		return this.typeWriter.<T>load();
 	}
 
@@ -170,16 +184,22 @@ public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter
 	
 	@Override
 	public final void writeTo( final File classDir ) throws IOException {
+		this.finish();
+		
 		this.typeWriter.writeTo( classDir );
 	}
 	
 	@Override
 	public final void writeTo( final OutputStream out ) throws IOException {
+		this.finish();
+		
 		this.typeWriter.writeTo( out );
 	}
 	
 	@Override
 	public final byte[] getBytes() {
+		this.finish();
+		
 		return this.typeWriter.getBytes();
 	}
 	
@@ -191,11 +211,36 @@ public final class JvmEnumWriter implements JakEnumWriter, JvmExtendedTypeWriter
 		return this.typeWriter;
 	}
 	
+	final void finish() {
+		if ( ! this.initDefined ) {
+			this.defineDefaultConstructor();
+		}
+		
+		if ( ! this.clinitDefined ) {
+			JvmCodeWriter clinitWriter = this.define( clinit() );
+			
+			for ( ListIterator< Element > iter = this.elements.listIterator(); iter.hasNext(); ) {
+				int ordinal = iter.nextIndex();
+				Element element = iter.next();
+				
+				clinitWriter.
+					new_( thisType() ).
+					dup().
+					ldc( element.name ).
+					iload( ordinal ).
+					invokespecial( thisType(), init( String.class, int.class ) ).
+					putstatic( thisType(), element.field );
+			}
+		}
+	}
+	
 	private static final class Element {
 		final String name;
+		final JavaField field;
 		
-		Element( final String name ) {
+		Element( final String name, final JavaField field ) {
 			this.name  = name;
+			this.field = field;
 		}
 	}
 }

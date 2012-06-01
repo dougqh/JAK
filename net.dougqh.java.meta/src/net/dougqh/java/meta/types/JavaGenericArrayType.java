@@ -7,7 +7,7 @@ public final class JavaGenericArrayType implements GenericArrayType {
 	private final Type componentType;
 	
 	public JavaGenericArrayType( final Type componentType ) {
-		this.componentType = JavaTypes.resolve( componentType );
+		this.componentType = componentType;
 	}
 	
 	//TODO: Implement hashCode

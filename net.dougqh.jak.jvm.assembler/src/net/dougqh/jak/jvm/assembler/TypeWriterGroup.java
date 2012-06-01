@@ -6,8 +6,7 @@ import java.util.Iterator;
 import net.dougqh.jak.TypeDescriptor;
 
 final class TypeWriterGroup {
-	private final HashMap< String, TypeWriter > writers =
-		new HashMap< String, TypeWriter >( 4 );
+	private final HashMap< String, TypeWriter > writers = new HashMap< String, TypeWriter >( 4 );
 	
 	private final DynamicClassLoader classLoader;
 	

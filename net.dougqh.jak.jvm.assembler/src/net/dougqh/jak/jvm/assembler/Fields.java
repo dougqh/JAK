@@ -37,7 +37,7 @@ final class Fields {
 	}
 	
 	private static final class ConstantValueAttribute extends FixedLengthAttribute {
-		static final String ID = net.dougqh.jak.core.Attributes.CONSTANT_VALUE;
+		static final String ID = net.dougqh.jak.jvm.Attributes.CONSTANT_VALUE;
 		
 		private final Type targetType;
 		private final Object value;
@@ -66,7 +66,7 @@ final class Fields {
 	}
 	
 	private static final class SignatureAttribute extends FixedLengthAttribute {
-		static final String ID = net.dougqh.jak.core.Attributes.SIGNATURE;
+		static final String ID = net.dougqh.jak.jvm.Attributes.SIGNATURE;
 		
 		private final ConstantEntry entry;
 		

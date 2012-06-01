@@ -333,7 +333,7 @@ final class TypeWriter {
 	}
 	
 	private static final class SignatureAttribute extends FixedLengthAttribute {
-		static final String ID = net.dougqh.jak.core.Attributes.SIGNATURE;
+		static final String ID = net.dougqh.jak.jvm.Attributes.SIGNATURE;
 		
 		private final ConstantEntry entry;
 		
@@ -364,7 +364,7 @@ final class TypeWriter {
 		extends Attribute
 		implements DeferredAttribute
 	{
-		static final String ID = net.dougqh.jak.core.Attributes.INNER_CLASSES;
+		static final String ID = net.dougqh.jak.jvm.Attributes.INNER_CLASSES;
 		
 		private final JvmOutputStream out;
 		private int count;

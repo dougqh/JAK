@@ -54,13 +54,12 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter prepare() {
+	public final void prepare() {
 		if ( this.deferredWrite != null ) {
 			DeferredWrite deferredWrite = this.deferredWrite;
 			this.deferredWrite = null;
 			deferredWrite.write( this, false );
 		}
-		return this;
 	}
 	
 	private final void prepareLast() {
@@ -71,11 +70,10 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		}		
 	}
 	
-	public final JvmCoreCodeWriter defer( final DeferredWrite deferredWrite ) {
+	public final void defer( final DeferredWrite deferredWrite ) {
 		this.prepare();
 		
 		this.deferredWrite = deferredWrite;
-		return this;
 	}
 	
 	@Override
@@ -84,194 +82,263 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 
 	@Override
-	public final JvmCoreCodeWriterImpl nop() {
-		return this.op( NOP );
+	public final void nop() {
+		this.op( NOP );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aconst_null() {
+	public final void aconst_null() {
 		try {
-			return this.op( ACONST_NULL );
+			this.op( ACONST_NULL );
 		} finally {
 			this.stack( Reference.class );
 		}
 	}	
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_m1() {
+	public final void iconst_m1() {
 		try {
-			return this.op( ICONST_M1 );			
+			this.op( ICONST_M1 );			
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_0() {
+	public final void iconst_0() {
 		try {
-			return this.op( ICONST_0 );
+			this.op( ICONST_0 );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_1() {
+	public final void iconst_1() {
 		try {
-			return this.op( ICONST_1 );
+			this.op( ICONST_1 );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_2() {
+	public final void iconst_2() {
 		try {
-			return this.op( ICONST_2 );
+			this.op( ICONST_2 );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_3() {
+	public final void iconst_3() {
 		try {
-			return this.op( ICONST_3 );			
+			this.op( ICONST_3 );			
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_4() {
+	public final void iconst_4() {
 		try {
-			return this.op( ICONST_4 );
+			this.op( ICONST_4 );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iconst_5() {
+	public final void iconst_5() {
 		try {
-			return this.op( ICONST_5 );
+			this.op( ICONST_5 );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lconst_0() {
+	public final void lconst_0() {
 		try {
-			return this.op( LCONST_0 );
+			this.op( LCONST_0 );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lconst_1() {
+	public final void lconst_1() {
 		try {
-			return this.op( LCONST_1 );
+			this.op( LCONST_1 );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fconst_0() {
+	public final void fconst_0() {
 		try {
-			return this.op( FCONST_0 );
+			this.op( FCONST_0 );
 		} finally {
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fconst_1() {
+	public final void fconst_1() {
 		try {
-			return this.op( FCONST_1 );
+			this.op( FCONST_1 );
 		} finally {
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fconst_2() {
+	public final void fconst_2() {
 		try {
-			return this.op( FCONST_2 );
+			this.op( FCONST_2 );
 		} finally {
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dconst_0() {
+	public final void dconst_0() {
 		try {
-			return this.op( DCONST_0 );
+			this.op( DCONST_0 );
 		} finally {
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dconst_1() {
+	public final void dconst_1() {
 		try {
-			return this.op( DCONST_1 );
+			this.op( DCONST_1 );
 		} finally {
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl bipush( final byte value ) {
+	public final void bipush( final byte value ) {
 		try {
-			return this.op( BIPUSH ).u1( value );
+			this.op( BIPUSH ).u1( value );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl sipush( final short value ) {
+	public final void sipush( final short value ) {
 		try {
-			return this.op( SIPUSH ).u2( value );
+			this.op( SIPUSH ).u2( value );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ldc( final ConstantEntry entry ) {
+	public final void ldc( final float value ) {
 		try {
-			return this.op( LDC ).u1( entry );
+			this.op( LDC ).u1( this.constantPool.addFloatConstant( value ) );
 		} finally {
-			this.stack( entry.type() );			
+			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ldc_w( final ConstantEntry entry ) {
+	public final void ldc( final int value ) {
 		try {
-			return this.op( LDC_W ).u2( entry );
+			this.op( LDC ).u1( this.constantPool.addIntegerConstant( value ) );
 		} finally {
-			this.stack( entry.type() );	
+			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ldc2_w( final ConstantEntry entry ) {
+	public final void ldc( final String value ) {
 		try {
-			return this.op( LDC2_W ).u2( entry );
+			this.op( LDC ).u1( this.constantPool.addStringConstant( value ) );
 		} finally {
-			this.stack( entry.type() );
+			this.stack( String.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iload( final int slot ) {
+	public final void ldc( final Type value ) {
 		try {
-			return this.op( ILOAD ).u1( slot );
+			this.op( LDC ).u1( this.constantPool.addClassInfo( value ) );
+		} finally {
+			this.stack( Class.class );
+		}		
+	}
+	
+	@Override
+	public final void ldc_w( final float value ) {
+		try {
+			this.op( LDC_W ).u2( this.constantPool.addFloatConstant( value ) );
+		} finally {
+			this.stack( float.class );
+		}
+	}
+	
+	@Override
+	public final void ldc_w( final int value ) {
+		try {
+			this.op( LDC_W ).u2( this.constantPool.addIntegerConstant( value ) );
+		} finally {
+			this.stack( int.class );
+		}
+	}
+	
+	@Override
+	public final void ldc_w( final String value ) {
+		try {
+			this.op( LDC_W ).u2( this.constantPool.addStringConstant( value ) );
+		} finally {
+			this.stack( String.class );
+		}
+	}
+	
+	@Override
+	public final void ldc_w( final Type value ) {
+		try {
+			this.op( LDC_W ).u2( this.constantPool.addClassInfo( value ) );
+		} finally {
+			this.stack( Class.class );
+		}
+	}
+	
+	@Override
+	public final void ldc2_w( final double value ) {
+		try {
+			this.op( LDC2_W ).u2( this.constantPool.addDoubleConstant( value ) );
+		} finally {
+			this.stack( double.class );
+		}
+	}
+	
+	@Override
+	public final void ldc2_w( final long value ) {
+		try {
+			this.op( LDC2_W ).u2( this.constantPool.addLongConstant( value ) );
+		} finally {
+			this.stack( double.class );
+		}		
+	}
+	
+	@Override
+	public final void iload( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.iload( slot.pos() );
+	}
+	
+	@Override
+	public final void iload( final int slot ) {
+		try {
+			this.op( ILOAD ).u1( slot );
 		} finally {
 			this.load( slot, int.class );
 			this.stack( int.class );
@@ -279,9 +346,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iload_0() {
+	public final void iload_0() {
 		try {
-			return this.op( ILOAD_0 );
+			this.op( ILOAD_0 );
 		} finally {
 			this.load( 0, int.class );
 			this.stack( int.class );
@@ -289,9 +356,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iload_1() {
+	public final void iload_1() {
 		try {
-			return this.op( ILOAD_1 );
+			this.op( ILOAD_1 );
 		} finally {
 			this.load( 1, int.class );
 			this.stack( int.class );
@@ -299,9 +366,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iload_2() {
+	public final void iload_2() {
 		try {
-			return this.op( ILOAD_2 );
+			this.op( ILOAD_2 );
 		} finally {
 			this.load( 2, int.class );
 			this.stack( int.class );
@@ -309,9 +376,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iload_3() {
+	public final void iload_3() {
 		try {
-			return this.op( ILOAD_3 );
+			this.op( ILOAD_3 );
 		} finally {
 			this.load( 3, int.class );
 			this.stack( int.class );
@@ -319,9 +386,15 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lload( final int slot ) {
+	public final void lload( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.lload( slot.pos() );
+	}
+
+	@Override
+	public final void lload( final int slot ) {
 		try {
-			return this.op( LLOAD ).u1( slot );
+			this.op( LLOAD ).u1( slot );
 		} finally {
 			this.load( slot, long.class );
 			this.stack( long.class );
@@ -329,9 +402,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lload_0() {
+	public final void lload_0() {
 		try {
-			return this.op( LLOAD_0 );
+			this.op( LLOAD_0 );
 		} finally {
 			this.load( 0, long.class );
 			this.stack( long.class );
@@ -339,9 +412,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lload_1() {
+	public final void lload_1() {
 		try {
-			return this.op( LLOAD_1 );
+			this.op( LLOAD_1 );
 		} finally {
 			this.load( 1, long.class );
 			this.stack( long.class );
@@ -349,9 +422,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lload_2() {
+	public final void lload_2() {
 		try {
-			return this.op( LLOAD_2 );
+			this.op( LLOAD_2 );
 		} finally {
 			this.load( 2, long.class );
 			this.stack( long.class );	
@@ -359,9 +432,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lload_3() {
+	public final void lload_3() {
 		try {
-			return this.op( LLOAD_3 );
+			this.op( LLOAD_3 );
 		} finally {
 			this.load( 3, long.class );
 			this.stack( long.class );
@@ -369,9 +442,15 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}	
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fload( final int slot ) {
+	public final void fload( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.fload( slot.pos() );
+	}
+
+	@Override
+	public final void fload( final int slot ) {
 		try {
-			return this.op( FLOAD ).u1( slot );
+			this.op( FLOAD ).u1( slot );
 		} finally {
 			this.load( slot, float.class );
 			this.stack( float.class );
@@ -379,9 +458,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fload_0() {
+	public final void fload_0() {
 		try {
-			return this.op( FLOAD_0 );
+			this.op( FLOAD_0 );
 		} finally {
 			this.load( 0, float.class );
 			this.stack( float.class );
@@ -389,9 +468,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fload_1() {
+	public final void fload_1() {
 		try {
-			return this.op( FLOAD_1 );
+			this.op( FLOAD_1 );
 		} finally {
 			this.load( 1, float.class );
 			this.stack( float.class );
@@ -399,9 +478,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fload_2() {
+	public final void fload_2() {
 		try {
-			return this.op( FLOAD_2 );	
+			this.op( FLOAD_2 );	
 		} finally {
 			this.load( 2, float.class );
 			this.stack( float.class );
@@ -409,9 +488,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fload_3() {
+	public final void fload_3() {
 		try {
-			return this.op( FLOAD_3 );
+			this.op( FLOAD_3 );
 		} finally {
 			this.load( 3, float.class );
 			this.stack( float.class );
@@ -419,9 +498,15 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dload( final int slot ) {
+	public final void dload( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.dload( slot.pos() );
+	}
+
+	@Override
+	public final void dload( final int slot ) {
 		try {
-			return this.op( DLOAD ).u1( slot );
+			this.op( DLOAD ).u1( slot );
 		} finally {
 			this.load( slot, double.class );
 			this.stack( double.class );
@@ -429,9 +514,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dload_0() {
+	public final void dload_0() {
 		try {
-			return this.op( DLOAD_0 );
+			this.op( DLOAD_0 );
 		} finally {
 			this.load( 0, double.class );
 			this.stack( double.class );
@@ -439,9 +524,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dload_1() {
+	public final void dload_1() {
 		try {
-			return this.op( DLOAD_1 );
+			this.op( DLOAD_1 );
 		} finally {
 			this.load( 1, double.class );
 			this.stack( double.class );
@@ -449,9 +534,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dload_2() {
+	public final void dload_2() {
 		try {
-			return this.op( DLOAD_2 );
+			this.op( DLOAD_2 );
 		} finally {
 			this.load( 2, double.class );
 			this.stack( double.class );
@@ -459,33 +544,35 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dload_3() {
+	public final void dload_3() {
 		try {
-			return this.op( DLOAD_3 );
+			this.op( DLOAD_3 );
 		} finally {
 			this.load( 3, double.class );
 			this.stack( double.class );
 		}
-	}	
+	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aload( final int slot ) {
+	public final void aload( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.aload( slot.pos() );
+	}
+	
+	@Override
+	public final void aload( final int slot ) {
 		try {
-			return this.op( ALOAD ).u1( slot );
+			this.op( ALOAD ).u1( slot );
 		} finally {
 			Type actualType = this.load( slot, Reference.class );
 			this.stack( actualType );
 		}
 	}
 	
-	public final JvmCoreCodeWriterImpl this_() {
-		return this.aload_0();
-	}
-	
 	@Override
-	public final JvmCoreCodeWriterImpl aload_0() {
+	public final void aload_0() {
 		try {
-			return this.op( ALOAD_0 );
+			this.op( ALOAD_0 );
 		} finally {
 			Type actualType = this.load( 0, Reference.class );
 			this.stack( actualType );
@@ -493,9 +580,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aload_1() {
+	public final void aload_1() {
 		try {
-			return this.op( ALOAD_1 );
+			this.op( ALOAD_1 );
 		} finally {
 			Type actualType = this.load( 1, Reference.class );
 			this.stack( actualType );
@@ -503,9 +590,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aload_2() {
+	public final void aload_2() {
 		try {
-			return this.op( ALOAD_2 );
+			this.op( ALOAD_2 );
 		} finally {
 			Type actualType = this.load( 2, Reference.class );
 			this.stack( actualType );
@@ -513,9 +600,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aload_3() {
+	public final void aload_3() {
 		try {
-			return this.op( ALOAD_3 );
+			this.op( ALOAD_3 );
 		} finally {
 			Type actualType = this.load( 3, Reference.class );
 			this.stack( actualType );
@@ -523,1090 +610,1120 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iaload() {
+	public final void iaload() {
 		this.unstack( int.class );
 		this.unstack( int[].class );
 		try {
-			return this.op( IALOAD );
+			this.op( IALOAD );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl laload() {
+	public final void laload() {
 		this.unstack( int.class );
 		this.unstack( long[].class );
 		try {
-			return this.op( LALOAD );
+			this.op( LALOAD );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl faload() {
+	public final void faload() {
 		this.unstack( int.class );
 		this.unstack( float[].class );
 		try {
-			return this.op( FALOAD );
+			this.op( FALOAD );
 		} finally {
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl daload() {
+	public final void daload() {
 		this.unstack( int.class );
 		this.unstack( double[].class );
 		try {
-			return this.op( DALOAD );
+			this.op( DALOAD );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aaload() {
+	public final void aaload() {
 		this.unstack( int.class );
 		this.unstack( Reference[].class );
 		try {
-			return this.op( AALOAD );
+			this.op( AALOAD );
 		} finally {
 			this.stack( Reference.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl baload() {
+	public final void baload() {
 		this.unstack( int.class );
 		this.unstack( byte[].class );
 		try {
-			return this.op( BALOAD );
+			this.op( BALOAD );
 		} finally {
 			this.stack( byte.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl caload() {
+	public final void caload() {
 		this.unstack( int.class );
 		this.unstack( char[].class );
 		try {
-			return this.op( CALOAD );
+			this.op( CALOAD );
 		} finally {
 			this.stack( char.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl saload() {
+	public final void saload() {
 		this.unstack( int.class );
 		this.unstack( short[].class );
 		try {
-			return this.op( SALOAD );
+			this.op( SALOAD );
 		} finally {
 			this.stack( short.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl istore( final int index ) {
+	public final void istore( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.istore( slot.pos() );
+	}
+	
+	@Override
+	public final void istore( final int index ) {
 		this.store( index, int.class );
 		try {
-			return this.op( ISTORE ).u1( index );
+			this.op( ISTORE ).u1( index );
 		} finally {
 			this.unstack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl istore_0() {
+	public final void istore_0() {
 		this.store( 0, int.class );
 		this.unstack( int.class );
-		return this.op( ISTORE_0 );
+		this.op( ISTORE_0 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl istore_1() {
+	public final void istore_1() {
 		this.store( 1, int.class );
 		this.unstack( int.class );
-		return this.op( ISTORE_1 );
+		this.op( ISTORE_1 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl istore_2() {
+	public final void istore_2() {
 		this.store( 2, int.class );
 		this.unstack( int.class );
-		return this.op( ISTORE_2 );
+		this.op( ISTORE_2 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl istore_3() {
+	public final void istore_3() {
 		this.store( 3, int.class );
 		this.unstack( int.class );
-		return this.op( ISTORE_3 );
+		this.op( ISTORE_3 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lstore( final int slot ) {
+	public final void lstore( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.lstore( slot.pos() );
+	}
+	
+	@Override
+	public final void lstore( final int slot ) {
 		this.store( slot, long.class );
 		this.unstack( long.class );
-		return this.op( LSTORE ).u1( slot );
+		this.op( LSTORE ).u1( slot );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lstore_0() {
+	public final void lstore_0() {
 		this.store( 0, long.class );
 		this.unstack( long.class );
-		return this.op( LSTORE_0 );
+		this.op( LSTORE_0 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lstore_1() {
+	public final void lstore_1() {
 		this.store( 1, long.class );
 		this.unstack( long.class );
-		return this.op( LSTORE_1 );
+		this.op( LSTORE_1 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lstore_2() {
+	public final void lstore_2() {
 		this.store( 2, long.class );
 		this.unstack( long.class );
-		return this.op( LSTORE_2 );
+		this.op( LSTORE_2 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lstore_3() {
+	public final void lstore_3() {
 		this.store( 3, long.class );
 		this.unstack( long.class );
-		return this.op( LSTORE_3 );
+		this.op( LSTORE_3 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fstore( final int slot ) {
+	public final void fstore( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.fstore( slot.pos() );
+	}
+	
+	@Override
+	public final void fstore( final int slot ) {
 		this.store( slot, float.class );
 		this.unstack( float.class );
-		return this.op( FSTORE ).u1( slot );
+		this.op( FSTORE ).u1( slot );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fstore_0() {
+	public final void fstore_0() {
 		this.store( 0, float.class );
 		this.unstack( float.class );
-		return this.op( FSTORE_0 );
+		this.op( FSTORE_0 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fstore_1() {
+	public final void fstore_1() {
 		this.store( 1, float.class );
 		this.unstack( float.class );
-		return this.op( FSTORE_1 );
+		this.op( FSTORE_1 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fstore_2() {
+	public final void fstore_2() {
 		this.store( 2, float.class );
 		this.unstack( float.class );
-		return this.op( FSTORE_2 );
+		this.op( FSTORE_2 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fstore_3() {
+	public final void fstore_3() {
 		this.store( 3, float.class );
 		this.unstack( float.class );
-		return this.op( FSTORE_3 );
+		this.op( FSTORE_3 );
 	}
 
 	@Override
-	public final JvmCoreCodeWriterImpl dstore( final int slot ) {
+	public final void dstore( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.dstore( slot.pos() );
+	}
+	
+	@Override
+	public final void dstore( final int slot ) {
 		this.store( slot, double.class );
 		this.unstack( double.class );
-		return this.op( DSTORE ).u1( slot );
+		this.op( DSTORE ).u1( slot );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dstore_0() {
+	public final void dstore_0() {
 		this.store( 0, double.class );
 		this.unstack( double.class );
-		return this.op( DSTORE_0 );
+		this.op( DSTORE_0 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dstore_1() {
+	public final void dstore_1() {
 		this.store( 1, double.class );
 		this.unstack( double.class );
-		return this.op( DSTORE_1 );
+		this.op( DSTORE_1 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dstore_2() {
+	public final void dstore_2() {
 		this.store( 2, double.class );
 		this.unstack( double.class );
-		return this.op( DSTORE_2 );
+		this.op( DSTORE_2 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dstore_3() {
+	public final void dstore_3() {
 		this.store( 3, double.class );
 		this.unstack( double.class );
-		return this.op( DSTORE_3 );
+		this.op( DSTORE_3 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl astore( final int slot ) {
+	public final void astore( final Slot slot ) {
+		//TODO: implement deferred handling
+		this.astore( slot.pos() );
+	}
+	
+	@Override
+	public final void astore( final int slot ) {
 		Type actualType = this.topType( Reference.class );
 		this.store( slot, actualType );
 		this.unstack( actualType );
-		return this.op( ASTORE ).u1( slot );
+		this.op( ASTORE ).u1( slot );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl astore_0() {
+	public final void astore_0() {
 		Type actualType = this.topType( Reference.class );
 		this.store( 0, actualType );
 		this.unstack( actualType );
-		return this.op( ASTORE_0 );
+		this.op( ASTORE_0 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl astore_1() {
+	public final void astore_1() {
 		Type actualType = this.topType( Reference.class );
 		this.store( 1, actualType );
 		this.unstack( actualType );
-		return this.op( ASTORE_1 );
+		this.op( ASTORE_1 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl astore_2() {
+	public final void astore_2() {
 		Type actualType = this.topType( Reference.class );
 		this.store( 2, actualType );
 		this.unstack( actualType );
-		return this.op( ASTORE_2 );
+		this.op( ASTORE_2 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl astore_3() {
+	public final void astore_3() {
 		Type actualType = this.topType( Reference.class );
 		this.store( 3, actualType );
 		this.unstack( actualType );
-		return this.op( ASTORE_3 );
+		this.op( ASTORE_3 );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iastore() {
+	public final void iastore() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		this.unstack( int[].class );
-		return this.op( IASTORE );
+		this.op( IASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lastore() {
+	public final void lastore() {
 		this.unstack( long.class );
 		this.unstack( int.class );
 		this.unstack( long[].class );
-		return this.op( LASTORE );
+		this.op( LASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fastore() {
+	public final void fastore() {
 		this.unstack( float.class );
 		this.unstack( int.class );
 		this.unstack( float[].class );
-		return this.op( FASTORE );
+		this.op( FASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dastore() {
+	public final void dastore() {
 		this.unstack( double.class );
 		this.unstack( int.class );
 		this.unstack( double[].class );
-		return this.op( DASTORE );
+		this.op( DASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl aastore() {
+	public final void aastore() {
 		this.unstack( Reference.class );
 		this.unstack( int.class );
 		this.unstack( Reference[].class );
-		return this.op( AASTORE );
+		this.op( AASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl bastore() {
+	public final void bastore() {
 		this.unstack( byte.class );
 		this.unstack( int.class );
 		this.unstack( byte[].class );
-		return this.op( BASTORE );
+		this.op( BASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl castore() {
+	public final void castore() {
 		this.unstack( char.class );
 		this.unstack( int.class );
 		this.unstack( char[].class );
-		return this.op( CASTORE );
+		this.op( CASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl sastore() {
+	public final void sastore() {
 		this.unstack( short.class );
 		this.unstack( int.class );
 		this.unstack( short[].class );
-		return this.op( SASTORE );
+		this.op( SASTORE );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl pop() {
+	public final void pop() {
 		try {
-			return this.op( POP );
+			this.op( POP );
 		} finally {
 			this.stack.pop();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl pop2() {
+	public final void pop2() {
 		try {
-			return this.op( POP2 );
+			this.op( POP2 );
 		} finally {
 			this.stack.pop2();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dup() {
+	public final void dup() {
 		try {
-			return this.op( DUP );
+			this.op( DUP );
 		} finally {
 			this.stack.dup();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dup_x1() {
+	public final void dup_x1() {
 		try {
-			return this.op( DUP_X1 );
+			this.op( DUP_X1 );
 		} finally {
 			this.stack.dup_x1();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dup_x2() {
+	public final void dup_x2() {
 		try {
-			return this.op( DUP_X2 );
+			this.op( DUP_X2 );
 		} finally {
 			this.stack.dup_x2();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dup2() {
+	public final void dup2() {
 		try {
-			return this.op( DUP2 );
+			this.op( DUP2 );
 		} finally {
 			this.stack.dup2();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dup2_x1() {
+	public final void dup2_x1() {
 		try {
-			return this.op( DUP2_X1 );
+			this.op( DUP2_X1 );
 		} finally {
 			this.stack.dup2_x1();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dup2_x2() {
+	public final void dup2_x2() {
 		try {
-			return this.op( DUP2_X2 );
+			this.op( DUP2_X2 );
 		} finally {
 			this.stack.dup2_x2();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl swap() {
+	public final void swap() {
 		try {
-			return this.op( SWAP );
+			this.op( SWAP );
 		} finally {
 			this.stack.swap();
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iadd() {
+	public final void iadd() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IADD );
+			this.op( IADD );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ladd() {
+	public final void ladd() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LADD );
+			this.op( LADD );
 		} finally {
 			this.stack( long.class );			
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fadd() {
+	public final void fadd() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FADD );
+			this.op( FADD );
 		} finally {
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dadd() {
+	public final void dadd() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DADD );
+			this.op( DADD );
 		} finally {
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl isub() {
+	public final void isub() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( ISUB );
+			this.op( ISUB );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lsub() {
+	public final void lsub() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LSUB );
+			this.op( LSUB );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fsub() {
+	public final void fsub() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FSUB );
+			this.op( FSUB );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dsub() {
+	public final void dsub() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DSUB );
+			this.op( DSUB );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl imul() {
+	public final void imul() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IMUL );
+			this.op( IMUL );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lmul() {
+	public final void lmul() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LMUL );
+			this.op( LMUL );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fmul() {
+	public final void fmul() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FMUL );
+			this.op( FMUL );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dmul() {
+	public final void dmul() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DMUL );
+			this.op( DMUL );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl idiv() {
+	public final void idiv() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IDIV );
+			this.op( IDIV );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ldiv() {
+	public final void ldiv() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LDIV );
+			this.op( LDIV );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fdiv() {
+	public final void fdiv() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FDIV );
+			this.op( FDIV );
 		} finally {
 			this.stack( float.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ddiv() {
+	public final void ddiv() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DDIV );
+			this.op( DDIV );
 		} finally {
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl irem() {
+	public final void irem() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IREM );
+			this.op( IREM );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lrem() {
+	public final void lrem() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LREM );
+			this.op( LREM );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl frem() {
+	public final void frem() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FREM );
+			this.op( FREM );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl drem() {
+	public final void drem() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DREM );
+			this.op( DREM );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ineg() {
+	public final void ineg() {
 		this.unstack( int.class );
 		try {
-			return this.op( INEG );
+			this.op( INEG );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lneg() {
+	public final void lneg() {
 		this.unstack( long.class );
 		try {
-			return this.op( LNEG );
+			this.op( LNEG );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fneg() {
+	public final void fneg() {
 		this.unstack( float.class );
 		try {
-			return this.op( FNEG );
+			this.op( FNEG );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dneg() {
+	public final void dneg() {
 		this.unstack( double.class );
 		try {
-			return this.op( DNEG );
+			this.op( DNEG );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ishl() {
+	public final void ishl() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( ISHL );
+			this.op( ISHL );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lshl() {
+	public final void lshl() {
 		this.unstack( int.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LSHL );
+			this.op( LSHL );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ishr() {
+	public final void ishr() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( ISHR );
+			this.op( ISHR );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lshr() {
+	public final void lshr() {
 		this.unstack( int.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LSHR );
+			this.op( LSHR );
 		} finally {
 			this.stack( long.class );						
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iushr() {
+	public final void iushr() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IUSHR );
+			this.op( IUSHR );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lushr() {
+	public final void lushr() {
 		this.unstack( int.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LUSHR );
+			this.op( LUSHR );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iand() {
+	public final void iand() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IAND );
+			this.op( IAND );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl land() {
+	public final void land() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LAND );
+			this.op( LAND );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ior() {
+	public final void ior() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IOR );
+			this.op( IOR );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lor() {
+	public final void lor() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LOR );
+			this.op( LOR );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ixor() {
+	public final void ixor() {
 		this.unstack( int.class );
 		this.unstack( int.class );
 		try {
-			return this.op( IXOR );
+			this.op( IXOR );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lxor() {
+	public final void lxor() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LXOR );
+			this.op( LXOR );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl iinc(
+	public final void iinc(
 		final int slot,
 		final int amount )
 	{
 		//TODO: Bound checks on amount
 		
 		try {
-			return this.op( IINC ).u1( slot ).u1( amount );
+			this.op( IINC ).u1( slot ).u1( amount );
 		} finally {
 			this.inc( slot );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl i2l() {
+	public final void i2l() {
 		this.unstack( int.class );
 		try {
-			return this.op( I2L );
+			this.op( I2L );
 		} finally {
 			this.stack( long.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl i2f() {
+	public final void i2f() {
 		this.unstack( int.class );
 		try {
-			return this.op( I2F );
+			this.op( I2F );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl i2d() {
+	public final void i2d() {
 		this.unstack( int.class );
 		try {
-			return this.op( I2D );
+			this.op( I2D );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl l2i() {
+	public final void l2i() {
 		this.unstack( long.class );
 		try {
-			return this.op( L2I );
+			this.op( L2I );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl l2f() {
+	public final void l2f() {
 		this.unstack( long.class );
 		try {
-			return this.op( L2F );
+			this.op( L2F );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl l2d() {
+	public final void l2d() {
 		this.unstack( long.class );
 		try {
-			return this.op( L2D );
+			this.op( L2D );
 		} finally {
 			this.stack( double.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl f2i() {
+	public final void f2i() {
 		this.unstack( float.class );
 		try {
-			return this.op( F2I );
+			this.op( F2I );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl f2l() {
+	public final void f2l() {
 		this.unstack( float.class );
 		try {
-			return this.op( F2L );
+			this.op( F2L );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl f2d() {
+	public final void f2d() {
 		this.unstack( float.class );
 		try {
-			return this.op( F2D );
+			this.op( F2D );
 		} finally {
 			this.stack( double.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl d2i() {
+	public final void d2i() {
 		this.unstack( double.class );
 		try {
-			return this.op( D2I );
+			this.op( D2I );
 		} finally {
 			this.stack( int.class );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl d2l() {
+	public final void d2l() {
 		this.unstack( double.class );
 		try {
-			return this.op( D2L );
+			this.op( D2L );
 		} finally {
 			this.stack( long.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl d2f() {
+	public final void d2f() {
 		this.unstack( double.class );
 		try {
-			return this.op( D2F );
+			this.op( D2F );
 		} finally {
 			this.stack( float.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl i2b() {
+	public final void i2b() {
 		this.unstack( int.class );
 		try {
-			return this.op( I2B );
+			this.op( I2B );
 		} finally {
 			this.stack( byte.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl i2c() {
+	public final void i2c() {
 		this.unstack( int.class );
 		try {
-			return this.op( I2C );
+			this.op( I2C );
 		} finally {
 			this.stack( char.class );			
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl i2s() {
+	public final void i2s() {
 		this.unstack( int.class );
 		try {
-			return this.op( I2S );
+			this.op( I2S );
 		} finally {
 			this.stack( short.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lcmp() {
+	public final void lcmp() {
 		this.unstack( long.class );
 		this.unstack( long.class );
 		try {
-			return this.op( LCMP );
+			this.op( LCMP );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fcmpl() {
+	public final void fcmpl() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FCMPL );
+			this.op( FCMPL );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl fcmpg() {
+	public final void fcmpg() {
 		this.unstack( float.class );
 		this.unstack( float.class );
 		try {
-			return this.op( FCMPG );
+			this.op( FCMPG );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dcmpl() {
+	public final void dcmpl() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DCMPL );
+			this.op( DCMPL );
 		} finally {
 			this.stack( int.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dcmpg() {
+	public final void dcmpg() {
 		this.unstack( double.class );
 		this.unstack( double.class );
 		try {
-			return this.op( DCMPG );
+			this.op( DCMPG );
 		} finally {
 			this.stack( int.class );			
 		}
 	}
 	
-	final JvmCoreCodeWriterImpl jsr() {
-		return this.op( JSR );
+	final void jsr() {
+		this.op( JSR );
 	}
 	
-	final JvmCoreCodeWriterImpl ret() {
-		return this.op( RET );
+	final void ret() {
+		this.op( RET );
 	}
 	
-	final JvmCoreCodeWriterImpl tableswitch() {
-		return this.op( TABLESWITCH );
+	final void tableswitch() {
+		this.op( TABLESWITCH );
 	}
 	
-	final JvmCoreCodeWriterImpl lookupswitch() {
-		return this.op( LOOKUPSWITCH );
+	final void lookupswitch() {
+		this.op( LOOKUPSWITCH );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl ireturn() {
+	public final void ireturn() {
 		this.unstack( int.class );
-		return this.op( IRETURN );
+		this.op( IRETURN );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl lreturn() {
+	public final void lreturn() {
 		this.unstack( long.class );
-		return this.op( LRETURN );
+		this.op( LRETURN );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl freturn() {
+	public final void freturn() {
 		this.unstack( float.class );
-		return this.op( FRETURN );
+		this.op( FRETURN );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl dreturn() {
+	public final void dreturn() {
 		this.unstack( double.class );
-		return this.op( DRETURN );
+		this.op( DRETURN );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl areturn() {
+	public final void areturn() {
 		this.unstack( Reference.class );
-		return this.op( ARETURN );
+		this.op( ARETURN );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl return_() {
-		return this.op( RETURN );
+	public final void return_() {
+		this.op( RETURN );
 	}
 
 	@Override
-	public final JvmCoreCodeWriterImpl getstatic(
+	public final void getstatic(
 		final Type targetType,
 		final JavaField field )
 	{
 		try {
-			return this.op( GETSTATIC ).u2(
+			this.op( GETSTATIC ).u2(
 				this.constantPool.addFieldReference(
 					this.context,
 					targetType,
@@ -1618,12 +1735,12 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl putstatic(
+	public final void putstatic(
 		final Type targetType,
 		final JavaField field )
 	{
 		this.unstack( field.getType() );
-		return this.op( PUTSTATIC ).u2(
+		this.op( PUTSTATIC ).u2(
 			this.constantPool.addFieldReference(
 				this.context,
 				targetType,
@@ -1632,13 +1749,13 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl getfield(
+	public final void getfield(
 		final Type targetType,
 		final JavaField field )
 	{
 		this.unstack( targetType );
 		try {
-			return this.op( GETFIELD ).u2(
+			this.op( GETFIELD ).u2(
 				this.constantPool.addFieldReference(
 					this.context,
 					targetType,
@@ -1650,13 +1767,13 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl putfield(
+	public final void putfield(
 		final Type targetType,
 		final JavaField field )
 	{
 		this.unstack( targetType );
 		this.unstack( field.getType() );
-		return this.op( PUTFIELD ).u2(
+		this.op( PUTFIELD ).u2(
 			this.constantPool.addFieldReference(
 				this.context,
 				targetType,
@@ -1665,14 +1782,14 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl invokevirtual(
+	public final void invokevirtual(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
 		this.unstack( method.arguments() );
 		this.unstack( targetType ); //this
 		try {
-			return this.op( INVOKEVIRTUAL ).u2(
+			this.op( INVOKEVIRTUAL ).u2(
 				this.constantPool.addMethodReference(
 					this.context,
 					targetType,
@@ -1685,14 +1802,14 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl invokeinterface(
+	public final void invokeinterface(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
 		this.unstack( method.arguments() );
 		this.unstack( targetType ); //this
 		try {
-			return this.op( INVOKEINTERFACE ).u2(
+			this.op( INVOKEINTERFACE ).u2(
 				this.constantPool.addInterfaceMethodReference(
 					this.context,
 					targetType,
@@ -1707,14 +1824,14 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl invokespecial(
+	public final void invokespecial(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
 		this.unstack( method.arguments() );
 		this.unstack( targetType ); //this
 		try {
-			return this.op( INVOKESPECIAL ).u2(
+			this.op( INVOKESPECIAL ).u2(
 				this.constantPool.addMethodReference(
 					this.context,
 					targetType,
@@ -1727,13 +1844,13 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl invokestatic(
+	public final void invokestatic(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
 		this.unstack( method.arguments() );
 		try {
-			return this.op( INVOKESTATIC ).u2(
+			this.op( INVOKESTATIC ).u2(
 				this.constantPool.addMethodReference(
 					this.context,
 					targetType,
@@ -1746,28 +1863,28 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl new_( final Type type ) {
+	public final void new_( final Type type ) {
+		Type resolvedType = this.context().resolver.resolve( type );
 		try {
-			return this.op( NEW ).u2(
-				this.constantPool.addClassInfo(
-					JavaTypes.getRawClass( type ) ) );
+			this.op( NEW ).u2(
+				this.constantPool.addClassInfo( JavaTypes.getRawClassName( resolvedType ) ) );
 		} finally {
 			this.stack( type );			
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl newarray( final Type componentType ) {
+	public final void newarray( final Type componentType ) {
 		this.unstack( int.class );
 		try {
-			return this.op( NEWARRAY ).u1( getArrayTypeCode( componentType ) );
+			this.op( NEWARRAY ).u1( getArrayTypeCode( componentType ) );
 		} finally {
 			this.stack( JavaTypes.array( componentType ) );	
 		}
 	}
 	
 	private static final byte getArrayTypeCode( final Type componentType ) {
-		Type resolvedType = JavaTypes.resolve( componentType );
+		Type resolvedType = JavaTypes.getRawClass( componentType );
 		if ( resolvedType.equals( boolean.class ) ) {
 			return BOOLEAN_ARRAY;
 		} else if ( resolvedType.equals( char.class ) ) {
@@ -1790,69 +1907,69 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl anewarray( final Type componentType ) {
+	public final void anewarray( final Type componentType ) {
 		this.unstack( int.class );
 		try {
-			return this.op( ANEWARRAY ).u2( this.constantPool.addClassInfo( componentType ) );
+			this.op( ANEWARRAY ).u2( this.constantPool.addClassInfo( componentType ) );
 		} finally {
 			this.stack( JavaTypes.array( componentType ) );
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl arraylength() {
+	public final void arraylength() {
 		this.unstack( Any[].class );
 		try {
-			return this.op( ARRAYLENGTH );
+			this.op( ARRAYLENGTH );
 		} finally {
 			this.stack( int.class );			
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl athrow() {
+	public final void athrow() {
 		this.unstack( Throwable.class );
-		return this.op( ATHROW );
+		this.op( ATHROW );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl checkcast( final Type type ) {
+	public final void checkcast( final Type type ) {
 		this.unstack( Reference.class );
 		try {
-			return this.op( CHECKCAST ).u2( this.constantPool.addClassInfo( type ) );
+			this.op( CHECKCAST ).u2( this.constantPool.addClassInfo( type ) );
 		} finally {
 			this.stack( type );			
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl instanceof_( final Type type ) {
+	public final void instanceof_( final Type type ) {
 		this.unstack( Reference.class );
 		try {
-			return this.op( INSTANCEOF ).u2( this.constantPool.addClassInfo( type ) );
+			this.op( INSTANCEOF ).u2( this.constantPool.addClassInfo( type ) );
 		} finally {
 			this.stack( boolean.class );	
 		}
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl monitorenter() {
+	public final void monitorenter() {
 		this.unstack( Reference.class );
-		return this.op( MONITORENTER );
+		this.op( MONITORENTER );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriterImpl monitorexit() {
+	public final void monitorexit() {
 		this.unstack( Reference.class );
-		return this.op( MONITOREXIT );
+		this.op( MONITOREXIT );
 	}
 	
-	final JvmCoreCodeWriterImpl wide() {
-		return this.op( WIDE );
+	final void wide() {
+		this.op( WIDE );
 	}
 
 	@Override
-	public final JvmCoreCodeWriterImpl multianewarray(
+	public final void multianewarray(
 		final Type arrayType,
 		final int numDimensions )
 	{	
@@ -1860,7 +1977,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 			this.unstack( int.class );
 		}
 		try {
-			return this.op( MULTIANEWARRAY ).
+			this.op( MULTIANEWARRAY ).
 				u2( this.constantPool.addClassInfo( arrayType ) ).
 				u1( numDimensions );
 		} finally {
@@ -1869,120 +1986,120 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter ifnull( final Jump jump ) {
+	public final void ifnull( final Jump jump ) {
 		this.unstack( Reference.class );
-		return this.op( IFNULL ).jumpTo( jump );
+		this.op( IFNULL ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter ifnonnull( final Jump jump ) {
+	public final void ifnonnull( final Jump jump ) {
 		this.unstack( Reference.class );
-		return this.op( IFNONNULL ).jumpTo( jump );
+		this.op( IFNONNULL ).jumpTo( jump );
 	}
 	
-	final JvmCoreCodeWriterImpl goto_w() {
-		return this.op( GOTO_W );
+	final void goto_w() {
+		this.op( GOTO_W );
 	}
 	
-	final JvmCoreCodeWriterImpl jsr_w() {
-		return this.op( JSR_W );
+	final void jsr_w() {
+		this.op( JSR_W );
 	}
 
 	@Override
-	public final JvmCoreCodeWriter ifeq( final Jump jump ) {
+	public final void ifeq( final Jump jump ) {
 		this.unstack( int.class );
-		return this.op( IFEQ ).jumpTo( jump );
+		this.op( IFEQ ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter ifne( final Jump jump ) {
+	public final void ifne( final Jump jump ) {
 		this.unstack( int.class );
-		return this.op( IFNE ).jumpTo( jump );
+		this.op( IFNE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter iflt( final Jump jump ) {
+	public final void iflt( final Jump jump ) {
 		this.unstack( int.class );
-		return this.op( IFLT ).jumpTo( jump );
+		this.op( IFLT ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter ifgt( final Jump jump ) {
+	public final void ifgt( final Jump jump ) {
 		this.unstack( int.class );
-		return this.op( IFGT ).jumpTo( jump );
+		this.op( IFGT ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter ifge( final Jump jump ) {
+	public final void ifge( final Jump jump ) {
 		this.unstack( int.class );
-		return this.op( IFGE ).jumpTo( jump );
+		this.op( IFGE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter ifle( final Jump jump ) {
+	public final void ifle( final Jump jump ) {
 		this.unstack( int.class );
-		return this.op( IFLE ).jumpTo( jump );
+		this.op( IFLE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_icmpeq( final Jump jump ) {
+	public final void if_icmpeq( final Jump jump ) {
 		this.unstack( int.class );
 		this.unstack( int.class );
-		return this.op( IF_ICMPEQ ).jumpTo( jump );
+		this.op( IF_ICMPEQ ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_icmpne( final Jump jump ) {
+	public final void if_icmpne( final Jump jump ) {
 		this.unstack( int.class );
 		this.unstack( int.class );
-		return this.op( IF_ICMPNE ).jumpTo( jump );
+		this.op( IF_ICMPNE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_icmplt( final Jump jump ) {
+	public final void if_icmplt( final Jump jump ) {
 		this.unstack( int.class );
 		this.unstack( int.class );
-		return this.op( IF_ICMPLT ).jumpTo( jump );
+		this.op( IF_ICMPLT ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_icmpgt( final Jump jump ) {
+	public final void if_icmpgt( final Jump jump ) {
 		this.unstack( int.class );
 		this.unstack( int.class );
-		return this.op( IF_ICMPGT ).jumpTo( jump );
+		this.op( IF_ICMPGT ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_icmpge( final Jump jump ) {
+	public final void if_icmpge( final Jump jump ) {
 		this.unstack( int.class );
 		this.unstack( int.class );
-		return this.op( IF_ICMPGE ).jumpTo( jump );
+		this.op( IF_ICMPGE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_icmple( final Jump jump ) {
+	public final void if_icmple( final Jump jump ) {
 		this.unstack( int.class );
 		this.unstack( int.class );
-		return this.op( IF_ICMPLE ).jumpTo( jump );
+		this.op( IF_ICMPLE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_acmpeq( final Jump jump ) {
+	public final void if_acmpeq( final Jump jump ) {
 		this.unstack( Reference.class );
 		this.unstack( Reference.class );
-		return this.op( IF_ACMPEQ ).jumpTo( jump );
+		this.op( IF_ACMPEQ ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter if_acmpne( final Jump jump ) {
+	public final void if_acmpne( final Jump jump ) {
 		this.unstack( Reference.class );
 		this.unstack( Reference.class );
-		return this.op( IF_ACMPNE ).jumpTo( jump );
+		this.op( IF_ACMPNE ).jumpTo( jump );
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter goto_( final Jump jump ) {
-		return this.op( GOTO ).jumpTo( jump );
+	public final void goto_( final Jump jump ) {
+		this.op( GOTO ).jumpTo( jump );
 	}
 	
 	private JvmCoreCodeWriter jumpTo( final Jump jump ) {		
@@ -1999,9 +2116,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmCoreCodeWriter handleException( final ExceptionHandler exceptionHandler ) {
+	public final void handleException( final ExceptionHandler exceptionHandler ) {
 		this.handlers.add( exceptionHandler );
-		return this;
 	}
 	
 	@Override
