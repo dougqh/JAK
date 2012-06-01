@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class aaload extends ArrayStoreOperation {
+public final class aaload extends ArrayLoadOperation {
 	public static final String ID = "aaload";
 	public static final byte CODE = AALOAD;
 	
