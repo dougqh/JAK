@@ -41,6 +41,6 @@ public final class dstore_2 extends StoreOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.dstore_1();
+		processor.dstore_2();
 	}
 }

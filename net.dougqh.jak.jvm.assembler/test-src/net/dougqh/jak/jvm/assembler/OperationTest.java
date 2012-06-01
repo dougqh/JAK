@@ -13,9 +13,11 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.JvmOperations;
+import net.dougqh.jak.jvm.operations.StackManipulationOperation;
 import static net.dougqh.jak.Jak.*;
 import static net.dougqh.jak.matchers.Matchers.*;
 import static org.junit.Assert.*;
@@ -24,12 +26,30 @@ public final class OperationTest extends TestCase {
 	public static final TestSuite suite() {
 		TestSuite suite = new TestSuite();
 		for ( Method method : JvmOperationProcessor.class.getDeclaredMethods() ) {
+			if ( ! isTestableMethod( method ) ) {
+				continue;
+			}
+			
 			JvmOperation testOperation = createTestOperation( method );
-			if ( ( testOperation != null ) && ! testOperation.isPolymorphic() ) {
+			if ( testOperation != null && isAutoTestable( testOperation ) ) {
 				suite.addTest( new OperationTest( testOperation, method ) );
 			}
 		}
 		return suite;
+	}
+	
+	private static final boolean isTestableMethod( final Method method ) {
+		return ! Arrays.asList( method.getParameterTypes() ).contains( Slot.class );
+	}
+	
+	private static final boolean isAutoTestable( final JvmOperation operation ) {
+		if ( operation.isPolymorphic() ) {
+			return false;
+		}
+		if ( operation instanceof StackManipulationOperation ) {
+			return false;
+		}
+		return true;
 	}
 	
 	private static final JvmOperation createTestOperation( final Method method ) {
