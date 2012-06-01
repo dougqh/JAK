@@ -40,7 +40,7 @@ public abstract class JvmMacro
 	}
 	
 	@Override
-	protected final MethodWritingState sharedState() {
+	protected final CodeWritingState sharedState() {
 		return this.codeWriter.sharedState();
 	}
 	

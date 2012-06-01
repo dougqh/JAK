@@ -16,7 +16,7 @@ public interface JvmTypeWriter extends JakTypeWriter {
 	
 	public abstract JvmAnnotationWriter define( final JavaAnnotationDescriptor annotationBuilder );
 
-	public abstract Class< ? > load();
+	public abstract <T> Class<T> load();
 	
 	public abstract void writeTo( final File srcDir ) throws IOException;
 	

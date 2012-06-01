@@ -3,8 +3,6 @@ package net.dougqh.jak;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import net.dougqh.java.meta.types.JavaTypes;
-
 public final class JavaInterfaceDescriptor {
 	private static final Type[] EMPTY_INTERFACES = {};
 	private static final TypeVariable<?>[] EMPTY_TYPE_VARS = {};
@@ -23,7 +21,7 @@ public final class JavaInterfaceDescriptor {
 	}
 
 	public JavaInterfaceDescriptor extends_( final Type... types ) {
-		this.interfaceTypes = JavaTypes.resolve( types );
+		this.interfaceTypes = types.clone();
 		return this;
 	}
 	

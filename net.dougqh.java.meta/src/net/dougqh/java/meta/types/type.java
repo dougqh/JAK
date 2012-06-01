@@ -7,6 +7,6 @@ public abstract class type< T > implements JavaTypeProvider {
 	@Override
 	public final Type get() {
 		ParameterizedType superType = (ParameterizedType)this.getClass().getGenericSuperclass();
-		return JavaTypes.resolve( superType.getActualTypeArguments()[0] );
+		return superType.getActualTypeArguments()[0];
 	}
 }

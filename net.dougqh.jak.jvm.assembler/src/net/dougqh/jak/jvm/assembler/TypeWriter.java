@@ -143,6 +143,20 @@ final class TypeWriter {
 		return annotationWriter;
 	}
 	
+	final JvmEnumWriter defineEnum(
+		final TypeDescriptor typeDescriptor,
+		final int additionalFlags )
+	{
+		TypeDescriptor innerTypeDescriptor = typeDescriptor.innerType( this.className, additionalFlags );
+		
+		this.addInnerClass( innerTypeDescriptor );
+		
+		JvmEnumWriter enumWriter = 
+			this.writerGroup.createEnumWriter( innerTypeDescriptor );
+		enumWriter.typeWriter().addOuterClass( this );
+		return enumWriter;
+	}
+	
 	final void addInnerClass( final TypeDescriptor typeBuilder ) {
 		if ( this.innerClasses == null ) {
 			this.innerClasses = new InnerClassesAttribute( this.context );
@@ -220,8 +234,10 @@ final class TypeWriter {
 		this.attributes.write( out );
 	}
 	
-	final Class< ? > load() {
-		return this.writerGroup.load( this.className );
+	final <T> Class<T> load() {
+		@SuppressWarnings("unchecked")
+		Class<T> aClass = (Class<T>)this.writerGroup.load( this.className );
+		return aClass;
 	}
 	
 	protected final Package definePackage(
@@ -317,7 +333,7 @@ final class TypeWriter {
 	}
 	
 	private static final class SignatureAttribute extends FixedLengthAttribute {
-		static final String ID = net.dougqh.jak.core.Attributes.SIGNATURE;
+		static final String ID = net.dougqh.jak.jvm.Attributes.SIGNATURE;
 		
 		private final ConstantEntry entry;
 		
@@ -348,7 +364,7 @@ final class TypeWriter {
 		extends Attribute
 		implements DeferredAttribute
 	{
-		static final String ID = net.dougqh.jak.core.Attributes.INNER_CLASSES;
+		static final String ID = net.dougqh.jak.jvm.Attributes.INNER_CLASSES;
 		
 		private final JvmOutputStream out;
 		private int count;

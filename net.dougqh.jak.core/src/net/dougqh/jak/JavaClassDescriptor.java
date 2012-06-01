@@ -12,7 +12,7 @@ public final class JavaClassDescriptor {
 	private final int flags;
 	private final String name;
 	private Type parentType = Object.class;
-	private Type[] interfaceTypes = EMPTY_INTERFACES;
+	private Type[] interfaces = EMPTY_INTERFACES;
 	private TypeVariable<?>[] typeVars = EMPTY_TYPE_VARS;
 
 	JavaClassDescriptor(
@@ -37,12 +37,12 @@ public final class JavaClassDescriptor {
 	}
 	
 	public final JavaClassDescriptor extends_( final Type type ) {
-		this.parentType = JavaTypes.resolve( type );
+		this.parentType = type;
 		return this;
 	}
 	
 	public final JavaClassDescriptor implements_( final Type... types ) {
-		this.interfaceTypes = JavaTypes.resolve( types );
+		this.interfaces = types;
 		return this;
 	}
 	
@@ -52,6 +52,6 @@ public final class JavaClassDescriptor {
 			this.name,
 			this.typeVars,
 			this.parentType,
-			this.interfaceTypes );
+			this.interfaces );
 	}
 }
