@@ -90,7 +90,7 @@ final class Methods {
 	}
 	
 	private static final class ExceptionsAttribute extends Attribute {
-		static final String ID = net.dougqh.jak.core.Attributes.EXCEPTIONS;
+		static final String ID = net.dougqh.jak.jvm.Attributes.EXCEPTIONS;
 		
 		private final Type[] exceptionTypes;
 		
@@ -124,7 +124,7 @@ final class Methods {
 	}
 	
 	private static final class SignatureAttribute extends FixedLengthAttribute {
-		static final String ID = net.dougqh.jak.core.Attributes.SIGNATURE;
+		static final String ID = net.dougqh.jak.jvm.Attributes.SIGNATURE;
 		
 		private final ConstantEntry entry;
 		
@@ -154,7 +154,7 @@ final class Methods {
 		extends Attribute
 		implements DeferredAttribute
 	{
-		static final String ID = net.dougqh.jak.core.Attributes.CODE;
+		static final String ID = net.dougqh.jak.jvm.Attributes.CODE;
 		
 		private final JvmCoreCodeWriterImpl codeWriter;
 		

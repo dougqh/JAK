@@ -17,9 +17,7 @@ import net.dougqh.jak.TypeDescriptor;
 import net.dougqh.jak.assembler.JakInterfaceWriter;
 
 
-public final class JvmInterfaceWriter
-	implements JakInterfaceWriter, JvmExtendedTypeWriter
-{
+public final class JvmInterfaceWriter implements JakInterfaceWriter, JvmExtendedTypeWriter {
 	private static final int ADDITIONAL_TYPE_FLAGS = 
 		Flags.ABSTRACT | Flags.INTERFACE;
 	
@@ -177,8 +175,8 @@ public final class JvmInterfaceWriter
 	}
 	
 	@Override
-	public final Class< ? > load() {
-		return this.typeWriter.load();
+	public final <T> Class<T> load() {
+		return this.typeWriter.<T>load();
 	}
 	
 	@Override

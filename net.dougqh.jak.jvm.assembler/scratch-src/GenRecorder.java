@@ -44,7 +44,11 @@ public class GenRecorder {
 				System.out.println( "return this;" );
 			}
 			
+<<<<<<< HEAD
 			//System.out.println( )
+=======
+			System.out.println( )
+>>>>>>> enums
 			System.out.println( "\t}" );
 			
 			System.out.println( "}" );
@@ -52,5 +56,9 @@ public class GenRecorder {
 		}
 	}
 	
+<<<<<<< HEAD
 	//private static final boolean 
+=======
+	private static final boolean 
+>>>>>>> enums
 }

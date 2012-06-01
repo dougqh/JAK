@@ -160,71 +160,50 @@ public final class JavaModifiers {
 	}
 	
 	public final JavaMethodDescriptor init() {
-		return new JavaMethodDescriptor(
-			this,
-			void.class,
-			INIT );
+		return new JavaMethodDescriptor( this, void.class, INIT );
 	}
 	
 	public final JavaMethodDescriptor init( final Type... args ) {
 		return this.init().args( args );
 	}
 	
-	public final JavaClassDescriptor class_(
-		final Package aPackage,
-		final String className )
-	{
-		return new JavaClassDescriptor(
-			this,
-			aPackage.getName() + "." + className );
+	public final JavaClassDescriptor class_( final Package aPackage, final String className ) {
+		return new JavaClassDescriptor( this, aPackage.getName() + "." + className );
 	}
 	
-	public final JavaClassDescriptor class_(
-		final String className )
-	{
+	public final JavaClassDescriptor class_( final String className ) {
 		return new JavaClassDescriptor( this, className );
 	}
 	
-	public final JavaInterfaceDescriptor interface_(
-		final String interfaceName )
-	{
+	public final JavaInterfaceDescriptor interface_( final String interfaceName ) {
 		return new JavaInterfaceDescriptor( this, interfaceName );
 	}
 	
-	public final JavaInterfaceDescriptor interface_(
-		final Package aPackage,
-		final String interfaceName )
-	{
-		return new JavaInterfaceDescriptor(
-			this,
-			aPackage.getName() + "." + interfaceName ); 
+	public final JavaInterfaceDescriptor interface_( final Package aPackage, final String interfaceName ) {
+		return new JavaInterfaceDescriptor( this, aPackage.getName() + "." + interfaceName ); 
 	}
 	
-	public final JavaAnnotationDescriptor $interface(
-		final String annotationName )
-	{
+	public final JavaEnumDescriptor enum_( final Package aPackage, final String className ) {
+		return new JavaEnumDescriptor( this, aPackage.getName() + "." + className );
+	}
+	
+	public final JavaEnumDescriptor enum_( final String className ) {
+		return new JavaEnumDescriptor( this, className );
+	}
+	
+	public final JavaAnnotationDescriptor $interface( final String annotationName ) {
 		return new JavaAnnotationDescriptor( this, annotationName );
 	}
 	
-	public final JavaAnnotationDescriptor annotation(
-		final String annotationName )
-	{
+	public final JavaAnnotationDescriptor annotation( final String annotationName ) {
 		return $interface( annotationName );
 	}
 	
-	public final JavaAnnotationDescriptor $interface(
-		final Package aPackage,
-		final String annotationName )
-	{
-		return new JavaAnnotationDescriptor(
-			this,
-			aPackage.getName() + "." + annotationName );
+	public final JavaAnnotationDescriptor $interface( final Package aPackage, final String annotationName ) {
+		return new JavaAnnotationDescriptor( this, aPackage.getName() + "." + annotationName );
 	}
 	
-	public final JavaAnnotationDescriptor annotation(
-		final Package aPackage,
-		final String annotationName )
-	{
+	public final JavaAnnotationDescriptor annotation( final Package aPackage, final String annotationName ) {
 		return $interface( aPackage, annotationName );
 	}
 	

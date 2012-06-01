@@ -6,8 +6,7 @@ import java.util.Iterator;
 import net.dougqh.jak.TypeDescriptor;
 
 final class TypeWriterGroup {
-	private final HashMap< String, TypeWriter > writers =
-		new HashMap< String, TypeWriter >( 4 );
+	private final HashMap< String, TypeWriter > writers = new HashMap< String, TypeWriter >( 4 );
 	
 	private final DynamicClassLoader classLoader;
 	
@@ -51,6 +50,12 @@ final class TypeWriterGroup {
 		JvmAnnotationWriter annotationWriter = new JvmAnnotationWriter( this, typeDescriptor );
 		this.register( annotationWriter.typeWriter() );
 		return annotationWriter;
+	}
+	
+	final JvmEnumWriter createEnumWriter( final TypeDescriptor typeDescriptor ) {
+		JvmEnumWriter enumWriter = new JvmEnumWriter( this, typeDescriptor );
+		this.register( enumWriter.typeWriter() );
+		return enumWriter;
 	}
 	
 	final void register( final TypeWriter writer ) {

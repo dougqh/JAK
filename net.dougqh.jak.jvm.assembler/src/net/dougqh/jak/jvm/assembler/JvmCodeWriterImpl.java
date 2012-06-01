@@ -8,7 +8,7 @@ import net.dougqh.jak.JavaVariable;
 final class JvmCodeWriterImpl extends JvmCodeWriter {
 	private final JvmCoreCodeWriter coreWriter;
 	
-	private final MethodWritingState sharedState = new MethodWritingState();
+	private final CodeWritingState sharedState = new CodeWritingState();
 
 	JvmCodeWriterImpl(
 		final boolean isStatic,
@@ -17,12 +17,12 @@ final class JvmCodeWriterImpl extends JvmCodeWriter {
 	{
 		this.coreWriter = coreWriter;
 		
-		//DQH - Currently, parameter handling is horrible mess.
-		//TypeWriter define handles reserving space for the locals, but 
+		//DQH - Currently, parameter handling is a horrible mess.
+		//TypeWriter.define handles reserving space for the locals, but 
 		//cannot handle name associations.  That means this code cannot 
 		//simply use declare because the space for each variable is already
 		//reserved.  Instead this code must resort to forcibly computing the
-		//slot and injected as needed.
+		//slot and associating as needed.
 		if ( ! isStatic ) {
 			this.varScope( false ).set( "this", 0 );
 		}
@@ -45,7 +45,7 @@ final class JvmCodeWriterImpl extends JvmCodeWriter {
 	}
 	
 	@Override
-	protected final MethodWritingState sharedState() {
+	protected final CodeWritingState sharedState() {
 		return this.sharedState;
 	}
 	

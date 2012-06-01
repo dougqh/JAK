@@ -1,6 +1,6 @@
 package net.dougqh.jak.disassembler;
 
-import static net.dougqh.jak.core.ConstantPoolConstants.*;
+import static net.dougqh.jak.jvm.ConstantPoolConstants.*;
 
 import java.io.IOException;
 

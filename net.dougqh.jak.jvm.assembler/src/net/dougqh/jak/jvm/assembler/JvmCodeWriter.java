@@ -15,18 +15,18 @@ import net.dougqh.jak.JakContext;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaMethodSignature;
-import net.dougqh.jak.annotations.JvmOp;
-import net.dougqh.jak.annotations.Symbol;
-import net.dougqh.jak.annotations.SyntheticOp;
-import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.assembler.JakAsm;
 import net.dougqh.jak.assembler.JakCodeWriter;
 import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
 import net.dougqh.jak.assembler.TypeResolver;
-import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter.ExceptionHandler;
-import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter.Jump;
+import net.dougqh.jak.jvm.JvmOperationProcessor.ExceptionHandler;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
+import net.dougqh.jak.jvm.annotations.JvmOp;
+import net.dougqh.jak.jvm.annotations.Symbol;
+import net.dougqh.jak.jvm.annotations.SyntheticOp;
+import net.dougqh.jak.jvm.annotations.WrapOp;
 import net.dougqh.jak.jvm.assembler.macros.ArrayFor;
 import net.dougqh.jak.jvm.assembler.macros.DoWhile;
 import net.dougqh.jak.jvm.assembler.macros.IfConstruct;
@@ -56,21 +56,21 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	private static final String TYPE = "TYPE";
 	
 	//Sub-writers need to share state with the surrounding writer.
-	//To accomplish this, a MethodWritingState object is shared between 
+	//To accomplish this, a CodeWritingState object is shared between 
 	//the two objects.
-	protected final class MethodWritingState {
+	protected final class CodeWritingState {
 		private Scope varScope;
 		private Scope labelScope;
 		
 		private boolean trapReturn = false;
 		private Class<?> returnType = null;
 		
-		protected MethodWritingState() {
+		protected CodeWritingState() {
 			this.varScope = new Scope();
 			this.labelScope = new Scope();
 		}
 		
-		protected MethodWritingState( final MethodWritingState sharedState ) {
+		protected CodeWritingState( final CodeWritingState sharedState ) {
 			this.varScope = sharedState.varScope;
 			this.labelScope = sharedState.labelScope;
 			
@@ -93,7 +93,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	private JvmMacro underConstructionMacro = null;
 	
-	protected abstract MethodWritingState sharedState();
+	protected abstract CodeWritingState sharedState();
 	
 	public abstract JvmCoreCodeWriter coreWriter();
 	
@@ -650,54 +650,39 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this;
 	}
 
-	@WrapOp( value=ldc.class, stackResultTypes=Class.class )
-	public final JvmCodeWriter ldc( final Type aClass ) {
-		return this.smartLdc( this.constantPool().addClassInfo( aClass ) );
-	}
-
 	@WrapOp( value=ldc.class, stackResultTypes=int.class )
 	public final JvmCodeWriter ldc( final int value ) {
-		return this.smartLdc( this.constantPool().addIntegerConstant( value ) );
+		this.coreWriter().ldc( value );
+		return this;
 	}
 
 	@WrapOp( value=ldc.class, stackResultTypes=float.class )
 	public final JvmCodeWriter ldc( final float value ) {
-		return this.smartLdc( this.constantPool().addFloatConstant( value ) );
+		this.coreWriter().ldc( value );
+		return this;
 	}
 
 	@WrapOp( value=ldc.class, stackResultTypes=String.class )
 	public final JvmCodeWriter ldc( final CharSequence value ) {
-		return this.smartLdc( this.constantPool().addStringConstant( value ) );
-	}
-
-	final JvmCodeWriter smartLdc( final ConstantEntry entry ) {
-		if ( isSingleByte( entry ) ) {
-			this.ldc_( entry );
-		} else {
-			this.ldc_w( entry );
-		}
+		this.coreWriter().ldc( value.toString() );
 		return this;
 	}
-
-	final JvmCodeWriter ldc_( final ConstantEntry entry ) {
-		this.coreWriter().ldc( entry );
-		return this;
-	}
-
-	final JvmCodeWriter ldc_w( final ConstantEntry entry ) {
-		this.coreWriter().ldc_w( entry );
+	
+	@WrapOp( value=ldc.class, stackResultTypes=Type.class )
+	public final JvmCodeWriter ldc( final Type value ) {
+		this.coreWriter().ldc( value );
 		return this;
 	}
 
 	@WrapOp( value=ldc2_w.class, stackResultTypes=long.class )
 	public final JvmCodeWriter ldc2_w( final long value ) {
-		this.coreWriter().ldc2_w( this.constantPool().addLongConstant( value ) );
+		this.coreWriter().ldc2_w( value );
 		return this;
 	}
 
 	@WrapOp( value=ldc2_w.class, stackResultTypes=double.class )
 	public final JvmCodeWriter ldc2_w( final double value ) {
-		this.coreWriter().ldc2_w( this.constantPool().addDoubleConstant( value ) );
+		this.coreWriter().ldc2_w( value );
 		return this;
 	}
 
@@ -3893,10 +3878,12 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@SyntheticOp( stackOperandTypes=boolean.class, stackResultTypes=boolean.class )
 	public final JvmCodeWriter inot() {
-		this.coreWriter().ifeq( this.jumpRelative( +7 ) ).
-			iconst_0().
-			goto_( this.jumpRelative( +4 ) ).
-			iconst_1();
+		JvmCoreCodeWriter coreWriter = this.coreWriter();
+		
+		coreWriter.ifeq( this.jumpRelative( +7 ) );
+		coreWriter.iconst_0();
+		coreWriter.goto_( this.jumpRelative( +4 ) );
+		coreWriter.iconst_1();
 		
 		return this;
 	}
@@ -4374,7 +4361,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	}
 
 	private final class CaptureCodeWriter extends JvmCodeWriter {
-		private final MethodWritingState sharedState = new MethodWritingState( JvmCodeWriter.this.sharedState() );
+		private final CodeWritingState sharedState = new CodeWritingState( JvmCodeWriter.this.sharedState() );
 		private JvmCoreCodeWriter coreWriter = null;
 		
 		protected final void init( final JvmCoreCodeWriter coreWriter ) {
@@ -4387,7 +4374,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 		
 		@Override
-		protected final MethodWritingState sharedState() {
+		protected final CodeWritingState sharedState() {
 			return this.sharedState;
 		}
 	}

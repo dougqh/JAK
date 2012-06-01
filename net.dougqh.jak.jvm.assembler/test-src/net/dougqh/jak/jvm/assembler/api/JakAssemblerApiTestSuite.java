@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	MacrosTest.class,
 	ClassLoaderTest.class,
 	AnnotationsTest.class,
+	EnumTest.class,
 	JakTypeStackTest.class,
 	StackManipulationTest.class,
 	MacrosTestSuite.class } )

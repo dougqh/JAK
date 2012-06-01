@@ -9,7 +9,7 @@ import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.types.Utf8;
 import net.dougqh.java.meta.types.JavaTypeVisitor;
 import net.dougqh.java.meta.types.JavaTypes;
-import static net.dougqh.jak.core.ConstantPoolConstants.*;
+import static net.dougqh.jak.jvm.ConstantPoolConstants.*;
 
 
 final class ConstantPool {	
