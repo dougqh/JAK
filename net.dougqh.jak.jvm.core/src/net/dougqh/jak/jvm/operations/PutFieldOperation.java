@@ -11,7 +11,7 @@ public abstract class PutFieldOperation implements JvmOperation {
 	
 	@Override
 	public final boolean isPolymorphic() {
-		return false;
+		return true;
 	}
 	
 	@Override

@@ -1,9 +1,11 @@
 package net.dougqh.jak.jvm.operations;
 
+import java.lang.reflect.Type;
+
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class multianewarray extends BaseJvmOperation {
+public final class multianewarray implements JvmOperation {
 	public static final String ID = "multianewarray";
 	public static final byte CODE = MULTIANEWARRAY;
 	
@@ -38,26 +40,29 @@ public final class multianewarray extends BaseJvmOperation {
 	}
 	
 	@Override
-	public final Class< ? >[] getCodeOperandTypes() {
-		return new Class< ? >[] { Class.class, int.class };
+	public final String getOperator() {
+		return null;
 	}
 	
 	@Override
-	public final Class< ? >[] getStackOperandTypes() {
+	public final Type[] getCodeOperandTypes() {
+		return new Type[] { Class.class, int.class };
+	}
+	
+	@Override
+	public final Type[] getStackOperandTypes() {
 		//TODO - finish implementing this
-		return new Class< ? >[] { int.class };
+		return new Type[] { int.class };
 	}
 	
 	@Override
-	public final Class< ? >[] getStackResultTypes() {
+	public final Type[] getStackResultTypes() {
 		//TODO - finish implementing this
-		return new Class< ? >[] { Reference[].class };
+		return new Type[] { Reference[].class };
 	}
 	
 	@Override
-	public final void write( final JvmOperationProcessor writer ) {
-		writer.multianewarray(
-			this.arrayClass,
-			this.numDimensions );
+	public final void process( final JvmOperationProcessor processor ) {
+		processor.multianewarray( this.arrayClass, this.numDimensions );
 	}
 }

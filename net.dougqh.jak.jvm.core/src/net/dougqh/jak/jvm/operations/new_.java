@@ -1,9 +1,11 @@
 package net.dougqh.jak.jvm.operations;
 
+import java.lang.reflect.Type;
+
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class new_ extends BaseJvmOperation {
+public final class new_ implements JvmOperation {
 	public static final String ID = "new";
 	public static final byte CODE = NEW;
 	
@@ -33,22 +35,27 @@ public final class new_ extends BaseJvmOperation {
 	}
 	
 	@Override
-	public final Class< ? >[] getCodeOperandTypes() {
-		return new Class< ? >[] { Class.class };
+	public final String getOperator() {
+		return null;
 	}
 	
 	@Override
-	public final Class< ? >[] getStackOperandTypes() {
+	public final Type[] getCodeOperandTypes() {
+		return new Type[] { Class.class };
+	}
+	
+	@Override
+	public final Type[] getStackOperandTypes() {
 		return NO_ARGS;
 	}
 	
 	@Override
-	public final Class< ? >[] getStackResultTypes() {
-		return new Class< ? >[] { Reference.class };
+	public final Type[] getStackResultTypes() {
+		return new Type[] { Reference.class };
 	}
 	
 	@Override
-	public final void write( final JvmOperationProcessor writer ) {
-		writer.new_( this.aClass );
+	public final void process( final JvmOperationProcessor processor ) {
+		processor.new_( this.aClass );
 	}
 }

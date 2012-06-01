@@ -1,9 +1,11 @@
 package net.dougqh.jak.jvm.operations;
 
+import java.lang.reflect.Type;
+
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class newarray extends BaseJvmOperation {
+public final class newarray implements JvmOperation {
 	public static final String ID = "newarray";
 	public static final byte CODE = NEWARRAY;
 	
@@ -33,22 +35,27 @@ public final class newarray extends BaseJvmOperation {
 	}
 	
 	@Override
-	public final Class< ? >[] getCodeOperandTypes() {
-		return new Class< ? >[] { Class.class };
+	public final String getOperator() {
+		return null;
 	}
 	
 	@Override
-	public final Class< ? >[] getStackOperandTypes() {
-		return new Class< ? >[] { int.class };
+	public final Type[] getCodeOperandTypes() {
+		return new Type[] { Class.class };
 	}
 	
 	@Override
-	public final Class< ? >[] getStackResultTypes() {
-		return new Class< ? >[] { Reference[].class };
+	public final Type[] getStackOperandTypes() {
+		return new Type[] { int.class };
 	}
 	
 	@Override
-	public final void write( final JvmOperationProcessor writer ) {
-		writer.newarray( this.componentClass );
+	public final Type[] getStackResultTypes() {
+		return new Type[] { Reference[].class };
+	}
+	
+	@Override
+	public final void process( final JvmOperationProcessor processor ) {
+		processor.newarray( this.componentClass );
 	}
 }
