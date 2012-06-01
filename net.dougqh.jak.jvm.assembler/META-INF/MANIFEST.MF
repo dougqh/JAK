@@ -5,10 +5,10 @@ Bundle-SymbolicName: net.dougqh.jak.jvm.assembler
 Bundle-Version: 1.0.0.0
 Bundle-Vendor: Douglas Q Hawkins
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: net.dougqh.jak.jvm.core;bundle-version="1.0.0",
- net.dougqh.java.meta;bundle-version="1.0.0",
+Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0",
  net.dougqh.jak.core.assembler;bundle-version="1.0.0",
- net.dougqh.jak.core;bundle-version="1.0.0"
+ net.dougqh.jak.core;bundle-version="1.0.0",
+ net.dougqh.jak.jvm.core;bundle-version="1.0.0"
 Export-Package: net.dougqh.jak.annotations,
  net.dougqh.jak.jvm.assembler,
  net.dougqh.jak.jvm.operations
