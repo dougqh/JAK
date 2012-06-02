@@ -22,7 +22,8 @@ public abstract class JvmOperationHydrator implements JvmOperationProcessor {
 
     @Override
     public final void handleException( final ExceptionHandler exceptionhandler ) {
-        this.add( new handleException( exceptionhandler ) );
+    	//TODO: Support this operation
+    	throw new UnsupportedOperationException();
     }
 
     @Override
