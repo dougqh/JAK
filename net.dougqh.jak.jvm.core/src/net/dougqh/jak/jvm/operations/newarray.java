@@ -13,9 +13,9 @@ public final class newarray implements JvmOperation {
 		return new newarray( Object.class );
 	}
 	
-	private final Class< ? > componentClass;
+	private final Type componentClass;
 	
-	public newarray( final Class< ? > componentClass ) {
+	public newarray( final Type componentClass ) {
 		this.componentClass = componentClass;
 	}
 	

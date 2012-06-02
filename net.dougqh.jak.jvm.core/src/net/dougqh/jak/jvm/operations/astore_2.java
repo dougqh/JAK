@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class astore_2 extends StoreOperation {
+public final class astore_2 extends FixedStoreOperation {
 	public static final String ID = "astore_2";
 	public static final byte CODE = ASTORE_2;
 	
@@ -23,11 +23,6 @@ public final class astore_2 extends StoreOperation {
 	@Override
 	public final int getCode() {
 		return CODE;
-	}
-
-	@Override
-	public final boolean isFixed() {
-		return true;
 	}
 	
 	@Override

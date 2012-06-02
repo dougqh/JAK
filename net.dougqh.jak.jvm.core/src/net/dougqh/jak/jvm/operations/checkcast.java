@@ -13,9 +13,9 @@ public final class checkcast extends CastOperation {
 		return new checkcast( Object.class );
 	}
 	
-	private final Class< ? > aClass;
+	private final Type aClass;
 	
-	public checkcast( final Class< ? > aClass ) {
+	public checkcast( final Type aClass ) {
 		this.aClass = aClass;
 	}
 	

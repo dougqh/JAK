@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class fload_2 extends LoadOperation {
+public final class fload_2 extends FixedLoadOperation {
 	public static final String ID = "fload_2";
 	public static final byte CODE = FLOAD_2;
 	
@@ -22,11 +22,6 @@ public final class fload_2 extends LoadOperation {
 	@Override
 	public final int getCode() {
 		return CODE;
-	}
-	
-	@Override
-	public final boolean isFixed() {
-		return true;
 	}
 	
 	@Override

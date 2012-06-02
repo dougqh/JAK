@@ -3,9 +3,10 @@ package net.dougqh.jak.jvm.operations;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 import net.dougqh.jak.types.Reference;
 
-public final class aload extends LoadOperation {
+public final class aload extends VariableLoadOperation {
 	public static final String ID = "aload";
 	public static final byte CODE = ALOAD;
 	
@@ -13,10 +14,12 @@ public final class aload extends LoadOperation {
 		return new aload( 0 );
 	}
 	
-	private final int slot;
-	
 	public aload( final int slot ) {
-		this.slot = slot;
+		super( slot );
+	}
+	
+	public aload( final Slot slot ) {
+		super( slot );
 	}
 	
 	@Override
@@ -30,22 +33,17 @@ public final class aload extends LoadOperation {
 	}
 	
 	@Override
-	public final boolean isFixed() {
-		return false;
-	}
-	
-	@Override
-	public final int slot() {
-		return this.slot;
-	}
-	
-	@Override
 	public final Type type() {
 		return Reference.class;
 	}
+
+	@Override
+	protected final void process( final JvmOperationProcessor processor, final int slot ) {
+		processor.aload( slot );
+	}
 	
 	@Override
-	public final void process( final JvmOperationProcessor processor ) {
-		processor.aload( this.slot );
+	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
+		processor.aload( slot );
 	}
 }

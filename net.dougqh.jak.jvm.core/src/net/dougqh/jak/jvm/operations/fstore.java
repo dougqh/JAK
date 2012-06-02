@@ -3,8 +3,9 @@ package net.dougqh.jak.jvm.operations;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 
-public final class fstore extends StoreOperation {
+public final class fstore extends VariableStoreOperation {
 	public static final String ID = "fstore";
 	public static final byte CODE = FSTORE;
 	
@@ -12,10 +13,12 @@ public final class fstore extends StoreOperation {
 		return new fstore( 0 );
 	}
 	
-	private final int slot;
-	
 	public fstore( final int slot ) {
-		this.slot = slot;
+		super( slot );
+	}
+	
+	public fstore( final Slot slot ) {
+		super( slot );
 	}
 	
 	@Override
@@ -29,22 +32,17 @@ public final class fstore extends StoreOperation {
 	}
 	
 	@Override
-	public final boolean isFixed() {
-		return true;
-	}
-	
-	@Override
-	public final int slot() {
-		return this.slot;
-	}
-	
-	@Override
 	public final Type type() {
 		return float.class;
 	}
 	
 	@Override
-	public final void process( final JvmOperationProcessor processor ) {
-		processor.fstore( this.slot );
+	protected final void process( final JvmOperationProcessor processor, final int slot ) {
+		processor.fstore( slot );
+	}
+	
+	@Override
+	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
+		processor.fstore( slot );
 	}
 }
