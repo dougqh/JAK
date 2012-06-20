@@ -3,7 +3,10 @@ package net.dougqh.jak.jvm.operations;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 
-abstract class VariableStoreOperation extends StoreOperation {
+public abstract class VariableStoreOperation
+	extends StoreOperation
+	implements NormalizeableOperation
+{
 	private final Object slot;
 	
 	VariableStoreOperation( final int slot ) {
@@ -50,4 +53,23 @@ abstract class VariableStoreOperation extends StoreOperation {
 	protected abstract void process(
 		final JvmOperationProcessor processor,
 		final Slot slot );
+	
+	@Override
+	public final int hashCode() {
+		return this.getClass().hashCode() ^ this.slot();
+	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		if ( obj == null ) {
+			return false;
+		} else if ( obj == this ) {
+			return true;
+		} else if ( obj.getClass().equals( this.getClass() ) ) {
+			VariableStoreOperation that = (VariableStoreOperation)obj;
+			return ( this.slot() == that.slot() );
+		} else {
+			return false;
+		}
+	}
 }

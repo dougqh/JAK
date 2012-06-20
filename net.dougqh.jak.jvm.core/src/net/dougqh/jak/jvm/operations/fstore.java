@@ -45,4 +45,37 @@ public final class fstore extends VariableStoreOperation {
 	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
 		processor.fstore( slot );
 	}
+	
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.fstore_0();
+			
+			case 1:
+			processor.fstore_1();
+			
+			case 2:
+			processor.fstore_2();
+			
+			case 3:
+			processor.fstore_3();
+			
+			default:
+			processor.fstore( slot );
+		}
+	}
 }

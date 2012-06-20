@@ -46,4 +46,41 @@ public final class astore extends VariableStoreOperation {
 	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
 		processor.astore( slot );
 	}
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.astore_0();
+			break;
+			
+			case 1:
+			processor.astore_1();
+			break;
+			
+			case 2:
+			processor.astore_2();
+			break;
+			
+			case 3:
+			processor.astore_3();
+			break;
+			
+			default:
+			processor.astore( slot );
+			break;
+		}
+	}
 }

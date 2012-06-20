@@ -45,4 +45,41 @@ public final class istore extends VariableStoreOperation {
 	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
 		processor.istore( slot );
 	}
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.istore_0();
+			break;
+			
+			case 1:
+			processor.istore_1();
+			break;
+			
+			case 2:
+			processor.istore_2();
+			break;
+			
+			case 3:
+			processor.istore_3();
+			break;
+			
+			default:
+			processor.istore( slot );
+			break;
+		}
+	}
 }

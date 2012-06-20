@@ -45,4 +45,41 @@ public final class fload extends VariableLoadOperation {
 	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
 		processor.fload( slot );
 	}
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.fload_0();
+			break;
+			
+			case 1:
+			processor.fload_1();
+			break;
+			
+			case 2:
+			processor.fload_2();
+			break;
+			
+			case 3:
+			processor.fload_3();
+			break;
+			
+			default:
+			processor.fload( slot );
+			break;
+		}
+	}
 }

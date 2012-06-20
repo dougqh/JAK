@@ -43,4 +43,41 @@ public final class lstore extends VariableStoreOperation {
 	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
 		processor.lstore( slot );
 	}
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.lstore_0();
+			break;
+			
+			case 1:
+			processor.lstore_1();
+			break;
+			
+			case 2:
+			processor.lstore_2();
+			break;
+			
+			case 3:
+			processor.lstore_3();
+			break;
+			
+			default:
+			processor.lstore( slot );
+			break;
+		}
+	}	
 }

@@ -9,4 +9,5 @@ Export-Package: net.dougqh.jak.jvm,
  net.dougqh.jak.jvm.annotations,
  net.dougqh.jak.jvm.operations
 Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0",
- net.dougqh.jak.core;bundle-version="1.0.0"
+ net.dougqh.jak.core;bundle-version="1.0.0",
+ org.junit4;bundle-version="4.8.1"
