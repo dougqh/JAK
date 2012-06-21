@@ -42,4 +42,25 @@ public abstract class ConstantOperation implements JvmOperation {
 		T castedValue = (T)value;
 		return castedValue;
 	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		if ( obj == null ) {
+			return false;
+		} else if ( obj == this ) {
+			return true;
+		} else if ( ! this.getClass().equals(obj.getClass()) ) {
+			return false;
+		} else {
+			ConstantOperation that = (ConstantOperation)obj;
+			return ( this.value() == that.value() ) ||
+				this.value().equals( that.value() );
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		Object value = this.value();
+		return this.getClass().hashCode() ^ ( value == null ? 0 : value.hashCode() );
+	}
 }

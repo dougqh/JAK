@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.dougqh.jak.jvm.JvmOperationRewriter.State;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
 /**
@@ -16,6 +15,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 	private final JvmOperationProcessor wrappedProcessor;
 	private JvmOperationRewriter rewriter = null;
 	
+	private int state = JvmOperationRewriter.INITIAL;
 	private final List<JvmOperation> operations = new ArrayList<JvmOperation>(4);
 	
 	public JvmOperationRewritingFilter( final JvmOperationProcessor wrappedProcessor ) {
@@ -29,46 +29,30 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 	
 	public final void set( final JvmOperationRewriter rewriter ) {
 		this.rewriter = rewriter;
-		this.rewriter.reset();
 	}
 	
 	@Override
 	protected final boolean shouldFilter( final Class<? extends JvmOperation> operationClass ) {
-		State state = this.rewriter.match(operationClass);
-		switch ( state ) {
-			case MATCH:
-			return true;
-			
-			case MISMATCH:
+		boolean match = this.rewriter.match(this.state, operationClass);
+		
+		if ( ! match) {
 			this.flush();
 			this.reset();
-			return false;
-				
-			case FINISH:
-			default:
-			throw new IllegalStateException();
 		}
+		return match;
 	}
 	
 	@Override
 	protected final void filter( final JvmOperation operation ) {
-		State state = this.rewriter.match(operation);
-		switch ( state ) {
-			case MATCH:
-			this.operations.add(operation);
-			break;
-			
-			case MISMATCH:
-			this.operations.add(operation);
+		this.operations.add(operation);
+		
+		this.state = this.rewriter.match(this.state, operation);
+		if ( this.state == JvmOperationRewriter.INITIAL ) {
 			this.flush();
 			this.reset();
-			break;
-				
-			case FINISH:
-			this.operations.add(operation);
+		} else if ( this.state == JvmOperationRewriter.FINAL ) {
 			this.rewriter.finish( this.wrapped(), Collections.unmodifiableList(this.operations) );
 			this.reset();
-			break;
 		}
 	}
 	
@@ -79,7 +63,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 	}
 	
 	private final void reset() {
-		this.rewriter.reset();
 		this.operations.clear();
+		this.state = JvmOperationRewriter.INITIAL;
 	}
 }

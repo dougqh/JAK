@@ -9,24 +9,17 @@ import net.dougqh.jak.jvm.operations.NormalizeableOperation;
 
 public final class Normalizer extends JvmOperationRewriter {
 	@Override
-	public final void reset() {}
-	
-	@Override
-	public final State match( final Class<? extends JvmOperation> opClass ) {
-		return NormalizeableOperation.class.isAssignableFrom( opClass ) ?
-			State.MATCH:
-			State.MISMATCH;
+	public final boolean match(
+		final int state,
+		final Class<? extends JvmOperation> opClass )
+	{
+		return NormalizeableOperation.class.isAssignableFrom( opClass );
 	}
 	
 	@Override
-	public final State match( final JvmOperation op ) {
-		NormalizeableOperation normalizeableOp = (NormalizeableOperation)op;
-		return normalizeableOp.canNormalize() ? State.FINISH : State.MISMATCH;
-	}
-	
-	@Override
-	public void next() {
-		throw new IllegalStateException();
+	public final int match( final int state, final JvmOperation jvmOperation ) {
+		NormalizeableOperation normalizeableOp = (NormalizeableOperation)jvmOperation;
+		return normalizeableOp.canNormalize() ? JvmOperationRewriter.FINAL : JvmOperationRewriter.INITIAL;
 	}
 	
 	@Override
