@@ -16,10 +16,10 @@ public final class UnaryConstantFolding extends JvmOperationRewriter {
 	{
 		switch ( state ) {
 			case 0:
-			return opClass.equals(UnaryConstantFolding.class);
+			return isConst(opClass);
 			
 			case 1:
-			return opClass.equals(ConstantOperation.class);
+			return isUnaryOp(opClass);
 			
 			default:
 			throw new IllegalStateException();
@@ -48,8 +48,8 @@ public final class UnaryConstantFolding extends JvmOperationRewriter {
 		final JvmOperationProcessor processor,
 		final List<? extends JvmOperation> operations)
 	{
-		UnaryOperation unaryOp = (UnaryOperation)operations.get(0);
-		ConstantOperation constOp = (ConstantOperation)operations.get(1);
+		ConstantOperation constOp = (ConstantOperation)operations.get(0);
+		UnaryOperation unaryOp = (UnaryOperation)operations.get(1);
 		
 		constant( processor, unaryOp.fold(constOp.value()) );
 	}

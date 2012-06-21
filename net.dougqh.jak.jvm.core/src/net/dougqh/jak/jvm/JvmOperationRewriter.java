@@ -3,7 +3,10 @@ package net.dougqh.jak.jvm;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import net.dougqh.jak.jvm.operations.BinaryOperation;
+import net.dougqh.jak.jvm.operations.ConstantOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
+import net.dougqh.jak.jvm.operations.UnaryOperation;
 import net.dougqh.jak.jvm.operations.ldc;
 import net.dougqh.jak.jvm.operations.ldc2_w;
 
@@ -23,7 +26,19 @@ public abstract class JvmOperationRewriter {
 		final JvmOperationProcessor processor,
 		final List<? extends JvmOperation> operations );
 	
-	protected final void constant(
+	protected static final boolean isConst( final Class<? extends JvmOperation> opClass ) {
+		return ConstantOperation.class.isAssignableFrom(opClass);
+	}
+	
+	protected static final boolean isUnaryOp( final Class<? extends JvmOperation> opClass ) {
+		return UnaryOperation.class.isAssignableFrom(opClass);
+	}
+	
+	protected static final boolean isBinaryOp( final Class<? extends JvmOperation> opClass ) {
+		return BinaryOperation.class.isAssignableFrom(opClass);
+	}
+	
+	protected static final void constant(
 		final JvmOperationProcessor processor,
 		final Object value)
 	{
