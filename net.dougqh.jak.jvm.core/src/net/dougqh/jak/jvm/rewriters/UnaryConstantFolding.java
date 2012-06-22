@@ -1,20 +1,23 @@
 package net.dougqh.jak.jvm.rewriters;
 
-import java.util.List;
-
-import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.JvmOperationRewriter;
+import net.dougqh.jak.jvm.JvmOperationRewritingFilter.RewriterState;
 import net.dougqh.jak.jvm.operations.ConstantOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.UnaryOperation;
 
 public final class UnaryConstantFolding extends JvmOperationRewriter {
 	@Override
+	public final boolean backTrackOnMismatch() {
+		return true;
+	}
+	
+	@Override
 	public final boolean match(
-		final int state,
+		final RewriterState rewriterState,
 		final Class<? extends JvmOperation> opClass)
 	{
-		switch ( state ) {
+		switch ( rewriterState.state() ) {
 			case 0:
 			return isConst(opClass);
 			
@@ -24,33 +27,29 @@ public final class UnaryConstantFolding extends JvmOperationRewriter {
 			default:
 			throw new IllegalStateException();
 		}
-	}
-	
+	}	
+
 	@Override
-	public final int match(
-		final int state,
-		final JvmOperation jvmOperation)
+	public final void process(
+		final RewriterState rewriterState,
+		final JvmOperation operation)
 	{
-		switch ( state ) {
+		switch ( rewriterState.state() ) {
 			case 0:
-			return 1;
+			rewriterState.buffer(operation);
+			rewriterState.nextState();
+			break;
 			
 			case 1:
-			return FINAL;
+			ConstantOperation constOp = (ConstantOperation)rewriterState.buffered(0);
+			UnaryOperation unaryOp = (UnaryOperation)operation;
+			constant( rewriterState.processor(), unaryOp.fold(constOp.value()) );
+			
+			rewriterState.resetState();
+			break;
 			
 			default:
 			throw new IllegalStateException();
 		}
-	}
-	
-	@Override
-	public final void finish(
-		final JvmOperationProcessor processor,
-		final List<? extends JvmOperation> operations)
-	{
-		ConstantOperation constOp = (ConstantOperation)operations.get(0);
-		UnaryOperation unaryOp = (UnaryOperation)operations.get(1);
-		
-		constant( processor, unaryOp.fold(constOp.value()) );
 	}
 }

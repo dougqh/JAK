@@ -1,8 +1,8 @@
 package net.dougqh.jak.jvm;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
+import net.dougqh.jak.jvm.JvmOperationRewritingFilter.RewriterState;
 import net.dougqh.jak.jvm.operations.BinaryOperation;
 import net.dougqh.jak.jvm.operations.ConstantOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -11,20 +11,22 @@ import net.dougqh.jak.jvm.operations.ldc;
 import net.dougqh.jak.jvm.operations.ldc2_w;
 
 public abstract class JvmOperationRewriter {
-	public static final int INITIAL = 0;
-	public static final int FINAL = Integer.MAX_VALUE;
+	public abstract boolean backTrackOnMismatch();
 	
 	public abstract boolean match(
-		final int state,
+		final RewriterState rewriterState,
 		final Class<? extends JvmOperation> opClass );
 	
-	public abstract int match(
-		final int state,
-		final JvmOperation jvmOperation );
+	public boolean match(
+		final RewriterState rewriterState,
+		final JvmOperation operation )
+	{
+		return true;
+	}
 	
-	public abstract void finish(
-		final JvmOperationProcessor processor,
-		final List<? extends JvmOperation> operations );
+	public abstract void process(
+		final RewriterState rewriterState,
+		final JvmOperation operation );
 	
 	protected static final boolean isConst( final Class<? extends JvmOperation> opClass ) {
 		return ConstantOperation.class.isAssignableFrom(opClass);

@@ -1,17 +1,19 @@
 package net.dougqh.jak.jvm.rewriters;
 
+import java.util.LinkedList;
+
 import net.dougqh.jak.jvm.JvmOperationHydrator;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
 public final class TestJvmOperationHydrator extends JvmOperationHydrator {
-	private JvmOperation lastOperation = null;
+	private final LinkedList<JvmOperation> opQueue = new LinkedList<JvmOperation>();
 	
 	@Override
 	protected final void add(final JvmOperation operation) {
-		this.lastOperation = operation;
+		this.opQueue.addLast(operation);
 	}
 	
-	public final JvmOperation last() {
-		return this.lastOperation;
+	public final JvmOperation get() {
+		return this.opQueue.removeFirst();
 	}
 }

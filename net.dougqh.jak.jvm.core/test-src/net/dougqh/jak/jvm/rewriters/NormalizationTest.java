@@ -25,10 +25,10 @@ public final class NormalizationTest {
 		rewritingFilter.set(new Normalizer());
 		
 		rewritingFilter.istore(2);
-		assertThat( hydrator.last(), is(istore_2.instance()) );
+		assertThat( hydrator.get(), is(istore_2.instance()) );
 		
 		rewritingFilter.istore(6);
-		assertThat( hydrator.last(), is(new istore(6)) );
+		assertThat( hydrator.get(), is(new istore(6)) );
 	}
 	
 	@Test
@@ -39,19 +39,19 @@ public final class NormalizationTest {
 		rewritingFilter.set(new Normalizer());
 		
 		rewritingFilter.ldc(-1);
-		assertThat( hydrator.last(), is(iconst_m1.instance()) );
+		assertThat( hydrator.get(), is(iconst_m1.instance()) );
 		
 		rewritingFilter.ldc(4);
-		assertThat( hydrator.last(), is(iconst_4.instance()) );
+		assertThat( hydrator.get(), is(iconst_4.instance()) );
 		
 		rewritingFilter.ldc(27);
-		assertThat( hydrator.last(), is(new bipush((byte)27)) );
+		assertThat( hydrator.get(), is(new bipush((byte)27)) );
 		
 		rewritingFilter.ldc(-300);
-		assertThat( hydrator.last(), is(new sipush((short)-300)) );
+		assertThat( hydrator.get(), is(new sipush((short)-300)) );
 		
 		rewritingFilter.ldc(50000);
-		assertThat( hydrator.last(), is(new ldc(50000)) );
+		assertThat( hydrator.get(), is(new ldc(50000)) );
 	}
 	
 	private static final Matcher< JvmOperation > is( final JvmOperation jvmOp ) {
