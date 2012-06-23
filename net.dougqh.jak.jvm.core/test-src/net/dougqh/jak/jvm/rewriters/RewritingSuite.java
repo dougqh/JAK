@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	NormalizationTest.class,
-	UnaryConstantFoldingTest.class
+	UnaryConstantFoldingTest.class,
+	BinaryConstantFoldingTest.class
 })
 public final class RewritingSuite {}

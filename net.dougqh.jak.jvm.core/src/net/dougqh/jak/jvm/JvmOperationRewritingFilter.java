@@ -59,7 +59,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			if ( backTracked && this.rewriter.match(this.state, operation) ) {
 				this.rewriter.process(this.state, operation);
 			} else {
-				//Complete mismatch - buffer has been flushed, but this operation needs to written, too.
+				//Complete mismatch - buffer has been flushed, but this operation needs to be written, too.
 				this.state.write(operation);
 			}
 		}
@@ -71,11 +71,12 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			//swallow the first operation which represented a false start
 			this.state.write( this.state.debuffer() );
 			
-			//take the buffered operations & reset the state to process them again
+			//Now, try again...
+			//Take the buffered operations & reset the state to process them again
 			List<JvmOperation> prevBuffer = this.state.takeBuffer();
 			this.state.resetState();
 			
-			//walk through the buffered operations, calling back on this filter
+			//..., by walking through the buffered operations, calling back on this filter
 			for ( JvmOperation bufferedOp: prevBuffer ) {
 				bufferedOp.process(this);
 			}
@@ -103,7 +104,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			this.state = state;
 		}
 		
-		public final void nextState() {
+		public final void incState() {
 			++this.state;
 		}
 				
@@ -123,14 +124,8 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			this.buffer.addLast(operation);
 		}
 		
-		protected final JvmOperation debuffer() {
+		public final JvmOperation debuffer() {
 			return this.buffer.removeFirst();
-		}
-		
-		protected final List<JvmOperation> takeBuffer() {
-			List<JvmOperation> buffer = this.buffer;
-			this.buffer = new LinkedList<JvmOperation>();
-			return Collections.unmodifiableList(buffer);
 		}
 
 		public final void flushBuffer() {
@@ -139,8 +134,10 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			}
 		}
 		
-		public final JvmOperation buffered(final int index) {
-			return this.buffer.get(index);
+		protected final List<JvmOperation> takeBuffer() {
+			List<JvmOperation> buffer = this.buffer;
+			this.buffer = new LinkedList<JvmOperation>();
+			return Collections.unmodifiableList(buffer);
 		}
 		
 		public final List<JvmOperation> buffered() {
