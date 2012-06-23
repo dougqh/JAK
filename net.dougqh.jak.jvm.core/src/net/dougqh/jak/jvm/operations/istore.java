@@ -3,8 +3,9 @@ package net.dougqh.jak.jvm.operations;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 
-public final class istore extends StoreOperation {
+public final class istore extends VariableStoreOperation {
 	public static final String ID = "istore";
 	public static final byte CODE = ISTORE;
 	
@@ -12,10 +13,12 @@ public final class istore extends StoreOperation {
 		return new istore( 0 );
 	}
 	
-	private final int slot;
-	
 	public istore( final int slot ) {
-		this.slot = slot;
+		super( slot );
+	}
+	
+	public istore( final Slot slot ) {
+		super( slot );
 	}
 	
 	@Override
@@ -28,24 +31,55 @@ public final class istore extends StoreOperation {
 		return CODE;
 	}
 	
-	
-	@Override
-	public final boolean isFixed() {
-		return true;
-	}
-	
-	@Override
-	public final int slot() {
-		return this.slot;
-	}
-	
 	@Override
 	public final Type type() {
 		return int.class;
 	}
 	
 	@Override
-	public final void process( final JvmOperationProcessor processor ) {
-		processor.istore( this.slot );
+	protected final void process( final JvmOperationProcessor processor, final int slot ) {
+		processor.istore( slot );
+	}
+	
+	@Override
+	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
+		processor.istore( slot );
+	}
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.istore_0();
+			break;
+			
+			case 1:
+			processor.istore_1();
+			break;
+			
+			case 2:
+			processor.istore_2();
+			break;
+			
+			case 3:
+			processor.istore_3();
+			break;
+			
+			default:
+			processor.istore( slot );
+			break;
+		}
 	}
 }

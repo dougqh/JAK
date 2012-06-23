@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class aload_0 extends LoadOperation {
+public final class aload_0 extends FixedLoadOperation {
 	public static final String ID = "aload_0";
 	public static final byte CODE = ALOAD_0;
 	
@@ -23,11 +23,6 @@ public final class aload_0 extends LoadOperation {
 	@Override
 	public final int getCode() {
 		return CODE;
-	}
-	
-	@Override
-	public final boolean isFixed() {
-		return true;
 	}
 	
 	@Override

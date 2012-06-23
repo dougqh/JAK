@@ -13,9 +13,9 @@ public final class instanceof_ implements JvmOperation {
 		return new instanceof_( Object.class );
 	}
 	
-	private final Class< ? > aClass;
+	private final Type aClass;
 	
-	public instanceof_( final Class< ? > aClass ) {
+	public instanceof_( final Type aClass ) {
 		this.aClass = aClass;
 	}
 	

@@ -494,27 +494,8 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@SyntheticOp( stackResultTypes=int.class )
 	public final JvmCodeWriter iconst( final int value ) {
-		if ( value == -1 ) {
-			return this.iconst_m1();
-		} else if ( value == 0 ) {
-			return this.iconst_0();
-		} else if ( value == 1 ) {
-			return this.iconst_1();
-		} else if ( value == 2 ) {
-			return this.iconst_2();
-		} else if ( value == 3 ) {
-			return this.iconst_3();
-		} else if ( value == 4 ) {
-			return this.iconst_4();
-		} else if ( value == 5 ) {
-			return this.iconst_5();
-		} else if ( value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE ) {
-			return this.bipush( (byte)value );
-		} else if ( value >= Short.MIN_VALUE && value <= Short.MAX_VALUE ) {
-			return this.sipush( (short)value );
-		} else {
-			return this.ldc( value );
-		}
+		ldc.normalize( this.coreWriter(), value );
+		return this;
 	}
 
 	@JvmOp( iconst_m1.class )
@@ -561,15 +542,8 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@SyntheticOp( stackResultTypes=long.class )
 	public final JvmCodeWriter lconst( final long value ) {
-		if ( value == 0 ) {
-			return this.lconst_0();
-		} else if ( value == 1 ) {
-			return this.lconst_1();
-		} else if ( value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE ) {
-			return this.iconst( (int) value ).i2l();
-		} else {
-			return this.ldc2_w( value );
-		}
+		ldc2_w.normalize( this.coreWriter(), value );
+		return this;
 	}
 
 	@JvmOp( lconst_0.class )
@@ -617,13 +591,8 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 
 	@SyntheticOp( stackResultTypes=double.class )
 	public final JvmCodeWriter dconst( final double value ) {
-		if ( value == 0D ) {
-			return this.dconst_0();
-		} else if ( value == 1D ) {
-			return this.dconst_1();
-		} else {
-			return this.ldc2_w( value );
-		}
+		ldc2_w.normalize( this.coreWriter(), value );
+		return this;
 	}
 
 	@JvmOp( dconst_0.class )

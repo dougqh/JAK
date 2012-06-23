@@ -20,6 +20,13 @@ public final class JvmOperations {
 		}
 	}
 	
+	public static final boolean isA(
+		final Class<? extends JvmOperation> operationClass,
+		final Class<? extends JvmOperation> desiredClass )
+	{
+		return desiredClass.isAssignableFrom( operationClass );
+	}
+	
 	@SuppressWarnings( "unchecked" )
 	private static final < T extends JvmOperation > T invoke( final Method method ) {
 		try {

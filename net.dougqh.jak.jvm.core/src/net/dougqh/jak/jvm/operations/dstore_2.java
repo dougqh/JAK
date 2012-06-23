@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class dstore_2 extends StoreOperation {
+public final class dstore_2 extends FixedStoreOperation {
 	public static final String ID = "dstore_2";
 	public static final byte CODE = DSTORE_2;
 	
@@ -27,11 +27,6 @@ public final class dstore_2 extends StoreOperation {
 	@Override
 	public final Type type() {
 		return double.class;
-	}
-	
-	@Override
-	public final boolean isFixed() {
-		return true;
 	}
 	
 	@Override

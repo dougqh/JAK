@@ -5,7 +5,10 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Category2;
 
-public final class ldc2_w extends ConstantOperation {
+public final class ldc2_w
+	extends ConstantOperation
+	implements NormalizeableOperation
+{
 	public static final String ID = "ldc2_w";
 	public static final byte CODE = LDC2_W;
 	
@@ -56,6 +59,56 @@ public final class ldc2_w extends ConstantOperation {
 			processor.ldc2_w( (Double)value );
 		} else {
 			throw new IllegalStateException();
+		}
+	}
+	
+	@Override
+	public boolean canNormalize() {
+		if ( this.value instanceof Long ) {
+			long longValue = (Long)this.value;
+			return ( longValue == 0L || longValue == 1L );
+		} else if ( this.value instanceof Double ) {
+			double doubleValue = (Double)this.value;
+			return ( doubleValue == 0D || doubleValue == 1D );
+		} else {
+			throw new IllegalStateException();
+		}
+	}
+	
+	@Override
+	public void normalize( final JvmOperationProcessor processor ) {
+		if ( this.value instanceof Long ) {
+			normalize( processor, (Long)this.value );
+		} else if ( this.value instanceof Double ) {
+			normalize( processor, (Double)this.value );
+		} else {
+			throw new IllegalStateException();
+		}
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final long value )
+	{
+		if ( value == 0 ) {
+			processor.lconst_0();
+		} else if ( value == 1 ) {
+			processor.lconst_1();
+		} else {
+			processor.ldc2_w( value );
+		}
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final double value )
+	{
+		if ( value == 0D ) {
+			processor.dconst_0();
+		} else if ( value == 1F ) {
+			processor.dconst_1();
+		} else {
+			processor.ldc2_w( value );
 		}
 	}
 }

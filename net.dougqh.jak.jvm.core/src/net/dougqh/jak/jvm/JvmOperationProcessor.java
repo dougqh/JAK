@@ -8,7 +8,12 @@ import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.annotations.WrapOp;
 import net.dougqh.jak.jvm.operations.*;
 
-
+/**
+ * Callback interface to use when processing operations as events;
+ * JvmOperationHydrator implements this interface and can be used 
+ * when the operation stream needs to be turned into JvmOperation
+ * objects.
+ */
 public interface JvmOperationProcessor {
 	@JvmOp( nop.class )
 	public abstract void nop();

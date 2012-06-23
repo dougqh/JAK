@@ -3,8 +3,9 @@ package net.dougqh.jak.jvm.operations;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 
-public final class lload extends LoadOperation {
+public final class lload extends VariableLoadOperation {
 	public static final String ID = "lload";
 	public static final byte CODE = LLOAD;
 	
@@ -12,10 +13,12 @@ public final class lload extends LoadOperation {
 		return new lload( 0 );
 	}
 	
-	private final int slot;
-	
 	public lload( final int slot ) {
-		this.slot = slot;
+		super( slot );
+	}
+	
+	public lload( final Slot slot ) {
+		super( slot );
 	}
 	
 	@Override
@@ -29,22 +32,54 @@ public final class lload extends LoadOperation {
 	}
 	
 	@Override
-	public final boolean isFixed() {
-		return false;
-	}
-	
-	@Override
-	public final int slot() {
-		return this.slot;
-	}
-	
-	@Override
 	public final Type type() {
 		return long.class;
 	}
 	
 	@Override
-	public final void process( final JvmOperationProcessor processor ) {
-		processor.lload( this.slot );
+	protected final void process( final JvmOperationProcessor processor, final int slot ) {
+		processor.lload( slot );
+	}
+	
+	@Override
+	protected final void process( final JvmOperationProcessor processor, final Slot slot ) {
+		processor.lload( slot );
+	}
+	
+	@Override
+	public final boolean canNormalize() {
+		return ( this.slot() < 4 );
+	}
+	
+	@Override
+	public final void normalize( final JvmOperationProcessor processor ) {
+		normalize( processor, this.slot() );
+	}
+	
+	public static final void normalize(
+		final JvmOperationProcessor processor,
+		final int slot )
+	{
+		switch ( slot ) {
+			case 0:
+			processor.lload_0();
+			break;
+			
+			case 1:
+			processor.lload_1();
+			break;
+			
+			case 2:
+			processor.lload_2();
+			break;
+			
+			case 3:
+			processor.lload_3();
+			break;
+			
+			default:
+			processor.lload( slot );
+			break;
+		}
 	}
 }

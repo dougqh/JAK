@@ -1,5 +1,7 @@
 package net.dougqh.jak.jvm.operations;
 
+import java.lang.reflect.Type;
+
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
@@ -11,9 +13,9 @@ public final class anewarray implements JvmOperation {
 		return new anewarray( Object.class );
 	}
 	
-	private final Class< ? > componentType;
+	private final Type componentType;
 	
-	public anewarray( final Class< ? > componentType ) {
+	public anewarray( final Type componentType ) {
 		this.componentType = componentType;
 	}
 	

@@ -13,11 +13,11 @@ public final class multianewarray implements JvmOperation {
 		return new multianewarray( Object[][].class, 2 );
 	}
 	
-	private final Class< ? > arrayClass;
+	private final Type arrayClass;
 	private final int numDimensions;
 	
 	public multianewarray(
-		final Class< ? > arrayClass,
+		final Type arrayClass,
 		final int numDimensions )
 	{
 		this.arrayClass = arrayClass;

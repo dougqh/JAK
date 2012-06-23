@@ -13,9 +13,9 @@ public final class new_ implements JvmOperation {
 		return new new_( Object.class );
 	}
 	
-	private final Class< ? > aClass;
+	private final Type aClass;
 	
-	public new_( final Class< ? > aClass ) {
+	public new_( final Type aClass ) {
 		this.aClass = aClass;
 	}
 	
