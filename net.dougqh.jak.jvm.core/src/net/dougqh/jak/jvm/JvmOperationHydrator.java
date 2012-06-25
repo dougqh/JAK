@@ -1071,5 +1071,9 @@ public abstract class JvmOperationHydrator implements JvmOperationProcessor {
         this.add( new goto_( jump ) );
     }
     
+    @Override
+    public final void prepare() {
+    }
+    
     protected abstract void add( final JvmOperation operation );
 }

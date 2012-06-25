@@ -28,6 +28,10 @@ public abstract class JvmOperationRewriter {
 		final RewriterState rewriterState,
 		final JvmOperation operation );
 	
+	public void finish( final RewriterState rewriterState ) {
+		rewriterState.flushBuffer();
+	}
+	
 	protected static final boolean isConst( final Class<? extends JvmOperation> opClass ) {
 		return ConstantOperation.class.isAssignableFrom(opClass);
 	}

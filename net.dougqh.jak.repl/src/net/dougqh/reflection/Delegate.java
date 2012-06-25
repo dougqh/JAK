@@ -83,7 +83,8 @@ public abstract class Delegate< I > {
 		final Object[] args )
 		throws Throwable
 	{
-		return interfaceMethod.invoke( wrappedObject, args );
+		interfaceMethod.setAccessible(true);
+		return interfaceMethod.invoke(wrappedObject, args);
 	}
 	
 	private final class InvocationHandlerImpl implements InvocationHandler {

@@ -26,7 +26,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			protected final ApproachImpl createImpl(
 				final JvmOperationRewritingFilter rewritingFilter )
 			{
-				throw new UnsupportedOperationException();
+				return new MultiPassImpl( rewritingFilter );
 			}
 		};
 		
@@ -71,6 +71,11 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 	@Override
 	protected final void filter( final JvmOperation operation ) {
 		this.approachImpl.filter(operation);
+	}
+	
+	@Override
+	public final void prepare() {
+		this.approachImpl.finish();
 	}
 	
 	public static abstract class RewriterState {
@@ -152,6 +157,8 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 		protected abstract boolean shouldFilter( final Class<? extends JvmOperation> operationClass );
 		
 		protected abstract void filter( final JvmOperation operation );
+		
+		protected abstract void finish();
 	}
 	
 	private static final class StreamingImpl extends ApproachImpl {
@@ -210,6 +217,35 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 				this.state().resetState();
 			}
 			return backTrack;
-		}	
+		}
+		
+		@Override
+		protected final void finish() {
+			this.rewriter().finish(this.state());
+		}
+	}
+	
+	private static final class MultiPassImpl extends ApproachImpl {
+		MultiPassImpl( final JvmOperationRewritingFilter rewritingFilter ) {
+			super( rewritingFilter );
+		}
+		
+		@Override
+		protected final boolean shouldFilter(
+			Class<? extends JvmOperation> operationClass )
+		{
+			return true;
+		}
+		
+		@Override
+		protected final void filter( final JvmOperation operation ) {
+			//this.operations.add
+		}
+		
+		
+		@Override
+		protected final void finish() {
+			this.rewriter().finish(this.state());
+		}
 	}
 }

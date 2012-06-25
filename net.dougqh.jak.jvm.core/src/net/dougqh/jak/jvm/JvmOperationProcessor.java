@@ -668,6 +668,8 @@ public interface JvmOperationProcessor {
 	@JvmOp( goto_.class )
 	public abstract void goto_( final Jump jump );
 	
+	public abstract void prepare();
+	
 	public abstract void handleException( final ExceptionHandler exceptionHandler );
 	
 	public abstract class Slot {

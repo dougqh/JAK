@@ -8,7 +8,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: net.dougqh.jak.core.assembler;bundle-version="1.0.0",
  net.dougqh.jak.jvm.assembler;bundle-version="1.0.0",
  net.dougqh.java.meta;bundle-version="1.0.0",
- net.dougqh.jak.core;bundle-version="1.0.0"
+ net.dougqh.jak.core;bundle-version="1.0.0",
+ net.dougqh.jak.jvm.core;bundle-version="1.0.0"
 Class-Path: net.dougqh.meta.java.jar net.dougqh.jak.jar jline-0.9.94.jar
 Main-Class: net.dougqh.jak.repl.JakRepl
 

@@ -17,7 +17,7 @@ public interface JvmCoreCodeWriter extends JvmOperationProcessor {
 	
 	public abstract WritingContext context();
 	
-	public abstract void prepareForWrite();
+	public abstract void finish();
 	
 	public abstract JvmStack stackMonitor();
 	

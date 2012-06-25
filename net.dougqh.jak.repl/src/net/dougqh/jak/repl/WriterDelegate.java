@@ -50,8 +50,8 @@ final class WriterDelegate extends Delegate< JvmCoreCodeWriter > {
 				return this.invoke( new MethodInvocation( interfaceMethod, args ) );
 			}
 		} else {
-			if ( is( interfaceMethod, "prepareForWrite" ) ) {
-				this.prepareForWrite();
+			if ( is( interfaceMethod, "finish" ) ) {
+				this.finish();
 				return null;
 			} else {
 				return this.invokeOn( this.coreWriter, interfaceMethod, args );
@@ -63,7 +63,7 @@ final class WriterDelegate extends Delegate< JvmCoreCodeWriter > {
 		return method.getName().equals( name );
 	}
 	
-	private final void prepareForWrite() {
+	private final void finish() {
 		if ( this.buffer != null ) {
 			MethodBuffer oldBuffer = this.buffer;
 			this.buffer = null;
@@ -74,7 +74,7 @@ final class WriterDelegate extends Delegate< JvmCoreCodeWriter > {
 				throw new IllegalStateException( e );
 			}
 		}
-		this.coreWriter.prepareForWrite();
+		this.coreWriter.finish();
 	}
 	
 	private final JvmCoreCodeWriter startBuffering( final MethodBuffer buffer ) {

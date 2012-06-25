@@ -2121,7 +2121,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final void prepareForWrite() {
+	public final void finish() {
 		this.prepareLast();
 	}
 	
@@ -2138,7 +2138,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	final void prepareWrapperForWrite() {
-		this.wrapper.prepareForWrite();
+		this.wrapper.finish();
 	}
 	
 	private final void inc( final int slot ) {
