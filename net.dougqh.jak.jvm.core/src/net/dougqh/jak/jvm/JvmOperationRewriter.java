@@ -10,7 +10,7 @@ import net.dougqh.jak.jvm.operations.UnaryOperation;
 import net.dougqh.jak.jvm.operations.ldc;
 import net.dougqh.jak.jvm.operations.ldc2_w;
 
-public abstract class JvmOperationRewriter {
+public abstract class JvmOperationRewriter {	
 	public abstract boolean backTrackOnMismatch();
 	
 	public abstract boolean match(

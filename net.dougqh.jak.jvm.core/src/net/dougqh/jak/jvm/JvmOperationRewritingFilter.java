@@ -12,7 +12,29 @@ import net.dougqh.jak.jvm.operations.JvmOperation;
  * Filters can be added and removed during the course of a method.
  */
 public final class JvmOperationRewritingFilter extends JvmOperationFilter {
+	public enum Approach {
+		STREAMING() {
+			@Override
+			protected final ApproachImpl createImpl(
+				final JvmOperationRewritingFilter rewritingFilter )
+			{
+				return new StreamingImpl( rewritingFilter );
+			}
+		},
+		MULTI_PASS() {
+			@Override
+			protected final ApproachImpl createImpl(
+				final JvmOperationRewritingFilter rewritingFilter )
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
+		
+		protected abstract ApproachImpl createImpl( final JvmOperationRewritingFilter rewritingFilter );
+	}
+	
 	private final JvmOperationProcessor wrappedProcessor;
+	private ApproachImpl approachImpl;
 	private JvmOperationRewriter rewriter = null;
 	
 	private final RewriterState state = new RewriterState() {
@@ -24,6 +46,12 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 	
 	public JvmOperationRewritingFilter( final JvmOperationProcessor wrappedProcessor ) {
 		this.wrappedProcessor = wrappedProcessor;
+		this.setApproach( Approach.STREAMING );
+	}
+	
+	public JvmOperationRewritingFilter setApproach( final Approach approach ) {
+		this.approachImpl = approach.createImpl(this);
+		return this;
 	}
 	
 	@Override
@@ -37,55 +65,12 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 	
 	@Override
 	protected final boolean shouldFilter( final Class<? extends JvmOperation> operationClass ) {
-		boolean match = this.rewriter.match(this.state, operationClass);
-		if ( ! match ) {
-			boolean backTracked = this.handleMismatch();
-			//DQH - If we backtracked, then the state was reset so try again
-			if ( backTracked ) {
-				match = this.rewriter.match(this.state, operationClass);
-			}
-		}
-		return match;
+		return this.approachImpl.shouldFilter(operationClass);
 	}
 	
 	@Override
 	protected final void filter( final JvmOperation operation ) {
-		boolean match = this.rewriter.match(this.state, operation);
-		if ( match ) {
-			this.rewriter.process(this.state, operation);
-		} else {
-			boolean backTracked = this.handleMismatch();
-			//DQH - If we backtracked, then the state was reset so try again
-			if ( backTracked && this.rewriter.match(this.state, operation) ) {
-				this.rewriter.process(this.state, operation);
-			} else {
-				//Complete mismatch - buffer has been flushed, but this operation needs to be written, too.
-				this.state.write(operation);
-			}
-		}
-	}
-	
-	private final boolean handleMismatch() {
-		boolean backTrack = ( this.rewriter.backTrackOnMismatch() && this.state.hasBufferContents() );
-		if ( backTrack ) {
-			//swallow the first operation which represented a false start
-			this.state.write( this.state.debuffer() );
-			
-			//Now, try again...
-			//Take the buffered operations & reset the state to process them again
-			List<JvmOperation> prevBuffer = this.state.takeBuffer();
-			this.state.resetState();
-			
-			//..., by walking through the buffered operations, calling back on this filter
-			for ( JvmOperation bufferedOp: prevBuffer ) {
-				bufferedOp.process(this);
-			}
-		} else {
-			//no back tracking - just flush the buffer & reset
-			this.state.flushBuffer();
-			this.state.resetState();
-		}
-		return backTrack;
+		this.approachImpl.filter(operation);
 	}
 	
 	public static abstract class RewriterState {
@@ -143,5 +128,88 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 		public final List<JvmOperation> buffered() {
 			return Collections.unmodifiableList(this.buffer);
 		}
+	}
+	
+	protected static abstract class ApproachImpl {
+		protected final JvmOperationRewritingFilter rewritingFilter;
+		
+		ApproachImpl( JvmOperationRewritingFilter rewritingFilter ) {
+			this.rewritingFilter = rewritingFilter;
+		}
+		
+		protected final JvmOperationRewritingFilter rewritingFilter() {
+			return this.rewritingFilter;
+		}
+		
+		protected final JvmOperationRewriter rewriter() {
+			return this.rewritingFilter.rewriter;
+		}
+		
+		protected final RewriterState state() {
+			return this.rewritingFilter.state;
+		}
+		
+		protected abstract boolean shouldFilter( final Class<? extends JvmOperation> operationClass );
+		
+		protected abstract void filter( final JvmOperation operation );
+	}
+	
+	private static final class StreamingImpl extends ApproachImpl {
+		StreamingImpl( final JvmOperationRewritingFilter rewritingFilter ) {
+			super( rewritingFilter );
+		}
+		
+		@Override
+		protected final boolean shouldFilter( final Class<? extends JvmOperation> operationClass ) {
+			boolean match = this.rewriter().match(this.state(), operationClass);
+			if ( ! match ) {
+				boolean backTracked = this.handleMismatch();
+				//DQH - If we backtracked, then the state was reset so try again
+				if ( backTracked ) {
+					match = this.rewriter().match(this.state(), operationClass);
+				}
+			}
+			return match;
+		}
+			
+		@Override
+		protected final void filter( final JvmOperation operation ) {
+			boolean match = this.rewriter().match(this.state(), operation);
+			if ( match ) {
+				this.rewriter().process(this.state(), operation);
+			} else {
+				boolean backTracked = this.handleMismatch();
+				//DQH - If we backtracked, then the state was reset so try again
+				if ( backTracked && this.rewriter().match(this.state(), operation) ) {
+					this.rewriter().process(this.state(), operation);
+				} else {
+					//Complete mismatch - buffer has been flushed, but this operation needs to be written, too.
+					this.state().write(operation);
+				}
+			}
+		}
+		
+		private final boolean handleMismatch() {
+			boolean backTrack = ( this.rewriter().backTrackOnMismatch() && this.state().hasBufferContents() );
+			if ( backTrack ) {
+				//swallow the first operation which represented a false start
+				this.state().write( this.state().debuffer() );
+				
+				//Now, try again...
+				//Take the buffered operations & reset the state to process them again
+				List<JvmOperation> prevBuffer = this.state().takeBuffer();
+				this.state().resetState();
+				
+				//..., by walking through the buffered operations, calling back on this filter
+				for ( JvmOperation bufferedOp: prevBuffer ) {
+					bufferedOp.process(this.rewritingFilter);
+				}
+			} else {
+				//no back tracking - just flush the buffer & reset
+				this.state().flushBuffer();
+				this.state().resetState();
+			}
+			return backTrack;
+		}	
 	}
 }
