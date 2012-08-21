@@ -24,5 +24,4 @@ public interface JvmCoreCodeWriter extends JvmOperationProcessor {
 	public abstract JvmLocals localsMonitor();
 	
 	public abstract int pos();
-
 }

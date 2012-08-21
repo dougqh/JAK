@@ -18,7 +18,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			protected final ApproachImpl createImpl(
 				final JvmOperationRewritingFilter rewritingFilter )
 			{
-				return new StreamingImpl( rewritingFilter );
+				return new StreamingImpl(rewritingFilter);
 			}
 		},
 		MULTI_PASS() {
@@ -26,7 +26,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			protected final ApproachImpl createImpl(
 				final JvmOperationRewritingFilter rewritingFilter )
 			{
-				return new MultiPassImpl( rewritingFilter );
+				return new MultiPassImpl(rewritingFilter);
 			}
 		};
 		
@@ -83,11 +83,17 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 		//Deliberately, not final so that buffer ownership can be transferred when backtracking
 		private LinkedList<JvmOperation> buffer = new LinkedList<JvmOperation>();
 		private int state = 0;
+		private boolean rewrote;
 		
 		public abstract JvmOperationProcessor processor();
 		
 		public final void resetState() {
+			this.resetState(true);
+		}
+		
+		public final void resetState(final boolean rewrote) {
 			this.state(0);
+			this.rewrote |= rewrote;
 		}
 		
 		public final void state(final int state) {
@@ -205,7 +211,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 				//Now, try again...
 				//Take the buffered operations & reset the state to process them again
 				List<JvmOperation> prevBuffer = this.state().takeBuffer();
-				this.state().resetState();
+				this.state().resetState(false);
 				
 				//..., by walking through the buffered operations, calling back on this filter
 				for ( JvmOperation bufferedOp: prevBuffer ) {
@@ -214,7 +220,7 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 			} else {
 				//no back tracking - just flush the buffer & reset
 				this.state().flushBuffer();
-				this.state().resetState();
+				this.state().resetState(false);
 			}
 			return backTrack;
 		}
