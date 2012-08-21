@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Set;
 
 import net.dougqh.jak.JavaMethodSignature;
-import net.dougqh.jak.annotations.JvmOp;
-import net.dougqh.jak.annotations.Symbol;
-import net.dougqh.jak.annotations.SyntheticOp;
-import net.dougqh.jak.annotations.WrapOp;
 import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
+import net.dougqh.jak.jvm.annotations.JvmOp;
+import net.dougqh.jak.jvm.annotations.Symbol;
+import net.dougqh.jak.jvm.annotations.SyntheticOp;
+import net.dougqh.jak.jvm.annotations.WrapOp;
 import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.JvmOperations;
@@ -128,7 +128,7 @@ final class ReplMethod {
 	public final boolean matchesStackTypes( final JakRepl repl ) {
 		JvmOperation operation = getOperationOf( this.method );
 		
-		Class< ? >[] expectedTypes = operation.getStackOperandTypes().clone();
+		Type[] expectedTypes = operation.getStackOperandTypes().clone();
 		reverse( expectedTypes );
 		
 		return repl.codeWriter().stackMonitor().typeStack().matches( expectedTypes );
