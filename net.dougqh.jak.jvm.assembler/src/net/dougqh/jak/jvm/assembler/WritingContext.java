@@ -5,7 +5,8 @@ import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.assembler.TypeResolver;
 
-final class WritingContext {
+//DQH - Made public to prevent breaking REPL
+public final class WritingContext {
 	final TypeResolver resolver;
 	final ConstantPool constantPool;
 	final Type thisType;

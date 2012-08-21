@@ -11,7 +11,7 @@ import jline.Completor;
 import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;
-import net.dougqh.jak.annotations.JvmOp;
+import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.JvmOperations;
 
