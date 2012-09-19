@@ -10,7 +10,7 @@ final class Interfaces {
 	
 	Interfaces(
 		final ConstantPool constantPool,
-		final ByteInputStream in )
+		final JvmInputStream in )
 		throws IOException
 	{
 		this.constantPool = constantPool;

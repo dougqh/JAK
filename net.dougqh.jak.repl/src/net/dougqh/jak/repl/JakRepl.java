@@ -73,6 +73,7 @@ public final class JakRepl {
 		ResetCommand.INSTANCE,
 		ClearCommand.INSTANCE,
 		ListCommand.INSTANCE,
+		OptimizeCommand.INSTANCE,
 		EchoCommand.INSTANCE,
 		ImportCommand.INSTANCE,
 		ImportsCommand.INSTANCE,

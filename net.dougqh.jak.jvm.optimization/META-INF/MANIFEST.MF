@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Optimization
+Bundle-SymbolicName: net.dougqh.jak.jvm.optimization
+Bundle-Version: 1.0.0.0
+Bundle-Vendor: Douglas Q Hawkins
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: net.dougqh.jak.core;bundle-version="1.0.0",
+ net.dougqh.jak.jvm.core;bundle-version="1.0.0"
+Export-Package: net.dougqh.jak.jvm.optimizers

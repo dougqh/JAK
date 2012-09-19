@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class LoadOperation implements JvmOperation{
+public abstract class LoadOperation implements JvmOperation {
 	public abstract Type type();
 	
 	public abstract int slot();

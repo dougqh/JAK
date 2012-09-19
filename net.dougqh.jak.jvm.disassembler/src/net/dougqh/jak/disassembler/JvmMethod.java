@@ -1,9 +1,11 @@
 package net.dougqh.jak.disassembler;
 
-import static net.dougqh.jak.Methods.*;
-
 import java.lang.reflect.Type;
 import java.util.List;
+
+import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.operations.JvmOperation;
+import static net.dougqh.jak.Methods.*;
 
 public final class JvmMethod implements JavaMethod {
 	private final ConstantPool constantPool;
@@ -74,6 +76,14 @@ public final class JvmMethod implements JavaMethod {
 	public final int getMaxLocals() {
 		CodeAttribute code = this.getCode();
 		return ( code == null ) ? 0 : code.maxLocals();
+	}
+	
+	public final void process( final JvmOperationProcessor processor ) {
+		this.getCode().process( processor );
+	}
+	
+	public final Iterable< JvmOperation > operations() {
+		this.getCode().operations();
 	}
 	
 	public final String toString() {

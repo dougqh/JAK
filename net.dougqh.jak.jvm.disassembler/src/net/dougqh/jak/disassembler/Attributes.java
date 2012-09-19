@@ -5,11 +5,14 @@ import static net.dougqh.jak.jvm.Attributes.*;
 import java.io.IOException;
 
 final class Attributes {
+	private final ConstantPool constantPool;
 	private final Attribute[] attributes;
 	
-	Attributes( final ConstantPool constantPool, final ByteInputStream in )
+	Attributes( final ConstantPool constantPool, final JvmInputStream in )
 		throws IOException
 	{
+		this.constantPool = constantPool;
+		
 		int count = in.u2();
 		this.attributes = new Attribute[ count ];
 		
@@ -29,8 +32,11 @@ final class Attributes {
 		return this.get( 
 			CODE,
 			new Converter< CodeAttribute >() {
-				CodeAttribute convert( final ByteInputStream in ) throws IOException {
-					return new CodeAttribute( in );
+				CodeAttribute convert(
+					final ConstantPool constantPool,
+					final JvmInputStream in ) throws IOException
+				{
+					return new CodeAttribute( constantPool, in );
 				}
 			} );
 	}
@@ -43,10 +49,10 @@ final class Attributes {
 		if ( attribute == null ) {
 			return null;
 		} else {
-			ByteInputStream in = attribute.in();
+			JvmInputStream in = attribute.in();
 			try {
 				try {
-					return converter.convert( in );
+					return converter.convert( this.constantPool, in );
 				} finally {
 					in.close();
 				}
@@ -88,12 +94,15 @@ final class Attributes {
 			return this.getName().equals( name );
 		}
 		
-		final ByteInputStream in() {
-			return new ByteInputStream( this.data );
+		final JvmInputStream in() {
+			return new JvmInputStream( this.data );
 		}
 	}
 	
 	static abstract class Converter< T > {
-		abstract T convert( final ByteInputStream in ) throws IOException;
+		abstract T convert(
+			final ConstantPool constantPool,
+			final JvmInputStream in )
+			throws IOException;
 	}
 }

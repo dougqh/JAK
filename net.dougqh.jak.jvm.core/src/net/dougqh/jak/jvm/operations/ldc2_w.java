@@ -105,7 +105,7 @@ public final class ldc2_w
 	{
 		if ( value == 0D ) {
 			processor.dconst_0();
-		} else if ( value == 1F ) {
+		} else if ( value == 1D ) {
 			processor.dconst_1();
 		} else {
 			processor.ldc2_w( value );

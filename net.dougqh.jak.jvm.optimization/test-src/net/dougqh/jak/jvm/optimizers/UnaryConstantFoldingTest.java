@@ -1,4 +1,4 @@
-package net.dougqh.jak.jvm.rewriters;
+package net.dougqh.jak.jvm.optimizers;
 
 import net.dougqh.jak.jvm.JvmOperationRewritingFilter;
 import net.dougqh.jak.jvm.operations.JvmOperation;

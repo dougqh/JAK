@@ -28,10 +28,10 @@ final class JvmTypeInternals {
 	private final int flags;
 	
 	JvmTypeInternals( final InputStream in ) throws IOException {
-		this( new ByteInputStream( in ) );
+		this( new JvmInputStream( in ) );
 	}
 	
-	JvmTypeInternals( final ByteInputStream in ) throws IOException {
+	JvmTypeInternals( final JvmInputStream in ) throws IOException {
 		readMagic( in );
 		this.minorVersion = in.u2();
 		this.majorVersion = in.u2();
@@ -88,7 +88,7 @@ final class JvmTypeInternals {
 		return this.methods.getAllMethods();
 	}
 	
-	private static final void readMagic( final ByteInputStream in )
+	private static final void readMagic( final JvmInputStream in )
 		throws IOException
 	{
 		byte[] magic = in.read( 4 );
