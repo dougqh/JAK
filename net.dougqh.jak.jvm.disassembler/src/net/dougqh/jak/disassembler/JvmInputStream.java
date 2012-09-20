@@ -188,7 +188,7 @@ final class JvmInputStream {
 		return bytes;
 	}
 	
-	private final ByteBuffer readByteBuffer(final int length) throws EOFException {
+	final ByteBuffer readByteBuffer(final int length) throws EOFException {
 		byte[] head = this.head();
 		if ( this.headPos + length < head.length ) {
 			// if solely contained in the current block, just construct the 
