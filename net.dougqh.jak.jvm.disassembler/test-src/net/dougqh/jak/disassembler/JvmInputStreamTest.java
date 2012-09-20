@@ -76,6 +76,16 @@ public final class JvmInputStreamTest {
 		assertThat( in.readByteBuffer(4), isBuffer(new byte[]{1, 2, 3, 4}) );
 	}
 	
+	@Test
+	public final void readBufferSpanningBlocks() throws EOFException {
+		JvmInputStream in = new JvmInputStream(
+			new byte[]{ 0, 1 },
+			new byte[]{ 2 },
+			new byte[]{ 3, 4 }
+		);
+		assertThat( in.readByteBuffer(4), isBuffer(new byte[]{0, 1, 2, 3}) );
+	}
+	
 	private static final Matcher<Byte> isByte(final int value) {
 		return CoreMatchers.is((byte)value);
 	}
