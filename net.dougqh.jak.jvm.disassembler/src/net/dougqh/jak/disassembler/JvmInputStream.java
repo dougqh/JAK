@@ -204,7 +204,7 @@ final class JvmInputStream {
 		}
 	}
 	
-	final JvmInputStream readSubStream(final int length) throws IOException {
+	final JvmInputStream readSubStream(final int length) throws EOFException {
 		LinkedList<byte[]> subQueue = new LinkedList<byte[]>();
 		
 		// First block could be not at a zero pos, so handle it as a special case

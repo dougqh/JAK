@@ -86,6 +86,23 @@ public final class JvmInputStreamTest {
 		assertThat( in.readByteBuffer(4), isBuffer(new byte[]{0, 1, 2, 3}) );
 	}
 	
+	@Test
+	public final void readSubStream() throws EOFException {
+		// Most complicated case
+		// - partial head block
+		// - full middle block
+		// - partial tail block
+		JvmInputStream in = new JvmInputStream(
+			new byte[]{ 0, 1, 2 },
+			new byte[]{ 3, 4, 5, 6 },
+			new byte[]{ 7, 8, 9, 10, 11 }
+		);
+		in.u1();
+		
+		JvmInputStream subIn = in.readSubStream(9);
+		assertThat( subIn.readBytes(9), is(new byte[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9 }) );
+	}
+	
 	private static final Matcher<Byte> isByte(final int value) {
 		return CoreMatchers.is((byte)value);
 	}
