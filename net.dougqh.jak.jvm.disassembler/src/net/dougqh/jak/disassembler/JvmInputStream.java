@@ -168,7 +168,14 @@ final class JvmInputStream {
 		// the head by the previous  method call.
 		// So, the only check is if the queue is completely empty
 		// which head performs automatically.
-		return this.head()[this.headPos++];
+		byte[] head = this.head();
+		
+		byte value = head[this.headPos++];
+		
+		if ( this.headPos == head.length ) {
+			this.removeHead();
+		}
+		return value;
 	}
 	
 	final byte[] readBytes(final int length) throws EOFException {
