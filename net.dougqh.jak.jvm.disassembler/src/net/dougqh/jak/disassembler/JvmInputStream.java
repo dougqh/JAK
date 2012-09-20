@@ -4,68 +4,213 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 final class JvmInputStream {
+	// A possibly overly fanciful construct for working with a byte stream 
+	// efficiently while providing a convenient definitive stop indicator.
+	// Chunks of the available size of the InputStream are fed into a queue.
+	// When a sub-stream is needed the byte[]s can be shared to lower the 
+	// copy time and memory footprint.
 	private static final String EOF_MESSAGE = "Unexpected end of class";
 
-	private final LinkedList<byte[]> bytesQueue = new LinkedList<byte[]>();
-	private int pos;
+	private final LinkedList<byte[]> bytesQueue;
+	private int headPos;
 	
-	JvmInputStream( final byte[] bytes ) throws IOException {
-		this.bytesQueue.add( new Bytes(bytes) );
+	JvmInputStream(final byte[] bytes) {
+		this(toQueue(bytes));
 	}
 	
-	JvmInputStream( final InputStream in ) throws IOException {
-		super( getBytes(in) );
+	private static final LinkedList<byte[]> toQueue(final byte[] bytes) {
+		LinkedList<byte[]> queue = new LinkedList<byte[]>();
+		queue.add(bytes);
+		return queue;
 	}
 	
-	private static final LinkedList<byte[]> getBytes( final InputStream in )
+	//Convenience 
+	JvmInputStream(final byte[]... bytes) {
+		this(toQueue(bytes));
+	}
+	
+	private static final LinkedList<byte[]> toQueue(final byte[]... bytes) {
+		LinkedList<byte[]> queue = new LinkedList<byte[]>();
+		queue.addAll(Arrays.asList(bytes));
+		return queue;
+	}
+	
+	JvmInputStream(final InputStream in) throws IOException {
+		this(loadBytes(in));
+	}
+	
+	private static final LinkedList<byte[]> loadBytes( final InputStream in )
 		throws IOException
 	{
-		LinkedList<byte[]> list = new LinkedList<byte[]>();
+		LinkedList<byte[]> bytesQueue = new LinkedList<byte[]>();
 		
-		byte[] buffer;
-		int numRead;
 		while ( ! Thread.currentThread().isInterrupted() ) {
-			buffer = new byte[ bufferSize(in) ];
-			numRead = in.read(buffer);
+			int bufferSize = bufferSize(in);
+			byte[] buffer = new byte[bufferSize];
+			int numRead = in.read(buffer);
 			
-			list.add(buffer);
+			if ( numRead < 0 ) {
+				break;
+			}
+			
+			if ( numRead < bufferSize ) {
+				bytesQueue.add(Arrays.copyOf(buffer, numRead));
+			} else {
+				bytesQueue.add(buffer);
+			}
 		}
 		
-		return list;
+		return bytesQueue;
 	}
 	
-	private final int bufferSize( final InputStream in ) throws IOException {
+	private JvmInputStream(final LinkedList<byte[]> bytesQueue) {
+		this.bytesQueue = bytesQueue;
+		this.headPos = 0;
+	}
+	
+	private static final int bufferSize(final InputStream in) throws IOException {
 		return Math.max(512, in.available());
 	}
 	
-	JvmInputStream( final byte[] bytes ) {
-		this.bytes = bytes;
-		this.pos = 0;
-	}
-	
-	final byte u1() throws IOException {
-		if ( this.pos >= this.bytes.length ) {
+	private final byte[] head() throws EOFException {
+		if ( this.bytesQueue.isEmpty() ) {
 			throw new EOFException(EOF_MESSAGE);
 		}
-		return this.bytes[ this.pos++ ];
+		return this.bytesQueue.getFirst();
+	}
+
+	private final byte[] readHeadChunk(final int length)
+		throws EOFException
+	{
+		byte[] head = this.head();
+		int headRemaining = head.length - this.headPos;
+		
+		// special case use to avoid a copy when doing 
+		// sub-streams of large blocks
+		if ( this.headPos == 0 && length > head.length ) {
+			this.removeHead();
+			return head;
+		} 
+		
+		if ( length < headRemaining ) {
+			byte[] bytes = new byte[length];
+			System.arraycopy(
+				head, this.headPos,
+				bytes, 0,
+				length);
+			
+			this.headPos += length;
+			return bytes;
+		} else {
+			byte[] bytes = new byte[headRemaining];
+			System.arraycopy(
+				head, this.headPos,
+				bytes, 0,
+				headRemaining);
+			
+			this.removeHead();
+			return bytes;
+		}
 	}
 	
-	final byte[] read( final int length ) throws IOException {
-		byte[] bytes = new byte[ length ];
+	private final int readHead(final byte[] bytes, final int pos)
+		throws EOFException
+	{
+		return this.readHead(bytes, pos, bytes.length - pos);
+	}
+	
+	private final int readHead(
+		final byte[] bytes,
+		final int pos,
+		final int needed)
+		throws EOFException
+	{
+		byte[] head = this.head();
+		int headRemaining = head.length - this.headPos;
 		
-		int numRead = this.in.read( bytes );
-		if ( numRead != bytes.length ) {
-			throw new EOFException(EOF_MESSAGE);
+		if ( headRemaining > needed ) {
+			System.arraycopy(
+				head, this.headPos,
+				bytes, pos,
+				needed );
+			
+			this.headPos += needed;
+			return needed;
+		} else {
+			System.arraycopy(
+				head, this.headPos,
+				bytes, pos,
+				headRemaining );
+			
+			// No need to increment head position, we already know
+			// we need to move to the next block.
+			// So just remove the current head which resets the head
+			// position to zero anyway.
+			this.removeHead();
+			return headRemaining;
 		}
+
+	}
+	
+	private final void removeHead() {
+		this.bytesQueue.removeFirst();
+		this.headPos = 0;
+	}
+	
+	final byte u1() throws EOFException {
+		// No need for a loop or bounds check
+		// The class invariants guarantee that no block is empty 
+		// and that a fully consumed block has been removed from 
+		// the head by the previous  method call.
+		// So, the only check is if the queue is completely empty
+		// which head performs automatically.
+		return this.head()[this.headPos++];
+	}
+	
+	final byte[] readBytes(final int length) throws EOFException {
+		byte[] bytes = new byte[length];
+		int pos = 0;
 		
+		while ( pos < bytes.length ) {
+			pos += this.readHead(bytes, pos);
+		}
 		return bytes;
 	}
 	
-	private final ByteBuffer readByteBuffer( final int length ) throws IOException {
-		return ByteBuffer.wrap( this.read( length ) );
+	private final ByteBuffer readByteBuffer(final int length) throws EOFException {
+		byte[] head = this.head();
+		if ( this.headPos + length < head.length ) {
+			// if solely contained in the current block, just construct the 
+			// buffer directly around the sub-section of the array
+			ByteBuffer buffer = ByteBuffer.wrap(head, this.headPos, length);
+			this.headPos += length;
+			return buffer;
+		} else {
+			// Otherwise, assembled an array with necessary bytes and use it
+			// Given the minimum block size vs the usual buffer size, this 
+			// case should be infrequent.
+			return ByteBuffer.wrap(this.readBytes(length));			
+		}
+	}
+	
+	final JvmInputStream readSubStream(final int length) throws IOException {
+		LinkedList<byte[]> subQueue = new LinkedList<byte[]>();
+		
+		// First block could be not at a zero pos, so handle it as a special case
+		// All subsequent blocks that are copied will be fresh and at a headPos of zero
+		int remaining = length;
+		
+		while ( remaining > 0 ) {
+			byte[] chunk = this.readHeadChunk(remaining);
+			subQueue.add(chunk);
+			remaining -= chunk.length;
+		}
+		
+		return new JvmInputStream(subQueue);
 	}
 	
 	final short u2() throws IOException {
@@ -89,28 +234,11 @@ final class JvmInputStream {
 	}
 	
 	final String utf8( final int byteLength ) throws IOException {
-		byte[] bytes = this.read(byteLength);
+		byte[] bytes = this.readBytes(byteLength);
 		return new String(bytes, "utf8");
 	}
 	
-	final void assertDone() throws IOException {
-		if ( this.in.read() == -1 ) {
-			throw new ClassFileFormatException("Expected EOF");
-		}
-	}
-	
-	private final class Bytes {
-		private final byte[] bytes;
-		private final int length;
-		private int pos;
-		
-		public Bytes( final byte[] bytes ) {
-			super( bytes, bytes.length );
-		}
-		
-		public Bytes( final byte[] bytes, final int length ) {
-			this.bytes = bytes;
-			this.length = length;
-		}
+	final boolean isDone() {
+		return this.bytesQueue.isEmpty();
 	}
 }

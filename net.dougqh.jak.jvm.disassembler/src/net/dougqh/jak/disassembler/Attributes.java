@@ -1,8 +1,8 @@
 package net.dougqh.jak.disassembler;
 
-import static net.dougqh.jak.jvm.Attributes.*;
-
 import java.io.IOException;
+
+import static net.dougqh.jak.jvm.Attributes.*;
 
 final class Attributes {
 	private final ConstantPool constantPool;

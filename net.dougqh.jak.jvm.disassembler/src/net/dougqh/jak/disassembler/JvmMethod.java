@@ -83,7 +83,7 @@ public final class JvmMethod implements JavaMethod {
 	}
 	
 	public final Iterable< JvmOperation > operations() {
-		this.getCode().operations();
+		return this.getCode().operations();
 	}
 	
 	public final String toString() {
