@@ -5,11 +5,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 final class JvmInputStream {
+	/**
+	 * Opaque object returned to represent a mark position in this JvmInputStream --
+	 * unlike normal InputStreams, multiple marks can be used at the same time.
+	 */
+	final class Mark {
+		final Node head;
+		final int headPos;
+		
+		Mark(final Node head, final int headPos) {
+			this.head = head;
+			this.headPos = headPos;
+		}
+	}
+	
 	// A possibly overly fanciful construct for working with a byte stream 
 	// efficiently while providing a convenient definitive stop indicator.
 	// Chunks of the available size of the InputStream are fed into a queue.
@@ -17,10 +28,10 @@ final class JvmInputStream {
 	// copy time and memory footprint.
 	private static final String EOF_MESSAGE = "Unexpected end of class";
 
-	private Node head;
+	private Node headNode;
 	private int headPos;
 	
-	private Node resetHead;
+	private Mark resetMark = null;
 	
 	JvmInputStream(final byte[] data) {
 		this(toQueue(data));
@@ -69,7 +80,7 @@ final class JvmInputStream {
 	}
 	
 	private JvmInputStream(final Node node) {
-		this.head = node;
+		this.headNode = node;
 		this.headPos = 0;
 	}
 	
@@ -85,17 +96,21 @@ final class JvmInputStream {
 			// contract eventually.
 			throw new IllegalStateException("Reset must be enabled immediately after construction.");
 		}
-		this.resetHead = head;
+		this.resetMark = new Mark(this.headNode, 0);
 		
 		return this;
 	}
 	
 	final JvmInputStream reset() {
-		if ( this.resetHead == null ) {
-			throw new IllegalStateException("Reset was not enabled.");
+		return this.resetTo(this.resetMark);
+	}
+	
+	final JvmInputStream resetTo(final Mark mark) {
+		if ( this.resetMark == null ) {
+			throw new IllegalStateException("Reset is not enabled.");
 		}
-		this.head = this.resetHead;
-		this.headPos = 0;
+		this.headNode = mark.head;
+		this.headPos = mark.headPos;
 		
 		return this;
 	}
@@ -105,10 +120,10 @@ final class JvmInputStream {
 	}
 	
 	private final byte[] head() throws EOFException {
-		if ( this.head == null ) {
+		if ( this.headNode == null ) {
 			throw new EOFException(EOF_MESSAGE);
 		}
-		return this.head.data;
+		return this.headNode.data;
 	}
 
 	private final byte[] readHeadChunk(
@@ -186,7 +201,7 @@ final class JvmInputStream {
 	}
 	
 	private final void removeHead() {
-		this.head = this.head.next;
+		this.headNode = this.headNode.next;
 		this.headPos = 0;
 	}
 	
@@ -278,7 +293,7 @@ final class JvmInputStream {
 	}
 	
 	final boolean isEof() {
-		return ( this.head == null );
+		return ( this.headNode == null );
 	}
 	
 	private static final class QueueBuilder {
