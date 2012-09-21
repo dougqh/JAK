@@ -119,6 +119,31 @@ public final class JvmInputStreamTest {
 		assertThat( in.readBytes(9), is(new byte[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8 }) );
 	}
 	
+	@Test
+	public final void multiMark() throws IOException {
+		JvmInputStream in = new JvmInputStream(
+			new byte[]{ 0, 1, 2 },
+			new byte[]{ 3, 4, 5, 6 },
+			new byte[]{ 7, 8, 9 }
+		);
+		in.enableReset();
+		
+		in.u2();
+		JvmInputStream.Mark mark1 = in.mark();
+		
+		in.u4();
+		JvmInputStream.Mark mark2 = in.mark();
+		
+		in.u4();
+		assertThat( in.isEof(), is(true) );
+		
+		in.resetTo(mark2);
+		assertThat( in.u1(), isByte(6) );
+		
+		in.resetTo(mark1);
+		assertThat( in.u1(), isByte(2) );
+	}
+	
 	private static final Matcher<Byte> isByte(final int value) {
 		return CoreMatchers.is((byte)value);
 	}

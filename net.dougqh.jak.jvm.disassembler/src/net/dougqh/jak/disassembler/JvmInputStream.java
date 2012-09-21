@@ -101,6 +101,10 @@ final class JvmInputStream {
 		return this;
 	}
 	
+	final Mark mark() {
+		return new Mark(this.headNode, this.headPos);
+	}
+	
 	final JvmInputStream reset() {
 		return this.resetTo(this.resetMark);
 	}
