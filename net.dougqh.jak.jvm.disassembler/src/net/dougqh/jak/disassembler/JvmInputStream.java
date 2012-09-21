@@ -17,19 +17,17 @@ final class JvmInputStream {
 	// copy time and memory footprint.
 	private static final String EOF_MESSAGE = "Unexpected end of class";
 
-	private final LinkedList<byte[]> bytesQueue;
+	private Node head;
 	private int headPos;
 	
-	private List<? extends byte[]> resetQueue;
+	private Node resetHead;
 	
-	JvmInputStream(final byte[] bytes) {
-		this(toQueue(bytes));
+	JvmInputStream(final byte[] data) {
+		this(toQueue(data));
 	}
 	
-	private static final LinkedList<byte[]> toQueue(final byte[] bytes) {
-		LinkedList<byte[]> queue = new LinkedList<byte[]>();
-		queue.add(bytes);
-		return queue;
+	private static final Node toQueue(final byte[] data) {
+		return new Node(data);
 	}
 	
 	//Convenience 
@@ -37,10 +35,42 @@ final class JvmInputStream {
 		this(toQueue(bytes));
 	}
 	
-	private static final LinkedList<byte[]> toQueue(final byte[]... bytes) {
-		LinkedList<byte[]> queue = new LinkedList<byte[]>();
-		queue.addAll(Arrays.asList(bytes));
-		return queue;
+	private static final Node toQueue(final byte[]... data) {
+		QueueBuilder builder = new QueueBuilder();
+		
+		for ( byte[] datum: data ) {
+			builder.add(datum);
+		}
+		return builder.head;
+	}
+	
+	private static final Node loadBytes( final InputStream in )
+		throws IOException
+	{
+		QueueBuilder builder = new QueueBuilder();
+		
+		while ( ! Thread.currentThread().isInterrupted() ) {
+			int bufferSize = bufferSize(in);
+			byte[] buffer = new byte[bufferSize];
+			int numRead = in.read(buffer);
+			
+			if ( numRead < 0 ) {
+				break;
+			}
+			
+			if ( numRead < bufferSize ) {
+				builder.add(Arrays.copyOf(buffer, numRead));
+			} else {
+				builder.add(buffer);
+			}
+		}
+		
+		return builder.head;
+	}
+	
+	private JvmInputStream(final Node node) {
+		this.head = node;
+		this.headPos = 0;
 	}
 	
 	JvmInputStream(final InputStream in) throws IOException {
@@ -55,49 +85,19 @@ final class JvmInputStream {
 			// contract eventually.
 			throw new IllegalStateException("Reset must be enabled immediately after construction.");
 		}
-		this.resetQueue = Collections.unmodifiableList(new LinkedList<byte[]>(this.bytesQueue));
+		this.resetHead = head;
 		
 		return this;
 	}
 	
 	final JvmInputStream reset() {
-		if ( this.resetQueue == null ) {
+		if ( this.resetHead == null ) {
 			throw new IllegalStateException("Reset was not enabled.");
 		}
-		this.bytesQueue.clear();
-		this.bytesQueue.addAll(this.resetQueue);
+		this.head = this.resetHead;
 		this.headPos = 0;
 		
 		return this;
-	}
-	
-	private static final LinkedList<byte[]> loadBytes( final InputStream in )
-		throws IOException
-	{
-		LinkedList<byte[]> bytesQueue = new LinkedList<byte[]>();
-		
-		while ( ! Thread.currentThread().isInterrupted() ) {
-			int bufferSize = bufferSize(in);
-			byte[] buffer = new byte[bufferSize];
-			int numRead = in.read(buffer);
-			
-			if ( numRead < 0 ) {
-				break;
-			}
-			
-			if ( numRead < bufferSize ) {
-				bytesQueue.add(Arrays.copyOf(buffer, numRead));
-			} else {
-				bytesQueue.add(buffer);
-			}
-		}
-		
-		return bytesQueue;
-	}
-	
-	private JvmInputStream(final LinkedList<byte[]> bytesQueue) {
-		this.bytesQueue = bytesQueue;
-		this.headPos = 0;
 	}
 	
 	private static final int bufferSize(final InputStream in) throws IOException {
@@ -105,13 +105,14 @@ final class JvmInputStream {
 	}
 	
 	private final byte[] head() throws EOFException {
-		if ( this.bytesQueue.isEmpty() ) {
+		if ( this.head == null ) {
 			throw new EOFException(EOF_MESSAGE);
 		}
-		return this.bytesQueue.getFirst();
+		return this.head.data;
 	}
 
-	private final byte[] readHeadChunk(final int length)
+	private final byte[] readHeadChunk(
+		final int length)
 		throws EOFException
 	{
 		byte[] head = this.head();
@@ -185,7 +186,7 @@ final class JvmInputStream {
 	}
 	
 	private final void removeHead() {
-		this.bytesQueue.removeFirst();
+		this.head = this.head.next;
 		this.headPos = 0;
 	}
 	
@@ -233,7 +234,10 @@ final class JvmInputStream {
 	}
 	
 	final JvmInputStream readSubStream(final int length) throws EOFException {
-		LinkedList<byte[]> subQueue = new LinkedList<byte[]>();
+		// DQH - While it is conceivably possible to share queue nodes with 
+		// the sub-stream, the benefits of doing so do not seem to warrant 
+		// the complexity.
+		QueueBuilder builder = new QueueBuilder();
 		
 		// First block could be not at a zero pos, so handle it as a special case
 		// All subsequent blocks that are copied will be fresh and at a headPos of zero
@@ -241,11 +245,11 @@ final class JvmInputStream {
 		
 		while ( remaining > 0 ) {
 			byte[] chunk = this.readHeadChunk(remaining);
-			subQueue.add(chunk);
+			builder.add(chunk);
 			remaining -= chunk.length;
 		}
 		
-		return new JvmInputStream(subQueue);
+		return new JvmInputStream(builder.head);
 	}
 	
 	final short u2() throws IOException {
@@ -274,6 +278,32 @@ final class JvmInputStream {
 	}
 	
 	final boolean isEof() {
-		return this.bytesQueue.isEmpty();
+		return ( this.head == null );
+	}
+	
+	private static final class QueueBuilder {
+		Node head = null;
+		Node current = null;
+		
+		private final void add(final byte[] data) {
+			Node node = new Node(data);
+			if ( this.head == null ) {
+				this.head = node;
+			}
+			
+			if ( this.current != null ) {
+				this.current.next = node;
+			}
+			this.current = node;
+		}
+	}
+
+	private static final class Node {
+		final byte[] data;
+		Node next;
+		
+		Node(byte[] data) {
+			this.data = data;
+		}
 	}
 }
