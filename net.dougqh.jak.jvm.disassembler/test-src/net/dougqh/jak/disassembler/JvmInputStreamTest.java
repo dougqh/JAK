@@ -1,6 +1,7 @@
 package net.dougqh.jak.disassembler;
 
 import java.io.EOFException;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -19,7 +20,7 @@ public final class JvmInputStreamTest {
 		JvmInputStream in = new JvmInputStream(new byte[]{ 0, 1 });
 		assertThat( in.u1(), isByte(0) );
 		assertThat( in.u1(), isByte(1) );
-		assertThat( in.isDone(), is(true) );
+		assertThat( in.isEof(), is(true) );
 	}
 	
 	@Test
@@ -33,7 +34,7 @@ public final class JvmInputStreamTest {
 		assertThat( in.u1(), isByte(1) );
 		assertThat( in.u1(), isByte(2) );
 		assertThat( in.u1(), isByte(3) );
-		assertThat( in.isDone(), is(true) );
+		assertThat( in.isEof(), is(true) );
 	}
 	
 	@Test
@@ -41,21 +42,21 @@ public final class JvmInputStreamTest {
 		JvmInputStream in = new JvmInputStream(new byte[]{ 0, 1 });
 		assertThat( in.u1(), isByte(0) );
 		assertThat( in.u1(), isByte(1) );
-		assertThat( in.isDone(), is(true) );
+		assertThat( in.isEof(), is(true) );
 	}
 	
 	@Test
 	public final void readBytesWithinBlock() throws EOFException {
 		JvmInputStream in = new JvmInputStream(new byte[]{ 0, 1, 2, 3 });
 		assertThat( in.readBytes(3), is(new byte[]{ 0, 1, 2 }) );
-		assertThat( in.isDone(), is(false) );
+		assertThat( in.isEof(), is(false) );
 	}
 	
 	@Test
 	public final void readBytesAllOfBlock() throws EOFException {
 		JvmInputStream in = new JvmInputStream(new byte[]{ 0, 1, 2, 3 });
 		assertThat( in.readBytes(4), is(new byte[]{ 0, 1, 2, 3 }) );
-		assertThat( in.isDone(), is(true) );
+		assertThat( in.isEof(), is(true) );
 	}
 	
 	@Test
@@ -66,7 +67,7 @@ public final class JvmInputStreamTest {
 		);
 		
 		assertThat( in.readBytes(4), is(new byte[]{ 0, 1, 2, 3}) );
-		assertThat( in.isDone(), is(true) );
+		assertThat( in.isEof(), is(true) );
 	}
 	
 	@Test
@@ -101,6 +102,21 @@ public final class JvmInputStreamTest {
 		
 		JvmInputStream subIn = in.readSubStream(9);
 		assertThat( subIn.readBytes(9), is(new byte[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9 }) );
+	}
+	
+	@Test
+	public final void reset() throws IOException {
+		JvmInputStream in = new JvmInputStream(
+			new byte[]{ 0, 1, 2 },
+			new byte[]{ 3, 4, 5, 6 },
+			new byte[]{ 7, 8, 9, 10 }
+		);
+		in.enableReset();
+		
+		in.u4();
+		
+		in.reset();
+		assertThat( in.readBytes(9), is(new byte[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8 }) );
 	}
 	
 	private static final Matcher<Byte> isByte(final int value) {

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 final class JvmInputStream {
 	// A possibly overly fanciful construct for working with a byte stream 
@@ -17,6 +19,8 @@ final class JvmInputStream {
 
 	private final LinkedList<byte[]> bytesQueue;
 	private int headPos;
+	
+	private List<? extends byte[]> resetQueue;
 	
 	JvmInputStream(final byte[] bytes) {
 		this(toQueue(bytes));
@@ -41,6 +45,30 @@ final class JvmInputStream {
 	
 	JvmInputStream(final InputStream in) throws IOException {
 		this(loadBytes(in));
+	}
+	
+	final JvmInputStream enableReset() {
+		if ( this.headPos != 0 ) {
+			// This check is imperfect because we could have moved to the next block
+			// and reset the head position which is still a violation of the contract.
+			// None-the-less, this sanity will hopefully catch most violators of the 
+			// contract eventually.
+			throw new IllegalStateException("Reset must be enabled immediately after construction.");
+		}
+		this.resetQueue = Collections.unmodifiableList(new LinkedList<byte[]>(this.bytesQueue));
+		
+		return this;
+	}
+	
+	final JvmInputStream reset() {
+		if ( this.resetQueue == null ) {
+			throw new IllegalStateException("Reset was not enabled.");
+		}
+		this.bytesQueue.clear();
+		this.bytesQueue.addAll(this.resetQueue);
+		this.headPos = 0;
+		
+		return this;
 	}
 	
 	private static final LinkedList<byte[]> loadBytes( final InputStream in )
@@ -245,7 +273,7 @@ final class JvmInputStream {
 		return new String(bytes, "utf8");
 	}
 	
-	final boolean isDone() {
+	final boolean isEof() {
 		return this.bytesQueue.isEmpty();
 	}
 }
