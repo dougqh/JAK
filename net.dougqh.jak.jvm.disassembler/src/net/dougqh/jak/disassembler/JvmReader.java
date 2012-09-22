@@ -68,10 +68,12 @@ public final class JvmReader {
 		}
 	}
 	
-	public final JvmType read( final String name ) throws IOException {
+	public final < T extends JvmType > T read( final String name ) throws IOException {
 		InputStream in = this.locator().load( name );
 		try {
-			return JvmType.create( in );
+			@SuppressWarnings("unchecked")
+			T result = (T)JvmType.create( in );
+			return result;
 		} finally {
 			in.close();
 		}
