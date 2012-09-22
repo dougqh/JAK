@@ -767,24 +767,28 @@ final class CodeAttribute {
 				break;
 
 				case JSR:
+				throw new IllegalStateException("unsupported");
 				//TODO: Support this at some point
 				//processor.jsr();
-				break;
+				//break;
 
 				case RET:
+				throw new IllegalStateException("unsupported");
 				//TODO: Support this at some point
 				//processor.ret();
-				break;
+				//break;
 
 				case TABLESWITCH:
+				throw new IllegalStateException("unsupported");
 				//TODO: Support this at some point
 				//processor.tableswitch();
-				break;
+				//break;
 
 				case LOOKUPSWITCH:
+				throw new IllegalStateException("unsupported");
 				//TODO: Support this at some point
 				//processor.lookupswitch();
-				break;
+				//break;
 
 				case IRETURN:
 				processor.ireturn();
