@@ -48,9 +48,13 @@ public final class BasicTest {
 		JvmReader reader = new JvmReader();
 		JvmClass aClass = reader.read( TEST_DATA_PACKAGE + "TrivialClass" );
 		
-		JvmMethod method = aClass.getConstructors().get(0);
-		assertThat( method.isConstructor(), is(true) );
-		assertThat( method.isPublic(), is(true) );
+		JvmMethod constructor = aClass.getConstructors().get(0);
+		assertThat( constructor.isConstructor(), is(true) );
+		assertThat( constructor.isPublic(), is(true) );
+		
+		assertThat( constructor.getMaxLocals(), is(1) );
+		assertThat( constructor.getMaxStack(), is(1) );
+		assertThat( constructor.hasCode(), is(true) );
 	}
 
 	@Test
