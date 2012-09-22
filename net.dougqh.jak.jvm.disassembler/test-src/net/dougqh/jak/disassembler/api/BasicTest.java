@@ -49,6 +49,8 @@ public final class BasicTest {
 		JvmClass aClass = reader.read( TEST_DATA_PACKAGE + "TrivialClass" );
 		
 		JvmMethod method = aClass.getConstructors().get(0);
+		assertThat( method.isConstructor(), is(true) );
+		assertThat( method.isPublic(), is(true) );
 	}
 
 	@Test

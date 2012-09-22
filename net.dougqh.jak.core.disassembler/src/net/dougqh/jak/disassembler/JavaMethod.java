@@ -16,4 +16,12 @@ public interface JavaMethod {
 	public abstract List<Type> getParameterTypes();
 	
 	//public abstract JavaCodeReader getCodeReader();
+	
+	public abstract boolean isPublic();
+	
+	public abstract boolean isDefault();
+	
+	public abstract boolean isProtected();
+	
+	public abstract boolean isPrivate();
 }

@@ -55,6 +55,22 @@ public final class Flags {
 		return isSet( flags, STATIC );
 	}
 	
+	public static final boolean isPublic( final int flags ) {
+		return isSet( flags, PUBLIC );
+	}
+	
+	public static final boolean isProtected( final int flags ) {
+		return isSet( flags, PROTECTED );
+	}
+	
+	public static final boolean isPrivate( final int flags ) {
+		return isSet( flags, PRIVATE );
+	}
+	
+	public static final boolean isDefault( final int flags ) {
+		return ! isSet( flags, PUBLIC | PROTECTED | PRIVATE );
+	}
+	
 	private static final boolean isSet( final int flags, final int bit ) {
 		return ( ( flags & bit ) != 0 );		
 	}

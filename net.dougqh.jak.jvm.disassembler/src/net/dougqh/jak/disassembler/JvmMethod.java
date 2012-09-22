@@ -3,6 +3,7 @@ package net.dougqh.jak.disassembler;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import net.dougqh.jak.Flags;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.Methods.*;
@@ -43,6 +44,26 @@ public final class JvmMethod implements JavaMethod {
 	@Override
 	public final boolean isClassInitializer() {
 		return this.getName().equals( CLINIT );
+	}
+	
+	@Override
+	public final boolean isPublic() {
+		return Flags.isPublic( this.flags );
+	}
+	
+	@Override
+	public final boolean isDefault() {
+		return Flags.isDefault( this.flags );
+	}
+	
+	@Override
+	public final boolean isProtected() {
+		return Flags.isProtected( this.flags );
+	}
+	
+	@Override
+	public final boolean isPrivate() {
+		return Flags.isPrivate( this.flags );
 	}
 	
 	@Override

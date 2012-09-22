@@ -66,18 +66,32 @@ public abstract class JvmType implements JavaType {
 	}
 	
 	@Override
+	public final boolean isPublic() {
+		return Flags.isPublic( this.type.flags() );
+	}
+	
+	@Override
+	public final boolean isDefault() {
+		return Flags.isDefault( this.type.flags() );
+	}
+	
+	@Override
+	public final boolean isProtected() {
+		return Flags.isProtected( this.type.flags() );
+	}
+	
+	@Override
+	public final boolean isPrivate() {
+		return Flags.isPrivate( this.type.flags() );
+	}
+	
+	@Override
 	public final List< Type > getInterfaces() {
 		return new TypeList( this.type.getInterfaceNames() );
 	}
 	
 	public final List<? extends JvmMethod> getAllMethods() {
 		return this.type.getAllMethods();
-	}
-	
-	protected static final List< JavaMethod > asJava( final List< JvmMethod > jvmMethods ) {
-		@SuppressWarnings( { "unchecked", "rawtypes" } )
-		List< JavaMethod > javaMethods = (List< JavaMethod >)(List)jvmMethods;
-		return javaMethods;
 	}
 	
 	private static final class TypeList extends AbstractList< Type > {
