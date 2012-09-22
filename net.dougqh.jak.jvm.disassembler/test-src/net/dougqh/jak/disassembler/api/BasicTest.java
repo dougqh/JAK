@@ -36,6 +36,8 @@ public final class BasicTest {
 		assertThat( type.getName(), is( TEST_DATA_PACKAGE + "TrivialClass" ) );
 		assertThat( type.getParentType(), isType( Object.class ) );
 		
+		assertThat( type.getConstructors().size(), is(1) );
+		assertThat( type.getClassInitializer(), nullValue(JvmMethod.class));
 		assertThat( type.getFields(), isEmpty() );
 		assertThat( type.getMethods(), isEmpty() );
 	}
