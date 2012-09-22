@@ -29,7 +29,8 @@ import org.junit.Test;
 public final class BasicTest {
 	private static final String TEST_DATA_PACKAGE = "testdata.";
 	
-	public final @Test void trivialClass() throws IOException {
+	@Test
+	public final void trivialClass() throws IOException {
 		JvmReader reader = new JvmReader();
 		JvmClass type = (JvmClass)reader.read( TEST_DATA_PACKAGE + "TrivialClass" );
 		
@@ -42,7 +43,8 @@ public final class BasicTest {
 		assertThat( type.getMethods(), isEmpty() );
 	}
 
-	public final @Test void trivialInterface() throws IOException {
+	@Test
+	public final void trivialInterface() throws IOException {
 		JvmReader reader = new JvmReader();
 		JvmInterface type = (JvmInterface)reader.read( TEST_DATA_PACKAGE + "TrivialInterface" );
 		
@@ -51,7 +53,8 @@ public final class BasicTest {
 		assertThat( type.getParentType(), isType( Object.class ) );
 	}
 	
-	public final @Test void trivialEnum() throws IOException {
+	@Test
+	public final void trivialEnum() throws IOException {
 		JvmReader reader = new JvmReader();
 		JvmEnum type = (JvmEnum)reader.read( TEST_DATA_PACKAGE + "TrivialEnum" );
 		
@@ -59,7 +62,8 @@ public final class BasicTest {
 		assertThat( type.getParentType(), isType( Enum.class ) );
 	}
 
-	public final @Test void trivialAnnotation() throws IOException {
+	@Test
+	public final void trivialAnnotation() throws IOException {
 		JvmReader reader = new JvmReader();
 		JvmAnnotation type = (JvmAnnotation)reader.read( TEST_DATA_PACKAGE + "TrivialAnnotation" );
 		
@@ -70,7 +74,8 @@ public final class BasicTest {
 		assertThat( type.getInterfaces(), areTypes( Annotation.class ) );
 	}
 	
-	public final @Test void nonTrivialClass() throws IOException {
+	@Test
+	public final void nonTrivialClass() throws IOException {
 		JvmReader reader = new JvmReader();
 		JvmClass type = (JvmClass)reader.read( TEST_DATA_PACKAGE + "NonTrivialClass" );
 		
