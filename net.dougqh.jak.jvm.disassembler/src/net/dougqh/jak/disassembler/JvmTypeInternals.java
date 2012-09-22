@@ -68,7 +68,7 @@ final class JvmTypeInternals {
 		return this.interfaces.getNames();
 	}
 	
-	final List<? extends JvmField> getFields() {
+	final List<JvmField> getFields() {
 		return this.fields.getFields();
 	}
 	
@@ -76,11 +76,11 @@ final class JvmTypeInternals {
 		return this.methods.getClassInitializer();
 	}
 	
-	final List<? extends JvmMethod> getConstructors() {
+	final List<JvmMethod> getConstructors() {
 		return this.methods.getConstructors();
 	}
 	
-	final List<? extends JvmMethod> getMethods() {
+	final List<JvmMethod> getMethods() {
 		return this.methods.getMethods();
 	}
 	

@@ -13,7 +13,7 @@ public interface JavaMethod {
 	
 	public abstract Type getReturnType();
 	
-	public abstract List< Type > getParameterTypes();
+	public abstract List<Type> getParameterTypes();
 	
 	//public abstract JavaCodeReader getCodeReader();
 }
