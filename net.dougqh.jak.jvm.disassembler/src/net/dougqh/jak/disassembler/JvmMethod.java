@@ -76,35 +76,43 @@ public final class JvmMethod implements JavaMethod {
 		throw new UnsupportedOperationException( "incomplete" );
 	}
 	
-	private final CodeAttribute getCode() {
+	private final CodeAttribute getCodeAttribute() {
 		return this.attributes.getCode();
 	}
 	
+	public final Iterable<JvmOperation> getOperations() {
+		return this.getCodeAttribute().operations();
+	}
+	
+	public final void processOperations(final JvmOperationProcessor processor) {
+		this.getCodeAttribute().process(processor);
+	}
+	
 	public final boolean hasCode() {
-		return ( this.getCode() != null );
+		return ( this.getCodeAttribute() != null );
 	}
 	
 	public final int getCodeLength() {
-		CodeAttribute code = this.getCode();
+		CodeAttribute code = this.getCodeAttribute();
 		return ( code == null ) ? -1 : code.length();
 	}
 	
 	public final int getMaxStack() {
-		CodeAttribute code = this.getCode();
+		CodeAttribute code = this.getCodeAttribute();
 		return ( code == null ) ? 0 : code.maxStack();
 	}
 
 	public final int getMaxLocals() {
-		CodeAttribute code = this.getCode();
+		CodeAttribute code = this.getCodeAttribute();
 		return ( code == null ) ? 0 : code.maxLocals();
 	}
 	
 	public final void process( final JvmOperationProcessor processor ) {
-		this.getCode().process( processor );
+		this.getCodeAttribute().process( processor );
 	}
 	
 	public final Iterable< JvmOperation > operations() {
-		return this.getCode().operations();
+		return this.getCodeAttribute().operations();
 	}
 	
 	public final String toString() {

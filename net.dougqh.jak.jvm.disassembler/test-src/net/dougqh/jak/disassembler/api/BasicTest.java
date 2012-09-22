@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import net.dougqh.jak.disassembler.JvmAnnotation;
@@ -16,6 +17,8 @@ import net.dougqh.jak.disassembler.JvmField;
 import net.dougqh.jak.disassembler.JvmInterface;
 import net.dougqh.jak.disassembler.JvmMethod;
 import net.dougqh.jak.disassembler.JvmReader;
+import net.dougqh.jak.jvm.operations.JvmOperation;
+import net.dougqh.jak.jvm.operations.aload_0;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.CoreMatchers;
@@ -55,6 +58,10 @@ public final class BasicTest {
 		assertThat( constructor.getMaxLocals(), is(1) );
 		assertThat( constructor.getMaxStack(), is(1) );
 		assertThat( constructor.hasCode(), is(true) );
+		
+		Iterator<JvmOperation> operationIter = constructor.getOperations().iterator();
+		assertThat( operationIter.next(), isOp(aload_0.instance()) );
+		assertThat( operationIter.next(), any(JvmOperation.class) );
 	}
 
 	@Test
@@ -102,6 +109,10 @@ public final class BasicTest {
 		
 		//assertThat( type.getMethods(), contains( "run" ) );
 	}
+	
+	private static final Matcher< JvmOperation > isOp( final JvmOperation op ) {
+		return CoreMatchers.is(op);
+	}
 		
 	private static final Matcher< Type > isType( final Type type ) {
 		return CoreMatchers.is( type );
@@ -109,67 +120,5 @@ public final class BasicTest {
 	
 	private static final Matcher< List< Type > > areTypes( final Type... types ) {
 		return CoreMatchers.is( Arrays.asList( types ) );
-	}
-	
-	private static final Matcher< Collection< ? > > isEmpty() {
-		return new IsEmptyMatcher();
-	}
-	
-	private static final Matcher< Collection< ? > > contains( final String... names ) {
-		return new ContainsMatcher( names );
-	}
-	
-	private static final class IsEmptyMatcher extends BaseMatcher< Collection< ? > > {
-		@Override
-		public final boolean matches( final Object obj ) {
-			Collection< ? > collection = (Collection< ? >)obj;
-			return collection.isEmpty();
-		}
-		
-		@Override
-		public final void describeTo( final Description description ) {
-			description.appendText( "Collection should be empty" );
-		}
-	}
-	
-	private static final class ContainsMatcher extends BaseMatcher< Collection< ? > > {
-		private final HashSet< String > names;
-		
-		ContainsMatcher( final String... names ) {
-			this.names = new HashSet< String >( Arrays.asList( names ) );
-		}
-		
-		@Override
-		public final boolean matches( final Object obj ) {
-			Collection< ? > collection = (Collection< ? >)obj;
-			
-			int matchCount = 0;
-			for ( Object object : collection ) {
-				String name = name( object );
-				
-				if ( this.names.contains( name ) ) {
-					++matchCount;
-				}
-			}
-			
-			return ( matchCount == collection.size() );
-		}
-		
-		private static final String name( final Object object ) {
-			if ( object instanceof JvmField ) {
-				JvmField field = (JvmField)object;
-				return field.getName();
-			} else if ( object instanceof JvmMethod ) {
-				JvmMethod method = (JvmMethod)object;
-				return method.getName();
-			} else {
-				throw new IllegalStateException();
-			}
-		}
-		
-		@Override
-		public final void describeTo( final Description description ) {
-			description.appendValue( this.names );
-		}
 	}
 }
