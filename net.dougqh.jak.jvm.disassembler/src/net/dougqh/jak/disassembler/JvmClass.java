@@ -7,7 +7,7 @@ public final class JvmClass extends JvmType implements JavaClass {
 		super( typeReader );
 	}
 
-	public final List< JvmField > getFields() {
+	public final List<? extends JvmField> getFields() {
 		return this.type.getFields();
 	}
 	
@@ -15,12 +15,12 @@ public final class JvmClass extends JvmType implements JavaClass {
 		return this.type.getClassInitializer();
 	}
 	
-	public final List< JavaMethod > getConstructors() {
-		return asJava( this.type.getConstructors() );
+	public final List<? extends JvmMethod> getConstructors() {
+		return this.type.getConstructors();
 	}
 	
 	@Override
-	public final List< JavaMethod > getMethods() {
-		return asJava( this.type.getMethods() );
+	public final List<? extends JavaMethod> getMethods() {
+		return this.type.getMethods();
 	}
 }

@@ -7,7 +7,7 @@ public interface JavaClass {
 	
 	public abstract JavaMethod getClassInitializer();
 	
-	public abstract List< JavaMethod > getConstructors();
+	public abstract List<? extends JavaMethod> getConstructors();
 	
-	public abstract List< JavaMethod > getMethods();
+	public abstract List<? extends JavaMethod> getMethods();
 }

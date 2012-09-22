@@ -70,7 +70,7 @@ public abstract class JvmType implements JavaType {
 		return new TypeList( this.type.getInterfaceNames() );
 	}
 	
-	public final List< JvmMethod > getAllMethods() {
+	public final List<? extends JvmMethod> getAllMethods() {
 		return this.type.getAllMethods();
 	}
 	

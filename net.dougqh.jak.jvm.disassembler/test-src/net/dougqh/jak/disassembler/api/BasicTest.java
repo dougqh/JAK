@@ -42,6 +42,14 @@ public final class BasicTest {
 		assertThat( type.getFields(), isEmpty() );
 		assertThat( type.getMethods(), isEmpty() );
 	}
+	
+	@Test
+	public final void constructor() throws IOException {
+		JvmReader reader = new JvmReader();
+		JvmClass aClass = reader.read( TEST_DATA_PACKAGE + "TrivialClass" );
+		
+		JvmMethod method = aClass.getConstructors().get(0);
+	}
 
 	@Test
 	public final void trivialInterface() throws IOException {
