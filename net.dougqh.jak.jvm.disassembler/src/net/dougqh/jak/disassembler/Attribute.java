@@ -5,20 +5,26 @@ import static net.dougqh.jak.jvm.Attributes.*;
 final class Attribute {
 	private final ConstantPool constantPool;
 	private final int nameIndex;
-	private final byte[] data;
+	private final JvmInputStream in;
 	
 	Attribute(
 		final ConstantPool constantPool,
 		final int nameIndex,
-		final byte[] data )
+		final JvmInputStream in )
 	{
 		this.constantPool = constantPool;
 		this.nameIndex = nameIndex;
-		this.data = data;
+		this.in = in;
+		this.in.enableReset();
 	}
 	
 	final String getName() {
 		return this.constantPool.utf8( this.nameIndex );
+	}
+	
+	final JvmInputStream in() {
+		this.in.reset();
+		return this.in;
 	}
 	
 	final boolean isCode() {

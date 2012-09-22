@@ -91,13 +91,15 @@ final class JvmTypeInternals {
 	private static final void readMagic( final JvmInputStream in )
 		throws IOException
 	{
-		byte[] magic = in.read( 4 );
+		byte ca = in.u1();
+		byte fe = in.u1();
+		byte ba = in.u1();
+		byte be = in.u1();
 		
-		if (
-			magic[ 0 ] != CA ||
-			magic[ 1 ] != FE ||
-			magic[ 2 ] != BA ||
-			magic[ 3 ] != BE )
+		if ( ca != CA ||
+			fe != FE ||
+			ba != BA ||
+			be != BE )
 		{
 			throw new ClassFileFormatException( NOT_CLASS_MESSAGE );
 		}

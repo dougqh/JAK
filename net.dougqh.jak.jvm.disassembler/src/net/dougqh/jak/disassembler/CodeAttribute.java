@@ -1,6 +1,5 @@
 package net.dougqh.jak.disassembler;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -20,7 +19,7 @@ final class CodeAttribute {
 	private final int maxLocals;
 	
 	private final int codeLength;
-	private final byte[] code;
+	private final JvmInputStream codeIn;
 	
 	CodeAttribute(
 		final ConstantPool constantPool,
@@ -33,7 +32,8 @@ final class CodeAttribute {
 		this.maxLocals = in.u2();
 		
 		this.codeLength = in.u4();
-		this.code = in.read( this.codeLength );
+		this.codeIn = in.readSubStream(codeLength);
+		this.codeIn.enableReset();
 		
 	//	u2 exception_table_length;
 	//	{    	u2 start_pc;
@@ -47,11 +47,9 @@ final class CodeAttribute {
 	
 	final void process( final JvmOperationProcessor processor ) {
 		try {
-			Decoder decoder = new Decoder(this.constantPool, this.code);
-			try {
-				
-			} finally {
-				decoder.close();
+			Decoder decoder = new Decoder(this.constantPool, this.codeIn);
+			while ( decoder.hasNext() ) {
+				decoder.read(processor);
 			}
 		} catch ( IOException e ) {
 			throw new DisassemblerException(e);
@@ -59,7 +57,7 @@ final class CodeAttribute {
 	}
 	
 	final Iterable< JvmOperation > operations() {
-		return new IterableImpl();
+		return new IterableImpl(new Decoder(this.constantPool, this.codeIn));
 	}
 	
 	final int length() {
@@ -74,17 +72,16 @@ final class CodeAttribute {
 		return this.maxLocals;
 	}
 	
-	private static final class Decoder implements Closeable {
+	private static final class Decoder {
 		private final ConstantPool constantPool;
 		private final JvmInputStream codeIn;
 		
 		private int pos;
 		
-		Decoder( final ConstantPool constantPool, final byte[] code ) {
+		Decoder( final ConstantPool constantPool, final JvmInputStream codeIn ) {
 			this.constantPool = constantPool;
-			this.codeIn = new JvmInputStream( code );
-			
-			this.pos = 0;
+			this.codeIn = codeIn;
+			this.codeIn.reset();
 		}
 		
 		final boolean hasNext() {
@@ -167,16 +164,19 @@ final class CodeAttribute {
 				break;
 
 				case LDC:
-				processor.ldc( this.readConstant() );
-				break;
+				throw new IllegalStateException("unimplemented");
+				//processor.ldc( this.readConstant() );
+				//break;
 
 				case LDC_W:
-				processor.ldc_w( this.readConstantWide() );
-				break;
+				throw new IllegalStateException("unimplemented");
+				//processor.ldc_w( this.readConstantWide() );
+				//break;
 
 				case LDC2_W:
-				processor.ldc2_w( this.readConstant2Wide() );
-				break;
+				throw new IllegalStateException("unimplemented");
+				//processor.ldc2_w( this.readConstant2Wide() );
+				//break;
 
 				case ILOAD:
 				processor.iload( this.readIndex() );
@@ -906,12 +906,12 @@ final class CodeAttribute {
 			}
 		}
 		
-		private final int u1() {
-			
+		private final int u1() throws IOException {
+			return this.codeIn.u1();
 		}
 		
-		private final int u2() {
-			
+		private final short u2() throws IOException {
+			return this.codeIn.u2();
 		}
 		
 		private final byte readByte() throws IOException {
@@ -919,7 +919,7 @@ final class CodeAttribute {
 		}
 		
 		private final short readShort() throws IOException {
-			this.u2();
+			return this.codeIn.u2();
 		}
 		
 		private final int readIndex() throws IOException {
@@ -957,11 +957,6 @@ final class CodeAttribute {
 		private final Type readArrayType() throws IOException {
 			return null;
 		}
-		
-		@Override
-		public final void close() throws IOException {
-			this.codeIn.close();
-		}
 	}
 	
 	private static final class IterableImpl implements Iterable<JvmOperation> {
@@ -973,7 +968,7 @@ final class CodeAttribute {
 		
 		@Override
 		public final Iterator<JvmOperation> iterator() {
-			return new IteratorImpl();
+			return new IteratorImpl(this.decoder);
 		}
 	}
 	
@@ -999,6 +994,11 @@ final class CodeAttribute {
 			} catch (IOException e) {
 				throw new DisassemblerException(e);
 			}
+		}
+		
+		@Override
+		public final void remove() {
+			throw new UnsupportedOperationException();
 		}
 	}
 	

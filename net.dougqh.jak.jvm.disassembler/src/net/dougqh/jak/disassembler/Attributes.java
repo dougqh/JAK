@@ -19,12 +19,12 @@ final class Attributes {
 		for ( int i = 0; i < count; ++i ) {
 			int nameIndex = in.u2();
 			int length = in.u4();
-			byte[] data = in.read( length );
+			JvmInputStream subIn = in.readSubStream(length);
 			
 			this.attributes[ i ] = new Attribute(
 				constantPool,
 				nameIndex,
-				data );
+				subIn );
 		}
 	}
 	
@@ -45,17 +45,13 @@ final class Attributes {
 		final String name,
 		final Converter< T > converter )
 	{
-		Attribute attribute = this.find( CODE );
+		Attribute attribute = this.find( name );
 		if ( attribute == null ) {
 			return null;
 		} else {
 			JvmInputStream in = attribute.in();
 			try {
-				try {
-					return converter.convert( this.constantPool, in );
-				} finally {
-					in.close();
-				}
+				return converter.convert( this.constantPool, in );
 			} catch ( IOException e ) {
 				throw new IllegalStateException( e );
 			}
@@ -69,34 +65,6 @@ final class Attributes {
 			}
 		}
 		return null;
-	}
-	
-	static final class Attribute {
-		private final ConstantPool constantPool;
-		private final int nameIndex;
-		private final byte[] data;
-		
-		Attribute(
-			final ConstantPool constantPool,
-			final int nameIndex,
-			final byte[] data )
-		{
-			this.constantPool = constantPool;
-			this.nameIndex = nameIndex;
-			this.data = data;
-		}
-		
-		final String getName() {
-			return this.constantPool.utf8( this.nameIndex );
-		}
-		
-		final boolean is( final String name ) {
-			return this.getName().equals( name );
-		}
-		
-		final JvmInputStream in() {
-			return new JvmInputStream( this.data );
-		}
 	}
 	
 	static abstract class Converter< T > {
