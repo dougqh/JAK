@@ -18,6 +18,7 @@ import net.dougqh.jak.disassembler.JvmReader;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.aload_0;
 import net.dougqh.jak.jvm.operations.invokespecial;
+import net.dougqh.jak.jvm.operations.return_;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
@@ -59,6 +60,7 @@ public final class BasicTest {
 		Iterator<JvmOperation> operationIter = constructor.getOperations().iterator();
 		assertThat( operationIter.next(), isOp(aload_0.instance()) );
 		assertThat( operationIter.next(), isOp(new invokespecial(Object.class, Jak.init())) );
+		assertThat( operationIter.next(), isOp(return_.instance()) );
 	}
 
 	@Test

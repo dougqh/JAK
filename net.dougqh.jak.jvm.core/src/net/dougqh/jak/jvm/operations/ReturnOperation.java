@@ -34,4 +34,26 @@ public abstract class ReturnOperation implements JvmOperation {
 	public final Type[] getStackResultTypes() {
 		return NO_RESULTS;
 	}
+	
+	@Override
+	public final int hashCode() {
+		return this.getCode();
+	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		if ( obj == this ) {
+			return true;
+		} else if ( ! ( obj instanceof ReturnOperation ) ) {
+			return false;
+		} else {
+			ReturnOperation that = (ReturnOperation)obj;
+			return ( this.getCode() == that.getCode() );
+		}
+	}
+	
+	@Override
+	public final String toString() {
+		return this.getId();
+	}
 }

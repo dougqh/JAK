@@ -34,4 +34,26 @@ public abstract class UnaryOperation implements JvmOperation {
 		T castedValue = (T)value;
 		return castedValue;
 	}
+	
+	@Override
+	public final int hashCode() {
+		return this.getCode();
+	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		if ( obj == this ) {
+			return true;
+		} else if ( ! ( obj instanceof UnaryOperation ) ) {
+			return false;
+		} else {
+			UnaryOperation that = (UnaryOperation)obj;
+			return ( this.getCode() == that.getCode() );
+		}
+	}
+	
+	@Override
+	public final String toString() {
+		return this.getId();
+	}
 }
