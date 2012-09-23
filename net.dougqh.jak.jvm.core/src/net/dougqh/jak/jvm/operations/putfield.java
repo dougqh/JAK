@@ -15,15 +15,11 @@ public final class putfield extends PutFieldOperation {
 		return new putfield( null, null );
 	}
 	
-	private final Type targetType;
-	private final JavaField field;
-	
 	public putfield(
 		final Type targetType,
 		final JavaField field )
 	{
-		this.targetType = targetType;
-		this.field = field;
+		super( targetType, field );
 	}
 	
 	@Override

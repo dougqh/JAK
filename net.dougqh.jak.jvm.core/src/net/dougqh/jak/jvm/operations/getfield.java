@@ -13,15 +13,11 @@ public final class getfield extends GetFieldOperation {
 		return new getfield( null, null );
 	}
 	
-	private final Type targetType;
-	private final JavaField field;
-	
 	public getfield(
 		final Type targetType, 
 		final JavaField field )
 	{
-		this.targetType = targetType;
-		this.field = field;
+		super( targetType, field );
 	}
 	
 	@Override

@@ -7,6 +7,17 @@ import net.dougqh.jak.JavaField;
 import net.dougqh.jak.types.Any;
 
 public abstract class PutFieldOperation implements JvmOperation {
+	final Type targetType;
+	final JavaField field;
+	
+	PutFieldOperation(
+		final Type targetType,
+		final JavaField field )
+	{
+		this.targetType = targetType;
+		this.field = field;
+	}
+	
 	public abstract boolean isStatic();
 	
 	@Override

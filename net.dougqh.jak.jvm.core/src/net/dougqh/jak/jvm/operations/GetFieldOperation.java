@@ -6,7 +6,18 @@ import net.dougqh.jak.JavaField;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 
-public abstract class GetFieldOperation implements JvmOperation {
+public abstract class GetFieldOperation implements JvmOperation {	
+	final Type targetType;
+	final JavaField field;
+	
+	GetFieldOperation(
+		final Type targetType,
+		final JavaField field )
+	{
+		this.targetType = targetType;
+		this.field = field;
+	}
+
 	public abstract boolean isStatic();
 	
 	@Override
