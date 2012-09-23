@@ -75,6 +75,23 @@ public final class FormalArguments implements Iterable< JavaVariable > {
 	}
 	
 	@Override
+	public final int hashCode() {
+		return Arrays.hashCode( this.arguments );
+	}
+	
+	@Override
+	public final boolean equals(Object obj) {
+		if ( obj == this ) {
+			return true;
+		} else if ( ! ( obj instanceof FormalArguments ) ) {
+			return false;
+		} else {
+			FormalArguments that = (FormalArguments)obj;
+			return Arrays.deepEquals( this.arguments, that.arguments );
+		}
+	}
+	
+	@Override
 	public final String toString() {
 		StringBuilder builder = new StringBuilder();
 		boolean first = true;

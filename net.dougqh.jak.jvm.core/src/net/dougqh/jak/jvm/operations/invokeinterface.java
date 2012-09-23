@@ -4,9 +4,6 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
-import net.dougqh.jak.types.Any;
-import net.dougqh.jak.types.ArgList;
-import net.dougqh.jak.types.Reference;
 
 public final class invokeinterface extends InvocationOperation {
 	public static final String ID = "invokeinterface";
@@ -16,15 +13,11 @@ public final class invokeinterface extends InvocationOperation {
 		return new invokeinterface( null, null );
 	}
 	
-	private final Type targetType;
-	private final JavaMethodDescriptor method;
-	
 	public invokeinterface(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
-		this.targetType = targetType;
-		this.method = method;
+		super(targetType, method);
 	}
 	
 	@Override

@@ -814,37 +814,69 @@ final class CodeAttribute {
 				processor.return_();
 				break;
 
-				case GETSTATIC:
-				processor.getstatic( this.readType(), this.readField() );
-				break;
+				case GETSTATIC: {
+					int refIndex = this.readIndex();
+					processor.getstatic(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.field(refIndex));
+					break;
+				}
 
-				case PUTSTATIC:
-				processor.putstatic( this.readType(), this.readField() );
-				break;
+				case PUTSTATIC: {
+					int refIndex = this.readIndex();
+					processor.putstatic(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.field(refIndex));
+					break;
+				}
 
-				case GETFIELD:
-				processor.getfield( this.readType(), this.readField() );
-				break;
+				case GETFIELD: {
+					int refIndex = this.readIndex();
+					processor.getfield(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.field(refIndex));
+					break;
+				}
 
-				case PUTFIELD:
-				processor.putfield( this.readType(), this.readField() );
-				break;
+				case PUTFIELD: {
+					int refIndex = this.readIndex();
+					processor.putfield(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.field(refIndex));
+					break;
+				}
 
-				case INVOKEVIRTUAL:
-				processor.invokevirtual( this.readType(), this.readMethod() );
-				break;
+				case INVOKEVIRTUAL: {
+					int refIndex = this.readIndex();
+					processor.invokevirtual(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.methodDescriptor(refIndex));
+					break;
+				}
 
-				case INVOKESPECIAL:
-				processor.invokespecial( this.readType(), this.readMethod() );
-				break;
+				case INVOKESPECIAL: {
+					int refIndex = this.readIndex();
+					processor.invokespecial(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.methodDescriptor(refIndex));
+					break;
+				}
 
-				case INVOKESTATIC:
-				processor.invokestatic( this.readType(), this.readMethod() );
-				break;
+				case INVOKESTATIC: {
+					int refIndex = this.readIndex();
+					processor.invokestatic(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.methodDescriptor(refIndex));
+					break;
+				}
 
-				case INVOKEINTERFACE:
-				processor.invokeinterface( this.readType(), this.readMethod() );
-				break;
+				case INVOKEINTERFACE: {
+					int refIndex = this.readIndex();
+					processor.invokeinterface(
+						this.constantPool.targetType(refIndex),
+						this.constantPool.methodDescriptor(refIndex));
+					break;
+				}
 
 				case NEW:
 				processor.new_( this.readType() );
@@ -927,7 +959,7 @@ final class CodeAttribute {
 		}
 		
 		private final int readIndex() throws IOException {
-			return 0;
+			return this.codeIn.u2();
 		}
 		
 		private final Object readConstant() throws IOException {
@@ -947,15 +979,8 @@ final class CodeAttribute {
 		}
 		
 		private final Type readType() throws IOException {
-			return null;
-		}
-		
-		private final JavaField readField() throws IOException {
-			return null;
-		}
-		
-		private final JavaMethodDescriptor readMethod() throws IOException {
-			return null;
+			int index = this.readIndex();
+			return this.constantPool.targetType(index);
 		}
 		
 		private final Type readArrayType() throws IOException {

@@ -57,11 +57,11 @@ final class JvmTypeInternals {
 	}
 	
 	final String getClassName() {
-		return this.constantPool.classValue( this.thisClass );
+		return this.constantPool.typeName( this.thisClass );
 	}
 	
 	final String getSuperName() {
-		return this.constantPool.classValue( this.superClass );
+		return this.constantPool.typeName( this.superClass );
 	}
 	
 	final List< String > getInterfaceNames() {

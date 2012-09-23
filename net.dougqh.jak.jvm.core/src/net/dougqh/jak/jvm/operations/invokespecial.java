@@ -13,15 +13,11 @@ public final class invokespecial extends InvocationOperation {
 		return new invokespecial( null, null );
 	}
 	
-	private final Type targetType;
-	private final JavaMethodDescriptor method;
-
 	public invokespecial(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
-		this.targetType = targetType;
-		this.method = method;
+		super(targetType, method);
 	}
 	
 	@Override

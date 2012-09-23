@@ -35,7 +35,7 @@ final class Interfaces {
 		
 		@Override
 		public final String get( final int index ) {
-			return Interfaces.this.constantPool.classValue(
+			return Interfaces.this.constantPool.typeName(
 				Interfaces.this.interfaceIndices[ index ] );
 		}
 	}

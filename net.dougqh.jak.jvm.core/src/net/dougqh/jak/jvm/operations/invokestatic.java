@@ -4,8 +4,6 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
-import net.dougqh.jak.types.Any;
-import net.dougqh.jak.types.ArgList;
 
 public final class invokestatic extends InvocationOperation {
 	public static final String ID = "invokestatic";
@@ -14,16 +12,12 @@ public final class invokestatic extends InvocationOperation {
 	public static final invokestatic prototype() {
 		return new invokestatic( null, null );
 	}
-	
-	private final Type targetType;
-	private final JavaMethodDescriptor method;
-	
+
 	public invokestatic(
 		final Type targetType,
 		final JavaMethodDescriptor method )
 	{
-		this.targetType = targetType;
-		this.method = method;
+		super(targetType, method);
 	}
 	
 	@Override

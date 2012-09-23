@@ -5,24 +5,21 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import net.dougqh.jak.Jak;
 import net.dougqh.jak.disassembler.JvmAnnotation;
 import net.dougqh.jak.disassembler.JvmClass;
 import net.dougqh.jak.disassembler.JvmEnum;
-import net.dougqh.jak.disassembler.JvmField;
 import net.dougqh.jak.disassembler.JvmInterface;
 import net.dougqh.jak.disassembler.JvmMethod;
 import net.dougqh.jak.disassembler.JvmReader;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.aload_0;
+import net.dougqh.jak.jvm.operations.invokespecial;
 
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
@@ -61,7 +58,7 @@ public final class BasicTest {
 		
 		Iterator<JvmOperation> operationIter = constructor.getOperations().iterator();
 		assertThat( operationIter.next(), isOp(aload_0.instance()) );
-		assertThat( operationIter.next(), any(JvmOperation.class) );
+		assertThat( operationIter.next(), isOp(new invokespecial(Object.class, Jak.init())) );
 	}
 
 	@Test
