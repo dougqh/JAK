@@ -5,7 +5,6 @@ import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.assembler.TypeResolver;
 
-//DQH - Visibility increased for WritingContext to allow REPL to work
 public final class WritingContext {
 	final TypeResolver resolver;
 	final ConstantPool constantPool;

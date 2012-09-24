@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import net.dougqh.jak.JavaMethodDescriptor;
+import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter;
 import net.dougqh.reflection.Delegate;
 
@@ -101,8 +102,7 @@ final class WriterDelegate extends Delegate< JvmCoreCodeWriter > {
 	}
 	
 	private static final boolean isCoreWritingMethod( final Method method ) {
-		return method.getDeclaringClass().equals( JvmCoreCodeWriter.class ) &&
-			method.getReturnType().equals( JvmCoreCodeWriter.class );
+		return method.getDeclaringClass().equals( JvmOperationProcessor.class );
 	}
 	
 	private abstract class MethodBuffer {
