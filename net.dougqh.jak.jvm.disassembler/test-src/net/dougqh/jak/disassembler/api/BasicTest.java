@@ -20,7 +20,9 @@ import net.dougqh.jak.jvm.operations.aload_0;
 import net.dougqh.jak.jvm.operations.invokespecial;
 import net.dougqh.jak.jvm.operations.return_;
 
+import org.hamcrest.BaseMatcher;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
@@ -57,10 +59,11 @@ public final class BasicTest {
 		assertThat( constructor.getMaxStack(), is(1) );
 		assertThat( constructor.hasCode(), is(true) );
 		
-		Iterator<JvmOperation> operationIter = constructor.getOperations().iterator();
-		assertThat( operationIter.next(), isOp(aload_0.instance()) );
-		assertThat( operationIter.next(), isOp(new invokespecial(Object.class, Jak.init())) );
-		assertThat( operationIter.next(), isOp(return_.instance()) );
+		assertThat( constructor, hasCode(
+			aload_0.instance(),
+			new invokespecial(Object.class, Jak.init()),
+			return_.instance()
+		));
 	}
 
 	@Test
@@ -119,5 +122,37 @@ public final class BasicTest {
 	
 	private static final Matcher< List< Type > > areTypes( final Type... types ) {
 		return CoreMatchers.is( Arrays.asList( types ) );
+	}
+	
+	private static final Matcher< JvmMethod > hasCode( final JvmOperation... expectedOps ) {
+		return new BaseMatcher<JvmMethod>() {
+			@Override
+			public final void describeTo(final Description description) {
+				description.appendValue(Arrays.asList(expectedOps));
+			}
+			
+			@Override
+			public final boolean matches(final Object obj) {
+				JvmMethod actual = (JvmMethod)obj;
+				Iterator<JvmOperation> opIter = actual.getOperations().iterator();
+				
+				for ( JvmOperation expectedOp: expectedOps ) {
+					if ( ! opIter.hasNext() ) {
+						return false;
+					}
+					
+					JvmOperation actualOp = opIter.next();
+					if ( ! expectedOp.equals( actualOp ) ) {
+						return false;
+					}
+				}
+				
+				if ( opIter.hasNext() ) {
+					return false;
+				}
+				
+				return true;
+			}
+		};
 	}
 }
