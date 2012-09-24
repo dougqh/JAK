@@ -208,6 +208,9 @@ final class ConstantPool {
 		return in.utf8( length );
 	}
 
+	/**
+	 * Used for any single reference entry - like class entry
+	 */
 	static final class SingularReference {
 		final int index;
 		
@@ -216,6 +219,13 @@ final class ConstantPool {
 		}
 	}
 	
+	/**
+	 * Used for any dual reference entry - like...
+	 *  - method ref
+	 *  - interface method ref
+	 *  - field ref
+	 *  - name and type pair
+	 */
 	static final class DualReference {
 		final int firstIndex;
 		final int secondIndex;
