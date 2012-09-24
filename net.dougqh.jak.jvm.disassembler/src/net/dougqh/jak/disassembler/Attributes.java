@@ -1,27 +1,30 @@
 package net.dougqh.jak.disassembler;
 
-import static net.dougqh.jak.jvm.Attributes.*;
-
 import java.io.IOException;
 
+import static net.dougqh.jak.jvm.Attributes.*;
+
 final class Attributes {
+	private final ConstantPool constantPool;
 	private final Attribute[] attributes;
 	
-	Attributes( final ConstantPool constantPool, final ByteInputStream in )
+	Attributes( final ConstantPool constantPool, final JvmInputStream in )
 		throws IOException
 	{
+		this.constantPool = constantPool;
+		
 		int count = in.u2();
 		this.attributes = new Attribute[ count ];
 		
 		for ( int i = 0; i < count; ++i ) {
 			int nameIndex = in.u2();
 			int length = in.u4();
-			byte[] data = in.read( length );
+			JvmInputStream subIn = in.readSubStream(length);
 			
 			this.attributes[ i ] = new Attribute(
 				constantPool,
 				nameIndex,
-				data );
+				subIn );
 		}
 	}
 	
@@ -29,8 +32,11 @@ final class Attributes {
 		return this.get( 
 			CODE,
 			new Converter< CodeAttribute >() {
-				CodeAttribute convert( final ByteInputStream in ) throws IOException {
-					return new CodeAttribute( in );
+				CodeAttribute convert(
+					final ConstantPool constantPool,
+					final JvmInputStream in ) throws IOException
+				{
+					return new CodeAttribute( constantPool, in );
 				}
 			} );
 	}
@@ -39,17 +45,13 @@ final class Attributes {
 		final String name,
 		final Converter< T > converter )
 	{
-		Attribute attribute = this.find( CODE );
+		Attribute attribute = this.find( name );
 		if ( attribute == null ) {
 			return null;
 		} else {
-			ByteInputStream in = attribute.in();
+			JvmInputStream in = attribute.in();
 			try {
-				try {
-					return converter.convert( in );
-				} finally {
-					in.close();
-				}
+				return converter.convert( this.constantPool, in );
 			} catch ( IOException e ) {
 				throw new IllegalStateException( e );
 			}
@@ -65,35 +67,10 @@ final class Attributes {
 		return null;
 	}
 	
-	static final class Attribute {
-		private final ConstantPool constantPool;
-		private final int nameIndex;
-		private final byte[] data;
-		
-		Attribute(
-			final ConstantPool constantPool,
-			final int nameIndex,
-			final byte[] data )
-		{
-			this.constantPool = constantPool;
-			this.nameIndex = nameIndex;
-			this.data = data;
-		}
-		
-		final String getName() {
-			return this.constantPool.utf8( this.nameIndex );
-		}
-		
-		final boolean is( final String name ) {
-			return this.getName().equals( name );
-		}
-		
-		final ByteInputStream in() {
-			return new ByteInputStream( this.data );
-		}
-	}
-	
 	static abstract class Converter< T > {
-		abstract T convert( final ByteInputStream in ) throws IOException;
+		abstract T convert(
+			final ConstantPool constantPool,
+			final JvmInputStream in )
+			throws IOException;
 	}
 }

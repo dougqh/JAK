@@ -8,7 +8,26 @@ import net.dougqh.jak.types.ArgList;
 import net.dougqh.jak.types.Reference;
 
 public abstract class InvocationOperation implements JvmOperation {
+	protected final Type targetType;
+	protected final JavaMethodDescriptor method;
+	
+	InvocationOperation(
+		final Type targetType,
+		final JavaMethodDescriptor method )
+	{
+		this.targetType = targetType;
+		this.method = method;
+	}
+
 	public abstract boolean isStatic();
+	
+	public final Type getType() {
+		return this.targetType;
+	}
+	
+	public final JavaMethodDescriptor getMethod() {
+		return this.method;
+	}
 	
 	@Override
 	public final boolean isPolymorphic() {
@@ -19,7 +38,6 @@ public abstract class InvocationOperation implements JvmOperation {
 	public final String getOperator() {
 		return null;
 	}
-	
 	
 	@Override
 	public final Type[] getCodeOperandTypes() {
@@ -38,5 +56,30 @@ public abstract class InvocationOperation implements JvmOperation {
 	@Override
 	public final Type[] getStackResultTypes() {
 		return new Type[] { Any.class };
+	}
+	
+	@Override
+	public int hashCode() {
+		//TODO: Provide a better implementation of hashCode
+		return this.getCode();
+	}
+	
+	@Override
+	public final boolean equals(Object obj) {
+		if ( obj == this ) {
+			return true;
+		} else if ( ! ( obj instanceof InvocationOperation ) ) {
+			return false;
+		} else {
+			InvocationOperation that = (InvocationOperation)obj;
+			return ( this.getCode() == that.getCode() ) &&
+				( this.targetType.equals( that.targetType ) ) &&
+				( this.method.equals( that.method ) );
+		}
+	}
+	
+	@Override
+	public final String toString() {
+		return this.getId() + " " + this.targetType + " " + this.method;
 	}
 }

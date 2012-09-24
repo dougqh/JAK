@@ -897,43 +897,43 @@ public abstract class JvmOperationHydrator implements JvmOperationProcessor {
     }
 
     @Override
-    public final void getstatic( final Type type, final JavaField javafield ) {
-        this.add( new getstatic( type, javafield ) );
+    public final void getstatic( final Type type, final JavaField javaField ) {
+        this.add( new getstatic( type, javaField ) );
     }
 
     @Override
-    public final void putstatic( final Type type, final JavaField javafield ) {
-        this.add( new putstatic( type, javafield ) );
+    public final void putstatic( final Type type, final JavaField javaField ) {
+        this.add( new putstatic( type, javaField ) );
     }
 
     @Override
-    public final void getfield( final Type type, final JavaField javafield ) {
-        this.add( new getfield( type, javafield ) );
+    public final void getfield( final Type type, final JavaField javaField ) {
+        this.add( new getfield( type, javaField ) );
     }
 
     @Override
-    public final void putfield( final Type type, final JavaField javafield ) {
-        this.add( new putfield( type, javafield ) );
+    public final void putfield( final Type type, final JavaField javaField ) {
+        this.add( new putfield( type, javaField ) );
     }
 
     @Override
-    public final void invokevirtual( final Type type, final JavaMethodDescriptor javamethoddescriptor ) {
-        this.add( new invokevirtual( type, javamethoddescriptor ) );
+    public final void invokevirtual( final Type type, final JavaMethodDescriptor methodDescriptor ) {
+        this.add( new invokevirtual( type, methodDescriptor ) );
     }
 
     @Override
-    public final void invokeinterface( final Type type, final JavaMethodDescriptor javamethoddescriptor ) {
-        this.add( new invokeinterface( type, javamethoddescriptor ) );
+    public final void invokeinterface( final Type type, final JavaMethodDescriptor methodDescriptor ) {
+        this.add( new invokeinterface( type, methodDescriptor ) );
     }
 
     @Override
-    public final void invokestatic( final Type type, final JavaMethodDescriptor javamethoddescriptor ) {
-        this.add( new invokestatic( type, javamethoddescriptor ) );
+    public final void invokestatic( final Type type, final JavaMethodDescriptor methodDescriptor ) {
+        this.add( new invokestatic( type, methodDescriptor ) );
     }
 
     @Override
-    public final void invokespecial( final Type type, final JavaMethodDescriptor javamethoddescriptor ) {
-        this.add( new invokespecial( type, javamethoddescriptor ) );
+    public final void invokespecial( final Type type, final JavaMethodDescriptor methodDescriptor ) {
+        this.add( new invokespecial( type, methodDescriptor ) );
     }
 
     @Override

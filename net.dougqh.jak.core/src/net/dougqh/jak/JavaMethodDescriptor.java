@@ -2,6 +2,7 @@ package net.dougqh.jak;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 
 import static net.dougqh.jak.Methods.*;
 
@@ -92,5 +93,24 @@ public final class JavaMethodDescriptor {
 	
 	public final FormalArguments arguments() {
 		return this.args;
+	}
+	
+	@Override
+	public final int hashCode() {
+		//Quick hash code calculation - will result in abnormal number of collisions
+		return this.methodName.hashCode();
+	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		if ( obj == this ) {
+			return true;
+		} else if ( ! ( obj instanceof JavaMethodDescriptor ) ) {
+			return false;
+		} else {
+			JavaMethodDescriptor that = (JavaMethodDescriptor)obj;
+			return this.returnType.equals( that.returnType ) &&
+				this.args.equals( that.args );
+		}
 	}
 }

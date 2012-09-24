@@ -53,4 +53,20 @@ public final class nop implements JvmOperation {
 	public final void process( final JvmOperationProcessor processor ) {
 		processor.nop();
 	}
+	
+	
+	@Override
+	public final int hashCode() {
+		return this.getCode();
+	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		return (obj instanceof nop);
+	}
+	
+	@Override
+	public final String toString() {
+		return this.getId();
+	}	
 }

@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class LoadOperation implements JvmOperation{
+public abstract class LoadOperation implements JvmOperation {
 	public abstract Type type();
 	
 	public abstract int slot();
@@ -36,5 +36,14 @@ public abstract class LoadOperation implements JvmOperation{
 	@Override
 	public final Type[] getStackResultTypes() {
 		return new Type[] { this.type() };
+	}
+	
+	@Override
+	public final String toString() {
+		if ( this.isFixed() ) {
+			return this.getId();
+		} else {
+			return this.getId() + " " + this.slot();
+		}
 	}
 }

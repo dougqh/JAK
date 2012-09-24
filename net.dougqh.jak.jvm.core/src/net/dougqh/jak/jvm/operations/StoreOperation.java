@@ -37,4 +37,13 @@ public abstract class StoreOperation implements JvmOperation{
 	public final Type[] getStackResultTypes() {
 		return NO_RESULTS;
 	}
+	
+	@Override
+	public final String toString() {
+		if ( this.isFixed() ) {
+			return this.getId();
+		} else {
+			return this.getId() + " " + this.slot();
+		}
+	}
 }

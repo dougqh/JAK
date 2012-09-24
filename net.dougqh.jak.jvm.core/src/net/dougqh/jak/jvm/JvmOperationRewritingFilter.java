@@ -54,13 +54,14 @@ public final class JvmOperationRewritingFilter extends JvmOperationFilter {
 		return this;
 	}
 	
+	public final JvmOperationRewritingFilter set( final JvmOperationRewriter rewriter ) {
+		this.rewriter = rewriter;
+		return this;
+	}
+	
 	@Override
 	protected final JvmOperationProcessor wrapped() {
 		return this.wrappedProcessor;
-	}
-	
-	public final void set( final JvmOperationRewriter rewriter ) {
-		this.rewriter = rewriter;
 	}
 	
 	@Override

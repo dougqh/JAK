@@ -5,17 +5,26 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationRewriter;
+import net.dougqh.jak.jvm.JvmOperationRewritingFilter;
 import net.dougqh.jak.jvm.assembler.ConstantEntry;
 import net.dougqh.jak.jvm.assembler.JvmCodeWriter;
+import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter;
 import net.dougqh.jak.jvm.assembler.JvmTypeWriter;
+import net.dougqh.jak.jvm.optimizers.BinaryConstantFolding;
+import net.dougqh.jak.jvm.optimizers.UnaryConstantFolding;
+import net.dougqh.jak.jvm.rewriters.Normalizer;
+import net.dougqh.reflection.Delegate;
 
 final class ReplRecorder {
-	private ArrayList< Method > methods = new ArrayList< Method >( 32 );
-	private ArrayList< Object[] > args = new ArrayList< Object[] >( 32 );
+	private List< Method > methods = new ArrayList< Method >( 32 );
+	private List< Object[] > args = new ArrayList< Object[] >( 32 );
 	
-	private ArrayList< Method > checkpointMethods;
-	private ArrayList< Object[] > checkpointArgs;
+	private List< Method > checkpointMethods;
+	private List< Object[] > checkpointArgs;
 	
 	ReplRecorder() {
 		this.checkpoint();
@@ -124,6 +133,65 @@ final class ReplRecorder {
 			} else {
 				console.append( method.getName() ).endl();
 			}
+		}
+	}
+	
+	final void optimize() {
+		this.optimize( new Normalizer() );
+		this.optimize( new UnaryConstantFolding() );
+		this.optimize( new BinaryConstantFolding() );
+	}
+	
+	final void optimize( final JvmOperationRewriter rewriter ) {
+		OptimizationRecorder optimizationRecorder = new OptimizationRecorder();
+		
+		JvmOperationRewritingFilter optimizer = new JvmOperationRewritingFilter(
+			optimizationRecorder.getProxy() );
+		optimizer.set( rewriter );
+
+		Iterator< Method > methodIter = this.methods.iterator();
+		Iterator< Object[] > argsIter = this.args.iterator();
+			
+		while ( methodIter.hasNext() ) {
+			Method method = methodIter.next();
+			Object[] args = argsIter.next();
+			
+			try {
+				method.invoke( optimizer, args );
+			} catch ( IllegalAccessException e ) {
+				throw new IllegalStateException( e );
+			} catch ( InvocationTargetException e ) {
+				throw new IllegalStateException( e );
+			}
+		}
+		
+		this.methods = optimizationRecorder.methods;
+		this.args = optimizationRecorder.args;
+	}
+	
+	static final class OptimizationRecorder extends Delegate< JvmCoreCodeWriter > {
+		private final List< Method > methods = new ArrayList< Method >();
+		private final List< Object[] > args = new ArrayList< Object[] >();
+		
+		public OptimizationRecorder() {
+			super( JvmCoreCodeWriter.class );
+		}
+		
+		@Override
+		protected final Object invoke(
+			final Method interfaceMethod,
+			final Object[] args )
+			throws Throwable
+		{
+			this.methods.add( interfaceMethod );
+			this.args.add( args );
+			
+			//op processor methods all return void
+			return null;
+		}
+		
+		private static final boolean isCoreWritingMethod( final Method method ) {
+			return method.getDeclaringClass().equals( JvmOperationProcessor.class );
 		}
 	}
 }

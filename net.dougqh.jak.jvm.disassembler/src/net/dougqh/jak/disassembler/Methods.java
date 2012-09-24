@@ -11,7 +11,7 @@ final class Methods {
 	private final List< JvmMethod > methods;
 	private final List< JvmMethod > allMethods;
 	
-	Methods( final ConstantPool constantPool, final ByteInputStream in ) 
+	Methods( final ConstantPool constantPool, final JvmInputStream in ) 
 		throws IOException
 	{		
 		int count = in.u2();

@@ -14,6 +14,13 @@ public final class bipush extends ConstantOperation {
 	
 	private final byte value;
 	
+	public bipush( final int value ) {
+		if ( value < Byte.MIN_VALUE || value > Byte.MAX_VALUE ) {
+			throw new IllegalArgumentException();
+		}
+		this.value = (byte)value;
+	}
+	
 	public  bipush( final byte value ) {
 		this.value = value;
 	}

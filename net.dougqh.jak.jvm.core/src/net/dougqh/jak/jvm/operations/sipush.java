@@ -14,6 +14,13 @@ public final class sipush extends ConstantOperation {
 	
 	private final short value;
 	
+	public sipush( final int value ) {
+		if ( value < Short.MIN_VALUE || value > Short.MAX_VALUE ) {
+			throw new IllegalArgumentException();
+		}
+		this.value = (short)value;
+	}
+	
 	public sipush( final short value ) {
 		this.value = value;
 	}

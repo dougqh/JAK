@@ -28,10 +28,10 @@ final class JvmTypeInternals {
 	private final int flags;
 	
 	JvmTypeInternals( final InputStream in ) throws IOException {
-		this( new ByteInputStream( in ) );
+		this( new JvmInputStream( in ) );
 	}
 	
-	JvmTypeInternals( final ByteInputStream in ) throws IOException {
+	JvmTypeInternals( final JvmInputStream in ) throws IOException {
 		readMagic( in );
 		this.minorVersion = in.u2();
 		this.majorVersion = in.u2();
@@ -57,18 +57,18 @@ final class JvmTypeInternals {
 	}
 	
 	final String getClassName() {
-		return this.constantPool.classValue( this.thisClass );
+		return this.constantPool.typeName( this.thisClass );
 	}
 	
 	final String getSuperName() {
-		return this.constantPool.classValue( this.superClass );
+		return this.constantPool.typeName( this.superClass );
 	}
 	
 	final List< String > getInterfaceNames() {
 		return this.interfaces.getNames();
 	}
 	
-	final List< JvmField > getFields() {
+	final List<JvmField> getFields() {
 		return this.fields.getFields();
 	}
 	
@@ -76,28 +76,30 @@ final class JvmTypeInternals {
 		return this.methods.getClassInitializer();
 	}
 	
-	final List< JvmMethod > getConstructors() {
+	final List<JvmMethod> getConstructors() {
 		return this.methods.getConstructors();
 	}
 	
-	final List< JvmMethod > getMethods() {
+	final List<JvmMethod> getMethods() {
 		return this.methods.getMethods();
 	}
 	
-	final List< JvmMethod > getAllMethods() {
+	final List<? extends JvmMethod> getAllMethods() {
 		return this.methods.getAllMethods();
 	}
 	
-	private static final void readMagic( final ByteInputStream in )
+	private static final void readMagic( final JvmInputStream in )
 		throws IOException
 	{
-		byte[] magic = in.read( 4 );
+		byte ca = in.u1();
+		byte fe = in.u1();
+		byte ba = in.u1();
+		byte be = in.u1();
 		
-		if (
-			magic[ 0 ] != CA ||
-			magic[ 1 ] != FE ||
-			magic[ 2 ] != BA ||
-			magic[ 3 ] != BE )
+		if ( ca != CA ||
+			fe != FE ||
+			ba != BA ||
+			be != BE )
 		{
 			throw new ClassFileFormatException( NOT_CLASS_MESSAGE );
 		}

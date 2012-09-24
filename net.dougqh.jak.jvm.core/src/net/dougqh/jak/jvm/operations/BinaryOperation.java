@@ -36,4 +36,26 @@ public abstract class BinaryOperation implements JvmOperation {
 		T castedValue = (T)value;
 		return castedValue;
 	}
+	
+	@Override
+	public final int hashCode() {
+		return this.getCode();
+	}
+	
+	@Override
+	public final boolean equals(final Object obj) {
+		if ( obj == this ) {
+			return true;
+		} else if ( ! ( obj instanceof BinaryOperation ) ) {
+			return false;
+		} else {
+			BinaryOperation that = (BinaryOperation)obj;
+			return ( this.getCode() == that.getCode() );
+		}
+	}
+	
+	@Override
+	public final String toString() {
+		return this.getId();
+	}
 }

@@ -1,12 +1,12 @@
-package net.dougqh.jak.jvm.rewriters;
+package net.dougqh.jak.jvm.optimizers;
 
 import net.dougqh.jak.jvm.JvmOperationRewriter;
 import net.dougqh.jak.jvm.JvmOperationRewritingFilter.RewriterState;
-import net.dougqh.jak.jvm.operations.BinaryOperation;
 import net.dougqh.jak.jvm.operations.ConstantOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
+import net.dougqh.jak.jvm.operations.UnaryOperation;
 
-public final class BinaryConstantFolding extends JvmOperationRewriter {
+public final class UnaryConstantFolding extends JvmOperationRewriter {
 	@Override
 	public final boolean backTrackOnMismatch() {
 		return true;
@@ -15,37 +15,35 @@ public final class BinaryConstantFolding extends JvmOperationRewriter {
 	@Override
 	public final boolean match(
 		final RewriterState rewriterState,
-		final Class<? extends JvmOperation> opClass )
+		final Class<? extends JvmOperation> opClass)
 	{
 		switch ( rewriterState.state() ) {
 			case 0:
-			case 1:
 			return isConst(opClass);
-				
-			case 2:
-			return isBinaryOp(opClass);
+			
+			case 1:
+			return isUnaryOp(opClass);
 			
 			default:
 			throw new IllegalStateException();
 		}
-	}
-	
+	}	
+
+	@Override
 	public final void process(
 		final RewriterState rewriterState,
-		final JvmOperation operation )
+		final JvmOperation operation)
 	{
 		switch ( rewriterState.state() ) {
 			case 0:
-			case 1:
 			rewriterState.buffer(operation);
 			rewriterState.incState();
 			break;
 			
-			case 2:
-			ConstantOperation lhsOp = (ConstantOperation)rewriterState.debuffer();
-			ConstantOperation rhsOp = (ConstantOperation)rewriterState.debuffer();
-			BinaryOperation binOp = (BinaryOperation)operation;
-			constant( rewriterState.processor(), binOp.fold(lhsOp.value(), rhsOp.value()) );
+			case 1:
+			ConstantOperation constOp = (ConstantOperation)rewriterState.debuffer();
+			UnaryOperation unaryOp = (UnaryOperation)operation;
+			constant( rewriterState.processor(), unaryOp.fold(constOp.value()) );
 			
 			rewriterState.resetState();
 			break;

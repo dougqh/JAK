@@ -8,7 +8,7 @@ import java.util.List;
 final class Fields {
 	private final JvmField[] fields;
 	
-	Fields( final ConstantPool constantPool, final ByteInputStream in ) 
+	Fields( final ConstantPool constantPool, final JvmInputStream in ) 
 		throws IOException
 	{
 		int count = in.u2();
