@@ -3930,6 +3930,14 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.macro( new While( condition, stmt ) );
 	}
 	
+	public final JvmCodeWriter while_( final JakExpression expr, final stmt stmt ) {
+		return this.while_( JakAsm.truthy( expr ), stmt );
+	}
+	
+	public final JvmCodeWriter while_( final boolean value, final stmt stmt ) {
+		return this.while_( JakAsm.const_( value ), stmt );
+	}
+	
 	private final DoWhile doUnderConstruction() {
 		if ( this.underConstructionMacro instanceof DoWhile ) {
 			return (DoWhile)this.underConstructionMacro;
