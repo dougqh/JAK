@@ -111,10 +111,6 @@ public final class BasicTest {
 		
 		//assertThat( type.getMethods(), contains( "run" ) );
 	}
-	
-	private static final Matcher< JvmOperation > isOp( final JvmOperation op ) {
-		return CoreMatchers.is(op);
-	}
 		
 	private static final Matcher< Type > isType( final Type type ) {
 		return CoreMatchers.is( type );
