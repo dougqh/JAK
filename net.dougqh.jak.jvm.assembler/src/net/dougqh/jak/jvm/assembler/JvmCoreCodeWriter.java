@@ -17,12 +17,11 @@ public interface JvmCoreCodeWriter extends JvmOperationProcessor {
 	
 	public abstract WritingContext context();
 	
-	public abstract void prepareForWrite();
+	public abstract void finish();
 	
 	public abstract JvmStack stackMonitor();
 	
 	public abstract JvmLocals localsMonitor();
 	
 	public abstract int pos();
-
 }
