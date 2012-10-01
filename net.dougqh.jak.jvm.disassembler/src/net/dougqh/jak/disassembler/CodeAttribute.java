@@ -76,8 +76,6 @@ final class CodeAttribute {
 		private final ConstantPool constantPool;
 		private final JvmInputStream codeIn;
 		
-		private int pos;
-		
 		Decoder( final ConstantPool constantPool, final JvmInputStream codeIn ) {
 			this.constantPool = constantPool;
 			this.codeIn = codeIn;
