@@ -3,6 +3,7 @@ package net.dougqh.jak;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import javax.lang.model.element.TypeElement;
 
@@ -164,6 +165,14 @@ public class Jak {
 		final Type returnType,
 		final String methodName,
 		final Type... args )
+	{
+		return new JavaModifiers().method( returnType, methodName, args );
+	}
+	
+	public static final JavaMethodDescriptor method(
+		final Type returnType,
+		final String methodName,
+		final List<? extends Type> args )
 	{
 		return new JavaModifiers().method( returnType, methodName, args );
 	}

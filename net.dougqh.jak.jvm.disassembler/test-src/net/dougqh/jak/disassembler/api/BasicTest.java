@@ -59,11 +59,14 @@ public final class BasicTest {
 		assertThat( constructor.getMaxStack(), is(1) );
 		assertThat( constructor.hasCode(), is(true) );
 		
+		assertThat( constructor.getReturnType(), isType(void.class) );
+		assertThat( constructor.getParameterTypes(), areTypes());
+		
 		assertThat( constructor, hasCode(
 			aload_0.instance(),
 			new invokespecial(Object.class, Jak.init()),
 			return_.instance()
-		));
+		) );
 	}
 
 	@Test

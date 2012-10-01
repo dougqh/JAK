@@ -2,7 +2,7 @@ package net.dougqh.jak;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
+import java.util.List;
 
 import static net.dougqh.jak.Methods.*;
 
@@ -38,6 +38,11 @@ public final class JavaMethodDescriptor {
 	}
 
 	public final JavaMethodDescriptor args( final Type... types ) {
+		this.args = FormalArguments.instance( types );
+		return this;
+	}
+	
+	public final JavaMethodDescriptor args( final List<? extends Type> types ) {
 		this.args = FormalArguments.instance( types );
 		return this;
 	}

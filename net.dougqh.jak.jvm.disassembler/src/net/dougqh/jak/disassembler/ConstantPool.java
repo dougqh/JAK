@@ -2,6 +2,8 @@ package net.dougqh.jak.disassembler;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 
 import net.dougqh.jak.Jak;
 import net.dougqh.jak.JavaField;
@@ -10,6 +12,16 @@ import net.dougqh.java.meta.types.JavaTypes;
 import static net.dougqh.jak.jvm.ConstantPoolConstants.*;
 
 final class ConstantPool {
+	public static final class MethodTypeDescriptor {
+		final List<Type> paramTypes;
+		final Type returnType;
+		
+		MethodTypeDescriptor( final List<Type> paramTypes, final Type returnType ) {
+			this.paramTypes = paramTypes;
+			this.returnType = returnType;
+		}
+	}
+	
 	private final Object[] constants;
 	
 	ConstantPool( final JvmInputStream in ) throws IOException {		
@@ -80,13 +92,14 @@ final class ConstantPool {
 		}
 	}
 	
-	public final String typeName( final int index ) {
-		String jvmClassName = this.utf8( this.index( index ) );
-		return jvmClassName.replace( '/', '.' );
+	public final String typeName( final int classIndex ) {
+		int stringIndex = this.index( classIndex );
+		
+		return translateClass( this.utf8( stringIndex ) );
 	}
 	
-	public final Type type( final int index ) {
-		return JavaTypes.objectTypeName( this.typeName( index ) );
+	public final Type type( final int classIndex ) {
+		return this.decode( classIndex, TypeDecoder.INSTANCE );
 	}
 	
 	public final int intValue( final int index ) {
@@ -116,38 +129,74 @@ final class ConstantPool {
 	public final JavaField field( final int refIndex ) {
 		int nameAndTypeIndex = this.secondIndex(refIndex);
 		
-		int nameIndex = this.firstIndex(nameAndTypeIndex);
-		int typeIndex = this.secondIndex(nameAndTypeIndex);
+		String name = this.decodeFirst(nameAndTypeIndex, StringDecoder.INSTANCE);
+		Type type = this.decodeSecond(nameAndTypeIndex, FieldDescriptorDecoder.INSTANCE);
 		
-		return Jak.field(this.type(typeIndex), this.utf8(nameIndex));
+		return Jak.field(type, name);
 	}
 	
-	public final JavaMethodDescriptor methodDescriptor( final int refIndex ) {
+	public final MethodTypeDescriptor methodTypeDescriptor( final int index ) {
+		return MethodSignatureDecoder.INSTANCE.decode(this.utf8(index));
+	}
+	
+	public final JavaMethodDescriptor methodRef( final int refIndex ) {
 		int nameAndTypeIndex = this.secondIndex(refIndex);
 		
-		int nameIndex = this.firstIndex(nameAndTypeIndex);
-		int signatureIndex = this.secondIndex(nameAndTypeIndex);
-		
-		String name = this.utf8(nameIndex);
-		String signature = this.utf8(signatureIndex);
-		
-		if ( ! signature.equals("()V" ) ) {
-			throw new IllegalStateException("Not implemented");
-		}
-		
-		return Jak.method(void.class, name);
+		String name = this.decodeFirst(nameAndTypeIndex, StringDecoder.INSTANCE);
+		MethodTypeDescriptor signature = this.decodeSecond(nameAndTypeIndex, MethodSignatureDecoder.INSTANCE);
+				
+		return Jak.method(signature.returnType, name, signature.paramTypes);
 	}
 
 	private final int index( final int index ) {
 		return ( (SingularReference)this.constants[ index ] ).index;
 	}
 	
+	private final <T> T decode( final int index, final Decoder<T> decoder ) {
+		SingularReference ref = (SingularReference)this.constants[index];
+		
+		if ( ref.decoded == null ) {
+			String utf8 = this.utf8(ref.index);
+			ref.decoded = decoder.decode(utf8);
+		}
+		
+		@SuppressWarnings("unchecked")
+		T result = (T)ref.decoded;
+		return (T)result;
+	}
+	
 	private final int firstIndex( final int index ) {
 		return ( (DualReference)this.constants[ index ] ).firstIndex;
+	}
+	
+	private final <T> T decodeFirst( final int index, final Decoder<T> decoder ) {
+		DualReference ref = (DualReference)this.constants[index];
+		
+		if ( ref.firstDecoded == null ) {
+			String utf8 = this.utf8(ref.firstIndex);
+			ref.firstDecoded = decoder.decode(utf8);
+		}
+		
+		@SuppressWarnings("unchecked")
+		T result = (T)ref.firstDecoded;
+		return (T)result;
 	}
 
 	private final int secondIndex( final int index ) {
 		return ( (DualReference)this.constants[ index ] ).secondIndex;
+	}
+	
+	private final <T> T decodeSecond( final int index, final Decoder<T> decoder ) {
+		DualReference ref = (DualReference)this.constants[ index ];
+		
+		if ( ref.secondDecoded == null ) {
+			String utf8 = this.utf8(ref.secondIndex);
+			ref.secondDecoded = decoder.decode(utf8);
+		}
+		
+		@SuppressWarnings("unchecked")
+		T result = (T)ref.secondDecoded;
+		return (T)result;
 	}
 	
 	private static final SingularReference readClassInfo( final JvmInputStream in ) throws IOException {
@@ -207,12 +256,17 @@ final class ConstantPool {
 		
 		return in.utf8( length );
 	}
+	
+	private static final String translateClass(final String jvmClassName) {
+		return jvmClassName.replace( '/', '.' );
+	}
 
 	/**
 	 * Used for any single reference entry - like class entry
 	 */
 	static final class SingularReference {
 		final int index;
+		Object decoded;
 		
 		SingularReference( final int index ) {
 			this.index = index;
@@ -230,12 +284,83 @@ final class ConstantPool {
 		final int firstIndex;
 		final int secondIndex;
 		
+		Object firstDecoded;
+		Object secondDecoded;
+		
 		DualReference(
 			final int firstIndex,
 			final int secondIndex )
 		{
 			this.firstIndex = firstIndex;
 			this.secondIndex = secondIndex;
+		}
+	}
+	
+	static abstract class Decoder<T> {
+		abstract T decode(final String value);
+	}
+	
+	static final class StringDecoder extends Decoder<String> {
+		static final StringDecoder INSTANCE = new StringDecoder();
+		
+		private StringDecoder() {}
+		
+		@Override
+		final String decode( final String value ) {
+			return value;
+		}
+	}
+	
+	static final class TypeDecoder extends Decoder<Type> {
+		static final TypeDecoder INSTANCE = new TypeDecoder();
+		
+		private TypeDecoder() {}
+		
+		@Override
+		final Type decode( final String value ) {
+			// Not worried about primitives, so I can user a lighter implementation
+			return JavaTypes.objectTypeName( translateClass( value ) );
+		}
+	}
+	
+	static final class FieldDescriptorDecoder extends Decoder<Type> {
+		static final FieldDescriptorDecoder INSTANCE = new FieldDescriptorDecoder();
+		
+		private FieldDescriptorDecoder() {}
+		
+		@Override
+		final Type decode( final String value ) {
+			return JavaTypes.fromPersistedName( value );
+		}
+	}
+	
+	static final class MethodSignatureDecoder extends Decoder<MethodTypeDescriptor> {
+		static final MethodSignatureDecoder INSTANCE = new MethodSignatureDecoder();
+		
+		private MethodSignatureDecoder() {}
+		
+		@Override
+		final MethodTypeDescriptor decode( final String signature ) {
+			if ( signature.startsWith( "()" ) ) {
+				return handleWithoutParameters( signature );
+			} else {
+				return handleWithParameters( signature );
+			}
+		}
+		
+		private static final MethodTypeDescriptor handleWithoutParameters(
+			final String signature )
+		{
+			String returnTypeRemainder = signature.substring(2);
+			return new MethodTypeDescriptor(
+				Collections.<Type>emptyList(),
+				JavaTypes.fromPersistedName(returnTypeRemainder));
+		}
+		
+		private static final MethodTypeDescriptor handleWithParameters(
+			final String signature )
+		{
+			throw new IllegalStateException("not implemented");
 		}
 	}
 }

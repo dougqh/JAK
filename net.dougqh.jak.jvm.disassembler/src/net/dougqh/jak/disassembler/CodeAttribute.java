@@ -850,7 +850,7 @@ final class CodeAttribute {
 					int refIndex = this.readIndex();
 					processor.invokevirtual(
 						this.constantPool.targetType(refIndex),
-						this.constantPool.methodDescriptor(refIndex));
+						this.constantPool.methodRef(refIndex));
 					break;
 				}
 
@@ -858,7 +858,7 @@ final class CodeAttribute {
 					int refIndex = this.readIndex();
 					processor.invokespecial(
 						this.constantPool.targetType(refIndex),
-						this.constantPool.methodDescriptor(refIndex));
+						this.constantPool.methodRef(refIndex));
 					break;
 				}
 
@@ -866,7 +866,7 @@ final class CodeAttribute {
 					int refIndex = this.readIndex();
 					processor.invokestatic(
 						this.constantPool.targetType(refIndex),
-						this.constantPool.methodDescriptor(refIndex));
+						this.constantPool.methodRef(refIndex));
 					break;
 				}
 
@@ -874,7 +874,7 @@ final class CodeAttribute {
 					int refIndex = this.readIndex();
 					processor.invokeinterface(
 						this.constantPool.targetType(refIndex),
-						this.constantPool.methodDescriptor(refIndex));
+						this.constantPool.methodRef(refIndex));
 					break;
 				}
 

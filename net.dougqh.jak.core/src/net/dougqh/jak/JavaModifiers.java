@@ -3,6 +3,7 @@ package net.dougqh.jak;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
+import java.util.List;
 
 import static net.dougqh.jak.Flags.*;
 import static net.dougqh.jak.Methods.*;
@@ -155,6 +156,14 @@ public final class JavaModifiers {
 		final Type returnType,
 		final String methodName,
 		final Type... args )
+	{
+		return this.method( returnType, methodName ).args( args );
+	}
+	
+	public final JavaMethodDescriptor method(
+		final Type returnType,
+		final String methodName,
+		final List<? extends Type> args )
 	{
 		return this.method( returnType, methodName ).args( args );
 	}

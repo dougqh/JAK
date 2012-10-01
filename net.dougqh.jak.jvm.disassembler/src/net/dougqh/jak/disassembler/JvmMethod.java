@@ -68,12 +68,12 @@ public final class JvmMethod implements JavaMethod {
 	
 	@Override
 	public final Type getReturnType() {
-		throw new UnsupportedOperationException( "incomplete" );
+		return this.constantPool.methodTypeDescriptor( this.descriptorIndex ).returnType;
 	}
 	
 	@Override
 	public final List< Type > getParameterTypes() {
-		throw new UnsupportedOperationException( "incomplete" );
+		return this.constantPool.methodTypeDescriptor( this.descriptorIndex ).paramTypes;
 	}
 	
 	private final CodeAttribute getCodeAttribute() {
