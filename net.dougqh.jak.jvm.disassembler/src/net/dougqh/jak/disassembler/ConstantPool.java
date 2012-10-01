@@ -11,6 +11,9 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.java.meta.types.JavaTypes;
 import static net.dougqh.jak.jvm.ConstantPoolConstants.*;
 
+/**
+ * Implementation of ConstantPool used during reading of class files.
+ */
 final class ConstantPool {
 	public static final class MethodTypeDescriptor {
 		final List<Type> paramTypes;
@@ -22,11 +25,36 @@ final class ConstantPool {
 		}
 	}
 	
+	/*
+	This class uses a rather intricate multi-level caching scheme to handle 
+	decoding UTF-8 strings into objects.
+	 
+	When a UTF-8 is decoded indirectly through a singular or dual reference, 
+	the decoded value is stored inside the reference object and is assumed 
+	to be correct going forward.
+	 
+	Conversely, when a UTF-8 is decoded directly (not through a reference - 
+	as is the case for fields and methods being declared), the decoded value
+	is cached, but the decoder must be checked for each request.
+	 
+	The difference is that when coming through a reference, the type of the
+	decoder can be assumed to be constant.  So by caching the value in the 
+	reference directly, the interpretation is known to always be correct in 
+	that context.
+	 
+	However, when decoding directly, the UTF-8 reference could be shared 
+	by a string literal and the value being decoded.  While this is highly
+	unlikely, ConstantPool checks for this case anyway to guarantee 
+	correctness.
+	*/
+	
 	private final Object[] constants;
+	private final DecodeCacheEntry[] decodeCache;
 	
 	ConstantPool( final JvmInputStream in ) throws IOException {		
 		int count = in.u2();
 		this.constants = new Object[ count ];
+		this.decodeCache = new DecodeCacheEntry[ count ];
 		
 		for ( int index = 1; index < count; ++index ) {
 			byte tag = in.u1();
@@ -99,7 +127,7 @@ final class ConstantPool {
 	}
 	
 	public final Type type( final int classIndex ) {
-		return this.decode( classIndex, TypeDecoder.INSTANCE );
+		return this.decodeRef( classIndex, TypeDecoder.INSTANCE );
 	}
 	
 	public final int intValue( final int index ) {
@@ -129,21 +157,21 @@ final class ConstantPool {
 	public final JavaField field( final int refIndex ) {
 		int nameAndTypeIndex = this.secondIndex(refIndex);
 		
-		String name = this.decodeFirst(nameAndTypeIndex, StringDecoder.INSTANCE);
-		Type type = this.decodeSecond(nameAndTypeIndex, FieldDescriptorDecoder.INSTANCE);
+		String name = this.decodeFirstRef(nameAndTypeIndex, StringDecoder.INSTANCE);
+		Type type = this.decodeSecondRef(nameAndTypeIndex, FieldDescriptorDecoder.INSTANCE);
 		
 		return Jak.field(type, name);
 	}
 	
 	public final MethodTypeDescriptor methodTypeDescriptor( final int index ) {
-		return MethodSignatureDecoder.INSTANCE.decode(this.utf8(index));
+		return this.decode(index, MethodSignatureDecoder.INSTANCE);
 	}
 	
 	public final JavaMethodDescriptor methodRef( final int refIndex ) {
 		int nameAndTypeIndex = this.secondIndex(refIndex);
 		
-		String name = this.decodeFirst(nameAndTypeIndex, StringDecoder.INSTANCE);
-		MethodTypeDescriptor signature = this.decodeSecond(nameAndTypeIndex, MethodSignatureDecoder.INSTANCE);
+		String name = this.decodeFirstRef(nameAndTypeIndex, StringDecoder.INSTANCE);
+		MethodTypeDescriptor signature = this.decodeSecondRef(nameAndTypeIndex, MethodSignatureDecoder.INSTANCE);
 				
 		return Jak.method(signature.returnType, name, signature.paramTypes);
 	}
@@ -153,6 +181,18 @@ final class ConstantPool {
 	}
 	
 	private final <T> T decode( final int index, final Decoder<T> decoder ) {
+		DecodeCacheEntry cacheEntry = this.decodeCache[index];
+		if ( cacheEntry != null && cacheEntry.matches(decoder) ) {
+			return cacheEntry.<T>get();
+		}
+		
+		String string = this.utf8(index);
+		T value = decoder.decode(string);
+		this.decodeCache[index] = new DecodeCacheEntry(decoder, value);
+		return value;
+	}
+	
+	private final <T> T decodeRef( final int index, final Decoder<T> decoder ) {
 		SingularReference ref = (SingularReference)this.constants[index];
 		
 		if ( ref.decoded == null ) {
@@ -169,7 +209,7 @@ final class ConstantPool {
 		return ( (DualReference)this.constants[ index ] ).firstIndex;
 	}
 	
-	private final <T> T decodeFirst( final int index, final Decoder<T> decoder ) {
+	private final <T> T decodeFirstRef( final int index, final Decoder<T> decoder ) {
 		DualReference ref = (DualReference)this.constants[index];
 		
 		if ( ref.firstDecoded == null ) {
@@ -186,7 +226,7 @@ final class ConstantPool {
 		return ( (DualReference)this.constants[ index ] ).secondIndex;
 	}
 	
-	private final <T> T decodeSecond( final int index, final Decoder<T> decoder ) {
+	private final <T> T decodeSecondRef( final int index, final Decoder<T> decoder ) {
 		DualReference ref = (DualReference)this.constants[ index ];
 		
 		if ( ref.secondDecoded == null ) {
@@ -361,6 +401,26 @@ final class ConstantPool {
 			final String signature )
 		{
 			throw new IllegalStateException("not implemented");
+		}
+	}
+	
+	private static final class DecodeCacheEntry {
+		private final Decoder<?> decoder;
+		private final Object value;
+		
+		public DecodeCacheEntry(final Decoder<?> decoder, final Object value) {
+			this.decoder = decoder;
+			this.value = value;
+		}
+		
+		boolean matches(final Decoder<?> decoder) {
+			return this.decoder.equals(decoder);
+		}
+		
+		<T> T get() {
+			@SuppressWarnings("unchecked")
+			T result = (T)value;
+			return result;
 		}
 	}
 }
