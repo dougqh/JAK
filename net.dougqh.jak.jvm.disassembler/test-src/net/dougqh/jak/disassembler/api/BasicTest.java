@@ -115,7 +115,7 @@ public final class BasicTest {
 			type.getInterfaces(),
 			areTypes( Serializable.class, Runnable.class ) );
 		
-		//assertThat( type.getMethods(), contains( "run" ) );
+		//assertThat( type.getMethods(), contains("run") );
 	}
 		
 	private static final Matcher< Type > isType( final Type type ) {
