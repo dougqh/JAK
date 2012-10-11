@@ -8,5 +8,5 @@ public interface JavaMethodSet<T extends JavaMethod> extends Iterable<T> {
 	public abstract T get(final int index);
 	
 	public abstract JavaMethodSet<T> filter(
-		final Filter<? super T> predicate);
+		final JavaFilter<? super T> predicate);
 }

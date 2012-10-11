@@ -34,7 +34,7 @@ public final class JvmMethodSet implements JavaMethodSet<JvmMethod> {
 	
 	@Override
 	public final JvmMethodSet filter(
-		final Filter<? super JvmMethod> predicate)
+		final JavaFilter<? super JvmMethod> predicate)
 	{
 		ArrayList<JvmMethod> matched = new ArrayList<JvmMethod>(this.methods.size());
 		for ( JvmMethod method: this ) {
