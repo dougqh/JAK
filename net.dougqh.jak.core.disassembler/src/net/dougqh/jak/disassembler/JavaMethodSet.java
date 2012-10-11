@@ -1,5 +1,7 @@
 package net.dougqh.jak.disassembler;
 
+import net.dougqh.jak.JavaFilter;
+
 public interface JavaMethodSet<T extends JavaMethod> extends Iterable<T> {
 	public abstract boolean isEmpty();
 	

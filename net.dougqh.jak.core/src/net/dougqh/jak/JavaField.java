@@ -3,7 +3,7 @@ package net.dougqh.jak;
 import java.lang.reflect.Type;
 
 
-public abstract class JavaField {
+public abstract class JavaField implements JavaElement {
 	public abstract int getFlags();
 	
 	public abstract Type getType();

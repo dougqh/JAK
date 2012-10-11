@@ -6,7 +6,7 @@ import java.util.List;
 
 import static net.dougqh.jak.Methods.*;
 
-public final class JavaMethodDescriptor {
+public final class JavaMethodDescriptor implements JavaElement {
 	private final int flags;
 	private final TypeVariable<?>[] typeVars;
 	private final Type returnType;

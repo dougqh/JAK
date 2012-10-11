@@ -66,6 +66,11 @@ public abstract class JvmType implements JavaType {
 	}
 	
 	@Override
+	public final int getFlags() {
+		return this.type.flags();
+	}
+	
+	@Override
 	public final boolean isPublic() {
 		return Flags.isPublic( this.type.flags() );
 	}

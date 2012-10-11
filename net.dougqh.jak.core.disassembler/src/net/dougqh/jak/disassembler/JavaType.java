@@ -3,12 +3,16 @@ package net.dougqh.jak.disassembler;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public interface JavaType {
+import net.dougqh.jak.JavaElement;
+
+public interface JavaType extends JavaElement {
 	public abstract String getName();
 	
 	public abstract Type getParentType();
 	
 	public abstract List< Type > getInterfaces();
+	
+	public abstract int getFlags();
 	
 	public abstract boolean isPublic();
 	

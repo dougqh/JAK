@@ -1,4 +1,4 @@
-package net.dougqh.jak.disassembler;
+package net.dougqh.jak;
 
 public interface JavaFilter<T> {
 	public abstract boolean matches( final T obj );

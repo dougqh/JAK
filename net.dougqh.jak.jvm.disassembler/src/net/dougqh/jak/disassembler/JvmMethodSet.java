@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.dougqh.jak.JavaFilter;
+
 
 public final class JvmMethodSet implements JavaMethodSet<JvmMethod> {
 	private final List<JvmMethod> methods;

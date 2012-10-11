@@ -32,6 +32,11 @@ public final class JvmMethod implements JavaMethod {
 	}
 	
 	@Override
+	public final int getFlags() {
+		return this.flags;
+	}
+	
+	@Override
 	public final String getName() {
 		return this.constantPool.utf8( this.nameIndex );
 	}
