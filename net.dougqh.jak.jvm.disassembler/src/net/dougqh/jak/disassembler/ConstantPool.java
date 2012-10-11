@@ -127,7 +127,7 @@ final class ConstantPool {
 	}
 	
 	public final Type type( final int classIndex ) {
-		return this.decodeRef( classIndex, TypeDecoder.INSTANCE );
+		return this.decodeRef(classIndex, TypeDecoder.INSTANCE);
 	}
 	
 	public final int intValue( final int index ) {
@@ -297,7 +297,7 @@ final class ConstantPool {
 		return in.utf8(length);
 	}
 	
-	private static final String translateClass(final String jvmClassName) {
+	private static final String translateClass( final String jvmClassName ) {
 		return jvmClassName.replace( '/', '.' );
 	}
 
@@ -337,7 +337,7 @@ final class ConstantPool {
 	}
 	
 	static abstract class Decoder<T> {
-		abstract T decode(final String value);
+		abstract T decode( final String value );
 	}
 	
 	static final class StringDecoder extends Decoder<String> {
@@ -408,12 +408,12 @@ final class ConstantPool {
 		private final Decoder<?> decoder;
 		private final Object value;
 		
-		public DecodeCacheEntry(final Decoder<?> decoder, final Object value) {
+		public DecodeCacheEntry( final Decoder<?> decoder, final Object value ) {
 			this.decoder = decoder;
 			this.value = value;
 		}
 		
-		boolean matches(final Decoder<?> decoder) {
+		boolean matches( final Decoder<?> decoder ) {
 			return this.decoder.equals(decoder);
 		}
 		
