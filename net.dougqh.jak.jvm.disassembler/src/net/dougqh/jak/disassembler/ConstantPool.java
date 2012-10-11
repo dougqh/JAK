@@ -53,67 +53,67 @@ final class ConstantPool {
 	
 	ConstantPool( final JvmInputStream in ) throws IOException {		
 		int count = in.u2();
-		this.constants = new Object[ count ];
-		this.decodeCache = new DecodeCacheEntry[ count ];
+		this.constants = new Object[count];
+		this.decodeCache = new DecodeCacheEntry[count];
 		
 		for ( int index = 1; index < count; ++index ) {
 			byte tag = in.u1();
 			
 			switch ( tag ) {
 				case CLASS: {
-					this.constants[ index ] = readClassInfo( in );
+					this.constants[index] = readClassInfo(in);
 					break;
 				}
 				
 				case FIELD_REF: {
-					this.constants[ index ] = readFieldRef( in );
+					this.constants[index] = readFieldRef(in);
 					break;
 				}
 				
 				case METHOD_REF: {
-					this.constants[ index ] = readMethodRef( in );
+					this.constants[index] = readMethodRef(in);
 					break;
 				}
 				
 				case INTERFACE_METHOD_REF: {
-					this.constants[ index ] = readInterfaceMethodRef( in );
+					this.constants[index] = readInterfaceMethodRef(in);
 					break;
 				}
 				
 				case STRING: {
-					this.constants[ index ] = readString( in );
+					this.constants[index] = readString(in);
 					break;
 				}
 				
 				case INTEGER: {
-					this.constants[ index ] = readInteger( in );
+					this.constants[index] = readInteger(in);
 					break;
 				}
 				
 				case FLOAT: {
-					this.constants[ index ] = readFloat( in );
+					this.constants[index] = readFloat(in);
 					break;
 				}
 				
 				case LONG: {
-					this.constants[ index ] = readLong( in );
+					this.constants[index] = readLong(in);
 					++index;
 					break;
 				}
 				
 				case DOUBLE: {
-					this.constants[ index ] = readDouble( in );
+					this.constants[index] = readDouble(in);
 					++index;
 					break;
 				}
 				
 				case NAME_AND_TYPE: {
-					this.constants[ index ] = readNameAndType( in );
+					this.constants[index] = readNameAndType(in);
 					break;
 				}
 				
 				case UTF8: {
-					this.constants[ index ] = readUtf8( in );
+					this.constants[index] = readUtf8(in);
 					break;
 				}
 			}
@@ -121,9 +121,9 @@ final class ConstantPool {
 	}
 	
 	public final String typeName( final int classIndex ) {
-		int stringIndex = this.index( classIndex );
+		int stringIndex = this.index(classIndex);
 		
-		return translateClass( this.utf8( stringIndex ) );
+		return translateClass( this.utf8(stringIndex) );
 	}
 	
 	public final Type type( final int classIndex ) {
@@ -131,27 +131,27 @@ final class ConstantPool {
 	}
 	
 	public final int intValue( final int index ) {
-		return (Integer)this.constants[ index ];
+		return (Integer)this.constants[index];
 	}
 	
 	public final float floatValue( final int index ) {
-		return (Float)this.constants[ index ];
+		return (Float)this.constants[index];
 	}
 	
 	public final long longValue( final int index ) {
-		return (Long)this.constants[ index ];
+		return (Long)this.constants[index];
 	}
 	
 	public final double doubleValue( final int index ) {
-		return (Double)this.constants[ index ];
+		return (Double)this.constants[index];
 	}
 	
 	public final String utf8( final int index ) {
-		return (String)this.constants[ index ];
+		return (String)this.constants[index];
 	}
 	
 	public final Type targetType( final int refIndex ) {
-		return this.type( this.firstIndex( refIndex ) );
+		return this.type( this.firstIndex(refIndex) );
 	}
 	
 	public final JavaField field( final int refIndex ) {
@@ -177,7 +177,7 @@ final class ConstantPool {
 	}
 
 	private final int index( final int index ) {
-		return ( (SingularReference)this.constants[ index ] ).index;
+		return ( (SingularReference)this.constants[index] ).index;
 	}
 	
 	private final <T> T decode( final int index, final Decoder<T> decoder ) {
@@ -206,7 +206,7 @@ final class ConstantPool {
 	}
 	
 	private final int firstIndex( final int index ) {
-		return ( (DualReference)this.constants[ index ] ).firstIndex;
+		return ( (DualReference)this.constants[index] ).firstIndex;
 	}
 	
 	private final <T> T decodeFirstRef( final int index, final Decoder<T> decoder ) {
@@ -223,11 +223,11 @@ final class ConstantPool {
 	}
 
 	private final int secondIndex( final int index ) {
-		return ( (DualReference)this.constants[ index ] ).secondIndex;
+		return ( (DualReference)this.constants[index] ).secondIndex;
 	}
 	
 	private final <T> T decodeSecondRef( final int index, final Decoder<T> decoder ) {
-		DualReference ref = (DualReference)this.constants[ index ];
+		DualReference ref = (DualReference)this.constants[index];
 		
 		if ( ref.secondDecoded == null ) {
 			String utf8 = this.utf8(ref.secondIndex);
@@ -247,13 +247,13 @@ final class ConstantPool {
 	private static final DualReference readFieldRef( final JvmInputStream in ) throws IOException {
 		int classIndex = in.u2();
 		int nameAndTypeIndex = in.u2();
-		return new DualReference( classIndex, nameAndTypeIndex );
+		return new DualReference(classIndex, nameAndTypeIndex);
 	}
 	
 	private static final DualReference readMethodRef( final JvmInputStream in ) throws IOException {
 		int classIndex = in.u2();
 		int nameAndTypeIndex = in.u2();
-		return new DualReference( classIndex, nameAndTypeIndex );
+		return new DualReference(classIndex, nameAndTypeIndex);
 	}
 
 	private static final DualReference readInterfaceMethodRef( final JvmInputStream in ) throws IOException {
@@ -265,7 +265,7 @@ final class ConstantPool {
 	
 	private static final SingularReference readString( final JvmInputStream in ) throws IOException {
 		int utf8Index = in.u2();
-		return new SingularReference( utf8Index );
+		return new SingularReference(utf8Index);
 	}
 	
 	private static final Integer readInteger( final JvmInputStream in ) throws IOException {
@@ -288,13 +288,13 @@ final class ConstantPool {
 		int nameIndex = in.u2();
 		int descriptorIndex = in.u2();
 		
-		return new DualReference( nameIndex, descriptorIndex );
+		return new DualReference(nameIndex, descriptorIndex);
 	}
 	
 	private static final String readUtf8( final JvmInputStream in ) throws IOException {
 		int length = in.u2();
 		
-		return in.utf8( length );
+		return in.utf8(length);
 	}
 	
 	private static final String translateClass(final String jvmClassName) {
@@ -359,7 +359,7 @@ final class ConstantPool {
 		@Override
 		final Type decode( final String value ) {
 			// Not worried about primitives, so I can user a lighter implementation
-			return JavaTypes.objectTypeName( translateClass( value ) );
+			return JavaTypes.objectTypeName( translateClass(value) );
 		}
 	}
 	
@@ -370,7 +370,7 @@ final class ConstantPool {
 		
 		@Override
 		final Type decode( final String value ) {
-			return JavaTypes.fromPersistedName( value );
+			return JavaTypes.fromPersistedName(value);
 		}
 	}
 	
@@ -382,9 +382,9 @@ final class ConstantPool {
 		@Override
 		final MethodTypeDescriptor decode( final String signature ) {
 			if ( signature.startsWith( "()" ) ) {
-				return handleWithoutParameters( signature );
+				return handleWithoutParameters(signature);
 			} else {
-				return handleWithParameters( signature );
+				return handleWithParameters(signature);
 			}
 		}
 		
