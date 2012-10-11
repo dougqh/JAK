@@ -26,18 +26,21 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import testdata.NonTrivialClass;
+import testdata.TrivialAnnotation;
+import testdata.TrivialClass;
+import testdata.TrivialEnum;
+import testdata.TrivialInterface;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public final class BasicTest {
-	private static final String TEST_DATA_PACKAGE = "testdata.";
-	
 	@Test
 	public final void trivialClass() throws IOException {
 		JvmReader reader = new JvmReader();
-		JvmClass type = reader.read( TEST_DATA_PACKAGE + "TrivialClass" );
+		JvmClass type = reader.read(TrivialClass.class);
 		
-		assertThat( type.getName(), is( TEST_DATA_PACKAGE + "TrivialClass" ) );
+		assertThat( type.getName(), is(TrivialClass.class.getCanonicalName()) );
 		assertThat( type.getParentType(), isType( Object.class ) );
 		
 		assertThat( type.getConstructors().size(), is(1) );
@@ -49,7 +52,7 @@ public final class BasicTest {
 	@Test
 	public final void constructor() throws IOException {
 		JvmReader reader = new JvmReader();
-		JvmClass aClass = reader.read( TEST_DATA_PACKAGE + "TrivialClass" );
+		JvmClass aClass = reader.read(TrivialClass.class);
 		
 		JvmMethod constructor = aClass.getConstructors().get(0);
 		assertThat( constructor.isConstructor(), is(true) );
@@ -72,29 +75,29 @@ public final class BasicTest {
 	@Test
 	public final void trivialInterface() throws IOException {
 		JvmReader reader = new JvmReader();
-		JvmInterface type = reader.read( TEST_DATA_PACKAGE + "TrivialInterface" );
+		JvmInterface type = reader.read(TrivialInterface.class);
 		
 		assertThat( type, is( JvmInterface.class ) );		
-		assertThat( type.getName(), is( TEST_DATA_PACKAGE + "TrivialInterface" ) );
+		assertThat( type.getName(), is(TrivialInterface.class.getCanonicalName()) );
 		assertThat( type.getParentType(), isType( Object.class ) );
 	}
 	
 	@Test
 	public final void trivialEnum() throws IOException {
 		JvmReader reader = new JvmReader();
-		JvmEnum type = reader.read( TEST_DATA_PACKAGE + "TrivialEnum" );
+		JvmEnum type = reader.read(TrivialEnum.class);
 		
-		assertThat( type.getName(), is( TEST_DATA_PACKAGE + "TrivialEnum" ) );
+		assertThat( type.getName(), is(TrivialEnum.class.getCanonicalName()) );
 		assertThat( type.getParentType(), isType( Enum.class ) );
 	}
 
 	@Test
 	public final void trivialAnnotation() throws IOException {
 		JvmReader reader = new JvmReader();
-		JvmAnnotation type = reader.read( TEST_DATA_PACKAGE + "TrivialAnnotation" );
+		JvmAnnotation type = reader.read(TrivialAnnotation.class);
 		
 		assertThat( type, is( JvmAnnotation.class ) );		
-		assertThat( type.getName(), is( TEST_DATA_PACKAGE + "TrivialAnnotation" ) );
+		assertThat( type.getName(), is(TrivialAnnotation.class.getCanonicalName()) );
 		assertThat( type.getParentType(), isType( Object.class ) );
 		
 		assertThat( type.getInterfaces(), areTypes( Annotation.class ) );
@@ -103,9 +106,9 @@ public final class BasicTest {
 	@Test
 	public final void nonTrivialClass() throws IOException {
 		JvmReader reader = new JvmReader();
-		JvmClass type = reader.read( TEST_DATA_PACKAGE + "NonTrivialClass" );
+		JvmClass type = reader.read(NonTrivialClass.class);
 		
-		assertThat( type.getName(), is( TEST_DATA_PACKAGE + "NonTrivialClass" ) );
+		assertThat( type.getName(), is(NonTrivialClass.class.getCanonicalName()) );
 		assertThat( type.getParentType(), isType( Object.class ) );
 		
 		assertThat(
