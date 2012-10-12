@@ -8,7 +8,7 @@ import java.util.List;
 import static net.dougqh.jak.Flags.*;
 import static net.dougqh.jak.Methods.*;
 
-public final class JavaModifiers {
+public final class JavaModifiers implements JavaFilter<JavaElement> {
 	private static final TypeVariable<?>[] EMPTY_TYPE_VARS = {};
 	
 	private final int flags;
@@ -45,6 +45,11 @@ public final class JavaModifiers {
 		
 		this.flags = baseModifiers.flags;
 		this.typeVars = typeVars;
+	}
+	
+	@Override
+	public final boolean matches(final JavaElement javaElement) {
+		return ( (javaElement.getFlags() & this.flags) == this.flags );
 	}
 	
 	public final JavaModifiers public_() {
