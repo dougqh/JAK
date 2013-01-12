@@ -3,6 +3,7 @@ package net.dougqh.jak.disassembler;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import net.dougqh.jak.AnalysisHelper;
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -15,6 +16,8 @@ public final class JvmMethod implements JavaMethod {
 	private final int nameIndex;
 	private final int descriptorIndex;
 	private final Attributes attributes;
+	
+	private volatile MethodAnalysisHelper analysisHelper = null;
 	
 	JvmMethod(
 		final ConstantPool constantPool,
@@ -115,7 +118,33 @@ public final class JvmMethod implements JavaMethod {
 		return this.getCodeAttribute().operations();
 	}
 	
+	public final <V> V getAnalysis(final Class<V> analysisClass) {
+		// The lack of coarser locking here, means that that a stray analysis helper
+		// instance could be needlessly created, but that's okay.
+		if ( this.analysisHelper == null ) {
+			this.analysisHelper = new MethodAnalysisHelper(this);
+		}
+		return this.analysisHelper.get(analysisClass);
+	}
+	
 	public final String toString() {
 		return this.getName();
+	}
+	
+	private static final class MethodAnalysisHelper extends AnalysisHelper<JvmMethod> {
+		public MethodAnalysisHelper(final JvmMethod method) {
+			super(method);
+		}
+
+		@SuppressWarnings("unchecked")
+		private static final Class<? super JvmMethod>[] SEARCH_TYPES = new Class[]{
+			JvmMethod.class,
+			JavaMethod.class
+		};
+		
+		@Override
+		protected final Class<? super JvmMethod>[] getSearchTypes() {
+			return SEARCH_TYPES;
+		}
 	}
 }

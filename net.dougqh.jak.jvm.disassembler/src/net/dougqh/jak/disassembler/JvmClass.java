@@ -1,5 +1,7 @@
 package net.dougqh.jak.disassembler;
 
+import net.dougqh.jak.JavaFilter;
+
 
 public final class JvmClass extends JvmType implements JavaClass {
 	JvmClass( final JvmTypeInternals typeReader ) {
@@ -21,5 +23,14 @@ public final class JvmClass extends JvmType implements JavaClass {
 	@Override
 	public final JvmMethodSet getMethods() {
 		return new JvmMethodSet(this.type.getMethods());
+	}
+	
+	public final JvmMethod getMethod(final String name) {
+		return this.getMethods().get(new JavaFilter<JvmMethod>() {
+			@Override
+			public final boolean matches(final JvmMethod method) {
+				return method.getName().equals(name);
+			}
+		});
 	}
 }

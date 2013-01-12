@@ -3,12 +3,19 @@ package net.dougqh.jak.disassembler;
 import java.util.Iterator;
 import java.util.List;
 
+import net.dougqh.jak.JavaFilter;
 
-public final class JvmMethodSet implements JavaMethodSet<JvmMethod> {
+
+public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
 	private final List<JvmMethod> methods;
 	
 	JvmMethodSet(final List<JvmMethod> methods) {
 		this.methods = methods;
+	}
+
+	@Override
+	public final JvmMethodSet filter(final JavaFilter<? super JvmMethod> filter) {
+		return new JvmMethodSet(this.filterHelper(filter));
 	}
 	
 	@Override

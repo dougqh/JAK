@@ -78,4 +78,8 @@ public final class JvmReader {
 			in.close();
 		}
 	}
+	
+	public final < T extends JvmType > T read( final Class<?> type ) throws IOException {
+		return this.<T>read( type.getCanonicalName() );
+	}
 }
