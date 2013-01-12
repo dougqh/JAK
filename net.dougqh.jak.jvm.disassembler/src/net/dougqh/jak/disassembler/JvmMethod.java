@@ -32,6 +32,11 @@ public final class JvmMethod implements JavaMethod {
 	}
 	
 	@Override
+	public final int getFlags() {
+		return this.flags;
+	}
+	
+	@Override
 	public final String getName() {
 		return this.constantPool.utf8( this.nameIndex );
 	}
@@ -68,12 +73,12 @@ public final class JvmMethod implements JavaMethod {
 	
 	@Override
 	public final Type getReturnType() {
-		throw new UnsupportedOperationException( "incomplete" );
+		return this.constantPool.methodTypeDescriptor( this.descriptorIndex ).returnType;
 	}
 	
 	@Override
 	public final List< Type > getParameterTypes() {
-		throw new UnsupportedOperationException( "incomplete" );
+		return this.constantPool.methodTypeDescriptor( this.descriptorIndex ).paramTypes;
 	}
 	
 	private final CodeAttribute getCodeAttribute() {

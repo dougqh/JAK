@@ -31,6 +31,6 @@ public final class JavaGenericArrayType implements GenericArrayType {
 	
 	@Override
 	public final String toString() {
-		return this.toString() + "[]";
+		return this.componentType.toString() + "[]";
 	}
 }

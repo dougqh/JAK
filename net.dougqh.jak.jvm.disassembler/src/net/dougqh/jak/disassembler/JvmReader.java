@@ -68,7 +68,7 @@ public final class JvmReader {
 		}
 	}
 	
-	public final < T extends JvmType > T read( final String name ) throws IOException {
+	public final <T extends JvmType> T read( final String name ) throws IOException {
 		InputStream in = this.locator().load( name );
 		try {
 			@SuppressWarnings("unchecked")
@@ -77,5 +77,9 @@ public final class JvmReader {
 		} finally {
 			in.close();
 		}
+	}
+	
+	public final <T extends JvmType> T read( final Class<?> aClass ) throws IOException {
+		return this.read( aClass.getName() );
 	}
 }

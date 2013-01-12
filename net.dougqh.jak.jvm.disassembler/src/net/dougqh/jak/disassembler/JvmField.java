@@ -29,8 +29,7 @@ public final class JvmField extends JavaField {
 	
 	@Override
 	public final int getFlags() {
-		//TODO: Fill getFlags out
-		throw new UnsupportedOperationException( "incomplete" );
+		return this.flags;
 	}
 	
 	@Override
