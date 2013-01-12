@@ -28,7 +28,5 @@ public abstract class JvmExpressionVisitor extends JvmExpression.Visitor {
 	}
 	
 	@Override
-	protected void const_( final int value ) {
-		this.const_( value );
-	}
+	protected abstract void const_( final int value );
 }
