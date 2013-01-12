@@ -13,10 +13,8 @@ public final class if_icmpge extends IfComparisonOperation {
 		return new if_icmpge( new JumpPrototype() );
 	}
 	
-	private final Jump jump;
-	
-	public if_icmpge( final Jump jump ) {
-		this.jump = jump;
+	public if_icmpge(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -41,6 +39,6 @@ public final class if_icmpge extends IfComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.if_icmpge( this.jump );
+		processor.if_icmpge(this.jump());
 	}
 }

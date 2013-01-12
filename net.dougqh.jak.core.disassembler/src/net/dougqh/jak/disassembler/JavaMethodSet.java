@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dougqh.jak.JavaFilter;
-import net.dougqh.jak.JavaMethodDescriptor;
-import net.dougqh.jak.JavaMethodSignature;
 
 public abstract class JavaMethodSet<T extends JavaMethod> implements Iterable<T>{
 	public abstract boolean isEmpty();

@@ -10,13 +10,11 @@ public final class ifge extends IfZeroComparisonOperation {
 	public static final byte CODE = IFGE;
 	
 	public static final ifge prototype() {
-		return new ifge( new JumpPrototype() );
+		return new ifge(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
 	public ifge( final Jump jump ) {
-		this.jump = jump;
+		super(jump);
 	}
 	
 	@Override
@@ -36,6 +34,6 @@ public final class ifge extends IfZeroComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.ifge( this.jump );
+		processor.ifge(this.jump());
 	}
 }

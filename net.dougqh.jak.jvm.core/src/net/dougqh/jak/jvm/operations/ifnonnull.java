@@ -11,13 +11,11 @@ public final class ifnonnull extends IfZeroComparisonOperation {
 	public static final byte CODE = IFNONNULL;
 	
 	public static final ifnonnull prototype() {
-		return new ifnonnull( new JumpPrototype() );
+		return new ifnonnull(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
-	public ifnonnull( final Jump jump ) {
-		this.jump = jump;
+	public ifnonnull(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -37,6 +35,6 @@ public final class ifnonnull extends IfZeroComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.ifnonnull( this.jump );
+		processor.ifnonnull(this.jump());
 	}
 }

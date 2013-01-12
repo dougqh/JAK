@@ -37,4 +37,9 @@ public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
 	public final Iterator<JvmMethod> iterator() {
 		return this.methods.iterator();
 	}
+	
+	@Override
+	public final String toString() {
+		return this.methods.toString();
+	}
 }
