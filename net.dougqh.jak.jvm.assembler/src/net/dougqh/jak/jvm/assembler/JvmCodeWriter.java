@@ -4099,7 +4099,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			
 			@Override
 			public final String toString() {
-				return "Jump To Label: " + label;
+				return label;
 			}
 		};
 	}
@@ -4115,7 +4115,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 			
 			@Override
 			public final String toString() {
-				return "Relative Jump: " + relativeOffset;
+				if ( relativeOffset < 0 ) {
+					return String.valueOf(relativeOffset);
+				} else {
+					return "+" + relativeOffset;
+				}
 			}
 		};
 	}
