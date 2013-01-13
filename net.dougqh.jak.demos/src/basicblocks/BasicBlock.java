@@ -2,8 +2,6 @@ package basicblocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -37,7 +35,11 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		return this.exitPos;
 	}
 	
-	public final boolean hasConditionalExit() {
+	public final boolean unconditionallyExits() {
+		return ( this.conditionalExitPos == null );
+	}
+	
+	public final boolean conditionallyExits() {
 		return ( this.conditionalExitPos != null );
 	}
 	
@@ -58,7 +60,7 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 			return false;
 		} else if ( this.exitPos == pos ) {
 			return true;
-		} else if ( this.hasConditionalExit() && this.conditionalExitPos == pos ) {
+		} else if ( this.conditionallyExits() && this.conditionalExitPos == pos ) {
 			return true;
 		} else {
 			return false;
@@ -127,9 +129,17 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		}
 	}
 	
+	public final int numOps() {
+		return this.operations.size();
+	}
+	
+	public final JvmOperation get(int index) {
+		return this.operations.get(index);
+	}
+	
 	@Override
-	public final Iterator<JvmOperation> iterator() {
-		return Collections.unmodifiableList(this.operations).iterator();
+	public final JvmOperationMatchingIterator iterator() {
+		return new JvmOperationMatchingIterator(this.operations.iterator());
 	}
 	
 	final void initExit(final int pos) {

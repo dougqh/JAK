@@ -31,6 +31,18 @@ public final class Loop implements Iterable<BasicBlock> {
 		return this.endingBlock;
 	}
 	
+	public final BasicBlock testBlock() {
+		if ( this.endingBlock.conditionallyExits() ) {
+			return this.endingBlock;
+		} else {
+			throw new IllegalStateException();
+		}
+	}
+	
+	public final int numBlocks() {
+		return this.loopBlocks.size();
+	}
+	
 	@Override
 	public final Iterator<BasicBlock> iterator() {
 		return Collections.unmodifiableList(this.loopBlocks).iterator();
