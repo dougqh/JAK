@@ -14,10 +14,8 @@ public final class if_acmpeq extends IfComparisonOperation {
 		return new if_acmpeq( new JumpPrototype() );
 	}
 	
-	private final Jump jump;
-	
 	public if_acmpeq( final Jump jump ) {
-		this.jump = jump;
+		super(jump);
 	}
 	
 	@Override
@@ -42,6 +40,6 @@ public final class if_acmpeq extends IfComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.if_acmpeq( this.jump );
+		processor.if_acmpeq(this.jump());
 	}
 }

@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class ComparisonOperation implements JvmOperation {
+public abstract class ComparisonOperation extends BaseJvmOperation {
 	public abstract Type lhsType();
 	
 	public abstract Type rhsType();

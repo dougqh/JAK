@@ -13,10 +13,8 @@ public final class if_icmplt extends IfComparisonOperation {
 		return new if_icmplt( new JumpPrototype() );
 	}
 	
-	private final Jump jump;
-	
-	public if_icmplt( final Jump jump ) {
-		this.jump = jump;
+	public if_icmplt(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -41,6 +39,6 @@ public final class if_icmplt extends IfComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.if_icmplt( this.jump );
+		processor.if_icmplt(this.jump());
 	}
 }

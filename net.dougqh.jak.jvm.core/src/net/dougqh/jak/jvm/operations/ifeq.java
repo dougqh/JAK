@@ -10,13 +10,11 @@ public final class ifeq extends IfZeroComparisonOperation {
 	public static final byte CODE = IFEQ;
 	
 	public static final ifeq prototype() {
-		return new ifeq( new JumpPrototype() );
+		return new ifeq(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
 	public ifeq( final Jump jump ) {
-		this.jump = jump;
+		super(jump);
 	}
 	
 	@Override
@@ -35,7 +33,7 @@ public final class ifeq extends IfZeroComparisonOperation {
 	}
 	
 	@Override
-	public final void process( final JvmOperationProcessor processor ) {
-		processor.ifeq( this.jump );
+	public final void process(final JvmOperationProcessor processor) {
+		processor.ifeq(this.jump());
 	}
 }

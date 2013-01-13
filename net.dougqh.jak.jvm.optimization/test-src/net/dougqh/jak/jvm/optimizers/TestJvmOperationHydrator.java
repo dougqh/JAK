@@ -9,7 +9,7 @@ public final class TestJvmOperationHydrator extends JvmOperationHydrator {
 	private final LinkedList<JvmOperation> opQueue = new LinkedList<JvmOperation>();
 	
 	@Override
-	protected final void add(final JvmOperation operation) {
+	protected final void process(final JvmOperation operation) {
 		this.opQueue.addLast(operation);
 	}
 	

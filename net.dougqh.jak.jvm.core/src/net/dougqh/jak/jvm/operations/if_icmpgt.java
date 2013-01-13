@@ -10,13 +10,11 @@ public final class if_icmpgt extends IfComparisonOperation {
 	public static final byte CODE = IF_ICMPGT;
 	
 	public static final if_icmpgt prototype() {
-		return new if_icmpgt( new JumpPrototype() );
+		return new if_icmpgt(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
-	public if_icmpgt( final Jump jump ) {
-		this.jump = jump;
+	public if_icmpgt(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -41,6 +39,6 @@ public final class if_icmpgt extends IfComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.if_icmpgt( this.jump );
+		processor.if_icmpgt(this.jump());
 	}
 }

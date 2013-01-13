@@ -8,6 +8,7 @@ import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.jvm.JvmOperationHydrator;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.jvm.operations.JvmOperation.*;
@@ -45,7 +46,20 @@ final class CodeAttribute {
 	//	attribute_info attributes[attributes_count];
 	}
 	
+	final void process( final SimpleJvmOperationProcessor processor ) {
+		this.process(processor.adapt());
+	}
+	
 	final void process( final JvmOperationProcessor processor ) {
+		if ( processor instanceof JvmOperationProcessor.MethodAware ) {
+			JvmOperationProcessor.MethodAware methodAware = 
+				(JvmOperationProcessor.MethodAware)processor;
+			
+			methodAware.maxStack(this.maxStack);
+			methodAware.maxLocals(this.maxLocals);
+			methodAware.codeLength(this.codeLength);
+		}
+		
 		try {
 			Decoder decoder = new Decoder(this.constantPool, this.codeIn);
 			while ( decoder.hasNext() ) {
@@ -76,10 +90,14 @@ final class CodeAttribute {
 		private final ConstantPool constantPool;
 		private final JvmInputStream codeIn;
 		
+		private int opPos;
+		
 		Decoder( final ConstantPool constantPool, final JvmInputStream codeIn ) {
 			this.constantPool = constantPool;
 			this.codeIn = codeIn;
 			this.codeIn.reset();
+			
+			this.opPos = 0;
 		}
 		
 		final boolean hasNext() {
@@ -87,6 +105,11 @@ final class CodeAttribute {
 		}
 		
 		final void read( final JvmOperationProcessor processor ) throws IOException {
+			this.opPos = this.codeIn.pos();
+			if ( processor instanceof JvmOperationProcessor.PositionAware ) {
+				((JvmOperationProcessor.PositionAware)processor).pos(opPos);
+			}
+			
 			byte op = this.codeIn.u1();
 			switch ( op ) {
 				case NOP:
@@ -705,63 +728,63 @@ final class CodeAttribute {
 				break;
 
 				case IFEQ:
-				processor.ifeq( this.readJump() );
+				processor.ifeq(this.readRelativeJump());
 				break;
 
 				case IFNE:
-				processor.ifne( this.readJump() );
+				processor.ifne(this.readRelativeJump());
 				break;
 
 				case IFLT:
-				processor.iflt( this.readJump() );
+				processor.iflt(this.readRelativeJump());
 				break;
 
 				case IFGE:
-				processor.ifge( this.readJump() );
+				processor.ifge(this.readRelativeJump());
 				break;
 
 				case IFGT:
-				processor.ifgt( this.readJump() );
+				processor.ifgt(this.readRelativeJump());
 				break;
 
 				case IFLE:
-				processor.ifle( this.readJump() );
+				processor.ifle(this.readRelativeJump());
 				break;
 
 				case IF_ICMPEQ:
-				processor.if_icmpeq( this.readJump() );
+				processor.if_icmpeq(this.readRelativeJump());
 				break;
 
 				case IF_ICMPNE:
-				processor.if_icmpne( this.readJump() );
+				processor.if_icmpne(this.readRelativeJump());
 				break;
 
 				case IF_ICMPLT:
-				processor.if_icmplt( this.readJump() );
+				processor.if_icmplt(this.readRelativeJump());
 				break;
 
 				case IF_ICMPGE:
-				processor.if_icmpge( this.readJump() );
+				processor.if_icmpge(this.readRelativeJump());
 				break;
 
 				case IF_ICMPGT:
-				processor.if_icmpgt( this.readJump() );
+				processor.if_icmpgt(this.readRelativeJump());
 				break;
 
 				case IF_ICMPLE:
-				processor.if_icmple( this.readJump() );
+				processor.if_icmple(this.readRelativeJump());
 				break;
 
 				case IF_ACMPEQ:
-				processor.if_acmpeq( this.readJump() );
+				processor.if_acmpeq(this.readRelativeJump());
 				break;
 
 				case IF_ACMPNE:
-				processor.if_acmpne( this.readJump() );
+				processor.if_acmpne(this.readRelativeJump());
 				break;
 
 				case GOTO:
-				processor.goto_( this.readJump() );
+				processor.goto_(this.readRelativeJump());
 				break;
 
 				case JSR:
@@ -921,11 +944,11 @@ final class CodeAttribute {
 				break;
 
 				case IFNULL:
-				processor.ifnull( this.readJump() );
+				processor.ifnull(this.readRelativeJump());
 				break;
 
 				case IFNONNULL:
-				processor.ifnonnull( this.readJump() );
+				processor.ifnonnull(this.readRelativeJump());
 				break;
 
 				case GOTO_W:
@@ -972,8 +995,25 @@ final class CodeAttribute {
 			return null;
 		}
 		
-		private final Jump readJump() throws IOException {
-			return null;
+		private final Jump readRelativeJump() throws IOException {
+			final int opPos = this.opPos;
+			final int relativeOffset = this.codeIn.u2();
+			
+			return new Jump() {
+				@Override
+				public final Integer pos() {
+					return opPos + relativeOffset;
+				}
+				
+				@Override
+				public final String toString() {
+					if ( relativeOffset < 0 ) {
+						return String.valueOf(relativeOffset);
+					} else {
+						return "+" + relativeOffset;
+					}
+				}
+			};
 		}
 		
 		private final Type readType() throws IOException {
@@ -1033,7 +1073,7 @@ final class CodeAttribute {
 		JvmOperation operation;
 		
 		@Override
-		protected final void add(final JvmOperation operation) {
+		protected final void process(final JvmOperation operation) {
 			this.operation = operation;
 		}
 	}

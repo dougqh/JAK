@@ -13,10 +13,8 @@ public final class ifne extends IfZeroComparisonOperation {
 		return new ifne( new JumpPrototype() );
 	}
 	
-	private final Jump jump;
-	
-	public ifne( final Jump jump ) {
-		this.jump = jump;
+	public ifne(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -36,6 +34,6 @@ public final class ifne extends IfZeroComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.ifne( this.jump );
+		processor.ifne(this.jump());
 	}
 }

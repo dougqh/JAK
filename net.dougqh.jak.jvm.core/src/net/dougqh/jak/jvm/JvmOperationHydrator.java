@@ -9,15 +9,28 @@ import net.dougqh.jak.jvm.operations.*;
 /**
  * A JvmOperationProcessor that hydrates the events into JvmOperation objects.
  */
-public abstract class JvmOperationHydrator implements JvmOperationProcessor {
+public abstract class JvmOperationHydrator
+	implements JvmOperationProcessor, JvmOperationProcessor.PositionAware
+{
+	private Integer pos = null;
+	
+	@Override
+	public final void pos(final int pos) {
+		this.pos = pos;
+	}
+	
+	public Integer pos() {
+		return this.pos;
+	}
+	
     @Override
     public final void pop() {
-        this.add( pop.instance() );
+        this.processImpl( pop.instance() );
     }
 
     @Override
     public final void swap() {
-        this.add( swap.instance() );
+        this.processImpl( swap.instance() );
     }
 
     @Override
@@ -28,1052 +41,1060 @@ public abstract class JvmOperationHydrator implements JvmOperationProcessor {
 
     @Override
     public final void dup() {
-        this.add( dup.instance() );
+        this.processImpl( dup.instance() );
     }
 
     @Override
     public final void nop() {
-        this.add( nop.instance() );
+        this.processImpl( nop.instance() );
     }
 
     @Override
     public final void aconst_null() {
-        this.add( aconst_null.instance() );
+        this.processImpl( aconst_null.instance() );
     }
 
     @Override
     public final void iconst_m1() {
-        this.add( iconst_m1.instance() );
+        this.processImpl( iconst_m1.instance() );
     }
 
     @Override
     public final void iconst_0() {
-        this.add( iconst_0.instance() );
+        this.processImpl( iconst_0.instance() );
     }
 
     @Override
     public final void iconst_1() {
-        this.add( iconst_1.instance() );
+        this.processImpl( iconst_1.instance() );
     }
 
     @Override
     public final void iconst_2() {
-        this.add( iconst_2.instance() );
+        this.processImpl( iconst_2.instance() );
     }
 
     @Override
     public final void iconst_3() {
-        this.add( iconst_3.instance() );
+        this.processImpl( iconst_3.instance() );
     }
 
     @Override
     public final void iconst_4() {
-        this.add( iconst_4.instance() );
+        this.processImpl( iconst_4.instance() );
     }
 
     @Override
     public final void iconst_5() {
-        this.add( iconst_5.instance() );
+        this.processImpl( iconst_5.instance() );
     }
 
     @Override
     public final void lconst_0() {
-        this.add( lconst_0.instance() );
+        this.processImpl( lconst_0.instance() );
     }
 
     @Override
     public final void lconst_1() {
-        this.add( lconst_1.instance() );
+        this.processImpl( lconst_1.instance() );
     }
 
     @Override
     public final void fconst_0() {
-        this.add( fconst_0.instance() );
+        this.processImpl( fconst_0.instance() );
     }
 
     @Override
     public final void fconst_1() {
-        this.add( fconst_1.instance() );
+        this.processImpl( fconst_1.instance() );
     }
 
     @Override
     public final void fconst_2() {
-        this.add( fconst_2.instance() );
+        this.processImpl( fconst_2.instance() );
     }
 
     @Override
     public final void dconst_0() {
-        this.add( dconst_0.instance() );
+        this.processImpl( dconst_0.instance() );
     }
 
     @Override
     public final void dconst_1() {
-        this.add( dconst_1.instance() );
+        this.processImpl( dconst_1.instance() );
     }
 
     @Override
     public final void bipush( final byte value ) {
-        this.add( new bipush( value ) );
+        this.processImpl( new bipush( value ) );
     }
 
     @Override
     public final void sipush( final short value ) {
-        this.add( new sipush( value ) );
+        this.processImpl( new sipush( value ) );
     }
 
     @Override
     public final void ldc( final Type type ) {
-        this.add( new ldc( type ) );
+        this.processImpl( new ldc( type ) );
     }
 
     @Override
     public final void ldc( final String value ) {
-        this.add( new ldc( value ) );
+        this.processImpl( new ldc( value ) );
     }
 
     @Override
     public final void ldc( final float value ) {
-        this.add( new ldc( value ) );
+        this.processImpl( new ldc( value ) );
     }
 
     @Override
     public final void ldc( final int value ) {
-        this.add( new ldc( value ) );
+        this.processImpl( new ldc( value ) );
     }
 
     @Override
     public final void ldc_w( final int value ) {
-        this.add( new ldc_w( value ) );
+        this.processImpl( new ldc_w( value ) );
     }
 
     @Override
     public final void ldc_w( final Type value ) {
-        this.add( new ldc_w( value ) );
+        this.processImpl( new ldc_w( value ) );
     }
 
     @Override
     public final void ldc_w( final float value ) {
-        this.add( new ldc_w( value ) );
+        this.processImpl( new ldc_w( value ) );
     }
 
     @Override
     public final void ldc_w( final String value ) {
-        this.add( new ldc_w( value ) );
+        this.processImpl( new ldc_w( value ) );
     }
 
     @Override
     public final void ldc2_w( final long value ) {
-        this.add( new ldc2_w( value ) );
+        this.processImpl( new ldc2_w( value ) );
     }
 
     @Override
     public final void ldc2_w( final double value ) {
-        this.add( new ldc2_w( value ) );
+        this.processImpl( new ldc2_w( value ) );
     }
 
     @Override
     public final void iload( final Slot slot ) {
-        this.add( new iload( slot ) );
+        this.processImpl( new iload( slot ) );
     }
 
     @Override
     public final void iload( final int slot ) {
-        this.add( new iload( slot ) );
+        this.processImpl( new iload( slot ) );
     }
 
     @Override
     public final void iload_0() {
-        this.add( iload_0.instance() );
+        this.processImpl( iload_0.instance() );
     }
 
     @Override
     public final void iload_1() {
-        this.add( iload_1.instance() );
+        this.processImpl( iload_1.instance() );
     }
 
     @Override
     public final void iload_2() {
-        this.add( iload_2.instance() );
+        this.processImpl( iload_2.instance() );
     }
 
     @Override
     public final void iload_3() {
-        this.add( iload_3.instance() );
+        this.processImpl( iload_3.instance() );
     }
 
     @Override
     public final void lload( final Slot slot ) {
-        this.add( new lload( slot ) );
+        this.processImpl( new lload( slot ) );
     }
 
     @Override
     public final void lload( final int slot ) {
-        this.add( new lload( slot ) );
+        this.processImpl( new lload( slot ) );
     }
 
     @Override
     public final void lload_0() {
-        this.add( lload_0.instance() );
+        this.processImpl( lload_0.instance() );
     }
 
     @Override
     public final void lload_1() {
-        this.add( lload_1.instance() );
+        this.processImpl( lload_1.instance() );
     }
 
     @Override
     public final void lload_2() {
-        this.add( lload_2.instance() );
+        this.processImpl( lload_2.instance() );
     }
 
     @Override
     public final void lload_3() {
-        this.add( lload_3.instance() );
+        this.processImpl( lload_3.instance() );
     }
 
     @Override
     public final void fload( final int slot ) {
-        this.add( new fload( slot ) );
+        this.processImpl( new fload( slot ) );
     }
 
     @Override
     public final void fload( final Slot slot ) {
-        this.add( new fload( slot ) );
+        this.processImpl( new fload( slot ) );
     }
 
     @Override
     public final void fload_0() {
-        this.add( fload_0.instance() );
+        this.processImpl( fload_0.instance() );
     }
 
     @Override
     public final void fload_1() {
-        this.add( fload_1.instance() );
+        this.processImpl( fload_1.instance() );
     }
 
     @Override
     public final void fload_2() {
-        this.add( fload_2.instance() );
+        this.processImpl( fload_2.instance() );
     }
 
     @Override
     public final void fload_3() {
-        this.add( fload_3.instance() );
+        this.processImpl( fload_3.instance() );
     }
 
     @Override
     public final void dload( final Slot slot ) {
-        this.add( new dload( slot ) );
+        this.processImpl( new dload( slot ) );
     }
 
     @Override
     public final void dload( final int slot ) {
-        this.add( new dload( slot ) );
+        this.processImpl( new dload( slot ) );
     }
 
     @Override
     public final void dload_0() {
-        this.add( dload_0.instance() );
+        this.processImpl( dload_0.instance() );
     }
 
     @Override
     public final void dload_1() {
-        this.add( dload_1.instance() );
+        this.processImpl( dload_1.instance() );
     }
 
     @Override
     public final void dload_2() {
-        this.add( dload_2.instance() );
+        this.processImpl( dload_2.instance() );
     }
 
     @Override
     public final void dload_3() {
-        this.add( dload_3.instance() );
+        this.processImpl( dload_3.instance() );
     }
 
     @Override
     public final void aload( final Slot slot ) {
-        this.add( new aload( slot ) );
+        this.processImpl( new aload( slot ) );
     }
     
     @Override
     public final void aload( final int slot ) {
-        this.add( new aload( slot ) );
+        this.processImpl( new aload( slot ) );
     }
 
     @Override
     public final void aload_0() {
-        this.add( aload_0.instance() );
+        this.processImpl( aload_0.instance() );
     }
 
     @Override
     public final void aload_1() {
-        this.add( aload_1.instance() );
+        this.processImpl( aload_1.instance() );
     }
 
     @Override
     public final void aload_2() {
-        this.add( aload_2.instance() );
+        this.processImpl( aload_2.instance() );
     }
 
     @Override
     public final void aload_3() {
-        this.add( aload_3.instance() );
+        this.processImpl( aload_3.instance() );
     }
 
     @Override
     public final void iaload() {
-        this.add( iaload.instance() );
+        this.processImpl( iaload.instance() );
     }
 
     @Override
     public final void laload() {
-        this.add( laload.instance() );
+        this.processImpl( laload.instance() );
     }
 
     @Override
     public final void faload() {
-        this.add( faload.instance() );
+        this.processImpl( faload.instance() );
     }
 
     @Override
     public final void daload() {
-        this.add( daload.instance() );
+        this.processImpl( daload.instance() );
     }
 
     @Override
     public final void aaload() {
-        this.add( aaload.instance() );
+        this.processImpl( aaload.instance() );
     }
 
     @Override
     public final void baload() {
-        this.add( baload.instance() );
+        this.processImpl( baload.instance() );
     }
 
     @Override
     public final void caload() {
-        this.add( caload.instance() );
+        this.processImpl( caload.instance() );
     }
 
     @Override
     public final void saload() {
-        this.add( saload.instance() );
+        this.processImpl( saload.instance() );
     }
 
     @Override
     public final void istore( final Slot slot ) {
-        this.add( new istore( slot ) );
+        this.processImpl( new istore( slot ) );
     }
 
     @Override
     public final void istore( final int slot ) {
-        this.add( new istore( slot ) );
+        this.processImpl( new istore( slot ) );
     }
 
     @Override
     public final void istore_0() {
-        this.add( istore_0.instance() );
+        this.processImpl( istore_0.instance() );
     }
 
     @Override
     public final void istore_1() {
-        this.add( istore_1.instance() );
+        this.processImpl( istore_1.instance() );
     }
 
     @Override
     public final void istore_2() {
-        this.add( istore_2.instance() );
+        this.processImpl( istore_2.instance() );
     }
 
     @Override
     public final void istore_3() {
-        this.add( istore_3.instance() );
+        this.processImpl( istore_3.instance() );
     }
 
     @Override
     public final void lstore( final Slot slot ) {
-        this.add( new lstore( slot ) );
+        this.processImpl( new lstore( slot ) );
     }
 
     @Override
     public final void lstore( final int slot ) {
-        this.add( new lstore( slot ) );
+        this.processImpl( new lstore( slot ) );
     }
 
     @Override
     public final void lstore_0() {
-        this.add( lstore_0.instance() );
+        this.processImpl( lstore_0.instance() );
     }
 
     @Override
     public final void lstore_1() {
-        this.add( lstore_1.instance() );
+        this.processImpl( lstore_1.instance() );
     }
 
     @Override
     public final void lstore_2() {
-        this.add( lstore_2.instance() );
+        this.processImpl( lstore_2.instance() );
     }
 
     @Override
     public final void lstore_3() {
-        this.add( lstore_3.instance() );
+        this.processImpl( lstore_3.instance() );
     }
 
     @Override
     public final void fstore( final int slot ) {
-        this.add( new fstore( slot ) );
+        this.processImpl( new fstore( slot ) );
     }
 
     @Override
     public final void fstore( final Slot slot ) {
-        this.add( new fstore( slot ) );
+        this.processImpl( new fstore( slot ) );
     }
 
     @Override
     public final void fstore_0() {
-        this.add( fstore_0.instance() );
+        this.processImpl( fstore_0.instance() );
     }
 
     @Override
     public final void fstore_1() {
-        this.add( fstore_1.instance() );
+        this.processImpl( fstore_1.instance() );
     }
 
     @Override
     public final void fstore_2() {
-        this.add( fstore_2.instance() );
+        this.processImpl( fstore_2.instance() );
     }
 
     @Override
     public final void fstore_3() {
-        this.add( fstore_3.instance() );
+        this.processImpl( fstore_3.instance() );
     }
 
     @Override
     public final void dstore( final Slot slot ) {
-        this.add( new dstore( slot ) );
+        this.processImpl( new dstore( slot ) );
     }
 
     @Override
     public final void dstore( final int slot ) {
-        this.add( new dstore( slot ) );
+        this.processImpl( new dstore( slot ) );
     }
 
     @Override
     public final void dstore_0() {
-        this.add( dstore_0.instance() );
+        this.processImpl( dstore_0.instance() );
     }
 
     @Override
     public final void dstore_1() {
-        this.add( dstore_1.instance() );
+        this.processImpl( dstore_1.instance() );
     }
 
     @Override
     public final void dstore_2() {
-        this.add( dstore_2.instance() );
+        this.processImpl( dstore_2.instance() );
     }
 
     @Override
     public final void dstore_3() {
-        this.add( dstore_3.instance() );
+        this.processImpl( dstore_3.instance() );
     }
 
     @Override
     public final void astore( final Slot slot ) {
-        this.add( new astore( slot ) );
+        this.processImpl( new astore( slot ) );
     }
 
     @Override
     public final void astore( final int slot ) {
-        this.add( new astore( slot ) );
+        this.processImpl( new astore( slot ) );
     }
 
     @Override
     public final void astore_0() {
-        this.add( astore_0.instance() );
+        this.processImpl( astore_0.instance() );
     }
 
     @Override
     public final void astore_1() {
-        this.add( astore_1.instance() );
+        this.processImpl( astore_1.instance() );
     }
 
     @Override
     public final void astore_2() {
-        this.add( astore_2.instance() );
+        this.processImpl( astore_2.instance() );
     }
 
     @Override
     public final void astore_3() {
-        this.add( astore_3.instance() );
+        this.processImpl( astore_3.instance() );
     }
 
     @Override
     public final void iastore() {
-        this.add( iastore.instance() );
+        this.processImpl( iastore.instance() );
     }
 
     @Override
     public final void lastore() {
-        this.add( lastore.instance() );
+        this.processImpl( lastore.instance() );
     }
 
     @Override
     public final void fastore() {
-        this.add( fastore.instance() );
+        this.processImpl( fastore.instance() );
     }
 
     @Override
     public final void dastore() {
-        this.add( dastore.instance() );
+        this.processImpl( dastore.instance() );
     }
 
     @Override
     public final void aastore() {
-        this.add( aastore.instance() );
+        this.processImpl( aastore.instance() );
     }
 
     @Override
     public final void bastore() {
-        this.add( bastore.instance() );
+        this.processImpl( bastore.instance() );
     }
 
     @Override
     public final void castore() {
-        this.add( castore.instance() );
+        this.processImpl( castore.instance() );
     }
 
     @Override
     public final void sastore() {
-        this.add( sastore.instance() );
+        this.processImpl( sastore.instance() );
     }
 
     @Override
     public final void pop2() {
-        this.add( pop2.instance() );
+        this.processImpl( pop2.instance() );
     }
 
     @Override
     public final void dup_x1() {
-        this.add( dup_x1.instance() );
+        this.processImpl( dup_x1.instance() );
     }
 
     @Override
     public final void dup_x2() {
-        this.add( dup_x2.instance() );
+        this.processImpl( dup_x2.instance() );
     }
 
     @Override
     public final void dup2() {
-        this.add( dup2.instance() );
+        this.processImpl( dup2.instance() );
     }
 
     @Override
     public final void dup2_x1() {
-        this.add( dup2_x1.instance() );
+        this.processImpl( dup2_x1.instance() );
     }
 
     @Override
     public final void dup2_x2() {
-        this.add( dup2_x2.instance() );
+        this.processImpl( dup2_x2.instance() );
     }
 
     @Override
     public final void iadd() {
-        this.add( iadd.instance() );
+        this.processImpl( iadd.instance() );
     }
 
     @Override
     public final void ladd() {
-        this.add( ladd.instance() );
+        this.processImpl( ladd.instance() );
     }
 
     @Override
     public final void fadd() {
-        this.add( fadd.instance() );
+        this.processImpl( fadd.instance() );
     }
 
     @Override
     public final void dadd() {
-        this.add( dadd.instance() );
+        this.processImpl( dadd.instance() );
     }
 
     @Override
     public final void isub() {
-        this.add( isub.instance() );
+        this.processImpl( isub.instance() );
     }
 
     @Override
     public final void lsub() {
-        this.add( lsub.instance() );
+        this.processImpl( lsub.instance() );
     }
 
     @Override
     public final void fsub() {
-        this.add( fsub.instance() );
+        this.processImpl( fsub.instance() );
     }
 
     @Override
     public final void dsub() {
-        this.add( dsub.instance() );
+        this.processImpl( dsub.instance() );
     }
 
     @Override
     public final void imul() {
-        this.add( imul.instance() );
+        this.processImpl( imul.instance() );
     }
 
     @Override
     public final void lmul() {
-        this.add( lmul.instance() );
+        this.processImpl( lmul.instance() );
     }
 
     @Override
     public final void fmul() {
-        this.add( fmul.instance() );
+        this.processImpl( fmul.instance() );
     }
 
     @Override
     public final void dmul() {
-        this.add( dmul.instance() );
+        this.processImpl( dmul.instance() );
     }
 
     @Override
     public final void idiv() {
-        this.add( idiv.instance() );
+        this.processImpl( idiv.instance() );
     }
 
     @Override
     public final void ldiv() {
-        this.add( ldiv.instance() );
+        this.processImpl( ldiv.instance() );
     }
 
     @Override
     public final void fdiv() {
-        this.add( fdiv.instance() );
+        this.processImpl( fdiv.instance() );
     }
 
     @Override
     public final void ddiv() {
-        this.add( ddiv.instance() );
+        this.processImpl( ddiv.instance() );
     }
 
     @Override
     public final void irem() {
-        this.add( irem.instance() );
+        this.processImpl( irem.instance() );
     }
 
     @Override
     public final void lrem() {
-        this.add( lrem.instance() );
+        this.processImpl( lrem.instance() );
     }
 
     @Override
     public final void frem() {
-        this.add( frem.instance() );
+        this.processImpl( frem.instance() );
     }
 
     @Override
     public final void drem() {
-        this.add( drem.instance() );
+        this.processImpl( drem.instance() );
     }
 
     @Override
     public final void ineg() {
-        this.add( ineg.instance() );
+        this.processImpl( ineg.instance() );
     }
 
     @Override
     public final void lneg() {
-        this.add( lneg.instance() );
+        this.processImpl( lneg.instance() );
     }
 
     @Override
     public final void fneg() {
-        this.add( fneg.instance() );
+        this.processImpl( fneg.instance() );
     }
 
     @Override
     public final void dneg() {
-        this.add( dneg.instance() );
+        this.processImpl( dneg.instance() );
     }
 
     @Override
     public final void ishl() {
-        this.add( ishl.instance() );
+        this.processImpl( ishl.instance() );
     }
 
     @Override
     public final void lshl() {
-        this.add( lshl.instance() );
+        this.processImpl( lshl.instance() );
     }
 
     @Override
     public final void ishr() {
-        this.add( ishr.instance() );
+        this.processImpl( ishr.instance() );
     }
 
     @Override
     public final void lshr() {
-        this.add( lshr.instance() );
+        this.processImpl( lshr.instance() );
     }
 
     @Override
     public final void iushr() {
-        this.add( iushr.instance() );
+        this.processImpl( iushr.instance() );
     }
 
     @Override
     public final void lushr() {
-        this.add( lushr.instance() );
+        this.processImpl( lushr.instance() );
     }
 
     @Override
     public final void iand() {
-        this.add( iand.instance() );
+        this.processImpl( iand.instance() );
     }
 
     @Override
     public final void land() {
-        this.add( land.instance() );
+        this.processImpl( land.instance() );
     }
 
     @Override
     public final void ior() {
-        this.add( ior.instance() );
+        this.processImpl( ior.instance() );
     }
 
     @Override
     public final void lor() {
-        this.add( lor.instance() );
+        this.processImpl( lor.instance() );
     }
 
     @Override
     public final void ixor() {
-        this.add( ixor.instance() );
+        this.processImpl( ixor.instance() );
     }
 
     @Override
     public final void lxor() {
-        this.add( lxor.instance() );
+        this.processImpl( lxor.instance() );
     }
 
     @Override
     public final void iinc( final int slot, final int delta ) {
-        this.add( new iinc( slot, delta ) );
+        this.processImpl( new iinc( slot, delta ) );
     }
 
     @Override
     public final void i2l() {
-        this.add( i2l.instance() );
+        this.processImpl( i2l.instance() );
     }
 
     @Override
     public final void i2f() {
-        this.add( i2f.instance() );
+        this.processImpl( i2f.instance() );
     }
 
     @Override
     public final void i2d() {
-        this.add( i2d.instance() );
+        this.processImpl( i2d.instance() );
     }
 
     @Override
     public final void l2i() {
-        this.add( l2i.instance() );
+        this.processImpl( l2i.instance() );
     }
 
     @Override
     public final void l2f() {
-        this.add( l2f.instance() );
+        this.processImpl( l2f.instance() );
     }
 
     @Override
     public final void l2d() {
-        this.add( l2d.instance() );
+        this.processImpl( l2d.instance() );
     }
 
     @Override
     public final void f2i() {
-        this.add( f2i.instance() );
+        this.processImpl( f2i.instance() );
     }
 
     @Override
     public final void f2l() {
-        this.add( f2l.instance() );
+        this.processImpl( f2l.instance() );
     }
 
     @Override
     public final void f2d() {
-        this.add( f2d.instance() );
+        this.processImpl( f2d.instance() );
     }
 
     @Override
     public final void d2i() {
-        this.add( d2i.instance() );
+        this.processImpl( d2i.instance() );
     }
 
     @Override
     public final void d2l() {
-        this.add( d2l.instance() );
+        this.processImpl( d2l.instance() );
     }
 
     @Override
     public final void d2f() {
-        this.add( d2f.instance() );
+        this.processImpl( d2f.instance() );
     }
 
     @Override
     public final void i2b() {
-        this.add( i2b.instance() );
+        this.processImpl( i2b.instance() );
     }
 
     @Override
     public final void i2c() {
-        this.add( i2c.instance() );
+        this.processImpl( i2c.instance() );
     }
 
     @Override
     public final void i2s() {
-        this.add( i2s.instance() );
+        this.processImpl( i2s.instance() );
     }
 
     @Override
     public final void lcmp() {
-        this.add( lcmp.instance() );
+        this.processImpl( lcmp.instance() );
     }
 
     @Override
     public final void fcmpl() {
-        this.add( fcmpl.instance() );
+        this.processImpl( fcmpl.instance() );
     }
 
     @Override
     public final void fcmpg() {
-        this.add( fcmpg.instance() );
+        this.processImpl( fcmpg.instance() );
     }
 
     @Override
     public final void dcmpl() {
-        this.add( dcmpl.instance() );
+        this.processImpl( dcmpl.instance() );
     }
 
     @Override
     public final void dcmpg() {
-        this.add( dcmpg.instance() );
+        this.processImpl( dcmpg.instance() );
     }
 
     @Override
     public final void ireturn() {
-        this.add( ireturn.instance() );
+        this.processImpl( ireturn.instance() );
     }
 
     @Override
     public final void lreturn() {
-        this.add( lreturn.instance() );
+        this.processImpl( lreturn.instance() );
     }
 
     @Override
     public final void freturn() {
-        this.add( freturn.instance() );
+        this.processImpl( freturn.instance() );
     }
 
     @Override
     public final void dreturn() {
-        this.add( dreturn.instance() );
+        this.processImpl( dreturn.instance() );
     }
 
     @Override
     public final void areturn() {
-        this.add( areturn.instance() );
+        this.processImpl( areturn.instance() );
     }
 
     @Override
     public final void return_() {
-        this.add( return_.instance() );
+        this.processImpl( return_.instance() );
     }
 
     @Override
     public final void getstatic( final Type type, final JavaField javaField ) {
-        this.add( new getstatic( type, javaField ) );
+        this.processImpl( new getstatic( type, javaField ) );
     }
 
     @Override
     public final void putstatic( final Type type, final JavaField javaField ) {
-        this.add( new putstatic( type, javaField ) );
+        this.processImpl( new putstatic( type, javaField ) );
     }
 
     @Override
     public final void getfield( final Type type, final JavaField javaField ) {
-        this.add( new getfield( type, javaField ) );
+        this.processImpl( new getfield( type, javaField ) );
     }
 
     @Override
     public final void putfield( final Type type, final JavaField javaField ) {
-        this.add( new putfield( type, javaField ) );
+        this.processImpl( new putfield( type, javaField ) );
     }
 
     @Override
     public final void invokevirtual( final Type type, final JavaMethodDescriptor methodDescriptor ) {
-        this.add( new invokevirtual( type, methodDescriptor ) );
+        this.processImpl( new invokevirtual( type, methodDescriptor ) );
     }
 
     @Override
     public final void invokeinterface( final Type type, final JavaMethodDescriptor methodDescriptor ) {
-        this.add( new invokeinterface( type, methodDescriptor ) );
+        this.processImpl( new invokeinterface( type, methodDescriptor ) );
     }
 
     @Override
     public final void invokestatic( final Type type, final JavaMethodDescriptor methodDescriptor ) {
-        this.add( new invokestatic( type, methodDescriptor ) );
+        this.processImpl( new invokestatic( type, methodDescriptor ) );
     }
 
     @Override
     public final void invokespecial( final Type type, final JavaMethodDescriptor methodDescriptor ) {
-        this.add( new invokespecial( type, methodDescriptor ) );
+        this.processImpl( new invokespecial( type, methodDescriptor ) );
     }
 
     @Override
     public final void new_( final Type type ) {
-        this.add( new new_( type ) );
+        this.processImpl( new new_( type ) );
     }
 
     @Override
     public final void newarray( final Type type ) {
-        this.add( new newarray( type ) );
+        this.processImpl( new newarray( type ) );
     }
 
     @Override
     public final void anewarray( final Type type ) {
-        this.add( new anewarray( type ) );
+        this.processImpl( new anewarray( type ) );
     }
 
     @Override
     public final void arraylength() {
-        this.add( arraylength.instance() );
+        this.processImpl( arraylength.instance() );
     }
 
     @Override
     public final void athrow() {
-        this.add( athrow.instance() );
+        this.processImpl( athrow.instance() );
     }
 
     @Override
     public final void checkcast( final Type type ) {
-        this.add( new checkcast( type ) );
+        this.processImpl( new checkcast( type ) );
     }
 
     @Override
     public final void instanceof_( final Type type ) {
-        this.add( new instanceof_( type ) );
+        this.processImpl( new instanceof_( type ) );
     }
 
     @Override
     public final void monitorenter() {
-        this.add( monitorenter.instance() );
+        this.processImpl( monitorenter.instance() );
     }
 
     @Override
     public final void monitorexit() {
-        this.add( monitorexit.instance() );
+        this.processImpl( monitorexit.instance() );
     }
 
     @Override
     public final void multianewarray( final Type type, final int numDimensions ) {
-        this.add( new multianewarray( type, numDimensions ) );
+        this.processImpl( new multianewarray( type, numDimensions ) );
     }
 
     @Override
     public final void ifnull( final Jump jump ) {
-        this.add( new ifnull( jump ) );
+        this.processImpl( new ifnull( jump ) );
     }
 
     @Override
     public final void ifnonnull( final Jump jump ) {
-        this.add( new ifnonnull( jump ) );
+        this.processImpl( new ifnonnull( jump ) );
     }
 
     @Override
     public final void ifeq( final Jump jump ) {
-        this.add( new ifeq( jump ) );
+        this.processImpl( new ifeq( jump ) );
     }
 
     @Override
     public final void ifne( final Jump jump ) {
-        this.add( new ifne( jump ) );
+        this.processImpl( new ifne( jump ) );
     }
 
     @Override
     public final void iflt( final Jump jump ) {
-        this.add( new iflt( jump ) );
+        this.processImpl( new iflt( jump ) );
     }
 
     @Override
     public final void ifgt( final Jump jump ) {
-        this.add( new ifgt( jump ) );
+        this.processImpl( new ifgt( jump ) );
     }
 
     @Override
     public final void ifge( final Jump jump ) {
-        this.add( new ifge( jump ) );
+        this.processImpl( new ifge( jump ) );
     }
 
     @Override
     public final void ifle( final Jump jump ) {
-        this.add( new ifle( jump ) );
+        this.processImpl( new ifle( jump ) );
     }
 
     @Override
     public final void if_icmpeq( final Jump jump ) {
-        this.add( new if_icmpeq( jump ) );
+        this.processImpl( new if_icmpeq( jump ) );
     }
 
     @Override
     public final void if_icmpne( final Jump jump ) {
-        this.add( new if_icmpne( jump ) );
+        this.processImpl( new if_icmpne( jump ) );
     }
 
     @Override
     public final void if_icmplt( final Jump jump ) {
-        this.add( new if_icmplt( jump ) );
+        this.processImpl( new if_icmplt( jump ) );
     }
 
     @Override
     public final void if_icmpgt( final Jump jump ) {
-        this.add( new if_icmpgt( jump ) );
+        this.processImpl( new if_icmpgt( jump ) );
     }
 
     @Override
     public final void if_icmpge( final Jump jump ) {
-        this.add( new if_icmpge( jump ) );
+        this.processImpl( new if_icmpge( jump ) );
     }
 
     @Override
     public final void if_icmple( final Jump jump ) {
-        this.add( new if_icmple( jump ) );
+        this.processImpl( new if_icmple( jump ) );
     }
 
     @Override
     public final void if_acmpeq( final Jump jump ) {
-        this.add( new if_acmpeq( jump ) );
+        this.processImpl( new if_acmpeq( jump ) );
     }
 
     @Override
     public final void if_acmpne( final Jump jump ) {
-        this.add( new if_acmpne( jump ) );
+        this.processImpl( new if_acmpne( jump ) );
     }
 
     @Override
     public final void goto_( final Jump jump ) {
-        this.add( new goto_( jump ) );
+        this.processImpl( new goto_( jump ) );
     }
     
     @Override
     public final void prepare() {
     }
     
-    protected abstract void add( final JvmOperation operation );
+    protected final void processImpl( final JvmOperation operation ) {
+    	if ( this.pos != null ) {
+    		operation.internals().initPos(this.pos);
+    		this.pos = null;
+    	}
+    	this.process(operation);
+    }
+    
+    protected abstract void process( final JvmOperation operation );
 }

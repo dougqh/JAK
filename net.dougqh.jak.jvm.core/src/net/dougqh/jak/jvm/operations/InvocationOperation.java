@@ -7,7 +7,7 @@ import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.ArgList;
 import net.dougqh.jak.types.Reference;
 
-public abstract class InvocationOperation implements JvmOperation {
+public abstract class InvocationOperation extends BaseJvmOperation {
 	protected final Type targetType;
 	protected final JavaMethodDescriptor method;
 	

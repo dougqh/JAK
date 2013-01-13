@@ -5,18 +5,16 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
 
-public final class goto_ implements JvmOperation {
+public final class goto_ extends BranchOperation {
 	public static final String ID = "goto";
 	public static final byte CODE = GOTO;
 	
 	public static final goto_ prototype() {
-		return new goto_( new JumpPrototype() );
+		return new goto_(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
-	public goto_( final Jump jump ) {
-		this.jump = jump;
+	public goto_(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -55,7 +53,12 @@ public final class goto_ implements JvmOperation {
 	}
 	
 	@Override
+	public final boolean isConditional() {
+		return false;
+	}
+	
+	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.goto_( this.jump );
+		processor.goto_( this.jump() );
 	}
 }

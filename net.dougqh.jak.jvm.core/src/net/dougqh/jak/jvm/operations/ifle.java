@@ -10,13 +10,11 @@ public final class ifle extends IfZeroComparisonOperation {
 	public static final byte CODE = IFLE;
 	
 	public static final ifle prototype() {
-		return new ifle( new JumpPrototype() );
+		return new ifle(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
-	public ifle( final Jump jump ) {
-		this.jump = jump;
+	public ifle(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -36,6 +34,6 @@ public final class ifle extends IfZeroComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.ifle( this.jump );
+		processor.ifle(this.jump());
 	}
 }

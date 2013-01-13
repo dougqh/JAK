@@ -79,7 +79,7 @@ public final class JvmReader {
 		}
 	}
 	
-	public final <T extends JvmType> T read( final Class<?> aClass ) throws IOException {
-		return this.read( aClass.getName() );
+	public final < T extends JvmType > T read( final Class<?> type ) throws IOException {
+		return this.<T>read( type.getName() );
 	}
 }

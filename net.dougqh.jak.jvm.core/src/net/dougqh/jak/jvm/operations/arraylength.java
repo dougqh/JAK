@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Any;
 
-public final class arraylength implements JvmOperation {
+public final class arraylength extends BaseJvmOperation {
 	public static final String ID = "arraylength";
 	public static final byte CODE = ARRAYLENGTH;
 	

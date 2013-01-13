@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.JavaField;
 
-public abstract class FieldOperation implements JvmOperation {
+public abstract class FieldOperation extends BaseJvmOperation {
 	final Type targetType;
 	final JavaField field;
 	

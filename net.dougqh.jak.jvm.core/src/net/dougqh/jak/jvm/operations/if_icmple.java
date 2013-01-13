@@ -10,13 +10,11 @@ public final class if_icmple extends IfComparisonOperation {
 	public static final byte CODE = IF_ICMPLE;
 	
 	public static final if_icmple prototype() {
-		return new if_icmple( new JumpPrototype() );
+		return new if_icmple(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
-	public if_icmple( final Jump jump ) {
-		this.jump = jump;
+	public if_icmple(final Jump jump) {
+		super(jump);
 	}
 	
 	@Override
@@ -41,6 +39,6 @@ public final class if_icmple extends IfComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.if_icmple( this.jump );
+		processor.if_icmple(this.jump());
 	}
 }

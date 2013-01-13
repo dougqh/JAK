@@ -1,19 +1,30 @@
 package net.dougqh.jak.jvm.operations;
 
-import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-
-public abstract class BaseJvmOperation implements JvmOperation {
+public abstract class BaseJvmOperation
+	implements JvmOperation, JvmOperation.Internals
+{
 	protected static final Class< ? >[] NO_ARGS = {};
 	protected static final Class< ? >[] NO_RESULTS = {};
+	
+	protected Integer pos;
 	
 	protected BaseJvmOperation() {}
 	
 	@Override
-	public abstract String getId();
+	public final Internals internals() {
+		return this;
+	}
 	
 	@Override
-	public abstract int getCode();
+	public final void initPos(final int pos) {
+		this.pos = pos;
+	}
+	
+	@Override
+	public final Integer pos() {
+		return this.pos;
+	}
 	
 	@Override
 	public String getOperator() {
@@ -24,16 +35,4 @@ public abstract class BaseJvmOperation implements JvmOperation {
 	public boolean isPolymorphic() {
 		return false;
 	}
-	
-	@Override
-	public abstract Class< ? >[] getCodeOperandTypes();
-	
-	@Override
-	public abstract Class< ? >[] getStackOperandTypes();
-	
-	@Override
-	public abstract Class< ? >[] getStackResultTypes();
-	
-	@Override
-	public abstract void process( final JvmOperationProcessor coreWriter );
 }

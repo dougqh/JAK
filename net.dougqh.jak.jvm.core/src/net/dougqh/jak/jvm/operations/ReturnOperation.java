@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class ReturnOperation implements JvmOperation {
+public abstract class ReturnOperation extends BaseJvmOperation {
 	public abstract Type type();
 	
 	@Override

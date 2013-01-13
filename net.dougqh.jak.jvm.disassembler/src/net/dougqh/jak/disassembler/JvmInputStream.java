@@ -236,11 +236,16 @@ final class JvmInputStream {
 		return bytes;
 	}
 	
+	
+	final int pos() {
+		return this.headPos;
+	}
+	
 	final ByteBuffer readByteBuffer(final int length) throws EOFException {
 		byte[] head = this.head();
 		if ( this.headPos + length < head.length ) {
-			// if solely contained in the current block, just construct the 
-			// buffer directly around the sub-section of the array
+			// If solely contained in the current block, just construct the 
+			// buffer directly around the sub-section of the array.
 			ByteBuffer buffer = ByteBuffer.wrap(head, this.headPos, length);
 			this.headPos += length;
 			return buffer;

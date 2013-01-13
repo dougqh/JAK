@@ -3,6 +3,7 @@ package net.dougqh.jak.disassembler;
 import net.dougqh.jak.JavaFilter;
 
 
+
 public final class JvmClass extends JvmType implements JavaClass {
 	JvmClass( final JvmTypeInternals typeReader ) {
 		super( typeReader );
@@ -31,6 +32,10 @@ public final class JvmClass extends JvmType implements JavaClass {
 	@Override
 	public final JvmMethodSet getMethods() {
 		return new JvmMethodSet(this.type.getMethods());
+	}
+	
+	public final JvmMethod getMethod(final String name) {
+		return this.getMethods().get(name);
 	}
 	
 	public final JvmMethodSet getMethods( final JavaFilter<? super JvmMethod> filter ) {

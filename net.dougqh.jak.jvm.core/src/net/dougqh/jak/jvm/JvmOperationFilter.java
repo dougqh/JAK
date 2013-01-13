@@ -6,8 +6,19 @@ import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.jvm.operations.*;
 
-public abstract class JvmOperationFilter implements JvmOperationProcessor {
+public abstract class JvmOperationFilter
+	implements JvmOperationProcessor, JvmOperationProcessor.PositionAware
+{
 	private final HydratorImpl hydrator = new HydratorImpl();
+	
+	@Override
+	public final void pos(final int pos) {
+		this.hydrator.pos(pos);
+	}
+	
+	public final Integer pos() {
+		return this.hydrator.pos();
+	}
 	
     @Override
     public final void pop() {
@@ -2134,7 +2145,7 @@ public abstract class JvmOperationFilter implements JvmOperationProcessor {
     	private JvmOperation operation = null;
     	
     	@Override
-    	protected final void add( final JvmOperation operation ) {
+    	protected final void process( final JvmOperation operation ) {
     		if ( this.operation != null ) {
     			throw new IllegalStateException();
     		}

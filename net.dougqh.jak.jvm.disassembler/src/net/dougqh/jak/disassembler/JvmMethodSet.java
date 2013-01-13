@@ -1,17 +1,21 @@
 package net.dougqh.jak.disassembler;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import net.dougqh.jak.JavaFilter;
 
 
-public final class JvmMethodSet implements JavaMethodSet<JvmMethod> {
+public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
 	private final List<JvmMethod> methods;
 	
 	JvmMethodSet(final List<JvmMethod> methods) {
 		this.methods = methods;
+	}
+
+	@Override
+	public final JvmMethodSet filter(final JavaFilter<? super JvmMethod> filter) {
+		return new JvmMethodSet(this.filterHelper(filter));
 	}
 	
 	@Override
@@ -35,15 +39,7 @@ public final class JvmMethodSet implements JavaMethodSet<JvmMethod> {
 	}
 	
 	@Override
-	public final JvmMethodSet filter(
-		final JavaFilter<? super JvmMethod> predicate)
-	{
-		ArrayList<JvmMethod> matched = new ArrayList<JvmMethod>(this.methods.size());
-		for ( JvmMethod method: this ) {
-			if ( predicate.matches(method) ) {
-				matched.add(method);
-			}
-		}
-		return new JvmMethodSet(matched);
+	public final String toString() {
+		return this.methods.toString();
 	}
 }

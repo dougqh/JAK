@@ -3,6 +3,7 @@ package net.dougqh.jak.jvm.operations;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
 
 public interface JvmOperation {
 	public static final Type[] NO_ARGS = {};
@@ -221,6 +222,8 @@ public interface JvmOperation {
 	public static final String LEFT_SHIFT = "<<";
 	public static final String RIGHT_SHIFT = ">>";
 	public static final String UNSIGNED_RIGHT_SHIFT = ">>>";
+	
+	public abstract Integer pos();
 
 	public abstract String getId();
 
@@ -237,5 +240,10 @@ public interface JvmOperation {
 	public abstract Type[] getStackResultTypes();
 
 	public abstract void process( final JvmOperationProcessor processor );
-
+	
+	public abstract Internals internals();
+	
+	public interface Internals {
+		public void initPos(final int pos);
+	}
 }

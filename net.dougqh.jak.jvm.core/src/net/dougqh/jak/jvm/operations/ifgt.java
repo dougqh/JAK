@@ -10,13 +10,11 @@ public final class ifgt extends IfZeroComparisonOperation {
 	public static final byte CODE = IFGT;
 	
 	public static final ifgt prototype() {
-		return new ifgt( new JumpPrototype() );
+		return new ifgt(new JumpPrototype());
 	}
 	
-	private final Jump jump;
-	
 	public ifgt( final Jump jump ) {
-		this.jump = jump;
+		super(jump);
 	}
 	
 	@Override
@@ -36,6 +34,6 @@ public final class ifgt extends IfZeroComparisonOperation {
 	
 	@Override
 	public final void process( final JvmOperationProcessor processor ) {
-		processor.ifgt( this.jump );
+		processor.ifgt(this.jump());
 	}
 }

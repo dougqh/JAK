@@ -4,7 +4,16 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
 
-public abstract class IfOperation implements JvmOperation {
+public abstract class IfOperation extends BranchOperation {
+	public IfOperation(final Jump jump) {
+		super(jump);
+	}
+	
+	@Override
+	public final boolean isConditional() {
+		return true;
+	}
+	
 	@Override
 	public final boolean isPolymorphic() {
 		return false;
@@ -23,5 +32,10 @@ public abstract class IfOperation implements JvmOperation {
 	@Override
 	public final Type[] getStackResultTypes() {
 		return NO_RESULTS;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getId() + " " + this.jump();
 	}
 }
