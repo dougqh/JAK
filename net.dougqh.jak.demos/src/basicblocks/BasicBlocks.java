@@ -60,7 +60,13 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 				block.add(op);
 				
 				if ( isBranch(op) ) {
-					block.initConditionalExit(asBranchOp(op).jump().pos());
+					BranchOperation branchOp = asBranchOp(op);
+					
+					if ( branchOp.isConditional() ) {
+						block.initConditionalExit(branchOp.jump().pos());
+					} else {
+						block.initExit(branchOp.jump().pos());
+					}
 				}
 				
 				if ( isReturn(op) ) {
@@ -114,7 +120,9 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 			if ( this.curEntry == null ) {
 				this.nextEntry.getValue().initInitial();
 			} else if ( this.nextEntry != null ) {
-				this.curEntry.getValue().initExit(this.nextEntry.getValue().pos());
+				if ( this.curEntry.getValue().missingExitPos() ) {
+					this.curEntry.getValue().initExit(this.nextEntry.getValue().pos());
+				}
 			}
 			
 			this.curEntry = this.nextEntry;

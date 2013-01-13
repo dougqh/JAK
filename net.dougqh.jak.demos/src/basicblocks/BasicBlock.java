@@ -53,6 +53,10 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		this.exitPos = pos;
 	}
 	
+	final boolean missingExitPos() {
+		return ! this.terminating && this.exitPos == null;
+	}
+	
 	final void initConditionalExit(final int pos) {
 		this.conditionalExitPos = pos;
 	}
