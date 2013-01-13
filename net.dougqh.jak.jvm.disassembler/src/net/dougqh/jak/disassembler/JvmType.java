@@ -95,8 +95,12 @@ public abstract class JvmType implements JavaType {
 		return new TypeList( this.type.getInterfaceNames() );
 	}
 	
-	public final List<? extends JvmMethod> getAllMethods() {
-		return this.type.getAllMethods();
+	public final JvmMethodSet getAllMethods() {
+		return new JvmMethodSet(this.type.getAllMethods());
+	}
+	
+	public final JvmMethod getMethod(final String name) {
+		return this.getAllMethods().get(name);
 	}
 	
 	private static final class TypeList extends AbstractList< Type > {

@@ -41,10 +41,6 @@ public final class JvmClass extends JvmType implements JavaClass {
 		return new JvmMethodSet(this.type.getMethods());
 	}
 	
-	public final JvmMethod getMethod(final String name) {
-		return this.getMethods().get(name);
-	}
-	
 	public final JvmMethodSet getMethods( final JavaFilter<? super JvmMethod> filter ) {
 		return this.getMethods().filter(filter);
 	}

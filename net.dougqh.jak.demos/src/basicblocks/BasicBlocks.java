@@ -10,6 +10,10 @@ import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.BranchOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
+/**
+ * Simple basic block analysis -- current implementation is MEME blocks
+ * @author dougqh
+ */
 public class BasicBlocks implements Iterable<BasicBlock> {
 	private final Map<Integer, BasicBlock> basicBlocks;
 	
@@ -76,6 +80,18 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 		});
 		
 		this.basicBlocks = blockBuilder.basicBlocks;
+	}
+	
+	public final BasicBlock initial() {
+		return this.at(0);
+	}
+	
+	public final BasicBlock at(final int pos) {
+		return this.basicBlocks.get(pos);
+	}
+	
+	public final int size() {
+		return this.basicBlocks.size();
 	}
 	
 	@Override
