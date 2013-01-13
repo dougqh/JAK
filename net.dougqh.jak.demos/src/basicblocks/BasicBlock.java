@@ -86,7 +86,7 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		} else if ( this.exitPos != null ) {
 	        builder.append(" ->" ).append(this.exitPos);
 		} else {
-			throw new IllegalStateException();
+			builder.append("??");
 		}
 		
 		return builder.toString();

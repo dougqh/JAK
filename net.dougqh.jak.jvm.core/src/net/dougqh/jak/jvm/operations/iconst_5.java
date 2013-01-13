@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class iconst_5 extends ConstantOperation {
+public final class iconst_5 extends FixedConstantOperation {
 	public static final String ID = "iconst_5";
 	public static final byte CODE = ICONST_5;
 	

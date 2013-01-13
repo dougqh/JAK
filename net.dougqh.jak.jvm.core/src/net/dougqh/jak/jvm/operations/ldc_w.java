@@ -6,7 +6,7 @@ import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Category1;
 
 public final class ldc_w
-	extends ConstantOperation
+	extends ParameterizedConstantOperation
 	implements NormalizeableOperation
 {
 	public static final String ID = "ldc_w";

@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class bipush extends ConstantOperation {
+public final class bipush extends ParameterizedConstantOperation {
 	public static final String ID = "bipush";
 	public static final byte CODE = BIPUSH;
 	

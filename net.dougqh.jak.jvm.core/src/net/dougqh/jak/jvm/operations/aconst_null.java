@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class aconst_null extends ConstantOperation {
+public final class aconst_null extends FixedConstantOperation {
 	public static final String ID = "aconst_null";
 	public static final byte CODE = ACONST_NULL;
 	

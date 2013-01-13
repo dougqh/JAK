@@ -9,6 +9,8 @@ public abstract class ConstantOperation extends BaseJvmOperation {
 	
 	public abstract Type type();
 	
+	public abstract boolean isFixed();
+	
 	public abstract <T> T value();
 	
 	@Override

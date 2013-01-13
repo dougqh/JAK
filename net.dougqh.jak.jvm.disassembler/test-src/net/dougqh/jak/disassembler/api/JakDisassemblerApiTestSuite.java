@@ -8,7 +8,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses( {
 	BasicTest.class,
 	JarTest.class,
-	ClassDirTest.class,
-	NonTrivialClassTest.class
+	ClassDirTest.class
 } )
 public final class JakDisassemblerApiTestSuite {}
