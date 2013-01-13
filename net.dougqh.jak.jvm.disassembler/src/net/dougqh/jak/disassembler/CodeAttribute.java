@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 
-import net.dougqh.jak.JavaField;
-import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.jvm.JvmOperationHydrator;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
-import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
+import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.jvm.operations.JvmOperation.*;
 
@@ -644,7 +642,7 @@ final class CodeAttribute {
 				break;
 
 				case IINC:
-				processor.iinc( this.readIndex(), this.u1() );
+				processor.iinc( this.readShortIndex(), this.u1() );
 				break;
 
 				case I2L:
@@ -977,6 +975,10 @@ final class CodeAttribute {
 		
 		private final short readShort() throws IOException {
 			return this.codeIn.u2();
+		}
+		
+		private final int readShortIndex() throws IOException {
+			return this.codeIn.u1();
 		}
 		
 		private final int readIndex() throws IOException {

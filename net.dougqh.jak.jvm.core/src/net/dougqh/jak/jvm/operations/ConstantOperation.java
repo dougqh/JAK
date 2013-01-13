@@ -9,6 +9,8 @@ public abstract class ConstantOperation extends BaseJvmOperation {
 	
 	public abstract Type type();
 	
+	public abstract boolean isFixed();
+	
 	public abstract <T> T value();
 	
 	@Override
@@ -62,11 +64,5 @@ public abstract class ConstantOperation extends BaseJvmOperation {
 	public int hashCode() {
 		Object value = this.value();
 		return this.getClass().hashCode() ^ ( value == null ? 0 : value.hashCode() );
-	}
-	
-	@Override
-	public String toString() {
-		Object value = this.value();
-		return ( value == null ) ? "null" : value.toString();
 	}
 }
