@@ -65,10 +65,4 @@ public abstract class ConstantOperation extends BaseJvmOperation {
 		Object value = this.value();
 		return this.getClass().hashCode() ^ ( value == null ? 0 : value.hashCode() );
 	}
-	
-	@Override
-	public String toString() {
-		Object value = this.value();
-		return ( value == null ) ? "null" : value.toString();
-	}
 }

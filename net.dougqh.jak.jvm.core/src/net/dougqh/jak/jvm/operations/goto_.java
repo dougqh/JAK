@@ -61,4 +61,9 @@ public final class goto_ extends BranchOperation {
 	public final void process( final JvmOperationProcessor processor ) {
 		processor.goto_( this.jump() );
 	}
+	
+	@Override
+	public final String toString() {
+		return this.getId() + " " + this.jump();
+	}
 }

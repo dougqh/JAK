@@ -59,4 +59,9 @@ public final class iinc extends BaseJvmOperation {
 	public final void process( final JvmOperationProcessor processor ) {
 		processor.iinc( this.slot, this.amount );
 	}
+	
+	@Override
+	public final String toString() {
+		return this.getId() + " " + this.slot + ", " + this.amount;
+	}
 }
