@@ -7,4 +7,5 @@ Import-Package: org.osgi.framework;version="1.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: net.dougqh.jak.jvm.core;bundle-version="1.0.0",
  net.dougqh.jak.core.disassembler;bundle-version="1.0.0",
- net.dougqh.jak.jvm.disassembler;bundle-version="1.0.0"
+ net.dougqh.jak.jvm.disassembler;bundle-version="1.0.0",
+ net.dougqh.jak.core;bundle-version="1.0.0"

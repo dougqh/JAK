@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class ConstantOperation implements JvmOperation {
+public abstract class ConstantOperation extends BaseJvmOperation {
 	public Type codeInputType() {
 		return null;
 	}

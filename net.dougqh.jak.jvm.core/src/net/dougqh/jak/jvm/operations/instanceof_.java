@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class instanceof_ implements JvmOperation {
+public final class instanceof_ extends BaseJvmOperation {
 	public static final String ID = "instanceof";
 	public static final byte CODE = INSTANCEOF;
 	

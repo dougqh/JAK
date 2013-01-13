@@ -672,6 +672,10 @@ public interface JvmOperationProcessor {
 	
 	public abstract void handleException( final ExceptionHandler exceptionHandler );
 	
+	public interface PositionAware {
+		public abstract void pos(final int pos);
+	}
+	
 	public abstract class Slot {
 		public abstract Integer pos();
 		
@@ -695,5 +699,4 @@ public interface JvmOperationProcessor {
 		
 		public abstract int handlerPos();		
 	}
-
 }

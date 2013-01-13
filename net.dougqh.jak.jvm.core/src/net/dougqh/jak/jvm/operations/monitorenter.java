@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class monitorenter implements JvmOperation {
+public final class monitorenter extends BaseJvmOperation {
 	public static final String ID = "monitorenter";
 	public static final byte CODE = MONITORENTER;
 	

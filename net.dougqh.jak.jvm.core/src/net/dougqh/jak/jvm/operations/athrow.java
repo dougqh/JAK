@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class athrow implements JvmOperation {
+public final class athrow extends BaseJvmOperation {
 	public static final String ID = "athrow";
 	public static final byte CODE = ATHROW;
 	

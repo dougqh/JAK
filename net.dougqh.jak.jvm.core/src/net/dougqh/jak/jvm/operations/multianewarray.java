@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class multianewarray implements JvmOperation {
+public final class multianewarray extends BaseJvmOperation {
 	public static final String ID = "multianewarray";
 	public static final byte CODE = MULTIANEWARRAY;
 	

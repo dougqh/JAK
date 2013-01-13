@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class new_ implements JvmOperation {
+public final class new_ extends BaseJvmOperation {
 	public static final String ID = "new";
 	public static final byte CODE = NEW;
 	

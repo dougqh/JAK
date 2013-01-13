@@ -92,6 +92,9 @@ final class CodeAttribute {
 		
 		final void read( final JvmOperationProcessor processor ) throws IOException {
 			this.opPos = this.codeIn.pos();
+			if ( processor instanceof JvmOperationProcessor.PositionAware ) {
+				((JvmOperationProcessor.PositionAware)processor).pos(opPos);
+			}
 			
 			byte op = this.codeIn.u1();
 			switch ( op ) {

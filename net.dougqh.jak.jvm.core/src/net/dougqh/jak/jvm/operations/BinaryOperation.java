@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class BinaryOperation implements JvmOperation {
+public abstract class BinaryOperation extends BaseJvmOperation {
 	public abstract Type lhsType();
 	
 	public abstract Type rhsType();

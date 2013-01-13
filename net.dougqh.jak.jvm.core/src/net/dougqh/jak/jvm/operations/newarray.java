@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class newarray implements JvmOperation {
+public final class newarray extends BaseJvmOperation {
 	public static final String ID = "newarray";
 	public static final byte CODE = NEWARRAY;
 	

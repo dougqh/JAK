@@ -118,7 +118,7 @@ public final class JvmMethod implements JavaMethod {
 		return this.getCodeAttribute().operations();
 	}
 	
-	public final <V> V getAnalysis(final Class<V> analysisClass) {
+	public final <V> V get(final Class<V> analysisClass) {
 		// The lack of coarser locking here, means that that a stray analysis helper
 		// instance could be needlessly created, but that's okay.
 		if ( this.analysisHelper == null ) {

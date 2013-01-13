@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 
-public final class iinc implements JvmOperation {
+public final class iinc extends BaseJvmOperation {
 	public static final String ID = "iinc";
 	public static final byte CODE = IINC;
 	

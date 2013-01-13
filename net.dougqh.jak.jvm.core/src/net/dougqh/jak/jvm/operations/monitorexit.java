@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class monitorexit implements JvmOperation {
+public final class monitorexit extends BaseJvmOperation {
 	public static final String ID = "monitorexit";
 	public static final byte CODE = MONITOREXIT;
 	

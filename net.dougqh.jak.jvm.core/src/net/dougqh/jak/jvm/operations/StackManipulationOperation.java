@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class StackManipulationOperation implements JvmOperation {
+public abstract class StackManipulationOperation extends BaseJvmOperation {
 	@Override
 	public final String getOperator() {
 		return null;

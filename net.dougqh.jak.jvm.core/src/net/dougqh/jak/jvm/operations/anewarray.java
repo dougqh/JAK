@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.types.Reference;
 
-public final class anewarray implements JvmOperation {
+public final class anewarray extends BaseJvmOperation {
 	public static final String ID = "anewarray";
 	public static final byte CODE = ANEWARRAY;
 	

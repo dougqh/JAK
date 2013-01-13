@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class CastOperation implements JvmOperation {
+public abstract class CastOperation extends BaseJvmOperation {
 	public abstract Type fromType();
 	
 	public abstract Type toType();

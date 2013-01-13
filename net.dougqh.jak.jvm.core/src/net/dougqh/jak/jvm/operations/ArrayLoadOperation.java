@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.operations;
 
 import java.lang.reflect.Type;
 
-public abstract class ArrayLoadOperation implements JvmOperation {
+public abstract class ArrayLoadOperation extends BaseJvmOperation {
 	public abstract Type arrayType();
 	
 	public abstract Type elementType();
