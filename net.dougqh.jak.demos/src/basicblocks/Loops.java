@@ -62,11 +62,13 @@ public final class Loops implements Iterable<Loop> {
 		
 		for ( Integer pos = targets.poll(); pos != null; pos = targets.poll() ) {
 			BasicBlock block = blocks.at(pos);
-			loop.add(block);
+			
+			boolean isEnd = block.exitsTo(startingBlock);
+			loop.add(block, isEnd);
 			
 			// If the block is the original backwards branching block, then its forward exit 
 			// is out of the loop.  All other forward exits are within loop, so keep adding.
-			if ( ! block.exitsTo(startingBlock) ) {
+			if ( ! isEnd ) {
 				block.addForwardTargets(targets);	
 			}
 		}

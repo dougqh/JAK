@@ -65,6 +65,34 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		}
 	}
 	
+	public final boolean conditionallyExitsTo(final BasicBlock block) {
+		return this.conditionallyExitsTo(block.pos());
+	}
+	
+	public final boolean conditionallyExitsTo(final int pos) {
+		if ( this.terminating ) {
+			return false;
+		} else if ( this.conditionalExitPos == null ) {
+			return false;
+		} else {
+			return ( this.exitPos == pos ) || ( this.conditionalExitPos == pos );
+		}
+	}
+	
+	public final boolean unconditionallyExitsTo(final BasicBlock block) {
+		return this.unconditionallyExitsTo(block.pos());
+	}
+	
+	public final boolean unconditionallyExitsTo(final int pos) {
+		if ( this.terminating ) {
+			return false;
+		} else if ( this.conditionalExitPos != null ) {
+			return false;
+		} else {
+			return ( this.exitPos == pos );
+		}		
+	}
+	
 	public final void addTargets(final Collection<Integer> targets) {
 		if ( this.terminating ) return;
 		
@@ -96,14 +124,6 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		
 		if ( this.conditionalExitPos != null && this.conditionalExitPos <= this.pos ) {
 			backwardTargets.add(this.conditionalExitPos);
-		}
-	}
-	
-	public final void addConditionalTargets(final Collection<Integer> conditionalTargets) {
-		if ( this.terminating ) return;
-		
-		if ( this.conditionalExitPos != null ) {
-			conditionalTargets.add(this.conditionalExitPos);
 		}
 	}
 	

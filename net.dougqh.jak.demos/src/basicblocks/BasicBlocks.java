@@ -1,5 +1,7 @@
 package basicblocks;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -15,7 +17,7 @@ import net.dougqh.jak.jvm.operations.JvmOperation;
  * @author dougqh
  */
 public class BasicBlocks implements Iterable<BasicBlock> {
-	private final Map<Integer, BasicBlock> basicBlocks;
+	private final NavigableMap<Integer, BasicBlock> basicBlocks;
 	
 	public BasicBlocks(final JvmMethod method) {
 		final BlockBuilder blockBuilder = new BlockBuilder();
@@ -86,6 +88,27 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 		return this.at(0);
 	}
 	
+	public final BasicBlock findPrecedingBlock(final BasicBlock block) {
+		return this.findPrecedingBlock(block.pos());
+	}
+	
+	public final BasicBlock findPrecedingBlock(final int pos) {
+		for ( BasicBlock block: this.basicBlocks.headMap(pos).values() ) {
+			if ( block.exitsTo(pos) ) {
+				return block;
+			}
+		}
+		return null;
+	}
+	
+	public final Collection<BasicBlock> findPriorBlocks(final BasicBlock block) {
+		return this.findPriorBlocks(block.pos());
+	}
+	
+	public final Collection<BasicBlock> findPriorBlocks(final int pos) {
+		return this.basicBlocks.headMap(pos).values();
+	}
+	
 	public final BasicBlock at(final int pos) {
 		return this.basicBlocks.get(pos);
 	}
@@ -96,7 +119,7 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 	
 	@Override
 	public final Iterator<BasicBlock> iterator() {
-		return this.basicBlocks.values().iterator();
+		return Collections.unmodifiableCollection(this.basicBlocks.values()).iterator();
 	}
 	
 	private final class BlockBuilder {

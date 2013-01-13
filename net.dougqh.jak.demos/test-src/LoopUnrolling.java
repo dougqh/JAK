@@ -11,6 +11,8 @@ public final class LoopUnrolling {
 		JvmMethod method = JvmMethod.read(FlowControl.class, "gauss");
 		
 		for ( Loop loop: method.get(Loops.class) ) {
+			System.out.println(loop.initBlock());
+			
 			for ( BasicBlock block: loop ) {
 				System.out.println(block);
 			}
