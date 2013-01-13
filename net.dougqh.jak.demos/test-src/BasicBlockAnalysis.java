@@ -12,9 +12,7 @@ import basicblocks.FlowControl;
 
 public class BasicBlockAnalysis {
 	public static void main(String[] args) throws IOException {
-		JvmReader reader = new JvmReader(FlowControl.class.getClassLoader());
-		
-		JvmClass jvmClass = reader.<JvmClass>read(FlowControl.class);
+		JvmClass jvmClass = JvmClass.read(FlowControl.class);
 		printBlocksFor(jvmClass, "signum");
 		System.out.println();
 		printBlocksFor(jvmClass, "sum");
