@@ -1059,7 +1059,7 @@ final class CodeAttribute {
 		JvmOperation operation;
 		
 		@Override
-		protected final void add(final JvmOperation operation) {
+		protected final void process(final JvmOperation operation) {
 			this.operation = operation;
 		}
 	}

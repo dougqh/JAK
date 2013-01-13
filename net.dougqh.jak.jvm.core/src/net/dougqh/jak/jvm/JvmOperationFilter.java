@@ -2141,7 +2141,7 @@ public abstract class JvmOperationFilter
     	private JvmOperation operation = null;
     	
     	@Override
-    	protected final void add( final JvmOperation operation ) {
+    	protected final void process( final JvmOperation operation ) {
     		if ( this.operation != null ) {
     			throw new IllegalStateException();
     		}
