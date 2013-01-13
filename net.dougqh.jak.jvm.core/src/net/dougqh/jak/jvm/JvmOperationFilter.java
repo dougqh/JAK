@@ -16,6 +16,10 @@ public abstract class JvmOperationFilter
 		this.hydrator.pos(pos);
 	}
 	
+	public final Integer pos() {
+		return this.hydrator.pos();
+	}
+	
     @Override
     public final void pop() {
         if ( this.shouldFilter( pop.class ) ) {

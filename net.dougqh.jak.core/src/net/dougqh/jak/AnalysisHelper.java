@@ -1,7 +1,6 @@
 package net.dougqh.jak;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AnalysisHelper<T> {
@@ -51,16 +50,14 @@ public abstract class AnalysisHelper<T> {
 		throws NoSuchMethodException
 	{
 		try {
-			Method method = analysisClass.getMethod("calculate", searchClass);
-			
-			@SuppressWarnings("unchecked")
-			V result = (V)method.invoke(null, codeElement);
-			return result;
-		} catch (SecurityException e) {
+			return analysisClass.getConstructor(searchClass).newInstance(this.codeElement);
+		} catch ( SecurityException e ) {
 			throw new IllegalStateException(e);
-		}  catch (IllegalAccessException e) {
+		}  catch ( IllegalAccessException e ) {
 			throw new IllegalStateException(e);
-		} catch (InvocationTargetException e) {
+		} catch ( InvocationTargetException e ) {
+			throw new IllegalStateException(e);
+		}  catch ( InstantiationException e ) {
 			throw new IllegalStateException(e);
 		}
 	}

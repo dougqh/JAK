@@ -6,6 +6,7 @@ import java.util.List;
 import net.dougqh.jak.AnalysisHelper;
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.Methods.*;
 
@@ -111,7 +112,11 @@ public final class JvmMethod implements JavaMethod {
 	}
 	
 	public final void process( final JvmOperationProcessor processor ) {
-		this.getCodeAttribute().process( processor );
+		this.getCodeAttribute().process(processor);
+	}
+	
+	public final void process( final SimpleJvmOperationProcessor processor ) {
+		this.getCodeAttribute().process(processor);
 	}
 	
 	public final Iterable< JvmOperation > operations() {

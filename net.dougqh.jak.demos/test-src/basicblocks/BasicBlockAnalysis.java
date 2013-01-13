@@ -18,7 +18,8 @@ public class BasicBlockAnalysis {
 		
 		BasicBlocks basicBlocks = method.get(BasicBlocks.class);
 		for ( BasicBlock basicBlock: basicBlocks ) {
-			
+			System.out.println(basicBlock);
+			System.out.println();
 		}
 	}
 }

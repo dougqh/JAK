@@ -19,6 +19,10 @@ public abstract class JvmOperationHydrator
 		this.pos = pos;
 	}
 	
+	public Integer pos() {
+		return this.pos;
+	}
+	
     @Override
     public final void pop() {
         this.processImpl( pop.instance() );

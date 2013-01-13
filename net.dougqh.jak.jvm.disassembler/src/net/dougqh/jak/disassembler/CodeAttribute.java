@@ -8,6 +8,7 @@ import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.jvm.JvmOperationHydrator;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.jvm.operations.JvmOperation.*;
@@ -45,7 +46,20 @@ final class CodeAttribute {
 	//	attribute_info attributes[attributes_count];
 	}
 	
+	final void process( final SimpleJvmOperationProcessor processor ) {
+		this.process(processor.adapt());
+	}
+	
 	final void process( final JvmOperationProcessor processor ) {
+		if ( processor instanceof JvmOperationProcessor.MethodAware ) {
+			JvmOperationProcessor.MethodAware methodAware = 
+				(JvmOperationProcessor.MethodAware)processor;
+			
+			methodAware.maxStack(this.maxStack);
+			methodAware.maxLocals(this.maxLocals);
+			methodAware.codeLength(this.codeLength);
+		}
+		
 		try {
 			Decoder decoder = new Decoder(this.constantPool, this.codeIn);
 			while ( decoder.hasNext() ) {
