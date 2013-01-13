@@ -3,8 +3,10 @@ package net.dougqh.jak.disassembler;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import net.dougqh.jak.JavaElement;
 
-public interface JavaMethod {
+
+public interface JavaMethod extends JavaElement {
 	public abstract String getName();
 	
 	public abstract boolean isConstructor();
@@ -16,6 +18,8 @@ public interface JavaMethod {
 	public abstract List<Type> getParameterTypes();
 	
 	//public abstract JavaCodeReader getCodeReader();
+	
+	public abstract int getFlags();
 	
 	public abstract boolean isPublic();
 	

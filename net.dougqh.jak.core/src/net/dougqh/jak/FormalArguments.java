@@ -3,6 +3,7 @@ package net.dougqh.jak;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.ListIterator;
 
 import net.dougqh.java.meta.types.JavaTypes;
@@ -19,6 +20,20 @@ public final class FormalArguments implements Iterable< JavaVariable > {
 			JavaVariable[] variables = new JavaVariable[ argumentTypes.length ];
 			for ( int i = 0; i < variables.length; ++i ) {
 				variables[ i ] = new JavaVariable( argumentTypes[ i ], "var" + i );
+			}
+			return new FormalArguments( variables );
+		}
+	}
+	
+	public static final FormalArguments instance( final List<? extends Type> argumentTypes ) {
+		if ( argumentTypes.isEmpty() ) {
+			return EMPTY;
+		} else {
+			JavaVariable[] variables = new JavaVariable[ argumentTypes.size() ];
+			int pos = 0;
+			for ( Type argType: argumentTypes ) {
+				variables[ pos ] = new JavaVariable( argType, "var" + pos );
+				++pos;
 			}
 			return new FormalArguments( variables );
 		}

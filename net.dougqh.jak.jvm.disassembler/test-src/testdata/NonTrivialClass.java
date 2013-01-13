@@ -6,6 +6,8 @@ public final class NonTrivialClass
 	extends Object
 	implements Serializable, Runnable
 {
+	private static final long serialVersionUID = -6805746361650409460L;
+	
 	public static final int CONSTANT = 20;
 	public static boolean DEBUG = false;
 	
