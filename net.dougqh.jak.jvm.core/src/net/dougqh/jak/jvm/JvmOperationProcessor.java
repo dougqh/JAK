@@ -676,14 +676,6 @@ public interface JvmOperationProcessor {
 		public abstract void pos(final int pos);
 	}
 	
-	public interface MethodAware {
-		public abstract void codeLength(final int codeLength);
-		
-		public abstract void maxStack(final int maxStack);
-		
-		public abstract void maxLocals(final int maxLocals);
-	}
-	
 	public abstract class Slot {
 		public abstract Integer pos();
 		

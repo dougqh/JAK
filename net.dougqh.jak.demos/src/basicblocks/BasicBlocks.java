@@ -12,6 +12,8 @@ import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.BranchOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
+import static basicblocks.JvmOperationMatchers.*;
+
 /**
  * Simple basic block analysis -- current implementation is MEME blocks
  * @author dougqh
@@ -35,21 +37,21 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 					blockBuilder.markStart(pos);
 				}
 				
-				return isBranch(opClass);
+				return is(opClass, BRANCH);
 			}
 			
 			@Override
 			public final void process(final JvmOperation op) {
-				BranchOperation branchOp = asBranchOp(op);
+				BranchOperation branchOp = as(op, BRANCH);
 				blockBuilder.markStart(branchOp.jump().pos());
 			}
 			
 			private /*static*/ final boolean isBlockTerminating(final Class<? extends JvmOperation> opClass) {
 				if ( opClass == null ) {
 					return false;
-				} else if ( isBranch(opClass) ) {
+				} else if ( is(opClass, BRANCH) ) {
 					return true;
-				} else if ( isReturn(opClass) ) {
+				} else if ( is(opClass, RETURN) ) {
 					return true;
 				} else {
 					return false;
@@ -65,8 +67,8 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 				BasicBlock block = blockBuilder.blockOf(op);
 				block.add(op);
 				
-				if ( isBranch(op) ) {
-					BranchOperation branchOp = asBranchOp(op);
+				if ( is(op, BRANCH) ) {
+					BranchOperation branchOp = as(op, BRANCH);
 					
 					if ( branchOp.isConditional() ) {
 						block.initConditionalExit(branchOp.jump().pos());
@@ -75,7 +77,7 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 					}
 				}
 				
-				if ( isReturn(op) ) {
+				if ( is(op, RETURN) ) {
 					block.initTerminating();
 				}
 			}

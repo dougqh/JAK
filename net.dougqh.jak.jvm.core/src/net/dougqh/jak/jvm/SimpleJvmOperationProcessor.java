@@ -1,8 +1,6 @@
 package net.dougqh.jak.jvm;
 
-import net.dougqh.jak.jvm.operations.BranchOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
-import net.dougqh.jak.jvm.operations.ReturnOperation;
 
 public abstract class SimpleJvmOperationProcessor {
 	private Class<? extends JvmOperation> lastOpClass;
@@ -19,26 +17,6 @@ public abstract class SimpleJvmOperationProcessor {
 	}
 	
 	public abstract void process(final JvmOperation op);
-	
-	public static final boolean isBranch(final Class<? extends JvmOperation> opClass) {
-		return BranchOperation.class.isAssignableFrom(opClass);
-	}
-	
-	public static final boolean isBranch(final JvmOperation op) {
-		return (op instanceof BranchOperation);
-	}
-	
-	public static final BranchOperation asBranchOp(final JvmOperation op) {
-		return (BranchOperation)op;
-	}
-	
-	public static final boolean isReturn(final Class<? extends JvmOperation> opClass) {
-		return ReturnOperation.class.isAssignableFrom(opClass);
-	}
-	
-	public static final boolean isReturn(final JvmOperation op) {
-		return (op instanceof ReturnOperation);
-	}
 	
 	public JvmOperationProcessor adapt() {
 		return new RegularProcessorAdapter(this);

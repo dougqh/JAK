@@ -7,7 +7,6 @@ import net.dougqh.jak.jvm.operations.LoadOperation;
 import net.dougqh.jak.jvm.operations.StoreOperation;
 import basicblocks.BasicBlock;
 import basicblocks.FlowControl;
-import basicblocks.JvmOperationMatcher;
 import basicblocks.JvmOperationMatchingIterator;
 import basicblocks.Loop;
 import basicblocks.Loops;
@@ -18,8 +17,6 @@ public final class LoopUnrolling {
 		JvmMethod method = JvmMethod.read(FlowControl.class, "gauss");
 		
 		for ( Loop loop: method.get(Loops.class) ) {
-			System.out.println(loop.initBlock());
-			
 			tryUnroll(loop);
 		}
 	}

@@ -49,15 +49,6 @@ final class CodeAttribute {
 	}
 	
 	final void process( final JvmOperationProcessor processor ) {
-		if ( processor instanceof JvmOperationProcessor.MethodAware ) {
-			JvmOperationProcessor.MethodAware methodAware = 
-				(JvmOperationProcessor.MethodAware)processor;
-			
-			methodAware.maxStack(this.maxStack);
-			methodAware.maxLocals(this.maxLocals);
-			methodAware.codeLength(this.codeLength);
-		}
-		
 		try {
 			Decoder decoder = new Decoder(this.constantPool, this.codeIn);
 			while ( decoder.hasNext() ) {
