@@ -1,8 +1,7 @@
 package basicblocks;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -36,6 +35,14 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		return this.exitPos;
 	}
 	
+	public final boolean unconditionallyExits() {
+		return ( this.conditionalExitPos == null );
+	}
+	
+	public final boolean conditionallyExits() {
+		return ( this.conditionalExitPos != null );
+	}
+	
 	public final Integer conditionalExitPos() {
 		return this.conditionalExitPos;
 	}
@@ -44,9 +51,95 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 		this.operations.add(op);
 	}
 	
+	public final boolean exitsTo(final BasicBlock block) {
+		return this.exitsTo(block.pos());
+	}
+	
+	public final boolean exitsTo(final int pos) {
+		if ( this.terminating ) {
+			return false;
+		} else if ( this.exitPos == pos ) {
+			return true;
+		} else if ( this.conditionallyExits() && this.conditionalExitPos == pos ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public final boolean conditionallyExitsTo(final BasicBlock block) {
+		return this.conditionallyExitsTo(block.pos());
+	}
+	
+	public final boolean conditionallyExitsTo(final int pos) {
+		if ( this.terminating ) {
+			return false;
+		} else if ( this.conditionalExitPos == null ) {
+			return false;
+		} else {
+			return ( this.exitPos == pos ) || ( this.conditionalExitPos == pos );
+		}
+	}
+	
+	public final boolean unconditionallyExitsTo(final BasicBlock block) {
+		return this.unconditionallyExitsTo(block.pos());
+	}
+	
+	public final boolean unconditionallyExitsTo(final int pos) {
+		if ( this.terminating ) {
+			return false;
+		} else if ( this.conditionalExitPos != null ) {
+			return false;
+		} else {
+			return ( this.exitPos == pos );
+		}		
+	}
+	
+	public final void addTargets(final Collection<Integer> targets) {
+		if ( this.terminating ) return;
+		
+		targets.add(this.exitPos);
+		
+		if ( this.conditionalExitPos != null ) {
+			targets.add(this.conditionalExitPos);
+		}
+	}
+	
+	public final void addForwardTargets(final Collection<Integer> forwardTargets) {
+		if ( this.terminating ) return;
+		
+		if ( this.exitPos > this.pos ) {
+			forwardTargets.add(this.exitPos);
+		}
+		
+		if ( this.conditionalExitPos != null && this.conditionalExitPos > this.pos ) {
+			forwardTargets.add(this.conditionalExitPos);
+		}
+	}
+	
+	public final void addBackwardTargets(final Collection<Integer> backwardTargets) {
+		if ( this.terminating ) return;
+		
+		if ( this.exitPos <= this.pos ) {
+			backwardTargets.add(this.exitPos);
+		}
+		
+		if ( this.conditionalExitPos != null && this.conditionalExitPos <= this.pos ) {
+			backwardTargets.add(this.conditionalExitPos);
+		}
+	}
+	
+	public final int numOps() {
+		return this.operations.size();
+	}
+	
+	public final JvmOperation get(int index) {
+		return this.operations.get(index);
+	}
+	
 	@Override
-	public final Iterator<JvmOperation> iterator() {
-		return Collections.unmodifiableList(this.operations).iterator();
+	public final JvmOperationMatchingIterator iterator() {
+		return new JvmOperationMatchingIterator(this.operations.iterator());
 	}
 	
 	final void initExit(final int pos) {
@@ -54,7 +147,7 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 	}
 	
 	final boolean missingExitPos() {
-		return ! this.terminating && this.exitPos == null;
+		return ! this.terminating && ( this.exitPos == null );
 	}
 	
 	final void initConditionalExit(final int pos) {

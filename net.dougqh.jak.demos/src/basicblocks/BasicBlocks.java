@@ -1,5 +1,7 @@
 package basicblocks;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -10,8 +12,14 @@ import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.BranchOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
+import static basicblocks.JvmOperationMatchers.*;
+
+/**
+ * Simple basic block analysis -- current implementation is MEME blocks
+ * @author dougqh
+ */
 public class BasicBlocks implements Iterable<BasicBlock> {
-	private final Map<Integer, BasicBlock> basicBlocks;
+	private final NavigableMap<Integer, BasicBlock> basicBlocks;
 	
 	public BasicBlocks(final JvmMethod method) {
 		final BlockBuilder blockBuilder = new BlockBuilder();
@@ -29,21 +37,21 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 					blockBuilder.markStart(pos);
 				}
 				
-				return isBranch(opClass);
+				return is(opClass, BRANCH);
 			}
 			
 			@Override
 			public final void process(final JvmOperation op) {
-				BranchOperation branchOp = asBranchOp(op);
+				BranchOperation branchOp = as(op, BRANCH);
 				blockBuilder.markStart(branchOp.jump().pos());
 			}
 			
 			private /*static*/ final boolean isBlockTerminating(final Class<? extends JvmOperation> opClass) {
 				if ( opClass == null ) {
 					return false;
-				} else if ( isBranch(opClass) ) {
+				} else if ( is(opClass, BRANCH) ) {
 					return true;
-				} else if ( isReturn(opClass) ) {
+				} else if ( is(opClass, RETURN) ) {
 					return true;
 				} else {
 					return false;
@@ -59,8 +67,8 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 				BasicBlock block = blockBuilder.blockOf(op);
 				block.add(op);
 				
-				if ( isBranch(op) ) {
-					BranchOperation branchOp = asBranchOp(op);
+				if ( is(op, BRANCH) ) {
+					BranchOperation branchOp = as(op, BRANCH);
 					
 					if ( branchOp.isConditional() ) {
 						block.initConditionalExit(branchOp.jump().pos());
@@ -69,7 +77,7 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 					}
 				}
 				
-				if ( isReturn(op) ) {
+				if ( is(op, RETURN) ) {
 					block.initTerminating();
 				}
 			}
@@ -78,9 +86,42 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 		this.basicBlocks = blockBuilder.basicBlocks;
 	}
 	
+	public final BasicBlock initial() {
+		return this.at(0);
+	}
+	
+	public final BasicBlock findPrecedingBlock(final BasicBlock block) {
+		return this.findPrecedingBlock(block.pos());
+	}
+	
+	public final BasicBlock findPrecedingBlock(final int pos) {
+		for ( BasicBlock block: this.basicBlocks.headMap(pos).values() ) {
+			if ( block.exitsTo(pos) ) {
+				return block;
+			}
+		}
+		return null;
+	}
+	
+	public final Collection<BasicBlock> findPriorBlocks(final BasicBlock block) {
+		return this.findPriorBlocks(block.pos());
+	}
+	
+	public final Collection<BasicBlock> findPriorBlocks(final int pos) {
+		return this.basicBlocks.headMap(pos).values();
+	}
+	
+	public final BasicBlock at(final int pos) {
+		return this.basicBlocks.get(pos);
+	}
+	
+	public final int size() {
+		return this.basicBlocks.size();
+	}
+	
 	@Override
 	public final Iterator<BasicBlock> iterator() {
-		return this.basicBlocks.values().iterator();
+		return Collections.unmodifiableCollection(this.basicBlocks.values()).iterator();
 	}
 	
 	private final class BlockBuilder {

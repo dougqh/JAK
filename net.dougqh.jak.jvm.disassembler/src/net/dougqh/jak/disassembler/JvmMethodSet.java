@@ -7,9 +7,9 @@ import net.dougqh.jak.JavaFilter;
 
 
 public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
-	private final List<JvmMethod> methods;
+	private final List<? extends JvmMethod> methods;
 	
-	JvmMethodSet(final List<JvmMethod> methods) {
+	JvmMethodSet(final List<? extends JvmMethod> methods) {
 		this.methods = methods;
 	}
 
@@ -35,7 +35,9 @@ public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
 	
 	@Override
 	public final Iterator<JvmMethod> iterator() {
-		return this.methods.iterator();
+		@SuppressWarnings("unchecked")
+		Iterator<JvmMethod> iter = (Iterator<JvmMethod>)this.methods.iterator();
+		return iter;
 	}
 	
 	@Override

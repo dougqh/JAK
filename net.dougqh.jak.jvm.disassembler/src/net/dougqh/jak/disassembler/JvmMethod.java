@@ -1,5 +1,6 @@
 package net.dougqh.jak.disassembler;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -11,6 +12,14 @@ import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.Methods.*;
 
 public final class JvmMethod implements JavaMethod {
+	public static final JvmMethod read(final Class<?> aClass, final String method)
+		throws IOException
+	{
+		JvmReader reader = new JvmReader(aClass.getClassLoader());
+		JvmType type = reader.read(aClass);
+		return type.getMethod(method);
+	}
+	
 	private final ConstantPool constantPool;
 	
 	private final int flags;
