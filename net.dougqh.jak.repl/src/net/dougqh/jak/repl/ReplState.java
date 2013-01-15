@@ -46,7 +46,7 @@ public final class ReplState {
 	}
 	
 	public final void push( final Type type, final Object value ) {
-		this.stack.stack( new JvmValue( type, value ) );
+		this.stack.stackT( new JvmValue( type, value ) );
 	}
 	
 	public final void pop() {
@@ -131,6 +131,11 @@ public final class ReplState {
 	private static final class Stack extends BaseJvmStack< JvmValue > {
 		Stack( final int initialCapacity ) {
 			super( initialCapacity );
+		}
+		
+		@Override
+		protected final JvmValue fromType(Type type) {
+			return new JvmValue(type, null);
 		}
 		
 		@Override

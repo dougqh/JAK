@@ -1,10 +1,5 @@
 package net.dougqh.jak.jvm.assembler.macros.api;
 
-import static net.dougqh.jak.Jak.*;
-import static net.dougqh.jak.assembler.JakAsm.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.JakContext;
@@ -21,6 +16,13 @@ import net.dougqh.java.meta.types.primitives.long_;
 import net.dougqh.java.meta.types.primitives.short_;
 
 import org.junit.Test;
+
+import static net.dougqh.jak.Jak.*;
+
+import static net.dougqh.jak.assembler.JakAsm.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 public final class ExpressionsTest {
 	@Test
@@ -398,7 +400,7 @@ public final class ExpressionsTest {
 	
 	private static final class FakeContext implements JakContext {
 		@Override
-		public final Type localType( final String name ) {
+		public final Type localType( final String name, final Type expectedType ) {
 			throw new UnsupportedOperationException();
 		}
 		

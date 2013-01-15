@@ -3,9 +3,22 @@ package net.dougqh.jak.jvm;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
 public abstract class SimpleJvmOperationProcessor {
+	private static final JvmStack NULL_STACK = new JvmTypeStack();
+	private static final JvmLocals NULL_LOCALS = new BaseJvmLocals<Void>() {};
+	
+	private static final JvmOperationProcessor NULL_PROCESSOR = new BaseJvmOperationProcessor() {};
+	
 	private Class<? extends JvmOperation> lastOpClass;
 	
-	public Class<? extends JvmOperation> lastOpClass() {
+	public JvmLocals locals() {
+		return null;
+	}
+	
+	public JvmStack stack() {
+		return null;
+	}
+	
+	public final Class<? extends JvmOperation> lastOpClass() {
 		return this.lastOpClass;
 	}
 	
@@ -23,8 +36,6 @@ public abstract class SimpleJvmOperationProcessor {
 	}
 	
 	private static final class RegularProcessorAdapter extends JvmOperationFilter {
-		private static final JvmOperationProcessor NULL_PROCESSOR = new BaseJvmOperationProcessor();
-		
 		private final SimpleJvmOperationProcessor simpleProcessor;
 		
 		public RegularProcessorAdapter(final SimpleJvmOperationProcessor simpleProcessor) {

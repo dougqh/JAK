@@ -70,7 +70,7 @@ final class DefaultLocals implements JvmLocals {
 	}
 	
 	@Override
-	public final Type typeOf( final int slot ) {
+	public final Type typeOf( final int slot, final Type expectedType ) {
 		return this.types[ slot ];
 	}
 	

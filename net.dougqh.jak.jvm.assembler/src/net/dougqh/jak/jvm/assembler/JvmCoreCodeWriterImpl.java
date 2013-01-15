@@ -2148,10 +2148,9 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	private final Type load( final int slot, final Type expectedType ) {
-		Type actualType = this.locals.typeOf( slot );
-		Type estimatedType = actualType != null ? actualType : expectedType;
-		this.locals.load( slot, estimatedType );
-		return estimatedType;
+		Type actualType = this.locals.typeOf( slot, expectedType );
+		this.locals.load( slot, expectedType );
+		return expectedType;
 	}
 	
 	private final void store( final int slot, final Type type ) {

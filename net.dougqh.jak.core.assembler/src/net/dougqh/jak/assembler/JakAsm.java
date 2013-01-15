@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.Jak;
 import net.dougqh.jak.JakContext;
+import net.dougqh.jak.types.Any;
 
 public class JakAsm extends Jak {
 	public static final Type thisType_() {
@@ -37,7 +38,7 @@ public class JakAsm extends Jak {
 			
 			@Override
 			public final Type type( final JakContext context ) {
-				return context.localType( this.name );
+				return context.localType( this.name, Any.class );
 			}
 		};
 	}

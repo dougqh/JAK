@@ -27,8 +27,8 @@ public final class ReplLocals implements JvmLocals {
 	}
 	
 	@Override
-	public final Type typeOf( final int slot ) {
-		return this.locals.typeOf( slot );
+	public final Type typeOf( final int slot, final Type expectedType ) {
+		return this.locals.typeOf( slot, expectedType );
 	}
 	
 	@Override

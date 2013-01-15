@@ -16,6 +16,11 @@ public final class JvmTypeStack extends BaseJvmStack< Type > {
 		this( 16 );
 	}
 	
+	@Override
+	protected final Type fromType(final Type type) {
+		return type;
+	}
+	
 	public final boolean matches( final Type... matchTypes ) {
 		Iterator< Type > actualIterator = this.iterator();
 		for ( Type matchType : matchTypes ) {

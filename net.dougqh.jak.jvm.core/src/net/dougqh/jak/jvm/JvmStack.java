@@ -33,8 +33,6 @@ public interface JvmStack {
 	@Deprecated
 	public abstract JvmTypeStack typeStack();
 	
-	// Special case used for REPL - should be eliminated
-	@Deprecated
 	public abstract Type topType( final Type expectedType );
 	
 	// Calculation should only be part of the code writer -- not general stacks

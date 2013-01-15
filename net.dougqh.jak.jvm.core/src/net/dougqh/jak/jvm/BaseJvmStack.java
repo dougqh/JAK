@@ -1,16 +1,56 @@
 package net.dougqh.jak.jvm;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public abstract class BaseJvmStack< T > implements Iterable< T > {
+//TODO: This is mess -- desparately needs to be cleaned up
+public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	private T[] stack;
 	private int size = 0;
+	
+	protected BaseJvmStack() {
+		this(8);
+	}
 	
 	@SuppressWarnings( "unchecked" )
 	protected BaseJvmStack( final int initialCapacity ) {
 		this.stack = (T[])new Object[ initialCapacity ];
+	}
+	
+	@Override
+	public final void enableTypeTracking() {
+		//TODO: remove
+	}
+	
+	@Override
+	public final int maxStack() {
+		// TODO: remove
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public final void stack(Type type) {
+		this.stackT(this.fromType(type));
+	}
+	
+	@Override
+	public void unstack(Type type) {
+		this.unstackT(this.fromType(type));
+	}
+	
+	protected abstract T fromType(final Type type);
+	
+	@Override
+	public JvmTypeStack typeStack() {
+		// TODO: Horrific hack overridden by JvmTypeStack
+		return null;
+	}
+	
+	@Override
+	public Type topType(Type expectedType) {
+		return expectedType;
 	}
 	
 	public final int size() {
@@ -25,11 +65,11 @@ public abstract class BaseJvmStack< T > implements Iterable< T > {
 		return this.getFromTop( 0 );
 	}
 	
-	public final void stack( final T value ) {
+	public final void stackT( final T value ) {
 		this.stackImpl( value );		
 	}
 	
-	public final void unstack( final T value ) {
+	public final void unstackT( final T value ) {
 		this.unstackImpl();
 	}
 	

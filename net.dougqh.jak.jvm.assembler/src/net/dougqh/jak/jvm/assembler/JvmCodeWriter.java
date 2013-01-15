@@ -22,9 +22,9 @@ import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
 import net.dougqh.jak.assembler.TypeResolver;
 import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.JvmOperationProcessor.ExceptionHandler;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.annotations.Symbol;
 import net.dougqh.jak.jvm.annotations.SyntheticOp;
@@ -83,8 +83,8 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 	
 	private final JakContext context = new JakContext() {
 		@Override
-		public final Type localType( final String name ) {
-			return JvmCodeWriter.this.typeOf( name );
+		public final Type localType( final String name, final Type expectedType ) {
+			return JvmCodeWriter.this.typeOf( name, expectedType );
 		}
 		
 		@Override
@@ -150,8 +150,10 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this;
 	}
 	
-	protected final Type typeOf( final String var ) {
-		return this.localsMonitor().typeOf( this.varScope( false ).get( var ) );
+	protected final Type typeOf( final String var, final Type expectedType ) {
+		return this.localsMonitor().typeOf(
+			this.varScope( false ).get( var ),
+			expectedType );
 	}
 	
 	@Override
