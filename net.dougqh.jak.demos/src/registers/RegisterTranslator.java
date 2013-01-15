@@ -5,6 +5,8 @@ package registers;
  * @author dougqh
  *
  */
-public class RegisterTranslator {
-
+public final class RegisterTranslator {
+	public static void main(String[] args) {
+		
+	}
 }

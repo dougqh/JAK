@@ -10,13 +10,27 @@ import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
 //TODO: Fix some of the order of operations between stacks and locals -- particularly in store operations
-public abstract class TrackingJvmOperationProcessor implements JvmOperationProcessor {	
+public abstract class TrackingJvmOperationProcessor
+	implements JvmOperationProcessor, JvmOperationProcessor.PositionAware
+{	
 	protected abstract JvmLocals locals();
 	
 	protected abstract JvmStack stack();
 	
 	protected abstract JvmOperationProcessor wrapped();
+	
+	@Override
+	public final void pos(int pos) {
+		if ( this.wrapped() instanceof JvmOperationProcessor.PositionAware ) {
+			((JvmOperationProcessor.PositionAware)this.wrapped()).pos(pos);
+		}
+	}
 
+	@Override
+	public final void prepare() {
+		this.wrapped().prepare();
+	}
+	
 	@Override
 	public final void nop() {
 		this.wrapped().nop();

@@ -10,6 +10,26 @@ public abstract class SimpleJvmOperationProcessor {
 	
 	private Class<? extends JvmOperation> lastOpClass;
 	
+	private final JvmLocals locals;
+	private final JvmStack stack;
+	
+	public SimpleJvmOperationProcessor() {
+		this(null, null);
+	}
+	
+	public SimpleJvmOperationProcessor(final JvmStack stack) {
+		this(stack, null);
+	}
+	
+	public SimpleJvmOperationProcessor(final JvmLocals locals) {
+		this(null, locals);
+	}
+	
+	public SimpleJvmOperationProcessor(final JvmStack stack, final JvmLocals locals) {
+		this.stack = stack;
+		this.locals = locals;
+	}
+	
 	public JvmLocals locals() {
 		return null;
 	}
@@ -32,16 +52,49 @@ public abstract class SimpleJvmOperationProcessor {
 	public abstract void process(final JvmOperation op);
 	
 	public JvmOperationProcessor adapt() {
-		return new RegularProcessorAdapter(this);
-	}
-	
-	private static final class RegularProcessorAdapter extends JvmOperationFilter {
-		private final SimpleJvmOperationProcessor simpleProcessor;
+		JvmOperationProcessor processor = new RegularProcessorAdapter();
 		
-		public RegularProcessorAdapter(final SimpleJvmOperationProcessor simpleProcessor) {
-			this.simpleProcessor = simpleProcessor;
+		if ( this.locals() != null || this.stack() != null ) {
+			processor = new TrackingProcessorAdapter(processor);
 		}
 		
+		return processor;
+	}
+	
+	private final class TrackingProcessorAdapter extends TrackingJvmOperationProcessor {
+		private final JvmOperationProcessor wrapped;
+		
+		public TrackingProcessorAdapter(final JvmOperationProcessor wrapped) {
+			this.wrapped = wrapped;
+		}
+		
+		@Override
+		protected final JvmOperationProcessor wrapped() {
+			return this.wrapped;
+		}
+		
+		@Override
+		protected final JvmLocals locals() {
+			JvmLocals locals = SimpleJvmOperationProcessor.this.locals();
+			if ( locals != null ) {
+				return locals;
+			} else {
+				return NULL_LOCALS;
+			}
+		}
+		
+		@Override
+		protected final JvmStack stack() {
+			JvmStack stack = SimpleJvmOperationProcessor.this.stack();
+			if ( stack != null ) {
+				return stack;
+			} else {
+				return NULL_STACK;
+			}
+		}
+	}
+	
+	private final class RegularProcessorAdapter extends JvmOperationFilter {
 		@Override
 		public final void prepare() {}
 		
@@ -52,18 +105,18 @@ public abstract class SimpleJvmOperationProcessor {
 		
 		@Override
 		protected final boolean shouldFilter(final Class<? extends JvmOperation> opClass) {
-			boolean result = this.simpleProcessor.shouldProcess(this.pos(), opClass);
+			boolean result = SimpleJvmOperationProcessor.this.shouldProcess(this.pos(), opClass);
 			if ( ! result ) {
 				// If false there won't be a call to filter, so transition now.
-				this.simpleProcessor.lastOpClass = opClass;
+				SimpleJvmOperationProcessor.this.lastOpClass = opClass;
 			}
 			return result;
 		}
 		
 		@Override
 		protected final void filter(final JvmOperation op) {
-			this.simpleProcessor.process(op);
-			this.simpleProcessor.lastOpClass = op.getClass();
+			SimpleJvmOperationProcessor.this.process(op);
+			SimpleJvmOperationProcessor.this.lastOpClass = op.getClass();
 		}
 	}
 }
