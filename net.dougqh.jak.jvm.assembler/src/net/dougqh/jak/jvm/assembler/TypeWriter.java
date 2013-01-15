@@ -12,6 +12,8 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
+import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 import net.dougqh.java.meta.types.JavaTypes;
 

@@ -21,6 +21,8 @@ import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
 import net.dougqh.jak.assembler.TypeResolver;
+import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.JvmOperationProcessor.ExceptionHandler;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
 import net.dougqh.jak.jvm.annotations.JvmOp;

@@ -1,15 +1,15 @@
-package net.dougqh.jak.jvm.assembler;
+package net.dougqh.jak.jvm;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public abstract class JakStack< T > implements Iterable< T > {
+public abstract class BaseJvmStack< T > implements Iterable< T > {
 	private T[] stack;
 	private int size = 0;
 	
 	@SuppressWarnings( "unchecked" )
-	protected JakStack( final int initialCapacity ) {
+	protected BaseJvmStack( final int initialCapacity ) {
 		this.stack = (T[])new Object[ initialCapacity ];
 	}
 	
@@ -178,7 +178,7 @@ public abstract class JakStack< T > implements Iterable< T > {
 	}
 	
 	private final class IteratorImpl implements Iterator< T > {
-		private int index = JakStack.this.fromTopIndex( 0 );	
+		private int index = BaseJvmStack.this.fromTopIndex( 0 );	
 		
 		@Override
 		public final boolean hasNext() {
@@ -188,7 +188,7 @@ public abstract class JakStack< T > implements Iterable< T > {
 		@Override
 		public final T next() {
 			try {
-				return JakStack.this.stack[ this.index-- ];
+				return BaseJvmStack.this.stack[ this.index-- ];
 			} catch ( ArrayIndexOutOfBoundsException e ) {
 				NoSuchElementException ex = new NoSuchElementException();
 				ex.initCause( e );

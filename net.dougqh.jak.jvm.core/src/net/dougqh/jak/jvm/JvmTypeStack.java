@@ -1,4 +1,4 @@
-package net.dougqh.jak.jvm.assembler;
+package net.dougqh.jak.jvm;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -7,12 +7,12 @@ import java.util.Iterator;
 import net.dougqh.jak.types.Types;
 import net.dougqh.java.meta.types.JavaTypes;
 
-public final class JakTypeStack extends JakStack< Type > {
-	public JakTypeStack( final int initialCapacity ) {
+public final class JvmTypeStack extends BaseJvmStack< Type > {
+	public JvmTypeStack( final int initialCapacity ) {
 		super( initialCapacity );
 	}
 	
-	public JakTypeStack() {
+	public JvmTypeStack() {
 		this( 16 );
 	}
 	

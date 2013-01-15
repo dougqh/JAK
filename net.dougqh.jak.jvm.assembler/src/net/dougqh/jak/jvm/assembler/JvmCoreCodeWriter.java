@@ -1,6 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
+import net.dougqh.jak.jvm.JvmLocals;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmStack;
 
 
 public interface JvmCoreCodeWriter extends JvmOperationProcessor {
