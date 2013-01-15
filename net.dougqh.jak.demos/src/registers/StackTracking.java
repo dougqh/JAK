@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.disassembler.JvmMethod;
 import net.dougqh.jak.jvm.BaseJvmLocals;
 import net.dougqh.jak.jvm.BaseJvmStack;
-import net.dougqh.jak.jvm.JvmLocals;
 import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 

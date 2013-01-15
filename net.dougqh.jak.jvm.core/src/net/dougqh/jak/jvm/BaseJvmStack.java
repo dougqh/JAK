@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 
 import net.dougqh.jak.types.Types;
 
-//TODO: This is a mess -- desparately needs to be cleaned up
+//TODO: This is a mess -- desperately needs to be cleaned up
 public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	private static final boolean CAT1 = true;
 	private static final boolean CAT2 = false;
