@@ -5,6 +5,8 @@ import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.FormalArguments;
+import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 
 final class Methods {

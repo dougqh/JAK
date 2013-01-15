@@ -1,19 +1,38 @@
-package net.dougqh.jak.jvm.assembler;
+package net.dougqh.jak.jvm;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.dougqh.jak.types.Types;
 import net.dougqh.java.meta.types.JavaTypes;
 
-public final class JakTypeStack extends JakStack< Type > {
-	public JakTypeStack( final int initialCapacity ) {
+public final class JvmTypeStack extends BaseJvmStack< Type > {
+	public JvmTypeStack( final int initialCapacity ) {
 		super( initialCapacity );
 	}
 	
-	public JakTypeStack() {
+	public JvmTypeStack() {
 		this( 16 );
+	}
+	
+	@Override
+	protected final void stack1(Type type) {
+		this.push1(type);
+	}
+	
+	@Override
+	protected final void stack2(Type type) {
+		this.push2(type);
+	}
+	
+	@Override
+	protected final void unstack1(Type type) {
+		this.pop1(type);
+	}
+	
+	@Override
+	protected void unstack2(Type type) {
+		this.pop2(type);
 	}
 	
 	public final boolean matches( final Type... matchTypes ) {
@@ -26,11 +45,6 @@ public final class JakTypeStack extends JakStack< Type > {
 			}
 		}
 		return true;
-	}
-	
-	@Override
-	protected final boolean isCategory1( final Type value ) {
-		return Types.isCategory1( value );
 	}
 	
 	@Override

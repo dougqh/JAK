@@ -12,7 +12,9 @@ import java.util.ListIterator;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.dougqh.jak.jvm.JvmTypeStack;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -265,7 +267,7 @@ public final class OperationTest extends TestCase {
 		}
 		
 		@Override
-		public final JakTypeStack typeStack() {
+		public final JvmTypeStack typeStack() {
 			return this.stack.typeStack();
 		}
 		

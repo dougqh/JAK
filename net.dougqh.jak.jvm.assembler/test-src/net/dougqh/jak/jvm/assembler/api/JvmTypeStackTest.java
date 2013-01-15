@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import net.dougqh.jak.jvm.assembler.JakTypeStack;
+import net.dougqh.jak.jvm.JvmTypeStack;
 import net.dougqh.jak.matchers.Matchers;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -14,9 +14,10 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-public final class JakTypeStackTest {
+//TODO: Relocate
+public final class JvmTypeStackTest {
 	public final @Test void basics() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		assertThat( stack, isEmpty() );
 		
@@ -32,7 +33,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void growth() {
-		JakTypeStack stack = new JakTypeStack( 2 );
+		JvmTypeStack stack = new JvmTypeStack( 2 );
 		
 		stack.stack( int.class );
 		stack.stack( long.class );
@@ -44,7 +45,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void unstack() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( int.class );
 		assertThat( stack.top(), is( int.class ) ); 
@@ -54,7 +55,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void pop() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( float.class );
 		stack.stack( int.class );
@@ -68,7 +69,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void pop2withCategory1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( float.class );
 		stack.stack( int.class );
@@ -79,7 +80,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void pop2withCategory2() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( double.class );
 		stack.stack( long.class );
@@ -93,7 +94,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void swap() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( int.class );
 		stack.stack( float.class );
@@ -103,7 +104,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( float.class );
 		stack.dup();
@@ -112,7 +113,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2withCategory1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( float.class );
 		stack.stack( int.class );
@@ -122,7 +123,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2WithCategory2() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( long.class );
 		stack.stack( double.class );
@@ -132,7 +133,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dupX1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( int.class );
 		stack.stack( float.class );
@@ -142,7 +143,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dupX2withCategory1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( float.class );
 		stack.stack( float.class );
@@ -153,7 +154,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dupX2withCategory2() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( long.class );
 		stack.stack( int.class );
@@ -163,7 +164,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2x1withCategory1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( int.class );
 		stack.stack( Object.class );
@@ -174,7 +175,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2x1withCategory2() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( int.class );
 		stack.stack( long.class );
@@ -184,7 +185,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2x2withCategory2and2() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( long.class );
 		stack.stack( double.class );
@@ -194,7 +195,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2x2withCategory2and1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( Object.class );
 		stack.stack( int.class );
@@ -205,7 +206,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2x2withCategory1and2() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( long.class );
 		stack.stack( float.class );
@@ -216,7 +217,7 @@ public final class JakTypeStackTest {
 	}
 	
 	public final @Test void dup2x2withCategory1and1() {
-		JakTypeStack stack = new JakTypeStack();
+		JvmTypeStack stack = new JvmTypeStack();
 		
 		stack.stack( int.class );
 		stack.stack( float.class );
@@ -237,15 +238,15 @@ public final class JakTypeStackTest {
 		return Matchers.is( type );
 	}
 	
-	private static final Matcher< JakTypeStack > contains( final Type... types ) {
+	private static final Matcher< JvmTypeStack > contains( final Type... types ) {
 		return new ContainsMatcher( types );
 	}
 	
-	private static final Matcher< JakTypeStack > isEmpty() {
+	private static final Matcher< JvmTypeStack > isEmpty() {
 		return new IsEmptyMatcher();
 	}
 	
-	private static final class ContainsMatcher extends BaseMatcher< JakTypeStack > {
+	private static final class ContainsMatcher extends BaseMatcher< JvmTypeStack > {
 		private final Type[] expectedTypes;
 		
 		ContainsMatcher( final Type... expectedTypes ) {
@@ -254,7 +255,7 @@ public final class JakTypeStackTest {
 		
 		@Override
 		public final boolean matches( final Object obj ) {
-			JakTypeStack stack = (JakTypeStack)obj;
+			JvmTypeStack stack = (JvmTypeStack)obj;
 			
 			return ( stack.size() == this.expectedTypes.length ) &&
 				stack.matches( this.expectedTypes );
@@ -271,10 +272,10 @@ public final class JakTypeStackTest {
 		}
 	}
 	
-	private static final class IsEmptyMatcher extends BaseMatcher< JakTypeStack > {
+	private static final class IsEmptyMatcher extends BaseMatcher< JvmTypeStack > {
 		@Override
 		public final boolean matches( final Object obj ) {
-			JakTypeStack stack = (JakTypeStack)obj;
+			JvmTypeStack stack = (JvmTypeStack)obj;
 			return stack.isEmpty();
 		}
 		

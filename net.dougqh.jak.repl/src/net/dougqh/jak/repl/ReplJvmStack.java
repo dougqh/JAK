@@ -2,8 +2,8 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.jvm.assembler.JakTypeStack;
-import net.dougqh.jak.jvm.assembler.JvmStack;
+import net.dougqh.jak.jvm.JvmTypeStack;
+import net.dougqh.jak.jvm.JvmStack;
 
 final class ReplJvmStack implements JvmStack {
 	private final JakRepl repl;
@@ -23,7 +23,7 @@ final class ReplJvmStack implements JvmStack {
 	}
 	
 	@Override
-	public final JakTypeStack typeStack() {
+	public final JvmTypeStack typeStack() {
 		return this.stack.typeStack();
 	}
 

@@ -2,7 +2,7 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.jvm.assembler.JvmLocals;
+import net.dougqh.jak.jvm.JvmLocals;
 
 public final class ReplLocals implements JvmLocals {
 	private final JakRepl repl;
@@ -27,8 +27,8 @@ public final class ReplLocals implements JvmLocals {
 	}
 	
 	@Override
-	public final Type typeOf( final int slot ) {
-		return this.locals.typeOf( slot );
+	public final Type typeOf( final int slot, final Type expectedType ) {
+		return this.locals.typeOf( slot, expectedType );
 	}
 	
 	@Override

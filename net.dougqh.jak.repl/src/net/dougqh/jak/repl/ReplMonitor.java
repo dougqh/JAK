@@ -1,9 +1,9 @@
 package net.dougqh.jak.repl;
 
+import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.jvm.assembler.JakMonitor;
 import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter;
-import net.dougqh.jak.jvm.assembler.JvmLocals;
-import net.dougqh.jak.jvm.assembler.JvmStack;
 
 final class ReplMonitor extends JakMonitor {
 	private final JakRepl repl;

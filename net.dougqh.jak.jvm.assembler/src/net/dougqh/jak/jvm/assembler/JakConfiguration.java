@@ -1,5 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
+import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmStack;
+
 public final class JakConfiguration {
 	private boolean typeTracking = false;
 	private JakMonitor monitor = JakMonitor.NULL;

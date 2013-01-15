@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 
-public class BaseJvmOperationProcessor implements JvmOperationProcessor {
+public abstract class BaseJvmOperationProcessor implements JvmOperationProcessor {
 	@Override
 	public void nop() {}
 

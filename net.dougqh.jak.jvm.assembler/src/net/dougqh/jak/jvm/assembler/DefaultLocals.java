@@ -3,6 +3,7 @@ package net.dougqh.jak.jvm.assembler;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import net.dougqh.jak.jvm.JvmLocals;
 import net.dougqh.jak.types.Types;
 
 final class DefaultLocals implements JvmLocals {
@@ -69,7 +70,7 @@ final class DefaultLocals implements JvmLocals {
 	}
 	
 	@Override
-	public final Type typeOf( final int slot ) {
+	public final Type typeOf( final int slot, final Type expectedType ) {
 		return this.types[ slot ];
 	}
 	

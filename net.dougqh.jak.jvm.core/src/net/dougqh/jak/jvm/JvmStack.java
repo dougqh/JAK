@@ -1,4 +1,4 @@
-package net.dougqh.jak.jvm.assembler;
+package net.dougqh.jak.jvm;
 
 import java.lang.reflect.Type;
 
@@ -25,11 +25,17 @@ public interface JvmStack {
 	
 	public abstract void dup2_x2();
 	
+	// Special case used for REPL - should be eliminated
+	@Deprecated
 	public abstract void enableTypeTracking();
 	
-	public abstract JakTypeStack typeStack();
+	// Special case used for REPL - should be eliminated
+	@Deprecated
+	public abstract JvmTypeStack typeStack();
 	
 	public abstract Type topType( final Type expectedType );
 	
+	// Calculation should only be part of the code writer -- not general stacks
+	@Deprecated
 	public abstract int maxStack();
 }

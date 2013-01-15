@@ -2,13 +2,15 @@ package net.dougqh.jak.jvm.assembler;
 
 import java.lang.reflect.Type;
 
+import net.dougqh.jak.jvm.JvmTypeStack;
+import net.dougqh.jak.jvm.JvmStack;
 import net.dougqh.jak.types.Types;
 
 final class DefaultJvmStack implements JvmStack {
 	private int curStack = 0;
 	private int maxStack = 0;
 	
-	private JakTypeStack typeStack = null;
+	private JvmTypeStack typeStack = null;
 	
 	DefaultJvmStack() {}
 	
@@ -127,11 +129,11 @@ final class DefaultJvmStack implements JvmStack {
 	
 	@Override
 	public final void enableTypeTracking() {
-		this.typeStack = new JakTypeStack();
+		this.typeStack = new JvmTypeStack();
 	}
 	
 	@Override
-	public final JakTypeStack typeStack() {
+	public final JvmTypeStack typeStack() {
 		if ( this.typeStack == null ) {
 			throw new IllegalStateException( "type tracking was not enabled" );
 		} else {
