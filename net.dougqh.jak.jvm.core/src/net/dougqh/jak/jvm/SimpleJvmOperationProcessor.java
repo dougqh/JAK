@@ -1,10 +1,27 @@
 package net.dougqh.jak.jvm;
 
+import java.lang.reflect.Type;
+
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
 public abstract class SimpleJvmOperationProcessor {
-	private static final JvmStack NULL_STACK = new JvmTypeStack();
-	private static final JvmLocals NULL_LOCALS = new BaseJvmLocals<Void>() {};
+	private static final JvmStack NULL_STACK = new BaseJvmStack<Void>() {
+		protected void stack1(Type type) {};
+		
+		protected void unstack1(Type type) {};
+		
+		protected void stack2(Type type) {};
+		
+		protected void unstack2(Type type) {};
+	};
+	
+	private static final JvmLocals NULL_LOCALS = new BaseJvmLocals<Void>() {
+		@Override
+		public void load(int slot, Type type) {}
+		
+		@Override
+		public void store(int slot, Type type) {}
+	};
 	
 	private static final JvmOperationProcessor NULL_PROCESSOR = new BaseJvmOperationProcessor() {};
 	

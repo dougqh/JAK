@@ -16,24 +16,10 @@ public abstract class BaseJvmLocals<T> implements JvmLocals {
 	}
 	
 	@Override
-	public void load(int slot, Type type) {
-		T value = this.fromType(slot, type);
-		if ( value != null ) {
-			this.set(slot, value);
-		}
-	}
+	public abstract void load(int slot, Type type);
 	
 	@Override
-	public void store(int slot, Type type) {
-		T value = this.fromType(slot, type);
-		if ( value != null ) {
-			this.set(slot, value);
-		}
-	}
-	
-	public T fromType(final int slot, final Type type) {
-		return null;
-	}
+	public abstract void store(int slot, Type type);
 	
 	public T set(final int slot, final T value) {
 		if ( slot > this.locals.length ) {

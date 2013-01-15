@@ -26,7 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	ClassLoaderTest.class,
 	AnnotationsTest.class,
 	EnumTest.class,
-	JakTypeStackTest.class,
+	JvmTypeStackTest.class,
 	StackManipulationTest.class,
 	MacrosTestSuite.class } )
 public class JakAssemblerApiTestSuite {}

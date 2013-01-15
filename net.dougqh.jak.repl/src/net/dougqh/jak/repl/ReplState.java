@@ -46,7 +46,7 @@ public final class ReplState {
 	}
 	
 	public final void push( final Type type, final Object value ) {
-		this.stack.stackT( new JvmValue( type, value ) );
+		this.stack.push( new JvmValue( type, value ) );
 	}
 	
 	public final void pop() {

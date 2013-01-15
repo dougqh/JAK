@@ -5,18 +5,23 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-//TODO: This is mess -- desparately needs to be cleaned up
+import net.dougqh.jak.types.Types;
+
+//TODO: This is a mess -- desparately needs to be cleaned up
 public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
-	private T[] stack;
+	private static final boolean CAT1 = true;
+	private static final boolean CAT2 = false;
+	
+	private Holder<T>[] stack;
 	private int size = 0;
 	
 	protected BaseJvmStack() {
 		this(8);
 	}
 	
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("unchecked")
 	protected BaseJvmStack( final int initialCapacity ) {
-		this.stack = (T[])new Object[ initialCapacity ];
+		this.stack = (Holder<T>[])new Holder[ initialCapacity ];
 	}
 	
 	@Override
@@ -31,16 +36,30 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	}
 	
 	@Override
-	public final void stack(Type type) {
-		this.stackT(this.fromType(type));
+	public final void stack(final Type type) {
+		if ( Types.isCategory1(type) ) {
+			this.stack1(type);
+		} else {
+			this.stack2(type);
+		}
 	}
+	
+	protected abstract void stack1(final Type type);
+	
+	protected abstract void stack2(final Type type);
 	
 	@Override
-	public void unstack(Type type) {
-		this.unstackT(this.fromType(type));
+	public final void unstack(final Type type) {
+		if ( Types.isCategory1(type) ) {
+			this.unstack1(type);
+		} else {
+			this.unstack2(type);
+		}
 	}
 	
-	protected abstract T fromType(final Type type);
+	protected abstract void unstack1(final Type type);
+	
+	protected abstract void unstack2(final Type type);
 	
 	@Override
 	public JvmTypeStack typeStack() {
@@ -62,49 +81,58 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	}
 	
 	public final T top() {
-		return this.getFromTop( 0 );
+		return this.getFromTop( 0 ).value;
 	}
 	
-	public final void stackT( final T value ) {
-		this.stackImpl( value );		
+	public final void push1( final T value ) {
+		this.pushImpl( new Holder<T>(value, CAT1) );
 	}
 	
-	public final void unstackT( final T value ) {
-		this.unstackImpl();
+	public final void push2( final T value ) {
+		this.pushImpl( new Holder<T>(value, CAT2) );
+	}
+	
+	public final void pop1( final T value ) {
+		this.popImpl();
+	}
+	
+	// Difference between the two pop2 methods is confusing and should be resolved
+	public final void pop2( final T value ) {
+		this.popImpl();
 	}
 	
 	public final void pop() {
-		this.unstackImpl();
+		this.popImpl();
 	}
 	
 	public final void pop2() {
-		T value = this.unstackImpl();
-		if ( this.isCategory1( value ) ) {
-			this.unstackImpl();
+		Holder<T> holder = this.popImpl();
+		if ( holder.isCat1 ) {
+			this.popImpl();
 		}
 	}
 	
 	public final void swap() {
-		T temp = this.getFromTop( 0 );
+		Holder<T> temp = this.getFromTop( 0 );
 		this.setFromTop( 0, this.getFromTop( 1 ) );
 		this.setFromTop( 1, temp );
 	}
 	
 	public final void dup() {
-		T top = this.getFromTop( 0 );
-		this.stackImpl( top );
+		Holder<T> top = this.getFromTop( 0 );
+		this.pushImpl( top );
 	}
 	
 	public final void dup_x1() {
-		T top = this.getFromTop( 0 );
+		Holder<T> top = this.getFromTop( 0 );
 		this.insertFromTop( 1, top );
 	}
 	
 	public final void dup_x2() {
-		T top = this.getFromTop( 0 );
-		T nextToTop = this.getFromTop( 1 );
+		Holder<T> top = this.getFromTop( 0 );
+		Holder<T> nextToTop = this.getFromTop( 1 );
 		
-		if ( this.isCategory1( nextToTop ) ) {
+		if ( nextToTop.isCat1 ) {
 			this.insertFromTop( 2, top );
 		} else {
 			this.insertFromTop( 1, top );
@@ -112,20 +140,20 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	}
 	
 	public final void dup2() {
-		T top = this.getFromTop( 0 );
-		if ( this.isCategory1( top ) ) {
-			T nextToTop = this.getFromTop( 1 );
-			this.stackImpl( nextToTop );
-			this.stackImpl( top );
+		Holder<T> top = this.getFromTop( 0 );
+		if ( top.isCat1 ) {
+			Holder<T> nextToTop = this.getFromTop( 1 );
+			this.pushImpl( nextToTop );
+			this.pushImpl( top );
 		} else {
-			this.stackImpl( top );
+			this.pushImpl( top );
 		}
 	}
 	
 	public final void dup2_x1() {
-		T top = this.getFromTop( 0 );
-		if ( this.isCategory1( top ) ) {
-			T nextToTop = this.getFromTop( 1 );
+		Holder<T> top = this.getFromTop( 0 );
+		if ( top.isCat1 ) {
+			Holder<T> nextToTop = this.getFromTop( 1 );
 			this.insertPairFromTop( 2, top, nextToTop );
 		} else {
 			this.insertFromTop( 1, top );
@@ -133,19 +161,19 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	}
 	
 	public final void dup2_x2() {
-		T top = this.getFromTop( 0 );
-		if ( this.isCategory1( top ) ) {
-			T firstFromTop = this.getFromTop( 1 );
+		Holder<T> top = this.getFromTop( 0 );
+		if ( top.isCat1 ) {
+			Holder<T> firstFromTop = this.getFromTop( 1 );
 			
-			T secondFromTop = this.getFromTop( 2 );
-			if ( this.isCategory1( secondFromTop ) ) {
+			Holder<T> secondFromTop = this.getFromTop( 2 );
+			if ( secondFromTop.isCat1 ) {
 				this.insertPairFromTop( 3, top, firstFromTop );
 			} else {
 				this.insertPairFromTop( 2, top, firstFromTop );
 			}
 		} else {
-			T firstFromTop = this.getFromTop( 1 );
-			if ( this.isCategory1( firstFromTop ) ) {
+			Holder<T> firstFromTop = this.getFromTop( 1 );
+			if ( firstFromTop.isCat1 ) {
 				this.insertFromTop( 2, top );
 			} else {
 				this.insertFromTop( 1, top );
@@ -157,28 +185,26 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 	public final Iterator< T > iterator() {
 		return new IteratorImpl();
 	}
-
-	protected abstract boolean isCategory1( final T value );
 	
-	private final void stackImpl( final T value ) {
+	private final void pushImpl( final Holder<T> holder) {
 		this.ensureCapacity( this.size + 1 );
 		
-		this.stack[ this.size++ ] = value;
+		this.stack[ this.size++ ] = holder;
 	}
 	
-	private final T unstackImpl() {
+	private final Holder<T> popImpl() {
 		return this.stack[ --this.size ];
 	}
 	
-	private final T getFromTop( final int offset ) {
+	private final Holder<T> getFromTop( final int offset ) {
 		return this.stack[ this.fromTopIndex( offset ) ];
 	}
 	
-	private final void setFromTop( final int offset, final T value ) {
-		this.stack[ this.fromTopIndex( offset ) ] = value;
+	private final void setFromTop( final int offset, final Holder<T> holder ) {
+		this.stack[ this.fromTopIndex( offset ) ] = holder;
 	}
 	
-	private final void insertFromTop( final int offset, final T value ) {
+	private final void insertFromTop( final int offset, final Holder<T> holder ) {
 		this.ensureCapacity( this.size + 1 );
 		
 		int index = this.fromTopIndex( offset );
@@ -187,12 +213,12 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 			this.stack, index,
 			this.stack, index + 1,
 			length );
-		this.stack[ index ] = value;
+		this.stack[ index ] = holder;
 		
 		++this.size;
 	}
 	
-	private final void insertPairFromTop( final int offset, final T value1, final T value2 ) {
+	private final void insertPairFromTop( final int offset, final Holder<T> holder1, final Holder<T> holder2 ) {
 		this.ensureCapacity( this.size + 2 );
 		
 		int index = this.fromTopIndex( offset );
@@ -201,8 +227,8 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 			this.stack, index,
 			this.stack, index + 2,
 			length );
-		this.stack[ index ] = value2;
-		this.stack[ index + 1 ] = value1;
+		this.stack[ index ] = holder2;
+		this.stack[ index + 1 ] = holder1;
 				
 		this.size += 2;
 	}
@@ -228,7 +254,7 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 		@Override
 		public final T next() {
 			try {
-				return BaseJvmStack.this.stack[ this.index-- ];
+				return BaseJvmStack.this.stack[ this.index-- ].value;
 			} catch ( ArrayIndexOutOfBoundsException e ) {
 				NoSuchElementException ex = new NoSuchElementException();
 				ex.initCause( e );
@@ -239,6 +265,16 @@ public abstract class BaseJvmStack< T > implements JvmStack, Iterable< T > {
 		@Override
 		public final void remove() {
 			throw new UnsupportedOperationException();
+		}
+	}
+	
+	private static final class Holder<T> {
+		final T value;
+		final boolean isCat1;
+		
+		Holder(final T value, final boolean isCat1) {
+			this.value = value;
+			this.isCat1 = isCat1;
 		}
 	}
 }

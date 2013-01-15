@@ -14,7 +14,8 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-public final class JakTypeStackTest {
+//TODO: Relocate
+public final class JvmTypeStackTest {
 	public final @Test void basics() {
 		JvmTypeStack stack = new JvmTypeStack();
 		
