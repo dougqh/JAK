@@ -48,11 +48,13 @@ public abstract class SimpleJvmOperationProcessor {
 	}
 	
 	public JvmLocals locals() {
-		return null;
+		// Deliberately overrideable
+		return this.locals;
 	}
 	
 	public JvmStack stack() {
-		return null;
+		// Deliberately overrideable
+		return this.stack;
 	}
 	
 	public final Class<? extends JvmOperation> lastOpClass() {
