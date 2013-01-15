@@ -9,7 +9,8 @@ import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
 
-//TODO: Fix some of the order of operations between stacks and locals -- particularly in store operations
+//TODO: Get rid of the silly try / finally based implementation; it is probably inefficient and is 
+// not reflective of the order of operations anyway.
 public abstract class TrackingJvmOperationProcessor
 	implements JvmOperationProcessor, JvmOperationProcessor.PositionAware
 {	
@@ -680,239 +681,297 @@ public abstract class TrackingJvmOperationProcessor
 	@Override
 	public final void istore( final int index ) {
 		this.unstack( int.class );
-		this.store( index, int.class );
-		
-		this.wrapped().istore(index);
+		try {
+			this.wrapped().istore(index);			
+		} finally {
+			this.store( index, int.class );
+		}
 	}
 	
 	@Override
 	public final void istore_0() {
-		this.store( 0, int.class );
 		this.unstack( int.class );
-		
-		this.wrapped().istore_0();
+		try {
+			this.wrapped().istore_0();	
+		} finally {
+			this.store( 0, int.class );
+		}
 	}
 	
 	@Override
 	public final void istore_1() {
-		this.store( 1, int.class );
 		this.unstack( int.class );
-		
-		this.wrapped().istore_1();
+		try {
+			this.wrapped().istore_1();	
+		} finally {
+			this.store( 1, int.class );
+		}
 	}
 	
 	@Override
 	public final void istore_2() {
-		this.store( 2, int.class );
 		this.unstack( int.class );
-		
-		this.wrapped().istore_2();
+		try {
+			this.wrapped().istore_2();	
+		} finally {
+			this.store( 2, int.class );
+		}
 	}
 	
 	@Override
 	public final void istore_3() {
-		this.store( 3, int.class );
 		this.unstack( int.class );
-		
-		this.wrapped().istore_3();
+		try {
+			this.wrapped().istore_3();	
+		} finally {
+			this.store( 3, int.class );
+		}
 	}
 	
 	@Override
 	public final void lstore( final Slot slot ) {
-		this.store( slot.pos(), long.class );
 		this.unstack( long.class );
-		
-		this.wrapped().lstore(slot);
+		try {
+			this.wrapped().lstore(slot);	
+		} finally {
+			this.store( slot.pos(), long.class );
+		}
 	}
 	
 	@Override
 	public final void lstore( final int slot ) {
-		this.store( slot, long.class );
 		this.unstack( long.class );
-		
-		this.wrapped().lstore(slot);
+		try {
+			this.wrapped().lstore(slot);	
+		} finally {
+			this.store( slot, long.class );
+		}
 	}
 	
 	@Override
 	public final void lstore_0() {
-		this.store( 0, long.class );
 		this.unstack( long.class );
-		
-		this.wrapped().lstore_0();
+		try {
+			this.wrapped().lstore_0();
+		} finally {
+			this.store( 0, long.class );
+		}
 	}
 	
 	@Override
 	public final void lstore_1() {
-		this.store( 1, long.class );
 		this.unstack( long.class );
-		
-		this.wrapped().lstore_1();
+		try {			
+			this.wrapped().lstore_1();
+		} finally {
+			this.store( 1, long.class );
+		}
 	}
 	
 	@Override
 	public final void lstore_2() {
-		this.store( 2, long.class );
 		this.unstack( long.class );
-		
-		this.wrapped().lstore_1();
+		try {			
+			this.wrapped().lstore_2();
+		} finally {
+			this.store( 2, long.class );
+		}
 	}
 	
 	@Override
 	public final void lstore_3() {
-		this.store( 3, long.class );
 		this.unstack( long.class );
-		
-		this.wrapped().lstore_3();
+		try {			
+			this.wrapped().lstore_3();
+		} finally {
+			this.store( 3, long.class );
+		}
 	}
 	
 	@Override
 	public final void fstore( final Slot slot ) {
-		this.store( slot.pos(), float.class );
 		this.unstack( float.class );
-		
-		this.wrapped().fstore(slot);
+		try {
+			this.wrapped().fstore(slot);	
+		} finally {
+			this.store( slot.pos(), float.class );
+		}
 	}
 	
 	@Override
 	public final void fstore( final int slot ) {
-		this.store( slot, float.class );
 		this.unstack( float.class );
-		
-		this.wrapped().fstore(slot);
+		try {
+			this.wrapped().fstore(slot);	
+		} finally {
+			this.store( slot, float.class );
+		}
 	}
 	
 	@Override
 	public final void fstore_0() {
-		this.store( 0, float.class );
 		this.unstack( float.class );
-		
-		this.wrapped().fstore_0();
+		try {
+			this.wrapped().fstore_0();	
+		} finally {
+			this.store( 0, float.class );
+		}
 	}
 	
 	@Override
 	public final void fstore_1() {
-		this.store( 1, float.class );
 		this.unstack( float.class );
-		
-		this.wrapped().fstore_1();
+		try {
+			this.wrapped().fstore_1();
+		} finally {
+			this.store( 1, float.class );
+		}	
 	}
 	
 	@Override
 	public final void fstore_2() {
-		this.store( 2, float.class );
 		this.unstack( float.class );
-		
-		this.wrapped().fstore_2();
+		try {
+			this.wrapped().fstore_2();
+		} finally {
+			this.store( 2, float.class );
+		}
 	}
 	
 	@Override
 	public final void fstore_3() {
-		this.store( 3, float.class );
 		this.unstack( float.class );
-		
-		this.wrapped().fstore_3();
+		try {
+			this.wrapped().fstore_3();
+		} finally {
+			this.store( 3, float.class );
+		}
 	}
 
 	@Override
 	public final void dstore( final Slot slot ) {
-		this.store( slot.pos(), double.class );
 		this.unstack( double.class );
-		
-		this.wrapped().dstore(slot);
+		try {
+			this.wrapped().dstore(slot);	
+		} finally {
+			this.store( slot.pos(), double.class );
+		}
 	}
 	
 	@Override
 	public final void dstore( final int slot ) {
-		this.store( slot, double.class );
 		this.unstack( double.class );
-		
-		this.wrapped().dstore(slot);
+		try {
+			this.wrapped().dstore(slot);	
+		} finally {
+			this.store( slot, double.class );
+		}
 	}
 	
 	@Override
 	public final void dstore_0() {
-		this.store( 0, double.class );
 		this.unstack( double.class );
-		
-		this.wrapped().dstore_0();
+		try {
+			this.wrapped().dstore_0();	
+		} finally {
+			this.store( 0, double.class );
+		}
 	}
 	
 	@Override
 	public final void dstore_1() {
-		this.store( 1, double.class );
 		this.unstack( double.class );
-		
-		this.wrapped().dstore_1();
+		try {
+			this.wrapped().dstore_1();	
+		} finally {
+			this.store( 1, double.class );
+		}
 	}
 	
 	@Override
 	public final void dstore_2() {
-		this.store( 2, double.class );
 		this.unstack( double.class );
-		
-		this.wrapped().dstore_1();
+		try {
+			this.wrapped().dstore_2();	
+		} finally {
+			this.store( 2, double.class );
+		}
 	}
 	
 	@Override
 	public final void dstore_3() {
-		this.store( 3, double.class );
 		this.unstack( double.class );
-		
-		this.wrapped().dstore_3();
+		try {
+			this.wrapped().dstore_3();	
+		} finally {
+			this.store( 3, double.class );
+		}
 	}
 	
 	@Override
 	public final void astore( final Slot slot ) {
 		Type actualType = this.topType( Reference.class );
-		this.store( slot.pos(), actualType );
 		this.unstack( actualType );
-		
-		this.wrapped().astore(slot.pos());
+		try {
+			this.wrapped().astore(slot);	
+		} finally {
+			this.store( slot.pos(), actualType );
+		}
 	}
 	
 	@Override
 	public final void astore( final int slot ) {
 		Type actualType = this.topType( Reference.class );
-		this.store( slot, actualType );
 		this.unstack( actualType );
-		
-		this.wrapped().astore(slot);
+		try {
+			this.wrapped().astore(slot);	
+		} finally {
+			this.store( slot, actualType );
+		}
 	}
 	
 	@Override
 	public final void astore_0() {
 		Type actualType = this.topType( Reference.class );
-		this.store( 0, actualType );
 		this.unstack( actualType );
-		
-		this.wrapped().astore_0();
+		try {
+			this.wrapped().astore_0();	
+		} finally {
+			this.store( 0, actualType );
+		}
 	}
 	
 	@Override
 	public final void astore_1() {
 		Type actualType = this.topType( Reference.class );
-		this.store( 1, actualType );
 		this.unstack( actualType );
-		
-		this.wrapped().astore_1();
+		try {
+			this.wrapped().astore_1();	
+		} finally {
+			this.store( 1, actualType );
+		}
 	}
 	
 	@Override
 	public final void astore_2() {
 		Type actualType = this.topType( Reference.class );
-		this.store( 2, actualType );
 		this.unstack( actualType );
-		
-		this.wrapped().astore_2();
+		try {
+			this.wrapped().astore_2();	
+		} finally {
+			this.store( 2, actualType );
+		}
 	}
 	
 	@Override
 	public final void astore_3() {
 		Type actualType = this.topType( Reference.class );
-		this.store( 3, actualType );
 		this.unstack( actualType );
-		
-		this.wrapped().astore_3();
+		try {
+			this.wrapped().astore_3();	
+		} finally {
+			this.store( 3, actualType );
+		}
 	}
 	
 	@Override
