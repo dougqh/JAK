@@ -17,7 +17,7 @@ public interface JvmLocals {
 	
 	// Probably should not be on all local interfaces
 	@Deprecated
-	public abstract void inc( final int slot );
+	public abstract void inc( final int slot, final int amount );
 	
 	public abstract void store( final int slot, final Type type );
 	

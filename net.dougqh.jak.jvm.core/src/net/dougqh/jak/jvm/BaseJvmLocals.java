@@ -40,16 +40,16 @@ public abstract class BaseJvmLocals<T> implements JvmLocals {
 	
 	// The deprecated methods
 	@Override
-	public int declare(Type type) {
+	public int declare(final Type type) {
 		return -1;
 	}
 	
 	@Override
-	public void undeclare(int slot) {
+	public void undeclare(final int slot) {
 	}
 	
 	@Override
-	public void inc(int slot) {
+	public void inc(final int slot, final int amount) {
 	}
 	
 	@Override

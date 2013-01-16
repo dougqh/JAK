@@ -1459,7 +1459,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			this.op( IINC ).u1( slot ).u1( amount );
 		} finally {
-			this.inc( slot );	
+			this.inc( slot, amount );	
 		}
 	}
 	
@@ -2143,8 +2143,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		this.wrapper.finish();
 	}
 	
-	private final void inc( final int slot ) {
-		this.locals.inc( slot );
+	private final void inc( final int slot, final int amount ) {
+		this.locals.inc( slot, amount );
 	}
 	
 	private final Type load( final int slot, final Type expectedType ) {

@@ -85,7 +85,7 @@ final class DefaultLocals implements JvmLocals {
 	}
 
 	@Override
-	public final void inc( final int slot ) {
+	public final void inc( final int slot, final int amount ) {
 		this.touch( slot, int.class );
 	}
 	

@@ -5,23 +5,8 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
 public abstract class SimpleJvmOperationProcessor {
-	private static final JvmStack NULL_STACK = new BaseJvmStack<Void>() {
-		protected void stack1(Type type) {};
-		
-		protected void unstack1(Type type) {};
-		
-		protected void stack2(Type type) {};
-		
-		protected void unstack2(Type type) {};
-	};
-	
-	private static final JvmLocals NULL_LOCALS = new BaseJvmLocals<Void>() {
-		@Override
-		public void load(int slot, Type type) {}
-		
-		@Override
-		public void store(int slot, Type type) {}
-	};
+	private static final JvmStack NULL_STACK = new NullJvmStack();
+	private static final JvmLocals NULL_LOCALS = new NullJvmLocals();
 	
 	private static final JvmOperationProcessor NULL_PROCESSOR = new BaseJvmOperationProcessor() {};
 	
@@ -70,11 +55,21 @@ public abstract class SimpleJvmOperationProcessor {
 	
 	public abstract void process(final JvmOperation op);
 	
-	public JvmOperationProcessor adapt() {
+	public final JvmOperationProcessor adapt() {
 		JvmOperationProcessor processor = new RegularProcessorAdapter();
 		
-		if ( this.locals() != null || this.stack() != null ) {
-			processor = new TrackingProcessorAdapter(processor);
+		JvmLocals locals = this.locals();
+		JvmStack stack = this.stack();
+		
+		if ( locals != null || stack != null ) {
+			if ( stack == null ) {
+				stack = NULL_STACK;
+			}
+			if ( locals == null ) {
+				locals = NULL_LOCALS;
+			}
+			
+			processor = new TrackingProcessorAdapter(processor, stack, locals);
 		}
 		
 		return processor;
@@ -82,9 +77,17 @@ public abstract class SimpleJvmOperationProcessor {
 	
 	private final class TrackingProcessorAdapter extends TrackingJvmOperationProcessor {
 		private final JvmOperationProcessor wrapped;
+		private final JvmStack stack;
+		private final JvmLocals locals;
 		
-		public TrackingProcessorAdapter(final JvmOperationProcessor wrapped) {
+		public TrackingProcessorAdapter(
+			final JvmOperationProcessor wrapped,
+			final JvmStack stack,
+			final JvmLocals locals)
+		{
 			this.wrapped = wrapped;
+			this.stack = stack;
+			this.locals = locals;
 		}
 		
 		@Override
@@ -94,22 +97,12 @@ public abstract class SimpleJvmOperationProcessor {
 		
 		@Override
 		protected final JvmLocals locals() {
-			JvmLocals locals = SimpleJvmOperationProcessor.this.locals();
-			if ( locals != null ) {
-				return locals;
-			} else {
-				return NULL_LOCALS;
-			}
+			return this.locals;
 		}
 		
 		@Override
 		protected final JvmStack stack() {
-			JvmStack stack = SimpleJvmOperationProcessor.this.stack();
-			if ( stack != null ) {
-				return stack;
-			} else {
-				return NULL_STACK;
-			}
+			return this.stack;
 		}
 	}
 	
@@ -136,6 +129,107 @@ public abstract class SimpleJvmOperationProcessor {
 		protected final void filter(final JvmOperation op) {
 			SimpleJvmOperationProcessor.this.process(op);
 			SimpleJvmOperationProcessor.this.lastOpClass = op.getClass();
+		}
+	}
+	
+	private static final class NullJvmStack implements JvmStack {
+		@Override
+		public final void stack(final Type type) {
+		}
+
+		@Override
+		public final void unstack(final Type type) {
+		}
+
+		@Override
+		public final void pop() {
+		}
+
+		@Override
+		public final void pop2() {
+		}
+
+		@Override
+		public final void swap() {
+		}
+
+		@Override
+		public final void dup() {
+		}
+
+		@Override
+		public final void dup_x1() {
+		}
+
+		@Override
+		public final void dup_x2() {
+		}
+
+		@Override
+		public final void dup2() {
+		}
+
+		@Override
+		public final void dup2_x1() {
+		}
+
+		@Override
+		public final void dup2_x2() {
+		}
+
+		@Override
+		public final void enableTypeTracking() {
+		}
+
+		@Override
+		public final JvmTypeStack typeStack() {
+			return null;
+		}
+
+		@Override
+		public final Type topType(final Type expectedType) {
+			return expectedType;
+		}
+
+		@Override
+		public final int maxStack() {
+			throw new UnsupportedOperationException();
+		}
+	
+	}
+	
+	private static final class NullJvmLocals implements JvmLocals {
+		@Override
+		public final void load(final int slot, final Type type) {
+		}
+
+		@Override
+		public final void store(final int slot, final Type type) {
+			
+		}
+
+		@Override
+		public final void inc(final int slot, final int amount) {
+		}
+		
+		@Override
+		public final Type typeOf(int slot, Type expectedType) {
+			return expectedType;
+		}
+
+		@Override
+		public final int declare(Type type) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public final void undeclare(int slot) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public final int maxLocals() {
+			throw new UnsupportedOperationException();
 		}
 	}
 }
