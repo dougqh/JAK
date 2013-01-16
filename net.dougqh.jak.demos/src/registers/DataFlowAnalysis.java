@@ -34,9 +34,9 @@ public final class DataFlowAnalysis {
 	}
 	
 	public static final int demo() {
-		int x = 0;
-		x = x + 1;
-		return x;
+		int x = 2;
+		int y = 3;
+		return x + y;
 	}
 	
 	static final class DataFlowProcessor extends SimpleJvmOperationProcessor {
@@ -178,8 +178,11 @@ public final class DataFlowAnalysis {
 			} else if ( is(opClass, RETURN) ) {
 				System.out.println(new ComputeRecord(opClass, this.allFromStack()));
 				return false;
-			} else if ( is(opClass, UNARY) && is(opClass, BINARY) && canFold() ) {
+			} else if ( is(opClass, UNARY) && canFold() ) {
 				// constant fold, but hydrate the operation to do it
+				return true;
+			} else if ( is(opClass, BINARY) && canFold() ) {
+				//constant fold, but hydrate the operation to do it
 				return true;
 			} else {
 				// everything else, create a nonce that represents the instruction being performed
