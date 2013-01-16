@@ -1,5 +1,6 @@
 package basicblocks;
 
+import net.dougqh.jak.jvm.operations.BinaryOperation;
 import net.dougqh.jak.jvm.operations.BranchOperation;
 import net.dougqh.jak.jvm.operations.ConstantOperation;
 import net.dougqh.jak.jvm.operations.IfOperation;
@@ -8,6 +9,7 @@ import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.LoadOperation;
 import net.dougqh.jak.jvm.operations.ReturnOperation;
 import net.dougqh.jak.jvm.operations.StoreOperation;
+import net.dougqh.jak.jvm.operations.UnaryOperation;
 
 public final class JvmOperationMatchers {
 	public static final Class<BranchOperation> BRANCH = BranchOperation.class;
@@ -21,6 +23,9 @@ public final class JvmOperationMatchers {
 	public static final Class<InvocationOperation> INVOKE = InvocationOperation.class;
 	
 	public static final Class<ReturnOperation> RETURN = ReturnOperation.class;
+	
+	public static final Class<UnaryOperation> UNARY = UnaryOperation.class;
+	public static final Class<BinaryOperation> BINARY = BinaryOperation.class;
 	
 	public static final boolean is(
 		final Class<? extends JvmOperation> opClass,
