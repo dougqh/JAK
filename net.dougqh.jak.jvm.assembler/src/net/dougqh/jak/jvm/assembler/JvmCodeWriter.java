@@ -21,10 +21,10 @@ import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
 import net.dougqh.jak.assembler.TypeResolver;
-import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
 import net.dougqh.jak.jvm.JvmOperationProcessor.ExceptionHandler;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.annotations.Symbol;
 import net.dougqh.jak.jvm.annotations.SyntheticOp;
@@ -4064,11 +4064,11 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		return this.labelScope( false ).isDefined( label );
 	}
 	
-	public final JvmStack stackMonitor() {
+	public final JvmStackTracker stackMonitor() {
 		return this.coreWriter().stackMonitor();
 	}
 	
-	public final JvmLocals localsMonitor() {
+	public final JvmLocalsTracker localsMonitor() {
 		return this.coreWriter().localsMonitor();
 	}
 	

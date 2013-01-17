@@ -1,8 +1,8 @@
 package net.dougqh.jak.jvm.assembler;
 
-import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmStackTracker;
 
 
 public interface JvmCoreCodeWriter extends JvmOperationProcessor {
@@ -21,9 +21,9 @@ public interface JvmCoreCodeWriter extends JvmOperationProcessor {
 	
 	public abstract void finish();
 	
-	public abstract JvmStack stackMonitor();
+	public abstract JvmStackTracker stackMonitor();
 	
-	public abstract JvmLocals localsMonitor();
+	public abstract JvmLocalsTracker localsMonitor();
 	
 	public abstract int pos();
 }

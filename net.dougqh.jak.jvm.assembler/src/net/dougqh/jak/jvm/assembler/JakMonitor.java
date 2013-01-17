@@ -1,7 +1,7 @@
 package net.dougqh.jak.jvm.assembler;
 
-import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
+import net.dougqh.jak.jvm.JvmStackTracker;
 
 public abstract class JakMonitor {
 	static final JakMonitor NULL = new JakMonitor() {};
@@ -10,11 +10,11 @@ public abstract class JakMonitor {
 		return wrappedWriter;
 	}
 	
-	public JvmLocals monitor( final JvmLocals locals ) {
+	public JvmLocalsTracker monitor( final JvmLocalsTracker locals ) {
 		return locals;
 	}
 	
-	public JvmStack monitor( final JvmStack stack ) {
+	public JvmStackTracker monitor( final JvmStackTracker stack ) {
 		return stack;
 	}
 }

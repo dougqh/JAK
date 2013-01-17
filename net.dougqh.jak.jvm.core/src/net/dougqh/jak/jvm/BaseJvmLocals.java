@@ -3,7 +3,8 @@ package net.dougqh.jak.jvm;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-public abstract class BaseJvmLocals<T> implements JvmLocals {
+@Deprecated
+public abstract class BaseJvmLocals<T> implements JvmLocalsTracker {
 	private T[] locals;
 	
 	protected BaseJvmLocals() {
@@ -40,16 +41,16 @@ public abstract class BaseJvmLocals<T> implements JvmLocals {
 	
 	// The deprecated methods
 	@Override
-	public int declare(Type type) {
+	public int declare(final Type type) {
 		return -1;
 	}
 	
 	@Override
-	public void undeclare(int slot) {
+	public void undeclare(final int slot) {
 	}
 	
 	@Override
-	public void inc(int slot) {
+	public void inc(final int slot, final int amount) {
 	}
 	
 	@Override

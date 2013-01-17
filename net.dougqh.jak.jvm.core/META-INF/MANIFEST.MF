@@ -11,4 +11,5 @@ Export-Package: net.dougqh.jak.jvm,
  net.dougqh.jak.jvm.rewriters
 Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0",
  net.dougqh.jak.core;bundle-version="1.0.0",
- org.junit4;bundle-version="4.8.1"
+ org.junit4;bundle-version="4.8.1",
+ javax.inject;bundle-version="1.0.0"

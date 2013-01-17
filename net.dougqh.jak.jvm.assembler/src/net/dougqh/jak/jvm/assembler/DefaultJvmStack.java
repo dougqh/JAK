@@ -3,10 +3,10 @@ package net.dougqh.jak.jvm.assembler;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmTypeStack;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.types.Types;
 
-final class DefaultJvmStack implements JvmStack {
+final class DefaultJvmStack implements JvmStackTracker {
 	private int curStack = 0;
 	private int maxStack = 0;
 	

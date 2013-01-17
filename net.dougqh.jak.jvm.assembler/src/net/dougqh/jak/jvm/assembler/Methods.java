@@ -5,8 +5,8 @@ import java.lang.reflect.TypeVariable;
 
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.FormalArguments;
-import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 
 final class Methods {
@@ -30,8 +30,8 @@ final class Methods {
 		final FormalArguments arguments,
 		final Type[] exceptionTypes,
 		final Object defaultValue,
-		final JvmLocals locals,
-		final JvmStack stack )
+		final JvmLocalsTracker locals,
+		final JvmStackTracker stack )
 	{
 		this.finishMethod();
 		++this.count;
@@ -163,8 +163,8 @@ final class Methods {
 		CodeAttribute(
 			final WritingContext context,
 			final ConstantPool constantPool,
-			final JvmLocals locals,
-			final JvmStack stack )
+			final JvmLocalsTracker locals,
+			final JvmStackTracker stack )
 		{
 			super( context, ID );
 			

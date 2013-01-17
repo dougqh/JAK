@@ -14,9 +14,9 @@ import net.dougqh.java.meta.types.JavaTypes;
 public abstract class TrackingJvmOperationProcessor
 	implements JvmOperationProcessor, JvmOperationProcessor.PositionAware
 {	
-	protected abstract JvmLocals locals();
+	protected abstract JvmLocalsTracker locals();
 	
-	protected abstract JvmStack stack();
+	protected abstract JvmStackTracker stack();
 	
 	protected abstract JvmOperationProcessor wrapped();
 	
@@ -1527,7 +1527,7 @@ public abstract class TrackingJvmOperationProcessor
 		try {
 			this.wrapped().iinc(slot, amount);
 		} finally {
-			this.inc( slot );	
+			this.inc( slot, amount );	
 		}
 	}
 	
@@ -2097,8 +2097,8 @@ public abstract class TrackingJvmOperationProcessor
 		this.wrapped().handleException(exceptionHandler);
 	}
 	
-	private final void inc( final int slot ) {
-		this.locals().inc( slot );
+	private final void inc( final int slot, final int amount ) {
+		this.locals().inc( slot, amount );
 	}
 	
 	private final Type load( final int slot, final Type expectedType ) {

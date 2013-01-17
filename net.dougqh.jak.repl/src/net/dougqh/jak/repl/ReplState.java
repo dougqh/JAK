@@ -46,7 +46,7 @@ public final class ReplState {
 	}
 	
 	public final void push( final Type type, final Object value ) {
-		this.stack.push( new JvmValue( type, value ) );
+		this.stack.push1( new JvmValue( type, value ) );
 	}
 	
 	public final void pop() {
@@ -134,13 +134,23 @@ public final class ReplState {
 		}
 		
 		@Override
-		protected final JvmValue fromType(Type type) {
-			return new JvmValue(type, null);
+		protected void stack1(Type type) {
+			this.push1(new JvmValue(type, null));
 		}
 		
 		@Override
-		protected final boolean isCategory1( final JvmValue value ) {
-			return value.isCategory1();
+		protected void stack2(Type type) {
+			this.push1(new JvmValue(type, null));
+		}
+		
+		@Override
+		protected void unstack1(Type type) {
+			this.pop1(null);
+		}
+		
+		@Override
+		protected void unstack2(Type type) {
+			this.pop2(null);
 		}
 	}
 

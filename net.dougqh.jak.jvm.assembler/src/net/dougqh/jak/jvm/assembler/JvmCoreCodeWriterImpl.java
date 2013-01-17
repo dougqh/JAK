@@ -8,8 +8,8 @@ import net.dougqh.jak.FormalArguments;
 import net.dougqh.jak.JavaField;
 import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
-import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.types.Any;
 import net.dougqh.jak.types.Reference;
 import net.dougqh.java.meta.types.JavaTypes;
@@ -30,8 +30,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	private final ConstantPool constantPool;
 	private final JvmOutputStream codeOut;
 	
-	private final JvmLocals locals;
-	private final JvmStack stack;
+	private final JvmLocalsTracker locals;
+	private final JvmStackTracker stack;
 	
 	private final ArrayList< ExceptionHandler > handlers = new ArrayList< ExceptionHandler >( 8 );	
 	
@@ -43,8 +43,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	
 	JvmCoreCodeWriterImpl(
 		final WritingContext context,
-		final JvmLocals locals,
-		final JvmStack stack )
+		final JvmLocalsTracker locals,
+		final JvmStackTracker stack )
 	{
 		this.context = context;
 		
@@ -1459,7 +1459,7 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		try {
 			this.op( IINC ).u1( slot ).u1( amount );
 		} finally {
-			this.inc( slot );	
+			this.inc( slot, amount );	
 		}
 	}
 	
@@ -2143,8 +2143,8 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 		this.wrapper.finish();
 	}
 	
-	private final void inc( final int slot ) {
-		this.locals.inc( slot );
+	private final void inc( final int slot, final int amount ) {
+		this.locals.inc( slot, amount );
 	}
 	
 	private final Type load( final int slot, final Type expectedType ) {
@@ -2294,12 +2294,12 @@ final class JvmCoreCodeWriterImpl implements JvmCoreCodeWriter {
 	}
 	
 	@Override
-	public final JvmLocals localsMonitor() {
+	public final JvmLocalsTracker localsMonitor() {
 		return this.locals;
 	}
 	
 	@Override
-	public final JvmStack stackMonitor() {
+	public final JvmStackTracker stackMonitor() {
 		return this.stack;
 	}
 }

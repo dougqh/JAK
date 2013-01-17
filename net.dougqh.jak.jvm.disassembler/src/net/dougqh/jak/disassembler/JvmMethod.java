@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.dougqh.jak.AnalysisHelper;
 import net.dougqh.jak.Flags;
+import net.dougqh.jak.inject.Injector;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -126,11 +127,11 @@ public final class JvmMethod implements JavaMethod {
 	}
 	
 	public final void process( final JvmOperationProcessor processor ) {
-		this.getCodeAttribute().process(processor);
+		this.getCodeAttribute().process(this.inject(processor));
 	}
 	
 	public final void process( final SimpleJvmOperationProcessor processor ) {
-		this.getCodeAttribute().process(processor);
+		this.getCodeAttribute().process(this.inject(processor));
 	}
 	
 	public final Iterable< JvmOperation > operations() {
@@ -144,6 +145,11 @@ public final class JvmMethod implements JavaMethod {
 			this.analysisHelper = new MethodAnalysisHelper(this);
 		}
 		return this.analysisHelper.get(analysisClass);
+	}
+	
+	private final <T> T inject(final T object) {
+		this.get(Injector.class).inject(object);
+		return object;
 	}
 	
 	public final String toString() {

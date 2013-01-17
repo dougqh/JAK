@@ -2,15 +2,15 @@ package net.dougqh.jak.repl;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
 
-public final class ReplLocals implements JvmLocals {
+public final class ReplLocals implements JvmLocalsTracker {
 	private final JakRepl repl;
-	private final JvmLocals locals;
+	private final JvmLocalsTracker locals;
 	
 	ReplLocals(
 		final JakRepl repl,
-		final JvmLocals locals )
+		final JvmLocalsTracker locals )
 	{
 		this.repl = repl;
 		this.locals = locals;
@@ -32,8 +32,8 @@ public final class ReplLocals implements JvmLocals {
 	}
 	
 	@Override
-	public final void inc( final int slot ) {
-		this.locals.inc( slot );
+	public final void inc( final int slot, final int amount ) {
+		this.locals.inc( slot, amount );
 	}
 	
 	@Override
