@@ -1,7 +1,7 @@
 package net.dougqh.jak.jvm.assembler;
 
-import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
+import net.dougqh.jak.jvm.JvmStackTracker;
 
 public final class JakConfiguration {
 	private boolean typeTracking = false;
@@ -17,12 +17,12 @@ public final class JakConfiguration {
 		return this;
 	}
 	
-	public final JvmLocals configure( final JvmLocals locals ) {
+	public final JvmLocalsTracker configure( final JvmLocalsTracker locals ) {
 		return this.monitor.monitor( locals );
 	}
 	
-	public final JvmStack configure( final JvmStack stack ) {
-		JvmStack wrappedStack = this.monitor.monitor( stack );
+	public final JvmStackTracker configure( final JvmStackTracker stack ) {
+		JvmStackTracker wrappedStack = this.monitor.monitor( stack );
 		if ( this.typeTracking ) {
 			wrappedStack.enableTypeTracking();
 		}

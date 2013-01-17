@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.types.Types;
 
-public abstract class SimpleJvmStackTracker<T> implements JvmStack {
+public abstract class SimpleJvmStackTracker<T> implements JvmStackTracker {
 	public final JvmStackHelper<T> stack;
 	
 	public SimpleJvmStackTracker() {

@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import net.dougqh.jak.types.Types;
 
-public abstract class SimpleJvmLocalsTracker<T> implements JvmLocals {
+public abstract class SimpleJvmLocalsTracker<T> implements JvmLocalsTracker {
 	public final JvmLocalsHelper<T> locals;
 	
 	public SimpleJvmLocalsTracker() {

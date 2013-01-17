@@ -1,7 +1,13 @@
 package net.dougqh.jak;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.inject.Inject;
+
+import net.dougqh.jak.inject.InjectionRecipient;
+import net.dougqh.jak.inject.Injector;
 
 public abstract class AnalysisHelper<T> {
 	private static final Null NULL = new Null();
@@ -29,6 +35,12 @@ public abstract class AnalysisHelper<T> {
 	}
 	
 	private final <V> V calculate(final Class<V> analysisClass) {
+		if ( analysisClass.equals(Injector.class) ) {
+			@SuppressWarnings("unchecked")
+			V result = (V)new InjectorImpl();
+			return result;
+		}
+		
 		NoSuchMethodException noSuchMethodException = null;
 		
 		for ( Class<? super T> searchClass: this.getSearchTypes() ) {
@@ -81,4 +93,33 @@ public abstract class AnalysisHelper<T> {
 	}
 	
 	private static class Null {}
+	
+	private final class InjectorImpl implements Injector {
+		@Override
+		public final void inject(final Object object) {
+			boolean shouldInject = shouldInject(object);
+			
+			if ( shouldInject ) {
+				for ( Field field: object.getClass().getFields() ) {
+					Inject inject = field.getAnnotation(Inject.class);
+					if ( inject == null ) continue;
+					
+					Object analysisResult = AnalysisHelper.this.get(field.getType());
+					try {
+						field.set(object, analysisResult);
+					} catch ( IllegalAccessException e ) {
+						throw new IllegalStateException(e);
+					}
+				}
+			}
+		}
+		
+		private /* static */ final boolean shouldInject(final Object object) {
+			if ( object instanceof InjectionRecipient ) {
+				return ((InjectionRecipient)object).shouldInject();
+			} else {
+				return false;
+			}
+		}
+	}
 }

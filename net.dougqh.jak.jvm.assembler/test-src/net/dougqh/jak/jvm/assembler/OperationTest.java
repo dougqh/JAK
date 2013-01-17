@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import net.dougqh.jak.jvm.JvmTypeStack;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Slot;
 import net.dougqh.jak.jvm.annotations.JvmOp;
 import net.dougqh.jak.jvm.operations.JvmOperation;
@@ -128,7 +128,7 @@ public final class OperationTest extends TestCase {
 		}
 		
 		@Override
-		public final JvmStack monitor( final JvmStack stack ) {
+		public final JvmStackTracker monitor( final JvmStackTracker stack ) {
 			this.checkedStack = new CheckedStack( this.operation, stack );
 			return this.checkedStack;
 		}
@@ -163,10 +163,10 @@ public final class OperationTest extends TestCase {
 		}
 	}
 	
-	private static abstract class TestJvmStack implements JvmStack {
-		protected final JvmStack stack;
+	private static abstract class TestJvmStack implements JvmStackTracker {
+		protected final JvmStackTracker stack;
 		
-		TestJvmStack( final JvmStack stack ) {
+		TestJvmStack( final JvmStackTracker stack ) {
 			this.stack = stack;
 		}
 		
@@ -235,7 +235,7 @@ public final class OperationTest extends TestCase {
 		private final ListIterator<Type> operandIter;
 		private final ListIterator<Type> resultIter;
 		
-		CheckedStack( final JvmOperation operation, final JvmStack stack ) {
+		CheckedStack( final JvmOperation operation, final JvmStackTracker stack ) {
 			super( stack );
 			
 			List<Type> operandTypes = Arrays.asList( operation.getStackOperandTypes() );

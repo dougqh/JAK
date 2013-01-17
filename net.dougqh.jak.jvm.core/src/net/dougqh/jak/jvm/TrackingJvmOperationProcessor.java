@@ -14,9 +14,9 @@ import net.dougqh.java.meta.types.JavaTypes;
 public abstract class TrackingJvmOperationProcessor
 	implements JvmOperationProcessor, JvmOperationProcessor.PositionAware
 {	
-	protected abstract JvmLocals locals();
+	protected abstract JvmLocalsTracker locals();
 	
-	protected abstract JvmStack stack();
+	protected abstract JvmStackTracker stack();
 	
 	protected abstract JvmOperationProcessor wrapped();
 	

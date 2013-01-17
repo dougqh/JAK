@@ -1,7 +1,7 @@
 package net.dougqh.jak.repl;
 
-import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.jvm.assembler.JakMonitor;
 import net.dougqh.jak.jvm.assembler.JvmCoreCodeWriter;
 
@@ -18,12 +18,12 @@ final class ReplMonitor extends JakMonitor {
 	}
 	
 	@Override
-	public final JvmLocals monitor( final JvmLocals locals ) {
+	public final JvmLocalsTracker monitor( final JvmLocalsTracker locals ) {
 		return new ReplLocals( this.repl, locals );
 	}
 	
 	@Override
-	public final JvmStack monitor( final JvmStack stack ) {
+	public final JvmStackTracker monitor( final JvmStackTracker stack ) {
 		return new ReplJvmStack( this.repl, stack );
 	}
 }

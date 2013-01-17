@@ -3,15 +3,15 @@ package net.dougqh.jak.repl;
 import java.lang.reflect.Type;
 
 import net.dougqh.jak.jvm.JvmTypeStack;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmStackTracker;
 
-final class ReplJvmStack implements JvmStack {
+final class ReplJvmStack implements JvmStackTracker {
 	private final JakRepl repl;
-	private final JvmStack stack;
+	private final JvmStackTracker stack;
 	
 	ReplJvmStack(
 		final JakRepl repl,
-		final JvmStack stack )
+		final JvmStackTracker stack )
 	{
 		this.repl = repl;
 		this.stack = stack;

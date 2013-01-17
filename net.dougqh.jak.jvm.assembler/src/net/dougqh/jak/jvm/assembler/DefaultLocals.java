@@ -3,10 +3,10 @@ package net.dougqh.jak.jvm.assembler;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import net.dougqh.jak.jvm.JvmLocals;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
 import net.dougqh.jak.types.Types;
 
-final class DefaultLocals implements JvmLocals {
+final class DefaultLocals implements JvmLocalsTracker {
 	private int maxLocals = 0;
 	private Type[] types = new Type[ 8 ];
 	

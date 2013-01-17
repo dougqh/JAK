@@ -3,7 +3,8 @@ package net.dougqh.jak.jvm;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-public abstract class BaseJvmLocals<T> implements JvmLocals {
+@Deprecated
+public abstract class BaseJvmLocals<T> implements JvmLocalsTracker {
 	private T[] locals;
 	
 	protected BaseJvmLocals() {

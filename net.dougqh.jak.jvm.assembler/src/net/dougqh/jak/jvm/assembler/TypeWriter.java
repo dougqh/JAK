@@ -12,8 +12,8 @@ import net.dougqh.jak.JavaMethodDescriptor;
 import net.dougqh.jak.JavaVariable;
 import net.dougqh.jak.JavaVersion;
 import net.dougqh.jak.TypeDescriptor;
-import net.dougqh.jak.jvm.JvmLocals;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.jvm.assembler.Attribute.DeferredAttribute;
 import net.dougqh.java.meta.types.JavaTypes;
 
@@ -180,7 +180,7 @@ final class TypeWriter {
 		final int additionalFlags,
 		final Object defaultValue )
 	{
-		JvmLocals locals = this.config.configure( new DefaultLocals() );
+		JvmLocalsTracker locals = this.config.configure( new DefaultLocals() );
 		if ( ! method.isStatic() ) {
 			locals.declare( this.context.thisType );
 		}
@@ -188,7 +188,7 @@ final class TypeWriter {
 			locals.declare( var.getType() );
 		}
 
-		JvmStack stack = this.config.configure( new DefaultJvmStack() );		
+		JvmStackTracker stack = this.config.configure( new DefaultJvmStack() );		
 		
 		JvmCoreCodeWriterImpl writer = this.methods.createMethod(
 			method.getFlags() | additionalFlags,

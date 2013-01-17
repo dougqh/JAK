@@ -3,14 +3,15 @@ package registers;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.inject.Inject;
 
 import net.dougqh.jak.disassembler.JvmMethod;
 import net.dougqh.jak.jvm.Category;
-import net.dougqh.jak.jvm.JvmLocals;
 import net.dougqh.jak.jvm.JvmLocalsHelper;
-import net.dougqh.jak.jvm.JvmStack;
+import net.dougqh.jak.jvm.JvmLocalsTracker;
 import net.dougqh.jak.jvm.JvmStackHelper;
+import net.dougqh.jak.jvm.JvmStackTracker;
 import net.dougqh.jak.jvm.SimpleJvmLocalsTracker;
 import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.SimpleJvmStackTracker;
@@ -19,6 +20,7 @@ import net.dougqh.jak.jvm.operations.ConstantOperation;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import net.dougqh.jak.jvm.operations.UnaryOperation;
 import net.dougqh.jak.jvm.operations.iinc;
+import basicblocks.BasicBlocks;
 import static basicblocks.JvmOperationMatchers.*;
 
 /**
@@ -30,7 +32,9 @@ public final class DataFlowAnalysis {
 	public static void main(String[] args) throws IOException {
 		JvmMethod method = JvmMethod.read(DataFlowAnalysis.class, "demo");
 		
-		method.process(new DataFlowProcessor());
+		DataFlowProcessor processor = new DataFlowProcessor();
+		method.process(processor);
+		System.out.println(processor.basicBlocks);
 	}
 	
 	public static final int demo() {
@@ -39,16 +43,18 @@ public final class DataFlowAnalysis {
 		return x + y;
 	}
 	
-	static final class DataFlowProcessor extends SimpleJvmOperationProcessor {
-		public final JvmStackHelper<Record> stack = new JvmStackHelper<Record>();
-		public final JvmLocalsHelper<Record> locals = new JvmLocalsHelper<Record>();
+	public static final class DataFlowProcessor extends SimpleJvmOperationProcessor {
+		private final JvmStackHelper<Record> stack = new JvmStackHelper<Record>();
+		private final JvmLocalsHelper<Record> locals = new JvmLocalsHelper<Record>();
 		
-		private AtomicInteger nonceCounter = new AtomicInteger(0);
 		private Record toStack = null;
-		private Record[] fromStack = new Record[2];
+		private final Record[] fromStack = new Record[2];
+		
+		@Inject
+		public BasicBlocks basicBlocks;
 		
 		@Override
-		public final JvmStack stack() {
+		public final JvmStackTracker stack() {
 			return new SimpleJvmStackTracker<Record>(this.stack) {
 				@Override
 				protected final void stack(final Type type, final Category category) {
@@ -63,7 +69,7 @@ public final class DataFlowAnalysis {
 		}
 		
 		@Override
-		public final JvmLocals locals() {
+		public final JvmLocalsTracker locals() {
 			return new SimpleJvmLocalsTracker<Record>(this.locals) {
 				@Override
 				protected void load(final int slot, final Type type, final Category category) {

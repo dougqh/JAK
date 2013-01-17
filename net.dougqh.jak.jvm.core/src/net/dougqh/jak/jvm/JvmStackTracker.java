@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm;
 
 import java.lang.reflect.Type;
 
-public interface JvmStack {
+public interface JvmStackTracker {
 	public abstract void stack( final Type type );
 	
 	public abstract void unstack( final Type type );

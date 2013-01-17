@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm;
 
 import java.lang.reflect.Type;
 
-public interface JvmLocals {
+public interface JvmLocalsTracker {
 	public abstract Type typeOf( final int slot, final Type expectedType );
 	
 	// Probably should not be on all locals interfaces
