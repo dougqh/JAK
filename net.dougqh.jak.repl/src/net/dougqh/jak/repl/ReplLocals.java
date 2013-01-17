@@ -32,8 +32,8 @@ public final class ReplLocals implements JvmLocals {
 	}
 	
 	@Override
-	public final void inc( final int slot ) {
-		this.locals.inc( slot );
+	public final void inc( final int slot, final int amount ) {
+		this.locals.inc( slot, amount );
 	}
 	
 	@Override
