@@ -5,15 +5,21 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.types.Types;
 
 public abstract class SimpleJvmStackTracker<T> implements JvmStackTracker {
-	public final JvmStackHelper<T> stack;
+	private JvmStackHelper<T> stack;
 	
-	public SimpleJvmStackTracker() {
-		this(new JvmStackHelper<T>(8));
-	}
-
+	public SimpleJvmStackTracker() {}
+	
 	public SimpleJvmStackTracker(final JvmStackHelper<T> stack) {
 		this.stack = stack;
-	}	
+	}
+	
+	public JvmStackHelper<T> stack() {
+		if ( this.stack == null ) {
+			this.stack = new JvmStackHelper<T>(8);
+		}
+		return this.stack;
+	}
+	
 	@Override
 	public final void stack(final Type type) {
 		if ( Types.isCategory1(type) ) {
@@ -35,7 +41,7 @@ public abstract class SimpleJvmStackTracker<T> implements JvmStackTracker {
 	}
 	
 	protected void unstack(final Type type, final Category category) {
-		this.stack.pop(category);
+		this.stack().pop(category);
 	}
 	
 	@Override
@@ -45,46 +51,46 @@ public abstract class SimpleJvmStackTracker<T> implements JvmStackTracker {
 	
 	@Override
 	public void dup() {
-		this.stack.dup();
+		this.stack().dup();
 	}
 	
 	@Override
 	public void dup_x1() {
-		this.stack.dup_x1();
+		this.stack().dup_x1();
 	}
 	
 	@Override
 	public void dup2() {
-		this.stack.dup2();
+		this.stack().dup2();
 	}
 	
 	@Override
 	public void dup_x2() {
-		this.stack.dup_x2();
+		this.stack().dup_x2();
 	}
 	
 	@Override
 	public void dup2_x1() {
-		this.stack.dup2_x1();
+		this.stack().dup2_x1();
 	}
 	
 	public void dup2_x2() {
-		this.stack.dup_x2();
+		this.stack().dup_x2();
 	}
 	
 	@Override
 	public void pop() {
-		this.stack.pop();
+		this.stack().pop();
 	}
 	
 	@Override
 	public void pop2() {
-		this.stack.pop2();
+		this.stack().pop2();
 	}
 	
 	@Override
 	public void swap() {
-		this.stack.swap();
+		this.stack().swap();
 	}
 	
 	// The deprecated and hopefully soon to be removed methods

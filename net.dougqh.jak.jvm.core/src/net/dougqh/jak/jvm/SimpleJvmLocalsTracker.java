@@ -5,14 +5,19 @@ import java.lang.reflect.Type;
 import net.dougqh.jak.types.Types;
 
 public abstract class SimpleJvmLocalsTracker<T> implements JvmLocalsTracker {
-	public final JvmLocalsHelper<T> locals;
+	public JvmLocalsHelper<T> locals;
 	
-	public SimpleJvmLocalsTracker() {
-		this(new JvmLocalsHelper<T>(8));
-	}
+	public SimpleJvmLocalsTracker() {}
 	
 	public SimpleJvmLocalsTracker(final JvmLocalsHelper<T> locals) {
 		this.locals = locals;
+	}
+	
+	public JvmLocalsHelper<T> locals() {
+		if ( this.locals == null ) {
+			this.locals = new JvmLocalsHelper<T>(8);
+		}
+		return this.locals;
 	}
 	
 	@Override

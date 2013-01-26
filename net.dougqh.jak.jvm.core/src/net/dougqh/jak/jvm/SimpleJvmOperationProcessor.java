@@ -52,7 +52,7 @@ public abstract class SimpleJvmOperationProcessor implements InjectionRecipient 
 		return this.lastOpClass;
 	}
 	
-	public boolean shouldProcess(
+	public boolean process(
 		final Integer pos,
 		final Class<? extends JvmOperation> opClass)
 	{
@@ -123,7 +123,7 @@ public abstract class SimpleJvmOperationProcessor implements InjectionRecipient 
 		
 		@Override
 		protected final boolean shouldFilter(final Class<? extends JvmOperation> opClass) {
-			boolean result = SimpleJvmOperationProcessor.this.shouldProcess(this.pos(), opClass);
+			boolean result = SimpleJvmOperationProcessor.this.process(this.pos(), opClass);
 			if ( ! result ) {
 				// If false there won't be a call to filter, so transition now.
 				SimpleJvmOperationProcessor.this.lastOpClass = opClass;
