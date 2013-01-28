@@ -1,5 +1,5 @@
 package net.dougqh.jak.jvm;
 
-public interface JvmContext {
+import net.dougqh.jak.JakContext;
 
-}
+public interface JvmContext extends JakContext {}
