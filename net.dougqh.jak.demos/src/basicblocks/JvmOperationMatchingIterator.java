@@ -2,12 +2,21 @@ package basicblocks;
 
 import java.util.Iterator;
 
+import net.dougqh.jak.jvm.JvmCodeSegment;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
 public final class JvmOperationMatchingIterator implements Iterator<JvmOperation> {
 	private final Iterator<? extends JvmOperation> opIter;
 	private JvmOperation prior;
 	private JvmOperation cur;
+	
+	public JvmOperationMatchingIterator(final JvmCodeSegment segment) {
+		this(segment.operations());
+	}
+	
+	public JvmOperationMatchingIterator(final Iterable<? extends JvmOperation> opIterable) {
+		this(opIterable.iterator());
+	}
 	
 	public JvmOperationMatchingIterator(final Iterator<? extends JvmOperation> opIter) {
 		this.opIter = opIter;

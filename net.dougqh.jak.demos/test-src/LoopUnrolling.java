@@ -29,7 +29,7 @@ public final class LoopUnrolling {
 		BasicBlock testBlock = loop.testBlock();
 		if ( testBlock.numOps() != 3 ) return;
 		
-		JvmOperationMatchingIterator testIter = testBlock.iterator();
+		JvmOperationMatchingIterator testIter = new JvmOperationMatchingIterator(testBlock);
 		
 		LoadOperation loadOp = testIter.nextIf(LOAD);
 		if ( loadOp == null ) return; 
@@ -45,7 +45,7 @@ public final class LoopUnrolling {
 		
 		
 		// Second analyze the initialization block
-		JvmOperationMatchingIterator initIter = loop.initBlock().iterator();
+		JvmOperationMatchingIterator initIter = new JvmOperationMatchingIterator(loop.initBlock());
 		
 		StoreOperation storeOp = initIter.findNext(store(loopVarSlot));
 		if ( storeOp == null ) return;
