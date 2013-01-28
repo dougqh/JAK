@@ -2,11 +2,15 @@ package basicblocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import net.dougqh.jak.jvm.JvmCodeSegment;
+import net.dougqh.jak.jvm.JvmOperationProcessor;
+import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 
-public final class BasicBlock implements Iterable<JvmOperation> {
+public final class BasicBlock implements JvmCodeSegment {
 	private final int pos;
 	private final List<JvmOperation> operations = new ArrayList<JvmOperation>(4);
 	
@@ -138,8 +142,20 @@ public final class BasicBlock implements Iterable<JvmOperation> {
 	}
 	
 	@Override
-	public final JvmOperationMatchingIterator iterator() {
-		return new JvmOperationMatchingIterator(this.operations.iterator());
+	public final Iterable<JvmOperation> operations() {
+		return Collections.unmodifiableList(this.operations);
+	}
+	
+	@Override
+	public final void process(final JvmOperationProcessor processor) {
+		for ( JvmOperation op: this.operations() ) {
+			op.process(processor);
+		}
+	}
+	
+	@Override
+	public final void process(final SimpleJvmOperationProcessor processor) {
+		this.process(processor.adapt());
 	}
 	
 	final void initExit(final int pos) {
