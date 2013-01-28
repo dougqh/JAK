@@ -7,12 +7,13 @@ import java.util.List;
 import net.dougqh.jak.AnalysisHelper;
 import net.dougqh.jak.Flags;
 import net.dougqh.jak.inject.Injector;
+import net.dougqh.jak.jvm.JvmCodeSegment;
 import net.dougqh.jak.jvm.JvmOperationProcessor;
 import net.dougqh.jak.jvm.SimpleJvmOperationProcessor;
 import net.dougqh.jak.jvm.operations.JvmOperation;
 import static net.dougqh.jak.Methods.*;
 
-public final class JvmMethod implements JavaMethod {
+public final class JvmMethod implements JavaMethod, JvmCodeSegment {
 	public static final JvmMethod read(final Class<?> aClass, final String method)
 		throws IOException
 	{
@@ -126,14 +127,17 @@ public final class JvmMethod implements JavaMethod {
 		return ( code == null ) ? 0 : code.maxLocals();
 	}
 	
+	@Override
 	public final void process( final JvmOperationProcessor processor ) {
 		this.getCodeAttribute().process(this.inject(processor));
 	}
 	
+	@Override
 	public final void process( final SimpleJvmOperationProcessor processor ) {
 		this.getCodeAttribute().process(this.inject(processor));
 	}
 	
+	@Override
 	public final Iterable< JvmOperation > operations() {
 		return this.getCodeAttribute().operations();
 	}
