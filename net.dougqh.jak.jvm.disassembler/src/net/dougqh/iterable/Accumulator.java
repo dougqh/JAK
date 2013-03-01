@@ -6,35 +6,27 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class Accumulator<T> {
+	public static interface Scheduler<T> {
+		public abstract void schedule(final Task<T> task);
+		
+		public abstract void result(final T result);
+		
+		public abstract void exception(final Throwable cause);
+	}
+	
 	public static interface Task<T> {
-		public abstract void run(final Accumulator<T> accumulator) throws Exception;
+		public abstract void run(final Scheduler<T> scheduler) throws Exception;
 	}
 	
 	private static final End END = new End();
 	
-	private final ConcurrentLinkedQueue<Task<T>> taskQueue;
 	private final AtomicInteger activeTasks = new AtomicInteger(0);
 	
-	private final ConcurrentLinkedQueue<T> resultQueue;
+	private final UnboundedScheduler unboundedScheduler = new UnboundedScheduler();
 	private volatile Throwable cause = null;
 	
-	public Accumulator() {
-		this.taskQueue = new ConcurrentLinkedQueue<Task<T>>();
-		this.resultQueue = new ConcurrentLinkedQueue<T>();
-	}
-	
-	public final void schedule(final Task<T> task) {
-		this.taskQueue.add(task);
-	}
-	
-	public final void exception(final Throwable cause) {
-		if ( this.cause == null ) {
-			this.cause = cause;
-		}
-	}
-	
-	public final void result(final T value) throws InterruptedException {
-		this.resultQueue.add(value);
+	public final void initialize(final Task<T> task) {
+		this.runTask(task);
 	}
 	
 	public final Iterator<T> iterator() {
@@ -44,7 +36,7 @@ public final class Accumulator<T> {
 	protected final void runTask(final Task<T> task) {
 		this.activeTasks.incrementAndGet();
 		try {
-			task.run(this);
+			task.run(this.unboundedScheduler);
 		} catch ( Exception e ) {
 			this.cause = e;
 		} finally {
@@ -59,7 +51,7 @@ public final class Accumulator<T> {
 	}
 	
 	protected final void runTaskNow() {
-		Task<T> task = this.taskQueue.poll();
+		Task<T> task = this.unboundedScheduler.taskQueue.poll();
 		if ( task != null ) {
 			this.runTask(task);
 		}
@@ -69,10 +61,10 @@ public final class Accumulator<T> {
 		if ( this.cause != null ) {
 			return true;
 		}
-		if ( ! this.taskQueue.isEmpty() ) {
+		if ( ! this.unboundedScheduler.taskQueue.isEmpty() ) {
 			return false;
 		}
-		if ( ! this.resultQueue.isEmpty() ) {
+		if ( ! this.unboundedScheduler.resultQueue.isEmpty() ) {
 			return false;
 		}
 		if ( this.activeTasks.get() != 0 ) {
@@ -92,12 +84,12 @@ public final class Accumulator<T> {
 		// pool performing any work.
 		this.checkForExceptions();
 		
-		T value = this.resultQueue.poll();
+		T value = this.unboundedScheduler.resultQueue.poll();
 		if ( value != null ) {
 			return value;
 		}
 		
-		while ( this.resultQueue.isEmpty() ) {
+		while ( this.unboundedScheduler.resultQueue.isEmpty() ) {
 			this.runTaskNow();
 			
 			this.checkForExceptions();
@@ -107,7 +99,7 @@ public final class Accumulator<T> {
 			}
 		}
 		
-		return this.resultQueue.poll();
+		return this.unboundedScheduler.resultQueue.poll();
 	}
 	
 	private final class IteratorImpl<T> implements Iterator<T> {
@@ -157,4 +149,23 @@ public final class Accumulator<T> {
 	}
 	
 	private static final class End {}
+	
+	private final class UnboundedScheduler implements Scheduler<T> {
+		private final ConcurrentLinkedQueue<Task<T>> taskQueue = new ConcurrentLinkedQueue<Task<T>>();
+		private final ConcurrentLinkedQueue<T> resultQueue = new ConcurrentLinkedQueue<T>();
+		
+		@Override
+		public final void schedule(final Task<T> task) {
+			this.taskQueue.add(task);
+		}
+		
+		public final void result(final T result) {
+			this.resultQueue.add(result);
+		}
+		
+		@Override
+		public final void exception(final Throwable cause) {
+			Accumulator.this.cause = cause;
+		}
+	}
 }

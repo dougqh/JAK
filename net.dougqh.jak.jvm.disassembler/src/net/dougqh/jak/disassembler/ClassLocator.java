@@ -7,7 +7,7 @@ import net.dougqh.iterable.Accumulator;
 import net.dougqh.iterable.InputStreamProvider;
 
 public interface ClassLocator {
-	public abstract void enumerate(final Accumulator<InputStreamProvider> accumulator);
+	public abstract void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler);
 	
 	public abstract InputStream load(final String className) throws IOException;
 }

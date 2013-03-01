@@ -14,7 +14,7 @@ final class ClassLoaderClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public void enumerate(final Accumulator<InputStreamProvider> accumulator) {
+	public void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler) {
 		//TODO: Implement this if the classloader is URLClassLoader
 	}
 	

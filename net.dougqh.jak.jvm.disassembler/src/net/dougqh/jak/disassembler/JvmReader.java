@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import net.dougqh.iterable.Accumulator;
+import net.dougqh.iterable.Accumulator.Scheduler;
+import net.dougqh.iterable.Accumulator.Task;
 import net.dougqh.iterable.InputStreamProvider;
 import net.dougqh.iterable.TransformIterator;
 
@@ -55,7 +57,12 @@ public final class JvmReader {
 			@Override
 			public final Iterator<JvmType> iterator() {
 				Accumulator<InputStreamProvider> accumulator = new Accumulator<InputStreamProvider>();
-				JvmReader.this.locators.enumerate(accumulator);
+				accumulator.initialize(new Task<InputStreamProvider>() {
+					@Override
+					public final void run(final Scheduler<InputStreamProvider> scheduler) throws Exception {
+						JvmReader.this.locators.enumerate(scheduler);
+					}
+				});
 			
 				return new TransformIterator<InputStreamProvider, JvmType>(accumulator.iterator()) {
 					protected final JvmType transform(final InputStreamProvider inputStreamProvider) {

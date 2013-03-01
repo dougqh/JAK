@@ -38,8 +38,8 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator<InputStreamProvider> accumulator) {
-		accumulator.schedule(new DirTask(this.dir));
+	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler) {
+		scheduler.schedule(new DirTask(this.dir));
 	}
 	
 	private static final class DirTask implements Accumulator.Task<InputStreamProvider> {
@@ -50,18 +50,18 @@ final class ClassDirClassLocator implements ClassLocator {
 		}
 		
 		@Override
-		public final void run(final Accumulator<InputStreamProvider> accumulator) throws Exception {
+		public final void run(final Accumulator.Scheduler<InputStreamProvider> scheduler) throws Exception {
 			File[] subDirs = this.dir.listFiles( DIR_FILTER );
 			if ( subDirs != null ) {
 				for ( File subDir: subDirs ) {
-					accumulator.schedule(new DirTask(subDir));
+					scheduler.schedule(new DirTask(subDir));
 				}
 			}
 			
 			File[] classFiles = dir.listFiles( CLASS_FILTER );
 			if ( classFiles != null ) {
 				for ( File classFile: classFiles ) {
-					accumulator.result(new FileInputStreamProvider(classFile));
+					scheduler.result(new FileInputStreamProvider(classFile));
 				}
 			}
 		}

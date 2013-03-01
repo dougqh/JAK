@@ -3,10 +3,7 @@ package net.dougqh.jak.disassembler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -27,7 +24,7 @@ final class JarClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator<InputStreamProvider> accumulator) {
+	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> accumulator) {
 		accumulator.schedule(new JarTask());
 	}
 
@@ -64,7 +61,7 @@ final class JarClassLocator implements ClassLocator {
 	
 	private final class JarTask implements Accumulator.Task<InputStreamProvider> {
 		@Override
-		public final void run(final Accumulator<InputStreamProvider> accumulator) throws Exception {
+		public final void run(final Accumulator.Scheduler<InputStreamProvider> accumulator) throws Exception {
 			// Unfortunately, the thread-safety of JarFile seems murky, so this ends up 
 			// open and closing the file N + 1 times for each type.  The only alternative 
 			// would seem to be published batch into the accumulator rather than just a 

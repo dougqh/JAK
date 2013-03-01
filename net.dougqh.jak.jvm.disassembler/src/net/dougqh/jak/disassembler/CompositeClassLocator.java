@@ -19,9 +19,9 @@ final class CompositeClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator<InputStreamProvider> accumulator) {
+	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler) {
 		for ( ClassLocator locator: this.locators ) {
-			locator.enumerate(accumulator);
+			locator.enumerate(scheduler);
 		}
 	}
 	
