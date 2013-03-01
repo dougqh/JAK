@@ -38,7 +38,9 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler) {
+	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler)
+		throws InterruptedException
+	{
 		scheduler.schedule(new DirTask(this.dir));
 	}
 	

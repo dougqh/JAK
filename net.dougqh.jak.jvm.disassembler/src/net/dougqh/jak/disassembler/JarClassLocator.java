@@ -24,7 +24,9 @@ final class JarClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> accumulator) {
+	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> accumulator)
+		throws InterruptedException
+	{
 		accumulator.schedule(new JarTask());
 	}
 

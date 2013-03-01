@@ -3,13 +3,14 @@ package net.dougqh.iterable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class Accumulator<T> {
 	public static interface Scheduler<T> {
-		public abstract void schedule(final Task<T> task);
+		public abstract void schedule(final Task<T> task) throws InterruptedException;
 		
-		public abstract void result(final T result);
+		public abstract void result(final T result) throws InterruptedException;
 		
 		public abstract void exception(final Throwable cause);
 	}
@@ -23,20 +24,22 @@ public final class Accumulator<T> {
 	private final AtomicInteger activeTasks = new AtomicInteger(0);
 	
 	private final UnboundedScheduler unboundedScheduler = new UnboundedScheduler();
+	private final BoundedScheduler boundedScheduler = new BoundedScheduler();
+	
 	private volatile Throwable cause = null;
 	
 	public final void initialize(final Task<T> task) {
-		this.runTask(task);
+		this.runTask(this.boundedScheduler, task);
 	}
 	
 	public final Iterator<T> iterator() {
 		return new IteratorImpl();
 	}
 	
-	protected final void runTask(final Task<T> task) {
+	protected final void runTask(final Scheduler<T> scheduler, final Task<T> task) {
 		this.activeTasks.incrementAndGet();
 		try {
-			task.run(this.unboundedScheduler);
+			task.run(scheduler);
 		} catch ( Exception e ) {
 			this.cause = e;
 		} finally {
@@ -44,36 +47,7 @@ public final class Accumulator<T> {
 		}
 	}
 	
-	protected final void checkForExceptions() {
-		if ( this.cause != null ) {
-			throw new IllegalStateException(this.cause);
-		}
-	}
-	
-	protected final void runTaskNow() {
-		Task<T> task = this.unboundedScheduler.taskQueue.poll();
-		if ( task != null ) {
-			this.runTask(task);
-		}
-	}
-	
-	private final boolean isDone() {
-		if ( this.cause != null ) {
-			return true;
-		}
-		if ( ! this.unboundedScheduler.taskQueue.isEmpty() ) {
-			return false;
-		}
-		if ( ! this.unboundedScheduler.resultQueue.isEmpty() ) {
-			return false;
-		}
-		if ( this.activeTasks.get() != 0 ) {
-			return false;
-		}
-		return true;
-	}
-	
-	protected final Object poll() {
+	protected final Object pollNext() {
 		// The accumulator is designed to work both as a multi-thread task queueing 
 		// mechanism, but also as a single threaded on demand task pump.
 		
@@ -82,14 +56,13 @@ public final class Accumulator<T> {
 		// This immediate running in the current thread also allows the Accumulator
 		// to work as a lazy evaluation mechanism even there is no background thread
 		// pool performing any work.
-		this.checkForExceptions();
 		
-		T value = this.unboundedScheduler.resultQueue.poll();
+		T value = this.pollResult();
 		if ( value != null ) {
 			return value;
 		}
 		
-		while ( this.unboundedScheduler.resultQueue.isEmpty() ) {
+		while ( ! this.hasResults() ) {
 			this.runTaskNow();
 			
 			this.checkForExceptions();
@@ -99,17 +72,87 @@ public final class Accumulator<T> {
 			}
 		}
 		
-		return this.unboundedScheduler.resultQueue.poll();
+		return this.pollResult();
 	}
 	
-	private final class IteratorImpl<T> implements Iterator<T> {
+	protected final void checkForExceptions() {
+		if ( this.cause != null ) {
+			throw new IllegalStateException(this.cause);
+		}
+	}
+	
+	protected final Task<T> pollTask() {
+		this.checkForExceptions();
+		
+		Task<T> task;
+		
+		task = this.unboundedScheduler.pollTask();
+		if ( task != null ) {
+			return task;
+		}
+		
+		task = this.boundedScheduler.pollTask();
+		if ( task != null ) {
+			return task;
+		}
+		
+		return null;
+	}
+	
+	protected final boolean hasResults() {
+		return this.unboundedScheduler.hasResults() ||
+			this.boundedScheduler.hasResults();
+	}
+	
+	protected final T pollResult() {
+		this.checkForExceptions();
+		
+		T result;
+		
+		result = this.unboundedScheduler.pollResult();
+		if ( result != null ) {
+			return result;
+		}
+		
+		result = this.boundedScheduler.pollResult();
+		if ( result != null ) {
+			return result;
+		}
+		
+		return null;
+	}
+	
+	protected final void runTaskNow() {
+		Task<T> task = this.pollTask();
+		if ( task != null ) {
+			this.runTask(this.unboundedScheduler, task);
+		}
+	}
+	
+	private final boolean isDone() {
+		if ( this.cause != null ) {
+			return true;
+		}
+		if ( ! this.unboundedScheduler.isCompletelyEmpty() ) {
+			return false;
+		}
+		if ( ! this.boundedScheduler.isCompletelyEmpty() ) {
+			return false;
+		}
+		if ( this.activeTasks.get() != 0 ) {
+			return false;
+		}
+		return true;
+	}
+	
+	private final class IteratorImpl implements Iterator<T> {
 		private Object value;
 		
 		IteratorImpl() {}
 		
 		private final void loadNext() {
 			if ( this.value == null ) {
-				this.value = Accumulator.this.poll();
+				this.value = Accumulator.this.pollNext();
 			}
 		}
 		
@@ -150,9 +193,39 @@ public final class Accumulator<T> {
 	
 	private static final class End {}
 	
-	private final class UnboundedScheduler implements Scheduler<T> {
+	private abstract class ConcreteScheduler implements Scheduler<T> {
+		abstract boolean isCompletelyEmpty();
+		
+		abstract Task<T> pollTask();
+		
+		abstract boolean hasResults();
+		
+		abstract T pollResult();
+		
+		@Override
+		public final void exception(final Throwable cause) {
+			Accumulator.this.cause = cause;
+		}
+	}
+	
+	private final class UnboundedScheduler extends ConcreteScheduler {
 		private final ConcurrentLinkedQueue<Task<T>> taskQueue = new ConcurrentLinkedQueue<Task<T>>();
 		private final ConcurrentLinkedQueue<T> resultQueue = new ConcurrentLinkedQueue<T>();
+		
+		@Override
+		final Task<T> pollTask() {
+			return this.taskQueue.poll();
+		}
+		
+		@Override
+		final boolean hasResults() {
+			return ! this.resultQueue.isEmpty();
+		}
+		
+		@Override
+		final T pollResult() {
+			return this.resultQueue.poll();
+		}
 		
 		@Override
 		public final void schedule(final Task<T> task) {
@@ -164,8 +237,42 @@ public final class Accumulator<T> {
 		}
 		
 		@Override
-		public final void exception(final Throwable cause) {
-			Accumulator.this.cause = cause;
+		public final boolean isCompletelyEmpty() {
+			return this.taskQueue.isEmpty() && this.resultQueue.isEmpty();
+		}
+	}
+	
+	private final class BoundedScheduler extends ConcreteScheduler {
+		private final LinkedBlockingQueue<Task<T>> taskQueue = new LinkedBlockingQueue<Accumulator.Task<T>>();
+		private final LinkedBlockingQueue<T> resultQueue = new LinkedBlockingQueue<T>();
+		
+		@Override
+		final Task<T> pollTask() {
+			return this.taskQueue.poll();
+		}
+		
+		@Override
+		final boolean hasResults() {
+			return ! this.resultQueue.isEmpty();
+		}
+		
+		@Override
+		final T pollResult() {
+			return this.resultQueue.poll();
+		}
+		
+		@Override
+		public final void schedule(final Task<T> task) throws InterruptedException {
+			this.taskQueue.put(task);
+		}
+		
+		public final void result(final T result) throws InterruptedException {
+			this.resultQueue.put(result);
+		}
+		
+		@Override
+		public final boolean isCompletelyEmpty() {
+			return this.taskQueue.isEmpty() && this.resultQueue.isEmpty();
 		}
 	}
 }
