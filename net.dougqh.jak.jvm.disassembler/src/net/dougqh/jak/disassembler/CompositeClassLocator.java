@@ -2,16 +2,16 @@ package net.dougqh.jak.disassembler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import net.dougqh.iterable.CompositeIterable;
-import net.dougqh.iterable.TransformIterable;
+import net.dougqh.iterable.Accumulator;
+import net.dougqh.iterable.InputStreamProvider;
 
 final class CompositeClassLocator implements ClassLocator {
-	private final ArrayList< ClassLocator > locators = new ArrayList< ClassLocator >( 8 );
+	private final CopyOnWriteArrayList< ClassLocator > locators = new CopyOnWriteArrayList<ClassLocator>();
 	
-	final void add( final ClassLocator locator ) {
-		this.locators.add( locator );
+	final void add(final ClassLocator locator) {
+		this.locators.add(locator);
 	}
 	
 	final boolean isEmpty() {
@@ -19,25 +19,16 @@ final class CompositeClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final Iterable< InputStream > list() throws IOException {
-		Iterable< Iterable< InputStream > > iterables = 
-			new TransformIterable< ClassLocator, Iterable< InputStream > >( this.locators ) {
-				protected final Iterable< InputStream > transform( final ClassLocator classLocator ) {
-					try {
-						return classLocator.list();
-					} catch ( IOException e ) {
-						throw new IllegalStateException( e );
-					}
-				}
-			};
-		
-		return new CompositeIterable< InputStream >( iterables );
+	public final void enumerate(final Accumulator<InputStreamProvider> accumulator) {
+		for ( ClassLocator locator: this.locators ) {
+			locator.enumerate(accumulator);
+		}
 	}
 	
 	@Override
 	public final InputStream load( final String className ) throws IOException {
 		for ( ClassLocator locator : this.locators ) {
-			InputStream in = locator.load( className );
+			InputStream in = locator.load(className);
 			if ( in != null ) {
 				return in;
 			}

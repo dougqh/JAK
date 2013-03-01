@@ -11,7 +11,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import net.dougqh.io.WrappedInputStream;
-import net.dougqh.iterable.TransformIterable;
+import net.dougqh.iterable.Accumulator;
+import net.dougqh.iterable.InputStreamProvider;
 
 final class JarClassLocator implements ClassLocator {
 	private final File file;
@@ -20,56 +21,77 @@ final class JarClassLocator implements ClassLocator {
 		this.file = file;
 	}
 	
-	private final List< JarEntry > entries() throws IOException {
-		JarFile jarFile = new JarFile( this.file );
-		try {
-			ArrayList< JarEntry > entries = new ArrayList< JarEntry >( jarFile.size() );
-			
-			for ( Enumeration< JarEntry > entryEnum = jarFile.entries();
-				entryEnum.hasMoreElements(); )
-			{
-				JarEntry entry = entryEnum.nextElement();
-				if ( entry.getName().endsWith( ".class" ) ) {
-					entries.add( entry );
-				}
-			}
-			
-			return Collections.unmodifiableList( entries );
-		} finally {
-			jarFile.close();
-		}
+	@Override
+	public final InputStream load(final String className) throws IOException {
+		return this.loadEntry(className.replace( '.', '/' ) + ".class");
 	}
 	
 	@Override
-	public final Iterable< InputStream > list() throws IOException {
-		return new TransformIterable< JarEntry, InputStream >( this.entries() ) {
-			@Override
-			protected final InputStream transform( final JarEntry input ) {
-				try {
-					return JarClassLocator.this.loadEntry( input.getName() );
-				} catch ( IOException e ) {
-					throw new IllegalStateException( e );
-				}
-			}
-		};
+	public final void enumerate(final Accumulator<InputStreamProvider> accumulator) {
+		accumulator.schedule(new JarTask());
+	}
+
+	private final JarFile openJarFile() throws IOException {
+		return new JarFile(this.file);
 	}
 	
-	@Override
-	public final InputStream load( final String className ) throws IOException {
-		return this.loadEntry( className.replace( '.', '/' ) + ".class" );
-	}
-	
-	private final InputStream loadEntry( final String entryName ) throws IOException {
-		final JarFile jarFile = new JarFile( this.file );
-		JarEntry entry = jarFile.getJarEntry( entryName );
-		InputStream in = jarFile.getInputStream( entry );
+	private final InputStream loadEntry(final String entryName) throws IOException {
+		final JarFile jarFile = this.openJarFile();
+		JarEntry entry = jarFile.getJarEntry(entryName);
+		InputStream in = jarFile.getInputStream(entry);
 		
-		return new WrappedInputStream( in ) {
+		return new WrappedInputStream(in) {
 			@Override
 			public final void close() throws IOException {
 				jarFile.close();
 				super.close();
 			}
 		};
+	}
+	
+	private final InputStream loadEntry(final JarEntry entry) throws IOException {
+		final JarFile jarFile = this.openJarFile();
+		InputStream in = jarFile.getInputStream(entry);
+		
+		return new WrappedInputStream(in) {
+			@Override
+			public final void close() throws IOException {
+				jarFile.close();
+				super.close();
+			}
+		};
+	}
+	
+	private final class JarTask implements Accumulator.Task<InputStreamProvider> {
+		@Override
+		public final void run(final Accumulator<InputStreamProvider> accumulator) throws Exception {
+			// Unfortunately, the thread-safety of JarFile seems murky, so this ends up 
+			// open and closing the file N + 1 times for each type.  The only alternative 
+			// would seem to be published batch into the accumulator rather than just a 
+			// single element.
+			JarFile jarFile = JarClassLocator.this.openJarFile();
+			try {
+				for ( Enumeration<JarEntry> entryEnum = jarFile.entries(); entryEnum.hasMoreElements(); ) {
+					JarEntry entry = entryEnum.nextElement();
+					
+					accumulator.result(new JarEntryInputStreamProvider(entry));
+				}
+			} finally {
+				jarFile.close();
+			}
+		}
+	}
+	
+	private final class JarEntryInputStreamProvider implements InputStreamProvider {
+		private final JarEntry entry;
+		
+		public JarEntryInputStreamProvider(final JarEntry entry) {
+			this.entry = entry;
+		}
+		
+		@Override
+		public final InputStream open() throws IOException {
+			return JarClassLocator.this.loadEntry(entry);
+		}
 	}
 }

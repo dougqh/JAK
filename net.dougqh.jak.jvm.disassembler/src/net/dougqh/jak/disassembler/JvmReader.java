@@ -3,8 +3,11 @@ package net.dougqh.jak.disassembler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
-import net.dougqh.iterable.TransformIterable;
+import net.dougqh.iterable.Accumulator;
+import net.dougqh.iterable.InputStreamProvider;
+import net.dougqh.iterable.TransformIterator;
 
 public final class JvmReader {
 	private final CompositeClassLocator locators = new CompositeClassLocator();
@@ -47,25 +50,29 @@ public final class JvmReader {
 		return this.locators;
 	}
 	
-	public final Iterable< JvmType > list() {
-		try {
-			return new TransformIterable< InputStream, JvmType >( this.locator().list() ) {
-				@Override
-				protected final JvmType transform( final InputStream in ) {
-					try {
+	public final Iterable<JvmType> list() {
+		return new Iterable<JvmType>() {
+			@Override
+			public final Iterator<JvmType> iterator() {
+				Accumulator<InputStreamProvider> accumulator = new Accumulator<InputStreamProvider>();
+				JvmReader.this.locators.enumerate(accumulator);
+			
+				return new TransformIterator<InputStreamProvider, JvmType>(accumulator.iterator()) {
+					protected final JvmType transform(final InputStreamProvider inputStreamProvider) {
 						try {
-							return JvmType.create( in );
-						} finally {
-							in.close();
+							InputStream in = inputStreamProvider.open();
+							try {
+								return JvmType.create(in);
+							} finally {
+								in.close();
+							}
+						} catch ( IOException e ) {
+							throw new IllegalStateException(e);
 						}
-					} catch ( IOException e ) {
-						throw new IllegalStateException( e );
-					}
-				}
-			};
-		} catch ( IOException e ) {
-			throw new IllegalStateException( e );
-		}
+					};
+				};
+			}
+		};
 	}
 	
 	public final <T extends JvmType> T read( final String name ) throws IOException {
