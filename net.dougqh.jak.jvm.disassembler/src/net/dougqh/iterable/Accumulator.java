@@ -29,7 +29,10 @@ public final class Accumulator<T> {
 	private volatile Throwable cause = null;
 	
 	public final void initialize(final Task<T> task) {
-		this.runTask(this.boundedScheduler, task);
+		// Since the accumulator is usually initialized in the reading thread, 
+		// use the unbounded scheduler to make sure the reading thread does not
+		// block itself.
+		this.runTask(this.unboundedScheduler, task);
 	}
 	
 	public final Iterator<T> iterator() {
