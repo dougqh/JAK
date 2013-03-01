@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import net.dougqh.iterable.Accumulator;
-import net.dougqh.iterable.InputStreamProvider;
+import net.dougqh.iterable.Reactor;
 
 final class CompositeClassLocator implements ClassLocator {
 	private final CopyOnWriteArrayList< ClassLocator > locators = new CopyOnWriteArrayList<ClassLocator>();
@@ -19,9 +18,11 @@ final class CompositeClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler)
+	public final void enumerate(final Reactor.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
+		// This implementation assumes that each of the individual ClassLocators will 
+		// enqeue several top-level tasks as appropriate.
 		for ( ClassLocator locator: this.locators ) {
 			locator.enumerate(scheduler);
 		}

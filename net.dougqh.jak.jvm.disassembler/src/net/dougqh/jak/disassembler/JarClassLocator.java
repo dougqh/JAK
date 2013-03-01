@@ -8,8 +8,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import net.dougqh.io.WrappedInputStream;
-import net.dougqh.iterable.Accumulator;
-import net.dougqh.iterable.InputStreamProvider;
+import net.dougqh.iterable.Reactor;
 
 final class JarClassLocator implements ClassLocator {
 	private final File file;
@@ -24,10 +23,11 @@ final class JarClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> accumulator)
+	public final void enumerate(final Reactor.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
-		accumulator.schedule(new JarTask());
+		//TODO: Switch to use tasks that register multiple blocks up to a given size.
+		scheduler.result(new JarClassBlock());
 	}
 
 	private final JarFile openJarFile() throws IOException {
@@ -48,22 +48,8 @@ final class JarClassLocator implements ClassLocator {
 		};
 	}
 	
-	private final InputStream loadEntry(final JarEntry entry) throws IOException {
-		final JarFile jarFile = this.openJarFile();
-		InputStream in = jarFile.getInputStream(entry);
-		
-		return new WrappedInputStream(in) {
-			@Override
-			public final void close() throws IOException {
-				jarFile.close();
-				super.close();
-			}
-		};
-	}
-	
-	private final class JarTask implements Accumulator.Task<InputStreamProvider> {
-		@Override
-		public final void run(final Accumulator.Scheduler<InputStreamProvider> accumulator) throws Exception {
+	private final class JarClassBlock implements ClassBlock {
+		public final void process(final ClassProcessor processor) throws IOException {
 			// Unfortunately, the thread-safety of JarFile seems murky, so this ends up 
 			// open and closing the file N + 1 times for each type.  The only alternative 
 			// would seem to be published batch into the accumulator rather than just a 
@@ -73,24 +59,11 @@ final class JarClassLocator implements ClassLocator {
 				for ( Enumeration<JarEntry> entryEnum = jarFile.entries(); entryEnum.hasMoreElements(); ) {
 					JarEntry entry = entryEnum.nextElement();
 					
-					accumulator.result(new JarEntryInputStreamProvider(entry));
+					processor.process(jarFile.getInputStream(entry));
 				}
 			} finally {
 				jarFile.close();
 			}
-		}
-	}
-	
-	private final class JarEntryInputStreamProvider implements InputStreamProvider {
-		private final JarEntry entry;
-		
-		public JarEntryInputStreamProvider(final JarEntry entry) {
-			this.entry = entry;
-		}
-		
-		@Override
-		public final InputStream open() throws IOException {
-			return JarClassLocator.this.loadEntry(entry);
 		}
 	}
 }
