@@ -7,8 +7,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.dougqh.iterable.Accumulator;
-import net.dougqh.iterable.InputStreamProvider;
+import net.dougqh.iterable.Reactor;
 
 final class ClassDirClassLocator implements ClassLocator {
 	private static final FileFilter DIR_FILTER = new FileFilter() {
@@ -38,13 +37,13 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Accumulator.Scheduler<InputStreamProvider> scheduler)
+	public final void enumerate(final Reactor.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		scheduler.schedule(new DirTask(this.dir));
 	}
 	
-	private static final class DirTask implements Accumulator.Task<InputStreamProvider> {
+	private static final class DirTask implements Reactor.Task<ClassBlock> {
 		private final File dir;
 		
 		public DirTask(final File dir) {
@@ -52,33 +51,40 @@ final class ClassDirClassLocator implements ClassLocator {
 		}
 		
 		@Override
-		public final void run(final Accumulator.Scheduler<InputStreamProvider> scheduler) throws Exception {
-			File[] subDirs = this.dir.listFiles( DIR_FILTER );
+		public final void run(final Reactor.Scheduler<ClassBlock> scheduler) throws Exception {
+			File[] subDirs = this.dir.listFiles(DIR_FILTER);
+			
 			if ( subDirs != null ) {
 				for ( File subDir: subDirs ) {
 					scheduler.schedule(new DirTask(subDir));
 				}
 			}
 			
-			File[] classFiles = dir.listFiles( CLASS_FILTER );
-			if ( classFiles != null ) {
-				for ( File classFile: classFiles ) {
-					scheduler.result(new FileInputStreamProvider(classFile));
-				}
+			File[] classFiles = this.dir.listFiles(CLASS_FILTER);
+			
+			if ( classFiles != null && classFiles.length != 0 ) {
+				scheduler.result(new FilesClassBlock(classFiles));
 			}
 		}
 	}
 	
-	private static final class FileInputStreamProvider implements InputStreamProvider {
-		private final File file;
+	private static final class FilesClassBlock implements ClassBlock {
+		private final File[] classFiles;
 		
-		public FileInputStreamProvider(final File file) {
-			this.file = file;
+		public FilesClassBlock(final File[] classFiles) {
+			this.classFiles = classFiles;
 		}
 		
 		@Override
-		public final InputStream open() throws IOException {
-			return new FileInputStream(this.file);
+		public final void process(final ClassProcessor processor) throws IOException {
+			for ( File classFile: this.classFiles ) {
+				FileInputStream in = new FileInputStream(classFile);
+				try {
+					processor.process(in);
+				} finally {
+					in.close();
+				}
+			}
 		}
 	}
 }

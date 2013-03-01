@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class Accumulator<T> {
+public final class Reactor<T> {
 	public static interface Scheduler<T> {
 		public abstract void schedule(final Task<T> task) throws InterruptedException;
 		
@@ -59,7 +59,6 @@ public final class Accumulator<T> {
 		// This immediate running in the current thread also allows the Accumulator
 		// to work as a lazy evaluation mechanism even there is no background thread
 		// pool performing any work.
-		
 		T value = this.pollResult();
 		if ( value != null ) {
 			return value;
@@ -155,7 +154,7 @@ public final class Accumulator<T> {
 		
 		private final void loadNext() {
 			if ( this.value == null ) {
-				this.value = Accumulator.this.pollNext();
+				this.value = Reactor.this.pollNext();
 			}
 		}
 		
@@ -207,7 +206,7 @@ public final class Accumulator<T> {
 		
 		@Override
 		public final void exception(final Throwable cause) {
-			Accumulator.this.cause = cause;
+			Reactor.this.cause = cause;
 		}
 	}
 	
@@ -246,7 +245,7 @@ public final class Accumulator<T> {
 	}
 	
 	private final class BoundedScheduler extends ConcreteScheduler {
-		private final LinkedBlockingQueue<Task<T>> taskQueue = new LinkedBlockingQueue<Accumulator.Task<T>>();
+		private final LinkedBlockingQueue<Task<T>> taskQueue = new LinkedBlockingQueue<Reactor.Task<T>>();
 		private final LinkedBlockingQueue<T> resultQueue = new LinkedBlockingQueue<T>();
 		
 		@Override

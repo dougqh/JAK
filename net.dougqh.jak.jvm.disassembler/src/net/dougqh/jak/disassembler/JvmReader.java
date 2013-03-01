@@ -3,13 +3,15 @@ package net.dougqh.jak.disassembler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
-import net.dougqh.iterable.Accumulator;
-import net.dougqh.iterable.Accumulator.Scheduler;
-import net.dougqh.iterable.Accumulator.Task;
-import net.dougqh.iterable.InputStreamProvider;
-import net.dougqh.iterable.TransformIterator;
+import net.dougqh.iterable.Reactor;
+import net.dougqh.iterable.Reactor.Scheduler;
+import net.dougqh.iterable.Reactor.Task;
+import net.dougqh.jak.disassembler.ClassLocator.ClassBlock;
+import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
 
 public final class JvmReader {
 	private final CompositeClassLocator locators = new CompositeClassLocator();
@@ -53,33 +55,31 @@ public final class JvmReader {
 	}
 	
 	public final Iterable<JvmType> list() {
-		return new Iterable<JvmType>() {
+		Reactor<ClassBlock> reactor = new Reactor<ClassBlock>();
+		reactor.initialize(new Task<ClassBlock>() {
 			@Override
-			public final Iterator<JvmType> iterator() {
-				Accumulator<InputStreamProvider> accumulator = new Accumulator<InputStreamProvider>();
-				accumulator.initialize(new Task<InputStreamProvider>() {
+			public final void run(final Scheduler<ClassBlock> scheduler) throws Exception {
+				JvmReader.this.locators.enumerate(scheduler);
+			}
+		});
+		
+		final ArrayList<JvmType> types = new ArrayList<JvmType>();
+		for ( Iterator<ClassBlock> iter = reactor.iterator(); iter.hasNext(); ) {
+			ClassBlock block = iter.next();
+			
+			try {
+				block.process(new ClassProcessor() {
 					@Override
-					public final void run(final Scheduler<InputStreamProvider> scheduler) throws Exception {
-						JvmReader.this.locators.enumerate(scheduler);
+					public void process(final InputStream in) throws IOException {
+						types.add(JvmType.create(in));
 					}
 				});
-			
-				return new TransformIterator<InputStreamProvider, JvmType>(accumulator.iterator()) {
-					protected final JvmType transform(final InputStreamProvider inputStreamProvider) {
-						try {
-							InputStream in = inputStreamProvider.open();
-							try {
-								return JvmType.create(in);
-							} finally {
-								in.close();
-							}
-						} catch ( IOException e ) {
-							throw new IllegalStateException(e);
-						}
-					};
-				};
+			} catch (IOException e) {
+				//TODO: Temporary until the transform can be moved into the reactor
+				throw new IllegalStateException(e);
 			}
-		};
+		}
+		return Collections.unmodifiableList(types);
 	}
 	
 	public final <T extends JvmType> T read( final String name ) throws IOException {
