@@ -8,7 +8,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import net.dougqh.io.WrappedInputStream;
-import net.dougqh.iterable.Reactor;
+import net.dougqh.iterable.Aggregator;
 
 final class JarClassLocator implements ClassLocator {
 	private final File file;
@@ -23,7 +23,7 @@ final class JarClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Reactor.Scheduler<ClassBlock> scheduler)
+	public final void enumerate(final Aggregator.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		//TODO: Switch to use tasks that register multiple blocks up to a given size.

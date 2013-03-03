@@ -3,10 +3,10 @@ package net.dougqh.jak.disassembler;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.dougqh.iterable.Reactor;
+import net.dougqh.iterable.Aggregator;
 
 public interface ClassLocator {
-	public abstract void enumerate(final Reactor.Scheduler<ClassBlock> scheduler)
+	public abstract void enumerate(final Aggregator.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException;
 	
 	public abstract InputStream load(final String className) throws IOException;

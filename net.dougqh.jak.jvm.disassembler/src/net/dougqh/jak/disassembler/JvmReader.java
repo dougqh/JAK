@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import net.dougqh.iterable.Reactor;
-import net.dougqh.iterable.Reactor.Scheduler;
-import net.dougqh.iterable.Reactor.Task;
+import net.dougqh.iterable.Aggregator;
+import net.dougqh.iterable.Aggregator.Scheduler;
+import net.dougqh.iterable.Aggregator.Task;
 import net.dougqh.jak.disassembler.ClassLocator.ClassBlock;
 import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
 
@@ -55,7 +55,7 @@ public final class JvmReader {
 	}
 	
 	public final Iterable<JvmType> list() {
-		Reactor<ClassBlock> reactor = new Reactor<ClassBlock>();
+		Aggregator<ClassBlock> reactor = new Aggregator<ClassBlock>();
 		reactor.initialize(new Task<ClassBlock>() {
 			@Override
 			public final void run(final Scheduler<ClassBlock> scheduler) throws Exception {
