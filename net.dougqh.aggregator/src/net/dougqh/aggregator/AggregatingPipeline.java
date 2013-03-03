@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class AggregatingPipeline<I, O> {
 	private static final End END = new End();
 	
-	private final InputProcessor<I, O> processor;
+	private final Processor<I, O> processor;
 	private final AtomicInteger activeTasks = new AtomicInteger(0);
 	
 	private final UnboundedScheduler unboundedScheduler = new UnboundedScheduler();
@@ -17,7 +17,7 @@ public final class AggregatingPipeline<I, O> {
 	
 	private volatile Throwable cause = null;
 	
-	public AggregatingPipeline(final InputProcessor<I, O> processor) {
+	public AggregatingPipeline(final Processor<I, O> processor) {
 		this.processor = processor;
 	}
 	

@@ -5,3 +5,4 @@ Bundle-SymbolicName: net.dougqh.aggregator
 Bundle-Version: 1.0.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: net.dougqh.aggregator
+Require-Bundle: org.junit4;bundle-version="4.8.1"

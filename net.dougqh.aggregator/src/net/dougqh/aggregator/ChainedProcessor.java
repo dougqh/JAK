@@ -3,15 +3,15 @@ package net.dougqh.aggregator;
 import java.util.LinkedList;
 
 
-final class ChainedInputProcessor<I, T, O> extends InputProcessor<I, O> {
+final class ChainedProcessor<I, T, O> extends Processor<I, O> {
 	private final int BATCH_SIZE = 16;
 	
-	private final InputProcessor<I, T> processor1;
-	private final InputProcessor<T, O> processor2;
+	private final Processor<I, T> processor1;
+	private final Processor<T, O> processor2;
 	
-	public ChainedInputProcessor(
-		final InputProcessor<I, T> processor1,
-		final InputProcessor<T, O> processor2)
+	public ChainedProcessor(
+		final Processor<I, T> processor1,
+		final Processor<T, O> processor2)
 	{  
 		this.processor1 = processor1;
 		this.processor2 = processor2;
@@ -40,19 +40,32 @@ final class ChainedInputProcessor<I, T, O> extends InputProcessor<I, O> {
 			batchChannel.buffer(input);
 			
 			if ( batchChannel.isFull() ) {
-				batchChannel.flip();
-				
-				this.processor1.process(batchChannel, transferChannel);
-				this.processor2.process(transferChannel, out);
-				
-				batchChannel.flip();
+				this.processBatch(batchChannel, transferChannel, out);
 			}
 		}
+		
+		// process any residual
+		this.processBatch(batchChannel, transferChannel, out);
+	}
+	
+	private final void processBatch(
+		final InputBatchChannel batchChannel,
+		final TransferChannelImpl transferChannel,
+		final OutputChannel<O> out)
+		throws Exception
+	{
+		batchChannel.flip();
+		
+		this.processor1.process(batchChannel, transferChannel);
+		this.processor2.process(transferChannel, out);
+		
+		batchChannel.flip();
 	}
 	
 	final class InputBatchChannel implements InputChannel<I> {
 		private final I[] inputs;
 		private int pos;
+		private int limit;
 		
 		public InputBatchChannel(final int capacity) {
 			@SuppressWarnings("unchecked")
@@ -66,7 +79,7 @@ final class ChainedInputProcessor<I, T, O> extends InputProcessor<I, O> {
 		
 		@Override
 		public final I poll() {
-			if ( this.pos == this.inputs.length ) {
+			if ( this.pos == this.limit ) {
 				return null;
 			} else {
 				return this.inputs[this.pos++];
@@ -78,6 +91,7 @@ final class ChainedInputProcessor<I, T, O> extends InputProcessor<I, O> {
 		}
 		
 		public final void flip() {
+			this.limit = this.pos;
 			this.pos = 0;
 		}
 	}
@@ -86,6 +100,7 @@ final class ChainedInputProcessor<I, T, O> extends InputProcessor<I, O> {
 		// LinkedList is fine because were transferring within the same thread.
 		// If the transfer was across threads a different approach would be needed.
 		private final LinkedList<T> intermediates;
+		private Throwable cause = null;
 		
 		public TransferChannelImpl() {
 			this.intermediates = new LinkedList<T>();

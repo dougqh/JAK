@@ -1,6 +1,6 @@
 package net.dougqh.aggregator;
 
-public abstract class SimpleInputProcessor<I, O> extends InputProcessor<I, O> {
+public abstract class SimpleInputProcessor<I, O> extends Processor<I, O> {
 	@Override
 	public final void process(final InputChannel<I> in, final OutputChannel<O> out) throws Exception {
 		for ( I input = in.poll(); input != null; input = in.poll() ) {
