@@ -9,6 +9,7 @@ Require-Bundle: net.dougqh.jak.core;bundle-version="1.0.0",
  net.dougqh.jak.jvm.core;bundle-version="1.0.0",
  org.junit4;bundle-version="4.8.1",
  net.dougqh.jak.core.disassembler;bundle-version="1.0.0",
- net.dougqh.java.meta;bundle-version="1.0.0"
+ net.dougqh.java.meta;bundle-version="1.0.0",
+ net.dougqh.aggregator;bundle-version="1.0.0"
 Export-Package: net.dougqh.iterable,
  net.dougqh.jak.disassembler

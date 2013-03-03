@@ -7,7 +7,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.dougqh.iterable.AggregatingPipeline;
+import net.dougqh.aggregator.InputProvider;
+import net.dougqh.aggregator.InputScheduler;
 
 final class ClassDirClassLocator implements ClassLocator {
 	private static final FileFilter DIR_FILTER = new FileFilter() {
@@ -37,13 +38,13 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final AggregatingPipeline.Scheduler<ClassBlock> scheduler)
+	public final void enumerate(final InputScheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		scheduler.schedule(new DirInputProvider(this.dir));
 	}
 	
-	private static final class DirInputProvider implements AggregatingPipeline.InputProvider<ClassBlock> {
+	private static final class DirInputProvider implements InputProvider<ClassBlock> {
 		private final File dir;
 		
 		public DirInputProvider(final File dir) {
@@ -51,7 +52,7 @@ final class ClassDirClassLocator implements ClassLocator {
 		}
 		
 		@Override
-		public final void run(final AggregatingPipeline.Scheduler<ClassBlock> scheduler) throws Exception {
+		public final void run(final InputScheduler<ClassBlock> scheduler) throws Exception {
 			File[] subDirs = this.dir.listFiles(DIR_FILTER);
 			
 			if ( subDirs != null ) {

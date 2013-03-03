@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import net.dougqh.iterable.AggregatingPipeline;
-import net.dougqh.iterable.AggregatingPipeline.OutputChannel;
-import net.dougqh.iterable.AggregatingPipeline.Scheduler;
+import net.dougqh.aggregator.AggregatingPipeline;
+import net.dougqh.aggregator.InputProvider;
+import net.dougqh.aggregator.OutputChannel;
+import net.dougqh.aggregator.InputScheduler;
+import net.dougqh.aggregator.SimpleInputProcessor;
 import net.dougqh.jak.disassembler.ClassLocator.ClassBlock;
 import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
 
@@ -63,7 +65,7 @@ public final class JvmReader {
 	
 	private final Iterator<JvmType> iterator() {
 		AggregatingPipeline<ClassBlock, JvmType> aggregator = new AggregatingPipeline<ClassBlock, JvmType>(
-			new AggregatingPipeline.SimpleInputProcessor<ClassBlock, JvmType>() {
+			new SimpleInputProcessor<ClassBlock, JvmType>() {
 				@Override
 				public final void process(
 					final ClassBlock block,
@@ -80,14 +82,12 @@ public final class JvmReader {
 			}
 		);
 		
-		aggregator.initialize(new AggregatingPipeline.InputProvider<ClassBlock>() {
+		aggregator.initialize(new InputProvider<ClassBlock>() {
 			@Override
-			public final void run(final Scheduler<ClassBlock> scheduler) throws Exception {
+			public final void run(final InputScheduler<ClassBlock> scheduler) throws Exception {
 				JvmReader.this.locators.enumerate(scheduler);
 			}
 		});
-		
-		
 		
 		return aggregator.iterator();
 	}

@@ -3,7 +3,7 @@ package net.dougqh.jak.disassembler;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.dougqh.iterable.AggregatingPipeline;
+import net.dougqh.aggregator.InputScheduler;
 
 final class ClassLoaderClassLocator implements ClassLocator {
 	private final ClassLoader classLoader;
@@ -13,7 +13,7 @@ final class ClassLoaderClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public void enumerate(final AggregatingPipeline.Scheduler<ClassBlock> scheduler) {
+	public void enumerate(final InputScheduler<ClassBlock> scheduler) {
 		//TODO: Implement this if the classloader is URLClassLoader
 	}
 	
