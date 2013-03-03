@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import net.dougqh.iterable.Aggregator;
+import net.dougqh.iterable.AggregatingPipeline;
 
 final class CompositeClassLocator implements ClassLocator {
 	private final CopyOnWriteArrayList< ClassLocator > locators = new CopyOnWriteArrayList<ClassLocator>();
@@ -18,7 +18,7 @@ final class CompositeClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Aggregator.Scheduler<ClassBlock> scheduler)
+	public final void enumerate(final AggregatingPipeline.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		// This implementation assumes that each of the individual ClassLocators will 

@@ -3,13 +3,11 @@ package net.dougqh.jak.disassembler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
-import net.dougqh.iterable.Aggregator;
-import net.dougqh.iterable.Aggregator.Scheduler;
-import net.dougqh.iterable.Aggregator.Task;
+import net.dougqh.iterable.AggregatingPipeline;
+import net.dougqh.iterable.AggregatingPipeline.OutputChannel;
+import net.dougqh.iterable.AggregatingPipeline.Scheduler;
 import net.dougqh.jak.disassembler.ClassLocator.ClassBlock;
 import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
 
@@ -55,31 +53,43 @@ public final class JvmReader {
 	}
 	
 	public final Iterable<JvmType> list() {
-		Aggregator<ClassBlock> reactor = new Aggregator<ClassBlock>();
-		reactor.initialize(new Task<ClassBlock>() {
+		return new Iterable<JvmType>() {
+			@Override
+			public final Iterator<JvmType> iterator() {
+				return JvmReader.this.iterator();
+			}
+		};
+	}
+	
+	private final Iterator<JvmType> iterator() {
+		AggregatingPipeline<ClassBlock, JvmType> aggregator = new AggregatingPipeline<ClassBlock, JvmType>(
+			new AggregatingPipeline.InputProcessor<ClassBlock, JvmType>() {
+				@Override
+				public final void process(
+					final ClassBlock block,
+					final OutputChannel<JvmType> out)
+					throws Exception
+				{
+					block.process(new ClassProcessor() {
+						@Override
+						public void process(final InputStream in) throws IOException {
+							out.offer(JvmType.create(in));
+						}
+					});
+				}
+			}
+		);
+		
+		aggregator.initialize(new AggregatingPipeline.InputProvider<ClassBlock>() {
 			@Override
 			public final void run(final Scheduler<ClassBlock> scheduler) throws Exception {
 				JvmReader.this.locators.enumerate(scheduler);
 			}
 		});
 		
-		final ArrayList<JvmType> types = new ArrayList<JvmType>();
-		for ( Iterator<ClassBlock> iter = reactor.iterator(); iter.hasNext(); ) {
-			ClassBlock block = iter.next();
-			
-			try {
-				block.process(new ClassProcessor() {
-					@Override
-					public void process(final InputStream in) throws IOException {
-						types.add(JvmType.create(in));
-					}
-				});
-			} catch (IOException e) {
-				//TODO: Temporary until the transform can be moved into the reactor
-				throw new IllegalStateException(e);
-			}
-		}
-		return Collections.unmodifiableList(types);
+		
+		
+		return aggregator.iterator();
 	}
 	
 	public final <T extends JvmType> T read( final String name ) throws IOException {

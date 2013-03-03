@@ -7,7 +7,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.dougqh.iterable.Aggregator;
+import net.dougqh.iterable.AggregatingPipeline;
 
 final class ClassDirClassLocator implements ClassLocator {
 	private static final FileFilter DIR_FILTER = new FileFilter() {
@@ -37,33 +37,33 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final Aggregator.Scheduler<ClassBlock> scheduler)
+	public final void enumerate(final AggregatingPipeline.Scheduler<ClassBlock> scheduler)
 		throws InterruptedException
 	{
-		scheduler.schedule(new DirTask(this.dir));
+		scheduler.schedule(new DirInputProvider(this.dir));
 	}
 	
-	private static final class DirTask implements Aggregator.Task<ClassBlock> {
+	private static final class DirInputProvider implements AggregatingPipeline.InputProvider<ClassBlock> {
 		private final File dir;
 		
-		public DirTask(final File dir) {
+		public DirInputProvider(final File dir) {
 			this.dir = dir;
 		}
 		
 		@Override
-		public final void run(final Aggregator.Scheduler<ClassBlock> scheduler) throws Exception {
+		public final void run(final AggregatingPipeline.Scheduler<ClassBlock> scheduler) throws Exception {
 			File[] subDirs = this.dir.listFiles(DIR_FILTER);
 			
 			if ( subDirs != null ) {
 				for ( File subDir: subDirs ) {
-					scheduler.schedule(new DirTask(subDir));
+					scheduler.schedule(new DirInputProvider(subDir));
 				}
 			}
 			
 			File[] classFiles = this.dir.listFiles(CLASS_FILTER);
 			
 			if ( classFiles != null && classFiles.length != 0 ) {
-				scheduler.result(new FilesClassBlock(classFiles));
+				scheduler.offer(new FilesClassBlock(classFiles));
 			}
 		}
 	}
