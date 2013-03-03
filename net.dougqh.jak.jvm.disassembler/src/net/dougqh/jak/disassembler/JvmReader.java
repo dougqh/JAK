@@ -63,7 +63,7 @@ public final class JvmReader {
 	
 	private final Iterator<JvmType> iterator() {
 		AggregatingPipeline<ClassBlock, JvmType> aggregator = new AggregatingPipeline<ClassBlock, JvmType>(
-			new AggregatingPipeline.InputProcessor<ClassBlock, JvmType>() {
+			new AggregatingPipeline.SimpleInputProcessor<ClassBlock, JvmType>() {
 				@Override
 				public final void process(
 					final ClassBlock block,

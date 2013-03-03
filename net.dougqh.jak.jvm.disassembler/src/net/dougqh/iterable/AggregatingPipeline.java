@@ -13,6 +13,10 @@ public final class AggregatingPipeline<I, O> {
 		public abstract void offer(final I result) throws InterruptedException;
 	}
 	
+	public static interface InputChannel<I> {
+		public abstract I poll();
+	}
+	
 	public static interface OutputChannel<O> {
 		public abstract void offer(final O offer);
 	}
@@ -22,6 +26,17 @@ public final class AggregatingPipeline<I, O> {
 	}
 	
 	public static interface InputProcessor<I, O> {
+		public abstract void process(final InputChannel<I> in, final OutputChannel<O> out) throws Exception;
+	}
+	
+	public static abstract class SimpleInputProcessor<I, O> implements InputProcessor<I, O> {
+		@Override
+		public final void process(final InputChannel<I> in, final OutputChannel<O> out) throws Exception {
+			for ( I input = in.poll(); input != null; input = in.poll() ) {
+				this.process(input, out);
+			}
+		}
+		
 		public abstract void process(final I input, final OutputChannel<O> out) throws Exception;
 	}
 	
@@ -220,10 +235,26 @@ public final class AggregatingPipeline<I, O> {
 		abstract O pollResult();
 	}
 	
+	static final class SingletonInputChannel<I> implements InputChannel<I> {
+		private volatile I input = null;
+		
+		public final void put(final I input) {
+			this.input = input;
+		}
+		
+		public final I poll() {
+			I input = this.input;
+			this.input = null;
+			return input;
+		}		
+	}
+	
 	private final class UnboundedScheduler extends ConcreteScheduler {
 		private final ConcurrentLinkedQueue<InputProvider<I>> taskQueue = new ConcurrentLinkedQueue<InputProvider<I>>();
 		private final ConcurrentLinkedQueue<O> resultQueue = new ConcurrentLinkedQueue<O>();
 		
+		private final SingletonInputChannel<I> inputChannel = new SingletonInputChannel<I>();
+
 		private final OutputChannel<O> outputChannel = new OutputChannel<O>() {
 			@Override
 			public final void offer(final O output) {
@@ -252,8 +283,10 @@ public final class AggregatingPipeline<I, O> {
 		}
 		
 		public final void offer(final I input) {
+			this.inputChannel.put(input);
+				
 			try {
-				AggregatingPipeline.this.processor.process(input, this.outputChannel);
+				AggregatingPipeline.this.processor.process(this.inputChannel, this.outputChannel);
 			} catch (Exception e) {
 				AggregatingPipeline.this.exception(e);
 			}
@@ -268,6 +301,8 @@ public final class AggregatingPipeline<I, O> {
 	private final class BoundedScheduler extends ConcreteScheduler {
 		private final LinkedBlockingQueue<InputProvider<I>> taskQueue = new LinkedBlockingQueue<AggregatingPipeline.InputProvider<I>>();
 		private final LinkedBlockingQueue<O> resultQueue = new LinkedBlockingQueue<O>();
+		
+		private final SingletonInputChannel<I> inputChannel = new SingletonInputChannel<I>();
 		
 		private final OutputChannel<O> outputChannel = new OutputChannel<O>() {
 			@Override
@@ -297,8 +332,10 @@ public final class AggregatingPipeline<I, O> {
 		}
 		
 		public final void offer(final I input) throws InterruptedException {
+			this.inputChannel.put(input);
+			
 			try {
-				AggregatingPipeline.this.processor.process(input, this.outputChannel);
+				AggregatingPipeline.this.processor.process(this.inputChannel, this.outputChannel);
 			} catch (Exception e) {
 				AggregatingPipeline.this.exception(e);
 			}
