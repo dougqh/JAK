@@ -58,12 +58,12 @@ public final class DataFlowAnalysis {
 			return new SimpleJvmStackTracker<Record>(this.stack) {
 				@Override
 				protected final void stack(final Type type, final Category category) {
-					this.stack.push(DataFlowProcessor.this.toStack(), category);
+					this.stack().push(DataFlowProcessor.this.toStack(), category);
 				}
 				
 				@Override
 				protected final void unstack(final Type type, final Category category) {
-					DataFlowProcessor.this.fromStack(this.stack.pop(category));
+					DataFlowProcessor.this.fromStack(this.stack().pop(category));
 				}
 			};
 		}
@@ -171,7 +171,7 @@ public final class DataFlowAnalysis {
 		}
 		
 		@Override
-		public final boolean shouldProcess(
+		public final boolean process(
 			final Integer pos,
 			final Class<? extends JvmOperation> opClass )
 		{
@@ -219,6 +219,11 @@ public final class DataFlowAnalysis {
 				this.toStack(new ConstRecord(output));
 			}
 		}
+	}
+	
+	static final class State {
+		private final JvmLocalsHelper<Record> locals = new JvmLocalsHelper<Record>();
+		private final JvmStackHelper<Record> stack = new JvmStackHelper<Record>();
 	}
 	
 	static abstract class Record {

@@ -6,11 +6,9 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
 
-import net.dougqh.iterable.RecursiveIterable;
-import net.dougqh.iterable.TransformIterable;
+import net.dougqh.aggregator.InputProvider;
+import net.dougqh.aggregator.InputScheduler;
 
 final class ClassDirClassLocator implements ClassLocator {
 	private static final FileFilter DIR_FILTER = new FileFilter() {
@@ -40,38 +38,54 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final Iterable< InputStream > list() {
-		Iterable< File > classFiles = new RecursiveIterable< File, File >( this.dir ) {
-			@Override
-			protected final Iterable< File > branches( final File dir ) {
-				File[] dirs = dir.listFiles( DIR_FILTER );
-				if ( dirs == null || dirs.length == 0 ) {
-					return Collections.< File >emptyList();
-				} else {
-					return Arrays.asList( dirs );
-				}
-			}
+	public final void enumerate(final InputScheduler<ClassBlock> scheduler)
+		throws InterruptedException
+	{
+		scheduler.schedule(new DirInputProvider(this.dir));
+	}
+	
+	private static final class DirInputProvider implements InputProvider<ClassBlock> {
+		private final File dir;
 		
-			@Override
-			protected final Iterable< File > leaves( final File dir ) {
-				File[] classFiles = dir.listFiles( CLASS_FILTER );
-				if ( classFiles == null || classFiles.length == 0 ) {
-					return Collections.< File >emptyList();
-				} else {
-					return Arrays.asList( classFiles );
+		public DirInputProvider(final File dir) {
+			this.dir = dir;
+		}
+		
+		@Override
+		public final void run(final InputScheduler<ClassBlock> scheduler) throws Exception {
+			File[] subDirs = this.dir.listFiles(DIR_FILTER);
+			
+			if ( subDirs != null ) {
+				for ( File subDir: subDirs ) {
+					scheduler.schedule(new DirInputProvider(subDir));
 				}
 			}
-		};
-
-		return new TransformIterable< File, InputStream >( classFiles ) {
-			@Override
-			protected final InputStream transform( final File input ) {
+			
+			File[] classFiles = this.dir.listFiles(CLASS_FILTER);
+			
+			if ( classFiles != null && classFiles.length != 0 ) {
+				scheduler.offer(new FilesClassBlock(classFiles));
+			}
+		}
+	}
+	
+	private static final class FilesClassBlock implements ClassBlock {
+		private final File[] classFiles;
+		
+		public FilesClassBlock(final File[] classFiles) {
+			this.classFiles = classFiles;
+		}
+		
+		@Override
+		public final void process(final ClassProcessor processor) throws IOException {
+			for ( File classFile: this.classFiles ) {
+				FileInputStream in = new FileInputStream(classFile);
 				try {
-					return new FileInputStream( input );
-				} catch ( IOException e ) {
-					throw new IllegalStateException( e );
+					processor.process(in);
+				} finally {
+					in.close();
 				}
 			}
-		};	
+		}
 	}
 }

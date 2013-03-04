@@ -2,7 +2,7 @@ package net.dougqh.jak.jvm.assembler.macros.api;
 
 import java.lang.reflect.Type;
 
-import net.dougqh.jak.JakContext;
+import net.dougqh.jak.jvm.JvmContext;
 import net.dougqh.jak.jvm.assembler.JvmClassWriter;
 import net.dougqh.jak.jvm.assembler.JvmWriter;
 import net.dougqh.jak.jvm.assembler.macros.expr;
@@ -398,7 +398,7 @@ public final class ExpressionsTest {
 		}
 	}
 	
-	private static final class FakeContext implements JakContext {
+	private static final class FakeContext implements JvmContext {
 		@Override
 		public final Type localType( final String name, final Type expectedType ) {
 			throw new UnsupportedOperationException();

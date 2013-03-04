@@ -3,7 +3,7 @@ package net.dougqh.jak.disassembler;
 import java.util.Iterator;
 import java.util.List;
 
-import net.dougqh.jak.JavaFilter;
+import net.dougqh.functional.Filter;
 
 
 public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
@@ -14,7 +14,7 @@ public final class JvmMethodSet extends JavaMethodSet<JvmMethod> {
 	}
 
 	@Override
-	public final JvmMethodSet filter(final JavaFilter<? super JvmMethod> filter) {
+	public final JvmMethodSet filter(final Filter<? super JvmMethod> filter) {
 		return new JvmMethodSet(this.filterHelper(filter));
 	}
 	

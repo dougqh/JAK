@@ -21,6 +21,7 @@ import net.dougqh.jak.assembler.JakCondition;
 import net.dougqh.jak.assembler.JakExpression;
 import net.dougqh.jak.assembler.JakMacro;
 import net.dougqh.jak.assembler.TypeResolver;
+import net.dougqh.jak.jvm.JvmContext;
 import net.dougqh.jak.jvm.JvmLocalsTracker;
 import net.dougqh.jak.jvm.JvmOperationProcessor.ExceptionHandler;
 import net.dougqh.jak.jvm.JvmOperationProcessor.Jump;
@@ -81,7 +82,7 @@ public abstract class JvmCodeWriter implements JakCodeWriter {
 		}
 	}
 	
-	private final JakContext context = new JakContext() {
+	private final JvmContext context = new JvmContext() {
 		@Override
 		public final Type localType( final String name, final Type expectedType ) {
 			return JvmCodeWriter.this.typeOf( name, expectedType );

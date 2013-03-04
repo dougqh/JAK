@@ -92,7 +92,7 @@ final class JvmInputStream {
 		if ( this.headPos != 0 ) {
 			// This check is imperfect because we could have moved to the next block
 			// and reset the head position which is still a violation of the contract.
-			// None-the-less, this sanity will hopefully catch most violators of the 
+			// None-the-less, this sanity check will hopefully catch most violators of the 
 			// contract eventually.
 			throw new IllegalStateException("Reset must be enabled immediately after construction.");
 		}

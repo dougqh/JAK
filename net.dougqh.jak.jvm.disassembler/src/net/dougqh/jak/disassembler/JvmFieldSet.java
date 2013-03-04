@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.dougqh.jak.JavaFilter;
+import net.dougqh.functional.Filter;
 
 public class JvmFieldSet implements JavaFieldSet<JvmField> {
 	private final List<JvmField> fields;
@@ -35,7 +35,7 @@ public class JvmFieldSet implements JavaFieldSet<JvmField> {
 	
 	@Override
 	public final JvmFieldSet filter(
-		final JavaFilter<? super JvmField> predicate)
+		final Filter<? super JvmField> predicate)
 	{
 		ArrayList<JvmField> matched = new ArrayList<JvmField>(this.fields.size());
 		for ( JvmField field: this ) {

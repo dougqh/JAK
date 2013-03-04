@@ -5,10 +5,11 @@ import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
 
+import net.dougqh.functional.Filter;
 import static net.dougqh.jak.Flags.*;
 import static net.dougqh.jak.Methods.*;
 
-public final class JavaModifiers implements JavaFilter<JavaElement> {
+public final class JavaModifiers extends Filter<JavaElement> {
 	private static final TypeVariable<?>[] EMPTY_TYPE_VARS = {};
 	
 	private final int flags;

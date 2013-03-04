@@ -27,7 +27,7 @@ public class BasicBlocks implements Iterable<BasicBlock> {
 		
 		method.process(new SimpleJvmOperationProcessor() {
 			@Override
-			public final boolean shouldProcess(
+			public final boolean process(
 				final Integer pos,
 				final Class<? extends JvmOperation> opClass)
 			{

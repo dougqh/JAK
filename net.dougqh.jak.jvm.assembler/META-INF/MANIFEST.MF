@@ -8,5 +8,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0",
  net.dougqh.jak.core.assembler;bundle-version="1.0.0",
  net.dougqh.jak.core;bundle-version="1.0.0",
- net.dougqh.jak.jvm.core;bundle-version="1.0.0"
+ net.dougqh.jak.jvm.core;bundle-version="1.0.0",
+ net.dougqh.functional;bundle-version="1.0.0"
 Export-Package: net.dougqh.jak.jvm.assembler
