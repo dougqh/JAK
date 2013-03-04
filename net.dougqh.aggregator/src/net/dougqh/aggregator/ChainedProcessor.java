@@ -6,19 +6,21 @@ import java.util.LinkedList;
 final class ChainedProcessor<I, T, O> extends Processor<I, O> {
 	private final int BATCH_SIZE = 16;
 	
-	private final Processor<I, T> processor1;
-	private final Processor<T, O> processor2;
+	private final Processor<? super I, ? extends T> processor1;
+	private final Processor<? super T, ? extends O> processor2;
 	
 	public ChainedProcessor(
-		final Processor<I, T> processor1,
-		final Processor<T, O> processor2)
+		final Processor<? super I, ? extends T> processor1,
+		final Processor<? super T, ? extends O> processor2)
 	{  
 		this.processor1 = processor1;
 		this.processor2 = processor2;
 	}
 	
 	@Override
-	public final void process(final InputChannel<I> in, final OutputChannel<O> out)
+	public final void process(
+		final InputChannel<? extends I> in,
+		final OutputChannel<? super O> out)
 		throws Exception
 	{
 		// The chained input processor performs all its worked in the same 
@@ -51,7 +53,7 @@ final class ChainedProcessor<I, T, O> extends Processor<I, O> {
 	private final void processBatch(
 		final InputBatchChannel batchChannel,
 		final TransferChannelImpl transferChannel,
-		final OutputChannel<O> out)
+		final OutputChannel<? super O> out)
 		throws Exception
 	{
 		batchChannel.flip();

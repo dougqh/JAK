@@ -1,19 +1,19 @@
 package net.dougqh.aggregator;
 
 public final class TransformProcessor<I, T, O> extends Processor<I, O> {
-	private final Processor<I, T> processor;
-	private final Transform<T, O> transform;
+	private final Processor<? super I, ? extends T> processor;
+	private final Transform<? super T, ? extends O> transform;
 	
 	public TransformProcessor(
-		final Processor<I, T> processor,
-		final Transform<T, O> transform)
+		final Processor<? super I, ? extends T> processor,
+		final Transform<? super T, ? extends O> transform)
 	{
 		this.processor = processor;
 		this.transform = transform;
 	}
 	
 	@Override
-	public final void process(final InputChannel<I> in, final OutputChannel<O> out)
+	public final void process(final InputChannel<? extends I> in, final OutputChannel<? super O> out)
 		throws Exception
 	{
 		TransformingOutputChannel<T, O> transformedChannel = new TransformingOutputChannel<T, O>(this.transform, out);
@@ -29,7 +29,7 @@ public final class TransformProcessor<I, T, O> extends Processor<I, O> {
 	}
 	
 	@Override
-	public <U> Processor<I, U> transform(final Transform<O, U> transform) {
+	public <U> Processor<I, U> transform(final Transform<? super O, ? extends U> transform) {
 		return new TransformProcessor<I, T, U>(
 			this.processor,
 			new CompositeTransform<T, O, U>(this.transform, transform)
@@ -37,14 +37,14 @@ public final class TransformProcessor<I, T, O> extends Processor<I, O> {
 	}
 	
 	static final class TransformingOutputChannel<I, T> implements OutputChannel<I> {
-		private final Transform<I, T> transform;
-		private final OutputChannel<T> out;
+		private final Transform<? super I, ? extends T> transform;
+		private final OutputChannel<? super T> out;
 		
 		private Throwable cause = null;
 		
 		public TransformingOutputChannel(
-			final Transform<I, T> transform,
-			final OutputChannel<T> out)
+			final Transform<? super I, ? extends T> transform,
+			final OutputChannel<? super T> out)
 		{
 			this.transform = transform;
 			this.out = out;

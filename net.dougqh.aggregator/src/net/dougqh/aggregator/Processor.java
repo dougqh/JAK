@@ -1,13 +1,16 @@
 package net.dougqh.aggregator;
 
 public abstract class Processor<I, O> {
-	public abstract void process(final InputChannel<I> in, final OutputChannel<O> out) throws Exception;
+	public abstract void process(
+		final InputChannel<? extends I> in,
+		final OutputChannel<? super O> out
+	) throws Exception;
 	
-	public Processor<I, O> filter(final Filter<O> filter) {
+	public Processor<I, O> filter(final Filter<? super O> filter) {
 		return new FilteringProcessor<I, O>(this, filter);
 	}
 	
-	public <T> Processor<I, T> transform(final Transform<O, T> transform) {
+	public <T> Processor<I, T> transform(final Transform<? super O, ? extends T> transform) {
 		return new TransformProcessor<I, O, T>(this, transform);
 	}
 	
