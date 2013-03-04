@@ -7,8 +7,8 @@ import java.util.Iterator;
 
 import net.dougqh.aggregator.AggregatingPipeline;
 import net.dougqh.aggregator.InputProvider;
-import net.dougqh.aggregator.OutputChannel;
 import net.dougqh.aggregator.InputScheduler;
+import net.dougqh.aggregator.OutputChannel;
 import net.dougqh.aggregator.SimpleInputProcessor;
 import net.dougqh.jak.disassembler.ClassLocator.ClassBlock;
 import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
@@ -69,7 +69,7 @@ public final class JvmReader {
 				@Override
 				public final void process(
 					final ClassBlock block,
-					final OutputChannel<JvmType> out)
+					final OutputChannel<? super JvmType> out)
 					throws Exception
 				{
 					block.process(new ClassProcessor() {

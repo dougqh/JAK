@@ -3,8 +3,9 @@ package net.dougqh.aggregator;
 import java.util.Arrays;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 public final class ChainedTest {
 	@Test
@@ -15,7 +16,7 @@ public final class ChainedTest {
 		Processor<String, Integer> firstProcessor = new SimpleInputProcessor<String, Integer>() {
 			public final void process(
 				final String input, 
-				final OutputChannel<Integer> out) throws Exception
+				final OutputChannel<? super Integer> out) throws Exception
 			{
 				out.offer(input.length());
 			}
@@ -25,7 +26,7 @@ public final class ChainedTest {
 			@Override
 			public final void process(
 				final Integer input,
-				final OutputChannel<Long> out)
+				final OutputChannel<? super Long> out)
 				throws Exception
 			{
 				out.offer(Long.valueOf(input * input));
