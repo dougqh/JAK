@@ -28,6 +28,14 @@ public final class TransformProcessor<I, T, O> extends Processor<I, O> {
 		}
 	}
 	
+	@Override
+	public <U> Processor<I, U> transform(final Transform<O, U> transform) {
+		return new TransformProcessor<I, T, U>(
+			this.processor,
+			new CompositeTransform<T, O, U>(this.transform, transform)
+		);
+	}
+	
 	static final class TransformingOutputChannel<I, T> implements OutputChannel<I> {
 		private final Transform<I, T> transform;
 		private final OutputChannel<T> out;

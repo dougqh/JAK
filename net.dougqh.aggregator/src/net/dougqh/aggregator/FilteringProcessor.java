@@ -20,6 +20,11 @@ final class FilteringProcessor<I, O> extends Processor<I, O> {
 		this.processor.process(in, new FilteringOutputChannel<O>(this.filter, out));
 	}
 	
+	@Override
+	public final Processor<I, O> filter(final Filter<O> filter) {
+		return new FilteringProcessor<I, O>(this.processor, this.filter.and(filter));
+	}
+	
 	static final class FilteringOutputChannel<O> implements OutputChannel<O> {
 		private final Filter<O> filter;
 		private final OutputChannel<O> out;
