@@ -100,7 +100,6 @@ final class ChainedProcessor<I, T, O> extends Processor<I, O> {
 		// LinkedList is fine because were transferring within the same thread.
 		// If the transfer was across threads a different approach would be needed.
 		private final LinkedList<T> intermediates;
-		private Throwable cause = null;
 		
 		public TransferChannelImpl() {
 			this.intermediates = new LinkedList<T>();
