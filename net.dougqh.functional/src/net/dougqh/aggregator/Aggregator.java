@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class AggregatingPipeline<I, O> {
+public final class Aggregator<I, O> {
 	private static final End END = new End();
 	
 	private final Processor<I, O> processor;
@@ -17,7 +17,7 @@ public final class AggregatingPipeline<I, O> {
 	
 	private volatile Throwable cause = null;
 	
-	public AggregatingPipeline(final Processor<I, O> processor) {
+	public Aggregator(final Processor<I, O> processor) {
 		this.processor = processor;
 	}
 	
@@ -74,7 +74,7 @@ public final class AggregatingPipeline<I, O> {
 	}
 	
 	protected final void exception(final Throwable cause) {
-		AggregatingPipeline.this.cause = cause;
+		Aggregator.this.cause = cause;
 	}
 	
 	protected final void checkForExceptions() {
@@ -154,7 +154,7 @@ public final class AggregatingPipeline<I, O> {
 		
 		private final void loadNext() {
 			if ( this.value == null ) {
-				this.value = AggregatingPipeline.this.pollNext();
+				this.value = Aggregator.this.pollNext();
 			}
 		}
 		
@@ -256,9 +256,9 @@ public final class AggregatingPipeline<I, O> {
 			this.inputChannel.put(input);
 				
 			try {
-				AggregatingPipeline.this.processor.process(this.inputChannel, this.outputChannel);
+				Aggregator.this.processor.process(this.inputChannel, this.outputChannel);
 			} catch (Exception e) {
-				AggregatingPipeline.this.exception(e);
+				Aggregator.this.exception(e);
 			}
 		}
 		
@@ -305,9 +305,9 @@ public final class AggregatingPipeline<I, O> {
 			this.inputChannel.put(input);
 			
 			try {
-				AggregatingPipeline.this.processor.process(this.inputChannel, this.outputChannel);
+				Aggregator.this.processor.process(this.inputChannel, this.outputChannel);
 			} catch (Exception e) {
-				AggregatingPipeline.this.exception(e);
+				Aggregator.this.exception(e);
 			}
 		}
 		

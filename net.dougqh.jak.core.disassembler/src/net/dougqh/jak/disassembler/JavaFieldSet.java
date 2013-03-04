@@ -1,7 +1,7 @@
 package net.dougqh.jak.disassembler;
 
+import net.dougqh.functional.Filter;
 import net.dougqh.jak.JavaField;
-import net.dougqh.jak.JavaFilter;
 
 public interface JavaFieldSet<T extends JavaField> extends Iterable<T>{
 	public abstract boolean isEmpty();
@@ -10,6 +10,5 @@ public interface JavaFieldSet<T extends JavaField> extends Iterable<T>{
 	
 	public abstract T get(final int index);
 	
-	public abstract JavaFieldSet<T> filter(
-		final JavaFilter<? super T> predicate);
+	public abstract JavaFieldSet<T> filter(final Filter<? super T> predicate);
 }

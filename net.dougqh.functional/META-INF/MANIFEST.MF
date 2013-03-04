@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Aggregator
+Bundle-SymbolicName: net.dougqh.functional
+Bundle-Version: 1.0.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: net.dougqh.aggregator,
+ net.dougqh.functional
+Require-Bundle: org.junit4;bundle-version="4.8.1"

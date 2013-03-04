@@ -9,4 +9,5 @@ Export-Package: net.dougqh.jak,
  net.dougqh.jak.inject,
  net.dougqh.jak.types
 Require-Bundle: net.dougqh.java.meta;bundle-version="1.0.0",
- javax.inject;bundle-version="1.0.0"
+ javax.inject;bundle-version="1.0.0",
+ net.dougqh.functional;bundle-version="1.0.0"

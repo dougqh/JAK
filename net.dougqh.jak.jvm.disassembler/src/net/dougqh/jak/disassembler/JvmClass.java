@@ -2,7 +2,7 @@ package net.dougqh.jak.disassembler;
 
 import java.io.IOException;
 
-import net.dougqh.jak.JavaFilter;
+import net.dougqh.functional.Filter;
 
 
 
@@ -20,7 +20,7 @@ public final class JvmClass extends JvmType implements JavaClass {
 		return new JvmFieldSet(this.type.getFields());
 	}
 	
-	public final JvmFieldSet getFields( final JavaFilter<? super JvmField> filter ) {
+	public final JvmFieldSet getFields( final Filter<? super JvmField> filter ) {
 		return this.getFields().filter(filter);
 	}
 	
@@ -32,7 +32,7 @@ public final class JvmClass extends JvmType implements JavaClass {
 		return new JvmMethodSet(this.type.getConstructors());
 	}
 	
-	public final JvmMethodSet getConstructors( final JavaFilter<? super JvmMethod> filter ) {
+	public final JvmMethodSet getConstructors( final Filter<? super JvmMethod> filter ) {
 		return this.getConstructors().filter(filter);
 	}
 	
@@ -41,7 +41,7 @@ public final class JvmClass extends JvmType implements JavaClass {
 		return new JvmMethodSet(this.type.getMethods());
 	}
 	
-	public final JvmMethodSet getMethods( final JavaFilter<? super JvmMethod> filter ) {
+	public final JvmMethodSet getMethods( final Filter<? super JvmMethod> filter ) {
 		return this.getMethods().filter(filter);
 	}
 }

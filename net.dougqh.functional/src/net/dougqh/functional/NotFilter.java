@@ -1,4 +1,4 @@
-package net.dougqh.aggregator;
+package net.dougqh.functional;
 
 final class NotFilter<I> extends Filter<I> {
 	private final Filter<? super I> filter;

@@ -1,4 +1,4 @@
-package net.dougqh.aggregator;
+package net.dougqh.functional;
 
 final class CompositeTransform<I, T, O> extends Transform<I, O> {
 	private final Transform<? super I, ? extends T> firstTransform;

@@ -14,27 +14,27 @@ import net.dougqh.jak.disassembler.Tests;
 import org.junit.Test;
 
 public final class ClassDirTest {
-	private static final File CLASS_DIR = Tests.dir( "classdir" );
+	private static final File CLASS_DIR = Tests.dir("classdir");
 	
 	public final @Test void testRetrieval() throws IOException {
-		JvmReader reader = new JvmReader().addDir( CLASS_DIR );
+		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
 		
-		JvmClass annotatedClass = (JvmClass)reader.read( "AnnotatedClass" );
-		assertThat( annotatedClass.getName(), is( "AnnotatedClass" ) );
+		JvmClass annotatedClass = (JvmClass)reader.read("AnnotatedClass");
+		assertThat( annotatedClass.getName(), is("AnnotatedClass") );
 	}
 	
 	public final @Test void testRetrievalInPackage() throws IOException {
-		JvmReader reader = new JvmReader().addDir( CLASS_DIR );
+		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
 		
-		JvmClass barClass = (JvmClass)reader.read( "foo.bar.Bar" );
-		assertThat( barClass.getName(), is( "foo.bar.Bar" ) );
+		JvmClass barClass = (JvmClass)reader.read("foo.bar.Bar");
+		assertThat( barClass.getName(), is("foo.bar.Bar") );
 	}
 	
 	public final @Test void testIteration() throws IOException {
-		JvmReader reader = new JvmReader().addDir( CLASS_DIR );
+		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
 		
 		int count = 0;
-		for ( JvmType type : reader.list() ) {
+		for ( JvmType type : reader.classes() ) {
 			count += 1;
 		}
 		assertThat( count, is( 40 ) );

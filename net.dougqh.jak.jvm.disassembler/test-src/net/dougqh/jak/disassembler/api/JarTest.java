@@ -34,7 +34,7 @@ public final class JarTest {
 		JvmReader reader = new JvmReader().addJar( TEST_JAR );
 		
 		int count = 0;
-		for ( JvmType type : reader.list() ) {
+		for ( JvmType type : reader.classes() ) {
 			count += 1;
 		}
 		assertThat( count, is( 40 ) );

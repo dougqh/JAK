@@ -1,4 +1,4 @@
-package net.dougqh.aggregator;
+package net.dougqh.functional;
 
 public abstract class Filter<I> {
 	public abstract boolean matches(final I value);
