@@ -11,5 +11,4 @@ Require-Bundle: net.dougqh.jak.core;bundle-version="1.0.0",
  net.dougqh.jak.core.disassembler;bundle-version="1.0.0",
  net.dougqh.java.meta;bundle-version="1.0.0",
  net.dougqh.functional;bundle-version="1.0.0"
-Export-Package: net.dougqh.iterable,
- net.dougqh.jak.disassembler
+Export-Package: net.dougqh.jak.disassembler
