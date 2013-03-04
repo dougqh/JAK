@@ -8,7 +8,7 @@ import net.dougqh.functional.Filter;
 
 public final class JvmClass extends JvmType implements JavaClass {
 	public static final JvmClass read(final Class<?> aClass) throws IOException {
-		JvmReader reader = new JvmReader(aClass.getClassLoader());
+		JvmReader reader = new JvmReader().addClassLoader(aClass.getClassLoader());
 		return reader.<JvmClass>read(aClass);
 	}
 	

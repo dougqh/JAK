@@ -18,9 +18,7 @@ final class ClassLoaderClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final InputStream load( final String className )
-		throws IOException
-	{
+	public final InputStream load(final String className) throws IOException {
 		return this.classLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" );
 	}
 }

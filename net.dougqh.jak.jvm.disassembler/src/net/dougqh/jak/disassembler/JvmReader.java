@@ -20,10 +20,6 @@ public final class JvmReader {
 	
 	public JvmReader() {}
 	
-	public JvmReader( final ClassLoader classLoader ) {
-		this.addClassLoader( classLoader );
-	}
-	
 	public final JvmReader addJar( final String file ) {
 		return this.addJar( new File( file ) );
 	}
