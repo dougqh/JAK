@@ -39,7 +39,7 @@ public final class ClassDirTest {
 		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
 		
 		int count = 0;
-		for ( JvmType type : reader.classes() ) {
+		for ( JvmType type : reader.types() ) {
 			count += 1;
 		}
 		assertThat( count, is(40) );
@@ -49,7 +49,7 @@ public final class ClassDirTest {
 	public final void filtering() throws IOException {
 		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
 		
-		JvmTypeSet publicTypes = reader.classes().filter(public_());
+		JvmTypeSet publicTypes = reader.types().filter(public_());
 		
 		int count = 0;
 		for ( JvmType type: publicTypes ) {

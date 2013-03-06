@@ -2,6 +2,7 @@ package net.dougqh.jak.disassembler;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -118,6 +119,52 @@ final class ConstantPool {
 				}
 			}
 		}
+	}
+	
+	final List<String> getReferencedTypeNames(final int thisIndex) {
+		// TODO: Could probably be smarter here.  Interfaces will have greater proportion 
+		// of their constant pool occupied by related types.
+		
+		int initialCapacity = Math.min(32, this.constants.length >> 2);
+		ArrayList<String> types = new ArrayList<String>(initialCapacity);
+		
+		for ( int i = 0; i < this.constants.length; ++i ) {
+			// skip the class entry for the class being declared
+			if ( thisIndex == i ) {
+				continue;
+			}
+			
+			Object constant = this.constants[i];
+			
+			if ( constant instanceof ClassReference ) {
+				types.add(this.typeName(i));
+			}
+		}
+		
+		return Collections.unmodifiableList(types);
+	}
+	
+	final List<Type> getReferencedTypes(final int thisIndex) {
+		// TODO: Could probably be smarter here.  Interfaces will have greater proportion 
+		// of their constant pool occupied by related types.
+		
+		int initialCapacity = Math.min(32, this.constants.length >> 2);
+		ArrayList<Type> types = new ArrayList<Type>(initialCapacity);
+		
+		for ( int i = 0; i < this.constants.length; ++i ) {
+			// skip the class entry for the class being declared
+			if ( thisIndex == i ) {
+				continue;
+			}
+			
+			Object constant = this.constants[i];
+			
+			if ( constant instanceof ClassReference ) {
+				types.add(this.type(i));
+			}
+		}
+		
+		return Collections.unmodifiableList(types);
 	}
 	
 	public final String typeName( final int classIndex ) {
@@ -241,7 +288,7 @@ final class ConstantPool {
 	
 	private static final SingularReference readClassInfo( final JvmInputStream in ) throws IOException {
 		int classIndex = in.u2();
-		return new SingularReference( classIndex );
+		return new ClassReference(classIndex);
 	}
 	
 	private static final DualReference readFieldRef( final JvmInputStream in ) throws IOException {
@@ -265,7 +312,7 @@ final class ConstantPool {
 	
 	private static final SingularReference readString( final JvmInputStream in ) throws IOException {
 		int utf8Index = in.u2();
-		return new SingularReference(utf8Index);
+		return new StringReference(utf8Index);
 	}
 	
 	private static final Integer readInteger( final JvmInputStream in ) throws IOException {
@@ -304,12 +351,24 @@ final class ConstantPool {
 	/**
 	 * Used for any single reference entry - like class entry
 	 */
-	static final class SingularReference {
+	static abstract class SingularReference {
 		final int index;
 		Object decoded;
 		
-		SingularReference( final int index ) {
+		SingularReference(final int index) {
 			this.index = index;
+		}
+	}
+	
+	static final class StringReference extends SingularReference {
+		StringReference(final int index) {
+			super(index);
+		}
+	}
+	
+	static final class ClassReference extends SingularReference {
+		ClassReference(final int index) {
+			super(index);
 		}
 	}
 	

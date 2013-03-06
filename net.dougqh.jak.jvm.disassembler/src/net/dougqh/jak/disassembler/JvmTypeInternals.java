@@ -36,17 +36,17 @@ final class JvmTypeInternals {
 		this.minorVersion = in.u2();
 		this.majorVersion = in.u2();
 		
-		this.constantPool = new ConstantPool( in );
+		this.constantPool = new ConstantPool(in);
 
 		this.flags = in.u2();
 		
 		this.thisClass = in.u2();
 		this.superClass = in.u2();
 		
-		this.interfaces = new Interfaces( this.constantPool, in );
-		this.fields = new Fields( this.constantPool, in );
-		this.methods = new Methods( this.constantPool, in );
-		this.attributes = new Attributes( this.constantPool, in );
+		this.interfaces = new Interfaces(this.constantPool, in);
+		this.fields = new Fields(this.constantPool, in);
+		this.methods = new Methods(this.constantPool, in);
+		this.attributes = new Attributes(this.constantPool, in);
 		
 		//TODO: DQH - restore assertion
 		//in.assertDone();
@@ -64,7 +64,7 @@ final class JvmTypeInternals {
 		return this.constantPool.typeName( this.superClass );
 	}
 	
-	final List< String > getInterfaceNames() {
+	final List<String> getInterfaceNames() {
 		return this.interfaces.getNames();
 	}
 	

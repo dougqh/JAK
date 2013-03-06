@@ -1,4 +1,4 @@
-package net.dougqh.iterable;
+package net.dougqh.collections;
 
 import java.util.ArrayDeque;
 import java.util.Iterator;

@@ -63,7 +63,7 @@ public final class JvmReader {
 		}
 	}
 	
-	public final JvmTypeSet classes() {
+	public final JvmTypeSet types() {
 		return new JvmTypeSetImpl(new ClassBlockProcessor());
 	}
 	
