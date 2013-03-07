@@ -52,7 +52,7 @@ public final class JvmReader {
 		return this.locators;
 	}
 	
-	public final <T extends JvmType> T read( final String name ) throws IOException {
+	public final <T extends JvmType> T read(final String name) throws IOException {
 		InputStream in = this.locator().load( name );
 		try {
 			@SuppressWarnings("unchecked")
@@ -67,7 +67,7 @@ public final class JvmReader {
 		return new JvmTypeSetImpl(new ClassBlockProcessor());
 	}
 	
-	public final < T extends JvmType > T read( final Class<?> type ) throws IOException {
+	public final < T extends JvmType > T read(final Class<?> type) throws IOException {
 		return this.<T>read( type.getName() );
 	}
 	
@@ -94,8 +94,9 @@ public final class JvmReader {
 		
 		@Override
 		public final Iterator<JvmType> iterator() {
-			Aggregator<ClassBlock, JvmType> aggregator = new Aggregator<ClassBlock, JvmType>(this.processor);
-			aggregator.initialize(new RootInputProvider());
+			Aggregator<ClassBlock, JvmType> aggregator = 
+				new Aggregator<ClassBlock, JvmType>(new RootInputProvider(), this.processor);
+			
 			return aggregator.iterator();
 		}
 	}
