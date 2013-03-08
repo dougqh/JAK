@@ -21,6 +21,12 @@ import net.dougqh.jak.disassembler.ClassLocator.ClassBlock;
 import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
 
 public final class JvmReader {
+	public interface Parallelizer {
+		public abstract JvmTypeSet types();
+		
+		public abstract void shutdownAndWait();
+	}
+	
 	private final CompositeClassLocator locators = new CompositeClassLocator();
 	
 	private volatile Executor executor;
@@ -71,30 +77,17 @@ public final class JvmReader {
 		}
 	}
 	
-	public final void parallelize() {
+	public final Parallelizer parallelize() {
 		// because the work is mostly I/O bound overuse threads
-		this.parallelize(Runtime.getRuntime().availableProcessors() * 4);
+		return this.parallelize(Runtime.getRuntime().availableProcessors() * 4);
 	}
 	
-	public final void parallelize(final int numThreads) {
-		this.parallelize(createExecutor(numThreads), numThreads);
+	public final Parallelizer parallelize(final int numThreads) {
+		return this.parallelize(createExecutor(numThreads), numThreads);
 	}
 	
-	public final void parallelize(final Executor executor, final int numWorkers) {
-		this.executor = executor;
-		this.numWorkers = numWorkers;
-	}
-	
-	public final void shutdownParallelize() {
-		if ( this.executor instanceof ExecutorService ) {
-			ExecutorService executorService = (ExecutorService)this.executor;
-			executorService.shutdown();
-			try {
-				executorService.awaitTermination(5, TimeUnit.MINUTES);
-			} catch (InterruptedException e) {
-				throw new IllegalStateException(e);
-			}
-		}
+	public final Parallelizer parallelize(final Executor executor, final int numWorkers) {
+		return new ParallelizerImpl(executor, numWorkers);
 	}
 	
 	private static final ExecutorService createExecutor(final int numThreads) {
@@ -109,7 +102,16 @@ public final class JvmReader {
 	}
 	
 	public final JvmTypeSet types() {
-		return new JvmTypeSetImpl(new ClassBlockProcessor());
+		return new JvmTypeSetImpl(new ClassBlockProcessor(), new IteratorCreator() {
+			@Override
+			public final <O> Iterator<O> iterator(final Aggregator<ClassBlock, O> aggregator) {
+				return aggregator.iterator();
+			}
+		});
+	}
+	
+	abstract class IteratorCreator {
+		public abstract <O> Iterator<O> iterator(final Aggregator<ClassBlock, O> aggregator);
 	}
 	
 	public final < T extends JvmType > T read(final Class<?> type) throws IOException {
@@ -118,9 +120,14 @@ public final class JvmReader {
 	
 	private final class JvmTypeSetImpl extends JvmTypeSet {
 		private final Processor<ClassBlock, JvmType> processor;
+		private final IteratorCreator iteratorCreator;
 		
-		public JvmTypeSetImpl(final Processor<ClassBlock, JvmType> processor) {
+		public JvmTypeSetImpl(
+			final Processor<ClassBlock, JvmType> processor,
+			final IteratorCreator iteratorCreator)
+		{
 			this.processor = processor;
+			this.iteratorCreator = iteratorCreator;
 		}
 		
 		@Override
@@ -134,7 +141,7 @@ public final class JvmReader {
 		
 		@Override
 		public final JvmTypeSet filter(final Filter<? super JvmType> filter) {
-			return new JvmTypeSetImpl(this.processor.filter(filter));
+			return new JvmTypeSetImpl(this.processor.filter(filter), this.iteratorCreator);
 		}
 		
 		@Override
@@ -142,11 +149,7 @@ public final class JvmReader {
 			Aggregator<ClassBlock, JvmType> aggregator = 
 				new Aggregator<ClassBlock, JvmType>(new RootInputProvider(), this.processor);
 			
-			if ( JvmReader.this.executor != null ) {
-				return aggregator.parallelIterator(JvmReader.this.executor, JvmReader.this.numWorkers);
-			} else {
-				return aggregator.iterator();
-			}
+			return this.iteratorCreator.iterator(aggregator);
 		}
 	}
 	
@@ -168,6 +171,39 @@ public final class JvmReader {
 					out.offer(JvmType.create(in));
 				}
 			});
+		}
+	}
+	
+	final class ParallelizerImpl implements Parallelizer {
+		private final Executor executor;
+		private final int numWorkers;
+		
+		ParallelizerImpl(final Executor executor, final int numWorkers) {
+			this.executor = executor;
+			this.numWorkers = numWorkers;
+		}
+		
+		@Override
+		public final JvmTypeSet types() {
+			return new JvmTypeSetImpl(new ClassBlockProcessor(), new IteratorCreator() {
+				@Override
+				public final <O> Iterator<O> iterator(final Aggregator<ClassBlock, O> aggregator) {
+					return aggregator.parallelIterator(ParallelizerImpl.this.executor, ParallelizerImpl.this.numWorkers);
+				}
+			});
+		}
+		
+		@Override
+		public final void shutdownAndWait() {
+			if ( this.executor instanceof ExecutorService ) {
+				ExecutorService executorService = (ExecutorService)this.executor;
+				executorService.shutdown();
+				try {
+					executorService.awaitTermination(5, TimeUnit.MINUTES);
+				} catch (InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
+			}
 		}
 	}
 }

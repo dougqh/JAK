@@ -62,15 +62,15 @@ public final class ClassDirTest {
 	public final void parallelIteration() throws IOException {
 		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
 		
-		reader.parallelize();
+		JvmReader.Parallelizer parallelizer = reader.parallelize();
 		try {
 			int count = 0;
-			for ( JvmType type : reader.types() ) {
+			for ( JvmType type : parallelizer.types() ) {
 				count += 1;
 			}
 			assertThat( count, is(40) );
 		} finally {
-			reader.shutdownParallelize();
+			parallelizer.shutdownAndWait();
 		}
 	}
 }
