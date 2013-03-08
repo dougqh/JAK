@@ -6,7 +6,7 @@ import java.io.InputStream;
 import net.dougqh.aggregator.InputScheduler;
 
 public interface ClassLocator {
-	public abstract void enumerate(final InputScheduler<ClassBlock> scheduler)
+	public abstract void enumerate(final InputScheduler<? super ClassBlock> scheduler)
 		throws InterruptedException;
 	
 	public abstract InputStream load(final String className) throws IOException;

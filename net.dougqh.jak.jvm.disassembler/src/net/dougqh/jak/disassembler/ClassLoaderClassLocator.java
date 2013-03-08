@@ -13,7 +13,7 @@ final class ClassLoaderClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public void enumerate(final InputScheduler<ClassBlock> scheduler) {
+	public void enumerate(final InputScheduler<? super ClassBlock> scheduler) {
 		//TODO: Implement this if the classloader is URLClassLoader
 	}
 	

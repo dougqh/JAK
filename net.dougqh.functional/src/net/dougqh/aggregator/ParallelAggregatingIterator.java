@@ -3,11 +3,10 @@ package net.dougqh.aggregator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
+class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 	private static final End END = new End();
 	
 	private final InputProvider<? extends I> rootProvider;
@@ -44,11 +43,7 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 	public final boolean hasNext() {
 		this.loadNext();
 		
-		if ( this.value instanceof End ) {
-			return false;
-		} else {
-			return true;
-		}
+		return ! ( this.value instanceof End );
 	}
 	
 	@Override
@@ -71,7 +66,10 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 	}
 	
 	
-	protected final void runTask(final InputScheduler<I> scheduler, final InputProvider<I> task) {
+	protected final void runProvider(
+		final InputScheduler<? super I> scheduler,
+		final InputProvider<? extends I> task)
+	{
 		this.activeTasks.incrementAndGet();
 		try {
 			task.run(scheduler);
@@ -100,7 +98,7 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		}
 		
 		while ( ! this.hasResults() ) {
-			this.runTaskNow();
+			this.runProviderNow();
 			
 			this.checkForExceptions();
 			
@@ -122,10 +120,10 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		}
 	}
 	
-	protected final InputProvider<I> pollInputProvider() {
+	protected final InputProvider<? extends I> pollInputProvider() {
 		this.checkForExceptions();
 		
-		InputProvider<I> inputProvider;
+		InputProvider<? extends I> inputProvider;
 		
 		inputProvider = this.unboundedScheduler.pollInputProvider();
 		if ( inputProvider != null ) {
@@ -163,10 +161,10 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		return null;
 	}
 	
-	protected final void runTaskNow() {
-		InputProvider<I> task = this.pollInputProvider();
-		if ( task != null ) {
-			this.runTask(this.unboundedScheduler, task);
+	protected final void runProviderNow() {
+		InputProvider<? extends I> provider = this.pollInputProvider();
+		if ( provider != null ) {
+			this.runProvider(this.unboundedScheduler, provider);
 		}
 	}
 	
@@ -190,9 +188,14 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 	private static final class End {}
 	
 	private abstract class ConcreteScheduler implements InputScheduler<I> {
+		public final int numThreads() {
+			// TODO: Implement with a return value that corresponds to the thread pool
+			return 1;
+		}
+		
 		abstract boolean isCompletelyEmpty();
 		
-		abstract InputProvider<I> pollInputProvider();
+		abstract InputProvider<? extends I> pollInputProvider();
 		
 		abstract boolean hasResults();
 		
@@ -203,7 +206,7 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		@Override
 		public final void run() {
 			while ( ! ParallelAggregatingIterator.this.isDone() ) {
-				InputProvider<I> inputProvider = ParallelAggregatingIterator.this.pollInputProvider();
+				InputProvider<? extends I> inputProvider = ParallelAggregatingIterator.this.pollInputProvider();
 				try {
 					inputProvider.run(ParallelAggregatingIterator.this.boundedScheduler);
 				} catch (Throwable t) {
@@ -228,21 +231,16 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 	}
 	
 	private final class UnboundedScheduler extends ConcreteScheduler {
-		private final ConcurrentLinkedQueue<InputProvider<I>> taskQueue = new ConcurrentLinkedQueue<InputProvider<I>>();
+		private final ConcurrentLinkedQueue<InputProvider<? extends I>> providerQueue = 
+			new ConcurrentLinkedQueue<InputProvider<? extends I>>();
 		private final ConcurrentLinkedQueue<O> resultQueue = new ConcurrentLinkedQueue<O>();
 		
 		private final SingletonInputChannel<I> inputChannel = new SingletonInputChannel<I>();
-
-		private final OutputChannel<O> outputChannel = new OutputChannel<O>() {
-			@Override
-			public final void offer(final O output) {
-				UnboundedScheduler.this.resultQueue.offer(output);
-			}
-		};
+		private final OutputChannel<O> outputChannel = new QueueBasedOutputChannel<O>(this.resultQueue);
 		
 		@Override
-		final InputProvider<I> pollInputProvider() {
-			return this.taskQueue.poll();
+		final InputProvider<? extends I> pollInputProvider() {
+			return this.providerQueue.poll();
 		}
 		
 		@Override
@@ -256,8 +254,8 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		}
 		
 		@Override
-		public final void schedule(final InputProvider<I> task) {
-			this.taskQueue.add(task);
+		public final void schedule(final InputProvider<? extends I> task) {
+			this.providerQueue.add(task);
 		}
 		
 		public final void offer(final I input) {
@@ -272,26 +270,21 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		
 		@Override
 		public final boolean isCompletelyEmpty() {
-			return this.taskQueue.isEmpty() && this.resultQueue.isEmpty();
+			return this.providerQueue.isEmpty() && this.resultQueue.isEmpty();
 		}
 	}
 	
 	private final class BoundedScheduler extends ConcreteScheduler {
-		private final LinkedBlockingQueue<InputProvider<I>> taskQueue = new LinkedBlockingQueue<InputProvider<I>>();
+		private final LinkedBlockingQueue<InputProvider<? extends I>> providerQueue = 
+			new LinkedBlockingQueue<InputProvider<? extends I>>();
 		private final LinkedBlockingQueue<O> resultQueue = new LinkedBlockingQueue<O>();
 		
 		private final SingletonInputChannel<I> inputChannel = new SingletonInputChannel<I>();
-		
-		private final OutputChannel<O> outputChannel = new OutputChannel<O>() {
-			@Override
-			public final void offer(final O output) {
-				BoundedScheduler.this.resultQueue.offer(output);
-			}
-		};
+		private final OutputChannel<O> outputChannel = new QueueBasedOutputChannel<O>(this.resultQueue);
 		
 		@Override
-		final InputProvider<I> pollInputProvider() {
-			return this.taskQueue.poll();
+		final InputProvider<? extends I> pollInputProvider() {
+			return this.providerQueue.poll();
 		}
 		
 		@Override
@@ -305,8 +298,8 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		}
 		
 		@Override
-		public final void schedule(final InputProvider<I> task) throws InterruptedException {
-			this.taskQueue.put(task);
+		public final void schedule(final InputProvider<? extends I> provider) throws InterruptedException {
+			this.providerQueue.put(provider);
 		}
 		
 		public final void offer(final I input) throws InterruptedException {
@@ -321,7 +314,7 @@ public class ParallelAggregatingIterator<I, O> implements Iterator<O> {
 		
 		@Override
 		public final boolean isCompletelyEmpty() {
-			return this.taskQueue.isEmpty() && this.resultQueue.isEmpty();
+			return this.providerQueue.isEmpty() && this.resultQueue.isEmpty();
 		}
 	}
 }

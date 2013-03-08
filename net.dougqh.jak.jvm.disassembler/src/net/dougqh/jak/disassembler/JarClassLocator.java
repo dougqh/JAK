@@ -23,7 +23,7 @@ final class JarClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final InputScheduler<ClassBlock> scheduler)
+	public final void enumerate(final InputScheduler<? super ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		//TODO: Switch to use tasks that register multiple blocks up to a given size.

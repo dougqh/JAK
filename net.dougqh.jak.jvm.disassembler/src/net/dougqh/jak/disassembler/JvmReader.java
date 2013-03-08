@@ -103,7 +103,7 @@ public final class JvmReader {
 	
 	private final class RootInputProvider implements InputProvider<ClassBlock> {
 		@Override
-		public final void run(final InputScheduler<ClassBlock> scheduler) throws Exception {
+		public final void run(final InputScheduler<? super ClassBlock> scheduler) throws Exception {
 			JvmReader.this.locators.enumerate(scheduler);
 		}
 	}

@@ -12,6 +12,6 @@ public final class Aggregator<I, O> implements Iterable<O> {
 	}
 	
 	public final Iterator<O> iterator() {
-		return new ParallelAggregatingIterator<I, O>(this.rootProvider, this.processor);
+		return new InThreadAggregatingIterator<I, O>(this.rootProvider, this.processor);
 	}
 }
