@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import net.dougqh.aggregator.Aggregator;
 import net.dougqh.aggregator.InputProvider;
@@ -17,6 +22,9 @@ import net.dougqh.jak.disassembler.ClassLocator.ClassProcessor;
 
 public final class JvmReader {
 	private final CompositeClassLocator locators = new CompositeClassLocator();
+	
+	private volatile Executor executor;
+	private volatile int numWorkers;
 	
 	public JvmReader() {}
 	
@@ -63,6 +71,43 @@ public final class JvmReader {
 		}
 	}
 	
+	public final void parallelize() {
+		// because the work is mostly I/O bound overuse threads
+		this.parallelize(Runtime.getRuntime().availableProcessors() * 4);
+	}
+	
+	public final void parallelize(final int numThreads) {
+		this.parallelize(createExecutor(numThreads), numThreads);
+	}
+	
+	public final void parallelize(final Executor executor, final int numWorkers) {
+		this.executor = executor;
+		this.numWorkers = numWorkers;
+	}
+	
+	public final void shutdownParallelize() {
+		if ( this.executor instanceof ExecutorService ) {
+			ExecutorService executorService = (ExecutorService)this.executor;
+			executorService.shutdown();
+			try {
+				executorService.awaitTermination(5, TimeUnit.MINUTES);
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+	}
+	
+	private static final ExecutorService createExecutor(final int numThreads) {
+		final ThreadGroup threadGroup = new ThreadGroup("jist");
+		
+		return Executors.newFixedThreadPool(numThreads, new ThreadFactory() {
+			@Override
+			public final Thread newThread(final Runnable runnable) {
+				return new Thread(threadGroup, runnable);
+			}
+		});
+	}
+	
 	public final JvmTypeSet types() {
 		return new JvmTypeSetImpl(new ClassBlockProcessor());
 	}
@@ -97,7 +142,11 @@ public final class JvmReader {
 			Aggregator<ClassBlock, JvmType> aggregator = 
 				new Aggregator<ClassBlock, JvmType>(new RootInputProvider(), this.processor);
 			
-			return aggregator.iterator();
+			if ( JvmReader.this.executor != null ) {
+				return aggregator.parallelIterator(JvmReader.this.executor, JvmReader.this.numWorkers);
+			} else {
+				return aggregator.iterator();
+			}
 		}
 	}
 	

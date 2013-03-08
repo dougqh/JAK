@@ -15,9 +15,8 @@ final class InThreadAggregatingIterator<I, O> implements Iterator<O> {
 	
 	private final SchedulerImpl scheduler = new SchedulerImpl();
 	
-	private Throwable cause = null;
-	
 	private Object value = null;
+	private Throwable cause = null;
 	
 	InThreadAggregatingIterator(
 		final InputProvider<? extends I> rootProvider,
@@ -66,22 +65,8 @@ final class InThreadAggregatingIterator<I, O> implements Iterator<O> {
 			if ( provider == null ) {
 				return END;
 			}
-			
-			try {
-				provider.run(this.scheduler);
-			} catch (Exception e) {
-				this.exception(e);
-			}
-			
-			this.checkForException();
-			
-			try {
-				this.scheduler.flush();
-			} catch ( Exception e ) {
-				this.exception(e);
-				
-				this.checkForException();
-			}
+
+			this.run(provider);
 		}
 		
 		return this.resultQueue.poll();
@@ -101,18 +86,15 @@ final class InThreadAggregatingIterator<I, O> implements Iterator<O> {
 		}
 	}
 	
-	static final class SingletonInputChannel<I> implements InputChannel<I> {
-		private I input = null;
-		
-		public final void put(final I input) {
-			this.input = input;
+	final void run(final InputProvider<? extends I> provider) {
+		try {
+			provider.run(this.scheduler);
+			this.scheduler.flush();
+		} catch ( Exception e ) {
+			this.exception(e);
+			
+			this.checkForException();
 		}
-		
-		public final I poll() {
-			I input = this.input;
-			this.input = null;
-			return input;
-		}		
 	}
 	
 	private final class SchedulerImpl implements InputScheduler<I> {

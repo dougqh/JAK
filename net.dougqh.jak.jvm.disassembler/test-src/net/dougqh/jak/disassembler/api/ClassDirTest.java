@@ -57,4 +57,20 @@ public final class ClassDirTest {
 		}
 		assertThat( count, is(36) );
 	}
+
+	@Test
+	public final void parallelIteration() throws IOException {
+		JvmReader reader = new JvmReader().addDir(CLASS_DIR);
+		
+		reader.parallelize();
+		try {
+			int count = 0;
+			for ( JvmType type : reader.types() ) {
+				count += 1;
+			}
+			assertThat( count, is(40) );
+		} finally {
+			reader.shutdownParallelize();
+		}
+	}
 }
