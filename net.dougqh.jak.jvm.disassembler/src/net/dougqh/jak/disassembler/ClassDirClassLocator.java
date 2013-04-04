@@ -38,7 +38,7 @@ final class ClassDirClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final InputScheduler<ClassBlock> scheduler)
+	public final void enumerate(final InputScheduler<? super ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		scheduler.schedule(new DirInputProvider(this.dir));
@@ -52,7 +52,7 @@ final class ClassDirClassLocator implements ClassLocator {
 		}
 		
 		@Override
-		public final void run(final InputScheduler<ClassBlock> scheduler) throws Exception {
+		public final void run(final InputScheduler<? super ClassBlock> scheduler) throws Exception {
 			File[] subDirs = this.dir.listFiles(DIR_FILTER);
 			
 			if ( subDirs != null ) {

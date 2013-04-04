@@ -8,7 +8,7 @@ public final class JvmInterface
 	implements JavaInterface
 {	
 	public static final JvmClass read(final Class<?> aClass) throws IOException {
-		JvmReader reader = new JvmReader(aClass.getClassLoader());
+		JvmReader reader = new JvmReader().addClassLoader(aClass.getClassLoader());
 		return reader.<JvmClass>read(aClass);
 	}
 	

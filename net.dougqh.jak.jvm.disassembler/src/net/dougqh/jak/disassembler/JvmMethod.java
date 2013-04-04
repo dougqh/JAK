@@ -17,7 +17,7 @@ public final class JvmMethod implements JavaMethod, JvmCodeSegment {
 	public static final JvmMethod read(final Class<?> aClass, final String method)
 		throws IOException
 	{
-		JvmReader reader = new JvmReader(aClass.getClassLoader());
+		JvmReader reader = new JvmReader().addClassLoader(aClass.getClassLoader());
 		JvmType type = reader.read(aClass);
 		return type.getMethod(method);
 	}

@@ -18,7 +18,7 @@ final class CompositeClassLocator implements ClassLocator {
 	}
 	
 	@Override
-	public final void enumerate(final InputScheduler<ClassBlock> scheduler)
+	public final void enumerate(final InputScheduler<? super ClassBlock> scheduler)
 		throws InterruptedException
 	{
 		// This implementation assumes that each of the individual ClassLocators will 
